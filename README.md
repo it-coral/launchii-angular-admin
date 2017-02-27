@@ -21,20 +21,35 @@ Set up api domain in `app/core/constants.js`. Make sure to add a trailing slash.
 
 ### Start up server:
 
-Spin up the development server using Foreman:
+Simple server setup:
+
+For global install:
 
 ```
-    bundle exec foreman start -f Procfile.dev
+    npm install -g http-server
+```
+Go to Launchii Admin project directory and enter command:
+
+```
+    http-server -o
 ```
 
-*You will need to have the [Foreman](https://github.com/ddollar/foreman) installed locally.*
+For local installation, go to Launchii Admin project directory and do command:
+
+```
+    npm install http-server
+```
+
+Then run server:
+
+```
+    node_modules/http-server/bin/http-server -o
+```
 
 ### Open:
 
 Navigate to the website via your browser:
 
 ```
-    http://localhost:5000
+    http://localhost:8080
 ```
-
-*I would advise using [POW](http://pow.cx) locally since we will be using subdomain constraints on our routes*
