@@ -3,7 +3,7 @@
 
     angular.module('app')
         .constant('CONST', {
-            api_domain: "http://api.launchii.com/"
+            api_domain: "http://api.launchii.com/" //api domain
         });
 
 })();
