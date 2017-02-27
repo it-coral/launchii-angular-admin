@@ -4,13 +4,13 @@
     angular.module('app')
         .controller('DashboardController', DashboardController);
 
-    DashboardController.$inject = ['UserService', 'usersPrepService'];
+    //DashboardController.$inject = ['UserService', 'usersPrepService'];
 
     /* @ngInject */
-    function DashboardController(UserService, usersPrepService) {
+    function DashboardController() {
         var vm = this;
 
-        vm.users = usersPrepService;
+        //vm.users = usersPrepService;
         vm.getUsers = getUsers;
 
         activate();
@@ -18,14 +18,14 @@
         //////////////
 
         function activate() {
-            return getUsers();
+            //return getUsers();
         }
 
         function getUsers() {
-            return UserService.getUsers().then(function(data) {
-                vm.users = data;
-                return vm.users;
-            });
+            // return UserService.getUsers().then(function(data) {
+            //     vm.users = data;
+            //     return vm.users;
+            // });
         }
     }
 })();

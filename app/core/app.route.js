@@ -53,22 +53,22 @@
             }
         };
 
-        var post = {
+        var deals = {
             name: "deals",
             url: "/deals/list",
             views: {
                 "main": {
-                    templateUrl: "./admin/app/post/post.html",
-                    controller: "PostController",
+                    templateUrl: "./admin/app/deals/deal.html",
+                    controller: "DealController",
                     controllerAs: "vm",
                     resolve: {
-                        postPrepService: postPrepService
+                        //postPrepService: postPrepService
                     }
                 },
                 //"nav": nav
             }
         };
-
+        /*
         var postAdd = {
             name: "post.add",
             url: "/add",
@@ -102,81 +102,46 @@
                 }
             }
         };
-
-        var category = {
-            name: "category",
-            url: "/category",
-            views: {
-                "main": {
-                    templateUrl: "./admin/app/category/category.html",
-                    controller: "CategoryController",
-                    controllerAs: "vm",
-                    resolve: {
-                        categoryPrepService: categoryPrepService
-                    }
-                },
-                //"nav": nav
-            }
-        };
-
-        var tag = {
-            name: "tag",
-            url: "/tag",
-            views: {
-                "main": {
-                    templateUrl: "./admin/app/tag/tag.html",
-                    controller: "TagController",
-                    controllerAs: "vm",
-                    resolve: {
-                        tagPrepService: tagPrepService
-                    }
-                },
-                //"nav": nav
-            }
-        };
+        */
 
         ////////////
 
         $stateProvider
             .state(auth)
             .state(dashboard)
-            .state(post)
-            .state(postAdd)
-            .state(postEdit)
-            .state(category)
-            .state(tag);
-        console.log($stateProvider);
+            .state(deals);
+
         ////////////
 
-        navPrepService.$inject = ['NavService'];
-        /* @ngInject */
-        function navPrepService(NavService) {
-            return NavService.getNavs();
-        }
+        // navPrepService.$inject = ['NavService'];
+        // /* @ngInject */
+        // function navPrepService(NavService) {
+        //     return NavService.getNavs();
+        // }
 
-        usersPrepService.$inject = ['UserService'];
-        /* @ngInject */
-        function usersPrepService(UserService) {
-            return UserService.getUsers();
-        }
+        // usersPrepService.$inject = ['UserService'];
+        // /* @ngInject */
+        // function usersPrepService(UserService) {
+        //     return UserService.getUsers();
+        // }
 
-        postPrepService.$inject = ['PostService'];
-        /* @ngInject */
-        function postPrepService(PostService) {
-            return PostService.getPosts();
-        }
+        // postPrepService.$inject = ['PostService'];
+        // /* @ngInject */
+        // function postPrepService(PostService) {
+        //     return PostService.getPosts();
+        // }
 
-        categoryPrepService.$inject = ['CategoryService'];
-        /* @ngInject */
-        function categoryPrepService(CategoryService) {
-            return CategoryService.getCategories();
-        }
+        // categoryPrepService.$inject = ['CategoryService'];
+        // /* @ngInject */
+        // function categoryPrepService(CategoryService) {
+        //     return CategoryService.getCategories();
+        // }
 
-        tagPrepService.$inject = ['TagService'];
-        /* @ngInject */
-        function tagPrepService(TagService) {
-            return TagService.getTags();
-        }
+        // tagPrepService.$inject = ['TagService'];
+        // /* @ngInject */
+        // function tagPrepService(TagService) {
+        //     return TagService.getTags();
+        // }
     }
 
 })();
