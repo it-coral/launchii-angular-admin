@@ -62,7 +62,7 @@
                     controller: "DealController",
                     controllerAs: "vm",
                     resolve: {
-                        //postPrepService: postPrepService
+                        dealPrepService: dealPrepService
                     }
                 },
                 //"nav": nav
@@ -125,11 +125,11 @@
         //     return UserService.getUsers();
         // }
 
-        // postPrepService.$inject = ['PostService'];
-        // /* @ngInject */
-        // function postPrepService(PostService) {
-        //     return PostService.getPosts();
-        // }
+        dealPrepService.$inject = ['DealService'];
+        /* @ngInject */
+        function dealPrepService(DealService) {
+            return DealService.getDeals();
+        }
 
         // categoryPrepService.$inject = ['CategoryService'];
         // /* @ngInject */
