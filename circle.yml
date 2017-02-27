@@ -4,8 +4,7 @@ machine:
 
 dependencies:
   pre:
-    - npm install -g karma-cli bower
-    - bower install
+    - npm install -g karma-cli
   cache_directories:
     - ~/nvm
 
