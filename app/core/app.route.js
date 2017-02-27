@@ -19,7 +19,7 @@
             url: "/auth",
             views: {
                 "main": {
-                    templateUrl: "./admin/app/login/login.html",
+                    templateUrl: "/app/login/login.html",
                     controller: "LoginController",
                     controllerAs: "vm"
                 }
@@ -31,7 +31,7 @@
             url: "/logout",
             views: {
                 "main": {
-                    templateUrl: "/admin/app/login/login.html",
+                    templateUrl: "/app/login/login.html",
                     controller: "LoginController",
                     controllerAs: "vm",
                     resolve: {
@@ -46,11 +46,11 @@
             url: "/",
             views: {
                 "main": {
-                    templateUrl: "./admin/app/dashboard/dashboard.html",
+                    templateUrl: "/app/dashboard/dashboard.html",
                     controller: "DashboardController",
                     controllerAs: "vm",
                     resolve: {
-                        usersPrepService: usersPrepService
+                        //usersPrepService: usersPrepService
                     }
                 },
                 //"nav": nav
@@ -62,7 +62,7 @@
             url: "/deal",
             views: {
                 "main": {
-                    templateUrl: "./admin/app/deals/deal.html",
+                    templateUrl: "/app/deals/deal.html",
                     controller: "DealController",
                     controllerAs: "vm",
                     resolve: {
@@ -79,7 +79,7 @@
             parent: deal,
             views: {
                 "page_body": {
-                    templateUrl: "./admin/app/deals/deal.add.html",
+                    templateUrl: "/app/deals/deal.add.html",
                     controller: "DealAddController",
                     controllerAs: "vm"
                 }
@@ -92,7 +92,7 @@
             parent: deal,
             views: {
                 "page_body": {
-                    templateUrl: "./admin/app/deals/deal.add.html",
+                    templateUrl: "/app/deals/deal.add.html",
                     controller: "DealEditController",
                     controllerAs: "vm",
                     resolve: {
@@ -107,7 +107,7 @@
             url: "/brand",
             views: {
                 "main": {
-                    templateUrl: "./admin/app/brand/brand.html",
+                    templateUrl: "/app/brand/brand.html",
                     controller: "BrandController",
                     controllerAs: "vm",
                     resolve: {
@@ -124,7 +124,7 @@
             parent: brand,
             views: {
                 "page_body": {
-                    templateUrl: "./admin/app/brand/brand.add.html",
+                    templateUrl: "/app/brand/brand.add.html",
                     controller: "BrandAddController",
                     controllerAs: "vm"
                 }
@@ -137,7 +137,7 @@
             parent: brand,
             views: {
                 "page_body": {
-                    templateUrl: "./admin/app/brand/brand.add.html",
+                    templateUrl: "/app/brand/brand.add.html",
                     controller: "BrandEditController",
                     controllerAs: "vm",
                     resolve: {
