@@ -54,8 +54,8 @@
         };
 
         var post = {
-            name: "post",
-            url: "/post",
+            name: "deals",
+            url: "/deals/list",
             views: {
                 "main": {
                     templateUrl: "./admin/app/post/post.html",

@@ -235,10 +235,24 @@
                     </div>
                     <!-- /input-group -->
                 </li>
-                <li ng-repeat="nav in vm.navs">
-                    <a ui-sref="{{ nav.link }}" ui-sref-active="active" >
-                        <i class="fa {{ nav.icon }} fa-fw"></i> {{ nav.name }}
-                    </a>
+                <li>
+                    <a ui-sref="dashboard" ui-sref-active="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a ui-sref="deals" ui-sref-active="active"><i class="fa fa-dashboard fa-fw"></i> Deals</a>
+                    <ul class="nav nav-second-level collapse">
+                        <li>
+                            <a ui-sref="deals" ui-sref-active="active">List</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a ui-sref="brands" ui-sref-active="active"><i class="fa fa-dashboard fa-fw"></i> Brands</a>
+                    <ul class="nav nav-second-level collapse">
+                        <li>
+                            <a ui-sref="brands" ui-sref-active="active">List</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
