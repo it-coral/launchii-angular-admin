@@ -37,6 +37,21 @@
             }
         };
 
+        var logout = {
+            name: "logout",
+            url: "/logout",
+            views: {
+                "main": {
+                    templateUrl: "/admin/app/login/login.html",
+                    controller: "LoginController",
+                    controllerAs: "vm",
+                    resolve: {
+                        doLogout: doLogout
+                    }
+                }
+            }
+        };
+
         var dashboard = {
             name: "dashboard",
             url: "/",
@@ -53,9 +68,9 @@
             }
         };
 
-        var deals = {
-            name: "deals",
-            url: "/deals/list",
+        var deal = {
+            name: "deal",
+            url: "/deal",
             views: {
                 "main": {
                     templateUrl: "./admin/app/deals/deal.html",
@@ -68,62 +83,52 @@
                 //"nav": nav
             }
         };
-        /*
-        var postAdd = {
-            name: "post.add",
+
+        var dealAdd = {
+            name: "deal.add",
             url: "/add",
-            parent: post,
+            parent: deal,
             views: {
                 "page_body": {
-                    templateUrl: "./admin/app/post/post.add.html",
-                    controller: "PostAddController",
+                    templateUrl: "./admin/app/deals/deal.add.html",
+                    controller: "DealAddController",
+                    controllerAs: "vm"
+                }
+            }
+        };
+
+        var dealEdit = {
+            name: "deal.edit",
+            url: "/edit/:id",
+            parent: deal,
+            views: {
+                "page_body": {
+                    templateUrl: "./admin/app/deals/deal.add.html",
+                    controller: "DealEditController",
                     controllerAs: "vm",
                     resolve: {
-                        categoryPrepService: categoryPrepService,
-                        tagPrepService: tagPrepService
+                        prepDealId: prepDealId
                     }
                 }
             }
         };
 
-        var postEdit = {
-            name: "post.edit",
-            url: "/edit/:id",
-            parent: post,
-            views: {
-                "page_body": {
-                    templateUrl: "./admin/app/post/post.add.html",
-                    controller: "PostEditController",
-                    controllerAs: "vm",
-                    resolve: {
-                        categoryPrepService: categoryPrepService,
-                        tagPrepService: tagPrepService
-                    }
-                }
-            }
-        };
-        */
 
         ////////////
 
         $stateProvider
             .state(auth)
+            .state(logout)
             .state(dashboard)
-            .state(deals);
+            .state(deal);
 
         ////////////
 
-        // navPrepService.$inject = ['NavService'];
-        // /* @ngInject */
-        // function navPrepService(NavService) {
-        //     return NavService.getNavs();
-        // }
-
-        // usersPrepService.$inject = ['UserService'];
-        // /* @ngInject */
-        // function usersPrepService(UserService) {
-        //     return UserService.getUsers();
-        // }
+        doLogout.$inject = ['AuthService'];
+        /* @ngInject */
+        function doLogout(AuthService) {
+            AuthService.logout();
+        }
 
         dealPrepService.$inject = ['DealService'];
         /* @ngInject */
@@ -131,17 +136,11 @@
             return DealService.getDeals();
         }
 
-        // categoryPrepService.$inject = ['CategoryService'];
-        // /* @ngInject */
-        // function categoryPrepService(CategoryService) {
-        //     return CategoryService.getCategories();
-        // }
-
-        // tagPrepService.$inject = ['TagService'];
-        // /* @ngInject */
-        // function tagPrepService(TagService) {
-        //     return TagService.getTags();
-        // }
+        prepDealId.$inject = ['$stateParams'];
+        /* @ngInject */
+        function prepDealId($stateParams) {
+            return $stateParams.id;
+        }
     }
 
 })();

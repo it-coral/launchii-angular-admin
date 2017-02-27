@@ -14,12 +14,19 @@
             isAuthenticated: isAuthenticated,
             createAuthUser: createAuthUser,
             destroyAuthUser: destroyAuthUser,
-            getAuthUser: getAuthUser
+            getAuthUser: getAuthUser,
+            logout: logout
         }
 
         return service;
 
         ////////////////
+
+        function logout() {
+            $auth.logout().then(function() {
+                destroyAuthUser();
+            });
+        }
 
         function login(email, password) {
             var d = $q.defer();
@@ -30,7 +37,9 @@
             }
 
             $auth.login(credentials).then(function(data) {
-                return $http.get('api/authenticate/user');
+                console.log(data);
+                return data;
+                //return $http.get('api/authenticate/user');
             }, function(error) {
                 service.errors = error.data.error;
                 d.reject(service.errors);
@@ -54,17 +63,6 @@
         }
 
         function isAuthenticated() {
-            /*
-            if (localStorage.getItem('user') != 'undefined') {
-                var user = JSON.parse(localStorage.getItem('user'));
-
-                if (user && $auth.isAuthenticated()) {
-                    return true;
-                }
-            }
-
-            return false;*/
-
             var d = $q.defer();
             var $state = $injector.get('$state');
             if ($auth.isAuthenticated()) {
