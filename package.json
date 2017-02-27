@@ -1,12 +1,13 @@
 {
-    "name": "Launchii Admin",
+    "name": "launchii-admin",
+    "description": "Angular app for Launchii Admin",
     "license": "MIT",
     "branchVersion": "^1.6.0",
     "branchPattern": "1.7.*",
     "distTag": "next",
     "repository": {
         "type": "git",
-        "url": "https://github.com/angular/angular.js.git"
+        "url": "https://github.com/launchii/angular-admin"
     },
     "engines": {
         "node": "^6.9.1",

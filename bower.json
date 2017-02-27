@@ -1,6 +1,10 @@
 {
-    "name": "Launchii Admin",
-    "description": "",
+    "name": "launchii-admin",
+    "description": "Angular app for Launchii Admin",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/launchii/angular-admin"
+    },
     "main": "",
     "license": "MIT",
     "homepage": "",
