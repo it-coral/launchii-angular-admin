@@ -1,0 +1,16 @@
+machine:
+  timezone:
+    America/Los_Angeles
+
+dependencies:
+  pre:
+    - npm install -g karma-cli
+  cache_directories:
+    - ~/nvm
+
+deployment:
+  production:
+    branch: master
+    heroku:
+        appname: launchii-admin
+
