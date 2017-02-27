@@ -2,12 +2,12 @@
     'use strict';
 
     angular.module('app')
-        .controller('DealAddController', DealAddController);
+        .controller('BrandAddController', BrandAddController);
 
-    DealAddController.$inject = ['DealService', '$scope'];
+    BrandAddController.$inject = ['BrandService', '$scope'];
 
     /* @ngInject */
-    function DealAddController(DealService, $scope) {
+    function BrandAddController(BrandService, $scope) {
         var vm = this;
 
         vm.mode = "Add";
@@ -16,23 +16,23 @@
         vm.isDone = false;
 
         vm.prevState = HelperService.getPrevState();
-        vm.submitAction = addDeal;
+        vm.submitAction = addBrand;
 
         ///////////////////
 
-        function addDeal() {
+        function addBrand() {
 
-            DealService.add(vm.form).then(function() {
+            BrandService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Added new deal.";
+                vm.response['msg'] = "Added new Brand.";
                 vm.isDone = true;
 
-                $scope.$parent.vm.getDeals();
+                $scope.$parent.vm.getBrands();
             }).catch(function() {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to add new deal.";
+                vm.response['msg'] = "Failed to add new Brand.";
                 vm.isDone = true;
             });
         }

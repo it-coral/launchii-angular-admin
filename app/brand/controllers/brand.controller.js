@@ -2,39 +2,39 @@
     'use strict';
 
     angular.module('app')
-        .controller('DealController', DealController);
+        .controller('BrandController', BrandController);
 
-    DealController.$inject = ['DealService', 'dealPrepService'];
+    BrandController.$inject = ['BrandService', 'brandPrepService'];
 
     /* @ngInject */
-    function DealController(DealService, dealPrepService) {
+    function BrandController(BrandService, brandPrepService) {
         var vm = this;
 
-        vm.deals = dealPrepService;
-        vm.getDeals = getDeals;
+        vm.brands = brandPrepService;
+        vm.getBrands = getBrands;
         vm.hasDeleted = false;
         vm.response = {};
-        vm.deleteDeal = deleteDeal;
+        vm.deleteBrand = deleteBrand;
 
         activate();
 
         ////////////////
 
         function activate() {
-            return getDeals();
+            return getBrands();
         }
 
-        function getDeals() {
-            return DealService.getAll().then(function(data) {
-                vm.deals = data;
-                return vm.deals;
+        function getBrands() {
+            return BrandService.getAll().then(function(data) {
+                vm.brands = data;
+                return vm.brands;
             });
         }
 
-        function deleteDeal(deal) {
+        function deleteBrand(brand) {
             bootbox.confirm({
                 title: "Confirm Delete",
-                message: "Are you sure you want to delete deal: <b>" + deal.title + "</b>?",
+                message: "Are you sure you want to delete brand: <b>" + brand.title + "</b>?",
                 buttons: {
                     confirm: {
                         label: 'Yes',
@@ -47,7 +47,7 @@
                 },
                 callback: function(result) {
                     if (result) {
-                        doDelete(deal.id);
+                        doDelete(brand.id);
                     }
                 }
             });
@@ -55,17 +55,17 @@
         }
 
         function doDelete(id) {
-            DealService.delete(id).then(function(resp) {
+            BrandService.delete(id).then(function(resp) {
                 vm.hasDeleted = true;
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
                 vm.response['msg'] = resp.data.message;
-                getDeals();
+                getBrands();
                 vm.hasAdded = true;
             }).catch(function() {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to delete deal.";
+                vm.response['msg'] = "Failed to delete brand.";
                 vm.hasAdded = true;
             });
         }

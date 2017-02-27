@@ -2,13 +2,13 @@
     'use strict';
 
     angular.module('app')
-        .factory('DealService', DealService);
+        .factory('BrandService', BrandService);
 
-    DealService.$inject = ['$http', 'CONST', '$q', 'HelperService'];
+    BrandService.$inject = ['$http', 'CONST', '$q'];
 
     /* @ngInject */
-    function DealService($http, CONST, $q, HelperService) {
-        var api = CONST.api_domain + 'deals/';
+    function BrandService($http, CONST, $q) {
+        var api = CONST.api_domain + 'brands/';
 
         var service = {
             lists: [],

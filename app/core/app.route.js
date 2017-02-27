@@ -107,12 +107,56 @@
                     controller: "DealEditController",
                     controllerAs: "vm",
                     resolve: {
-                        prepDealId: prepDealId
+                        prepSelDeal: prepSelDeal
                     }
                 }
             }
         };
 
+        var brand = {
+            name: "brand",
+            url: "/brand",
+            views: {
+                "main": {
+                    templateUrl: "./admin/app/brand/brand.html",
+                    controller: "BrandController",
+                    controllerAs: "vm",
+                    resolve: {
+                        brandPrepService: brandPrepService
+                    }
+                },
+                //"nav": nav
+            }
+        };
+
+        var brandAdd = {
+            name: "brand.add",
+            url: "/add",
+            parent: brand,
+            views: {
+                "page_body": {
+                    templateUrl: "./admin/app/brand/brand.add.html",
+                    controller: "BrandAddController",
+                    controllerAs: "vm"
+                }
+            }
+        };
+
+        var brandEdit = {
+            name: "brand.edit",
+            url: "/edit/:id",
+            parent: brand,
+            views: {
+                "page_body": {
+                    templateUrl: "./admin/app/brand/brand.add.html",
+                    controller: "BrandEditController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelBrand: prepSelBrand
+                    }
+                }
+            }
+        };
 
         ////////////
 
@@ -120,7 +164,12 @@
             .state(auth)
             .state(logout)
             .state(dashboard)
-            .state(deal);
+            .state(deal)
+            .state(dealAdd)
+            .state(dealEdit)
+            .state(brand)
+            .state(brandAdd)
+            .state(brandEdit);
 
         ////////////
 
@@ -133,13 +182,25 @@
         dealPrepService.$inject = ['DealService'];
         /* @ngInject */
         function dealPrepService(DealService) {
-            return DealService.getDeals();
+            return DealService.getAll();
         }
 
-        prepDealId.$inject = ['$stateParams'];
+        brandPrepService.$inject = ['BrandService'];
         /* @ngInject */
-        function prepDealId($stateParams) {
-            return $stateParams.id;
+        function brandPrepService(BrandService) {
+            return BrandService.getAll();
+        }
+
+        prepSelBrand.$inject = ['$stateParams', 'BrandService'];
+        /* @ngInject */
+        function prepSelBrand($stateParams, BrandService) {
+            return BrandService.find($stateParams.id);
+        }
+
+        prepSelDeal.$inject = ['$stateParams', 'DealService'];
+        /* @ngInject */
+        function prepSelDeal($stateParams, DealService) {
+            return DealService.find($stateParams.id);
         }
     }
 
