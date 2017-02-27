@@ -14,7 +14,7 @@
         var service = {
             navs: [],
             errors: [],
-            getNavs: getNavs
+            //getNavs: getNavs
         }
 
         return service;
@@ -22,6 +22,7 @@
         ////////////////
 
         function getNavs() {
+            /*
             var d = $q.defer();
 
             $http.get(api)
@@ -34,6 +35,7 @@
                 });
 
             return d.promise;
+            */
         }
     }
 
