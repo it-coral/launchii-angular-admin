@@ -14,17 +14,6 @@
 
         //////STATES//////
 
-        //admin navigation menu
-        /*
-        var nav = {
-            templateUrl: "./admin/app/nav/nav.html",
-            controller: "NavController",
-            controllerAs: "vm",
-            resolve: {
-                navPrepService: navPrepService
-            }
-        };
-        */
         var auth = {
             name: "auth",
             url: "/auth",
