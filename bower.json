@@ -18,8 +18,6 @@
   ],
   "dependencies": {
     "angular-auto-validate": "^1.19.6",
-    "ng-token-auth": "^0.0.29",
-    "angular-cookie": "^4.1.0",
-    "angular-cookies": "^1.6.2"
+    "angular": "^1.6.2"
   }
 }
