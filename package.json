@@ -19,7 +19,7 @@
         "test-i18n": "jasmine-node i18n/spec",
         "test-i18n-ucd": "jasmine-node i18n/ucd/spec",
         "grunt": "grunt",
-        "start": "node index.js"
+        "start": "node dist/all.js"
     },
     "devDependencies": {
         "angular-benchpress": "0.x.x",
