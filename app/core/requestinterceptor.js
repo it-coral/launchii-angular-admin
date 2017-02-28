@@ -4,7 +4,7 @@
     angular.module('app')
         .factory('myInterceptor', myInterceptor);
 
-    myInterceptor.$inject = ['$q','$rootScope','$injector','CONST'];
+    myInterceptor.$inject = ['$q', '$rootScope', '$injector', 'CONST'];
 
     /* @ngInject */
     function myInterceptor($q, $rootScope, $injector, CONST) {
@@ -16,27 +16,25 @@
 
         ////////////////
 
-        function request(config){
+        function request(config) {
             var d = $q.defer();
             var $state = $injector.get('$state');
-            
-            if(config.method != "GET"){
-                if($rootScope.authenticated){
+
+            if (config.method != "GET") {
+                if ($rootScope.authenticated) {
                     d.resolve(config);
-                }
-                else if(config.url == CONST.api_domain+'authenticate'){
+                } else if (config.url == CONST.api_domain + '/auth/sign_in') {
                     d.resolve(config);
-                }
-                else{
+                } else {
                     d.reject(config);
                     $state.go('auth');
                 }
-            }else{
+            } else {
                 d.resolve(config);
             }
-            
+
             return d.promise;
-            
+
         }
     }
 

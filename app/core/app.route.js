@@ -21,7 +21,10 @@
                 "login": {
                     templateUrl: "/app/login/login.html",
                     controller: "LoginController",
-                    controllerAs: "vm"
+                    controllerAs: "vm",
+                    resolve: {
+                        styleSheets: loginStyleSheets
+                    }
                 }
             }
         };
@@ -50,7 +53,7 @@
                     controller: "DashboardController",
                     controllerAs: "vm",
                     resolve: {
-                        //usersPrepService: usersPrepService
+                        styleSheets: dashboardStyleSheets
                     }
                 },
                 //"nav": nav
@@ -161,6 +164,23 @@
             .state(brandEdit);
 
         ////////////
+
+        loginStyleSheets.$inject = ['HelperService'];
+        /* @ngInject */
+        function loginStyleSheets(HelperService) {
+            var css = ['/templates/assets/pages/css/login.min.css'];
+            HelperService.setCss(css);
+        }
+
+        dashboardStyleSheets.$inject = ['HelperService'];
+        /* @ngInject */
+        function dashboardStyleSheets(HelperService) {
+            var css = ['/templates/assets/layouts/layout/css/layout.min.css',
+                '/templates/assets/layouts/layout/css/themes/darkblue.min.css',
+                '/templates/assets/layouts/layout/css/custom.min.css'
+            ];
+            HelperService.setCss(css);
+        }
 
         doLogout.$inject = ['AuthService'];
         /* @ngInject */

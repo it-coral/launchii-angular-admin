@@ -20,7 +20,6 @@
         function login() {
 
             AuthService.login(vm.form).then(function(response) {
-                console.log(response);
                 $state.go('dashboard');
             }, function(error) {
                 vm.loginError = true;

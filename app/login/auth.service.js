@@ -4,10 +4,10 @@
     angular.module('app')
         .factory('AuthService', AuthService);
 
-    AuthService.$inject = ['$auth', '$rootScope', '$http', '$q', '$injector'];
+    AuthService.$inject = ['$auth', '$rootScope', '$http', '$q', '$injector', '$state'];
 
     /* @ngInject */
-    function AuthService($auth, $rootScope, $http, $q, $injector) {
+    function AuthService($auth, $rootScope, $http, $q, $injector, $state) {
         var service = {
             login: login,
             errors: [],
@@ -121,6 +121,7 @@
             localStorage.removeItem('user');
             $rootScope.authenticated = false;
             $rootScope.currentUser = null;
+            $state.go('auth');
         }
 
         function getAuthUser() {

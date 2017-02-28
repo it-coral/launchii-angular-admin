@@ -4,7 +4,7 @@
     angular.module('app')
         .controller('DashboardController', DashboardController);
 
-    //DashboardController.$inject = ['UserService', 'usersPrepService'];
+    //DashboardController.$inject = ['HelperService'];
 
     /* @ngInject */
     function DashboardController() {

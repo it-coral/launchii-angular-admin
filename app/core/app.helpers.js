@@ -4,22 +4,28 @@
     angular.module('app')
         .factory('HelperService', HelperService);
 
-    HelperService.$inject = ['$state'];
+    HelperService.$inject = ['$state', '$rootScope'];
 
     /* @ngInject */
-    function HelperService($state) {
+    function HelperService($state, $rootScope) {
         var service = {
             getCurrentState: getCurrentState,
             getPrevState: getPrevState,
             removeFromList: removeFromList,
             addToList: addToList,
             refreshList: refreshList,
-            emptyList: emptyList
+            emptyList: emptyList,
+            setCss: setCss
         }
 
         return service;
 
         ////////////////
+        //css is an array e.g. ['/templates/assets/layouts/layout/css/layout.min.css']
+        function setCss(css) {
+            $rootScope.stylesheets = [];
+            $rootScope.stylesheets = css;
+        }
 
         function getCurrentState() {
             return $state;

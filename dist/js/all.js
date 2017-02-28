@@ -1373,7 +1373,7 @@ window.isEmpty = function(obj) {
 
         //$httpProvider.defaults.withCredentials = true;
         $resourceProvider.defaults.stripTrailingSlashes = false;
-        //$httpProvider.interceptors.push('myInterceptor');
+        $httpProvider.interceptors.push('myInterceptor');
     }
 
     // csrf.$inject = ['$http', '$cookies'];
@@ -1445,7 +1445,10 @@ window.isEmpty = function(obj) {
                 "login": {
                     templateUrl: "/app/login/login.html",
                     controller: "LoginController",
-                    controllerAs: "vm"
+                    controllerAs: "vm",
+                    resolve: {
+                        styleSheets: loginStyleSheets
+                    }
                 }
             }
         };
@@ -1474,7 +1477,7 @@ window.isEmpty = function(obj) {
                     controller: "DashboardController",
                     controllerAs: "vm",
                     resolve: {
-                        //usersPrepService: usersPrepService
+                        styleSheets: dashboardStyleSheets
                     }
                 },
                 //"nav": nav
@@ -1586,6 +1589,23 @@ window.isEmpty = function(obj) {
 
         ////////////
 
+        loginStyleSheets.$inject = ['HelperService'];
+        /* @ngInject */
+        function loginStyleSheets(HelperService) {
+            var css = ['/templates/assets/pages/css/login.min.css'];
+            HelperService.setCss(css);
+        }
+
+        dashboardStyleSheets.$inject = ['HelperService'];
+        /* @ngInject */
+        function dashboardStyleSheets(HelperService) {
+            var css = ['/templates/assets/layouts/layout/css/layout.min.css',
+                '/templates/assets/layouts/layout/css/themes/darkblue.min.css',
+                '/templates/assets/layouts/layout/css/custom.min.css'
+            ];
+            HelperService.setCss(css);
+        }
+
         doLogout.$inject = ['AuthService'];
         /* @ngInject */
         function doLogout(AuthService) {
@@ -1624,7 +1644,7 @@ window.isEmpty = function(obj) {
     angular.module('app')
         .factory('myInterceptor', myInterceptor);
 
-    myInterceptor.$inject = ['$q','$rootScope','$injector','CONST'];
+    myInterceptor.$inject = ['$q', '$rootScope', '$injector', 'CONST'];
 
     /* @ngInject */
     function myInterceptor($q, $rootScope, $injector, CONST) {
@@ -1636,27 +1656,25 @@ window.isEmpty = function(obj) {
 
         ////////////////
 
-        function request(config){
+        function request(config) {
             var d = $q.defer();
             var $state = $injector.get('$state');
-            
-            if(config.method != "GET"){
-                if($rootScope.authenticated){
+
+            if (config.method != "GET") {
+                if ($rootScope.authenticated) {
                     d.resolve(config);
-                }
-                else if(config.url == CONST.api_domain+'authenticate'){
+                } else if (config.url == CONST.api_domain + '/auth/sign_in') {
                     d.resolve(config);
-                }
-                else{
+                } else {
                     d.reject(config);
                     $state.go('auth');
                 }
-            }else{
+            } else {
                 d.resolve(config);
             }
-            
+
             return d.promise;
-            
+
         }
     }
 
@@ -1667,22 +1685,28 @@ window.isEmpty = function(obj) {
     angular.module('app')
         .factory('HelperService', HelperService);
 
-    HelperService.$inject = ['$state'];
+    HelperService.$inject = ['$state', '$rootScope'];
 
     /* @ngInject */
-    function HelperService($state) {
+    function HelperService($state, $rootScope) {
         var service = {
             getCurrentState: getCurrentState,
             getPrevState: getPrevState,
             removeFromList: removeFromList,
             addToList: addToList,
             refreshList: refreshList,
-            emptyList: emptyList
+            emptyList: emptyList,
+            setCss: setCss
         }
 
         return service;
 
         ////////////////
+        //css is an array e.g. ['/templates/assets/layouts/layout/css/layout.min.css']
+        function setCss(css) {
+            $rootScope.stylesheets = [];
+            $rootScope.stylesheets = css;
+        }
 
         function getCurrentState() {
             return $state;
@@ -1802,10 +1826,10 @@ window.isEmpty = function(obj) {
     angular.module('app')
         .factory('AuthService', AuthService);
 
-    AuthService.$inject = ['$auth', '$rootScope', '$http', '$q', '$injector'];
+    AuthService.$inject = ['$auth', '$rootScope', '$http', '$q', '$injector', '$state'];
 
     /* @ngInject */
-    function AuthService($auth, $rootScope, $http, $q, $injector) {
+    function AuthService($auth, $rootScope, $http, $q, $injector, $state) {
         var service = {
             login: login,
             errors: [],
@@ -1919,6 +1943,7 @@ window.isEmpty = function(obj) {
             localStorage.removeItem('user');
             $rootScope.authenticated = false;
             $rootScope.currentUser = null;
+            $state.go('auth');
         }
 
         function getAuthUser() {
@@ -1953,7 +1978,6 @@ window.isEmpty = function(obj) {
         function login() {
 
             AuthService.login(vm.form).then(function(response) {
-                console.log(response);
                 $state.go('dashboard');
             }, function(error) {
                 vm.loginError = true;
@@ -1968,7 +1992,7 @@ window.isEmpty = function(obj) {
     angular.module('app')
         .controller('DashboardController', DashboardController);
 
-    //DashboardController.$inject = ['UserService', 'usersPrepService'];
+    //DashboardController.$inject = ['HelperService'];
 
     /* @ngInject */
     function DashboardController() {

@@ -20,7 +20,7 @@
 
         //$httpProvider.defaults.withCredentials = true;
         $resourceProvider.defaults.stripTrailingSlashes = false;
-        //$httpProvider.interceptors.push('myInterceptor');
+        $httpProvider.interceptors.push('myInterceptor');
     }
 
     // csrf.$inject = ['$http', '$cookies'];

@@ -324,7 +324,7 @@
                 <li class="dropdown dropdown-user">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                         <img alt="" class="img-circle" src="/templates/assets/layouts/layout/img/avatar3_small.jpg">
-                        <span class="username username-hide-on-mobile"> Nick </span>
+                        <span class="username username-hide-on-mobile"> {{$root.currentUser.name}} </span>
                         <i class="fa fa-angle-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-default">
@@ -354,7 +354,7 @@
                                 <i class="icon-lock"></i> Lock Screen </a>
                         </li>
                         <li>
-                            <a href="page_user_login_1.html">
+                            <a ui-sref="logout">
                                 <i class="icon-key"></i> Log Out </a>
                         </li>
                     </ul>
@@ -363,7 +363,7 @@
                 <!-- BEGIN QUICK SIDEBAR TOGGLER -->
                 <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
                 <li class="dropdown dropdown-quick-sidebar-toggler">
-                    <a href="javascript:;" class="dropdown-toggle">
+                    <a ui-sref="logout" class="dropdown-toggle">
                         <i class="icon-logout"></i>
                     </a>
                 </li>
