@@ -18,7 +18,7 @@
             name: "auth",
             url: "/auth",
             views: {
-                "main": {
+                "login": {
                     templateUrl: "/app/login/login.html",
                     controller: "LoginController",
                     controllerAs: "vm"

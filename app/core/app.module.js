@@ -1,10 +1,10 @@
-(function(){
+(function() {
     'use strict';
-    
-    angular.module('app',[
+
+    angular.module('app', [
         /* Shared modules */
         'app.core',
-        
+
         /* Features */
     ]);
 })();
