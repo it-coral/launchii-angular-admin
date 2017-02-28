@@ -28,22 +28,48 @@
             });
         }
 
-        function login(email, password) {
+        function login(credentials) {
             var d = $q.defer();
 
-            var credentials = {
-                email: email,
-                password: password
-            }
+            // var credentials = {
+            //     email: email,
+            //     password: password
+            // }
+
+            // $auth.submitLogin(credentials).then(function(response) {
+            //     console.log(response);
+            //     if (typeof response === 'undefined' || response === false) {
+            //         d.reject();
+            //     } else {
+            //         var user = JSON.stringify(response.data.user);
+
+            //         localStorage.setItem('user', user);
+            //         $rootScope.authenticated = true;
+            //         $rootScope.currentUser = response.data.user;
+
+            //         d.resolve(response);
+            //     }
+            // }).catch(function(err) {
+            //     console.log(err);
+            //     service.errors = err.errors;
+            //     d.reject(service.errors);
+            //     //throw (service.errors);
+            //     d.reject();
+            // });
+
 
             $auth.login(credentials).then(function(data) {
-                console.log(data);
+                var headers = data.headers();
+
+                //console.log(headers["access-token"]);
+                $auth.setToken(headers["access-token"]);
                 return data;
                 //return $http.get('api/authenticate/user');
-            }, function(error) {
-                service.errors = error.data.error;
-                d.reject(service.errors);
-                throw (service.errors);
+            }, function(err) {
+                console.log(err);
+                service.errors = err;
+                d.reject(err);
+                throw (err);
             }).then(function(response) {
                 if (typeof response === 'undefined' || response === false) {
                     d.reject();
@@ -59,6 +85,12 @@
 
             });
 
+            // $auth.login(credentials).then(function(r) {
+            //     console.log(r);
+            // }).catch(function(e) {
+            //     console.log(e)
+            // });
+
             return d.promise;
         }
 
@@ -66,6 +98,7 @@
             var d = $q.defer();
             var $state = $injector.get('$state');
             if ($auth.isAuthenticated()) {
+                //if ($auth.validateUser()) {
                 d.resolve();
             } else {
                 d.reject();
@@ -84,6 +117,7 @@
         }
 
         function destroyAuthUser() {
+            $auth.logout();
             localStorage.removeItem('user');
             $rootScope.authenticated = false;
             $rootScope.currentUser = null;

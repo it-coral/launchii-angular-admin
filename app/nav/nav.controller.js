@@ -4,31 +4,19 @@
     angular.module('app')
         .controller('NavController', NavController);
 
-    NavController.$inject = ['$auth', '$rootScope', 'NavService']
+    NavController.$inject = ['$auth', '$rootScope', '$state', 'NavService']
 
     /* @ngInject */
-    function NavController($auth, $rootScope, NavService) {
+    function NavController($auth, $rootScope, $state, NavService) {
         var vm = this;
 
         vm.navs = [];
-        vm.getNavs = getNavs;
-
-        activate();
+        //vm.isState = isState;
 
         /////////////
 
-        function activate() {
-            return getNavs();
-        }
-
-        function getNavs() {
-            /*
-            return NavService.getNavs().then(function(data) {
-                vm.navs = data;
-
-                return vm.navs;
-            });
-            */
-        }
+        // function isState(stateName) {
+        //     $state.includes(stateName);
+        // }
     }
 })();

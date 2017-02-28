@@ -1,22 +1,25 @@
 {
-    "name": "launchii-admin",
-    "description": "Angular app for Launchii Admin",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/launchii/angular-admin"
-    },
-    "main": "",
-    "license": "MIT",
-    "homepage": "",
-    "private": true,
-    "ignore": [
-        "**/.*",
-        "node_modules",
-        "bower_components",
-        "test",
-        "tests"
-    ],
-    "dependencies": {
-        "angular-auto-validate": "^1.19.6"
-    }
+  "name": "launchii-admin",
+  "description": "Angular app for Launchii Admin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/launchii/angular-admin"
+  },
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-auto-validate": "^1.19.6",
+    "ng-token-auth": "^0.0.29",
+    "angular-cookie": "^4.1.0",
+    "angular-cookies": "^1.6.2"
+  }
 }

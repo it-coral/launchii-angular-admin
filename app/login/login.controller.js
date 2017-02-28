@@ -10,15 +10,17 @@
     function LoginController(AuthService, $state) {
         var vm = this;
 
-        vm.email = "";
-        vm.password = "";
+        //vm.email = "";
+        //vm.password = "";
+        vm.form;
         vm.login = login;
 
         ///////////
 
         function login() {
 
-            AuthService.login(vm.email, vm.password).then(function(response) {
+            AuthService.login(vm.form).then(function(response) {
+                console.log(response);
                 $state.go('dashboard');
             }, function(error) {
                 vm.loginError = true;

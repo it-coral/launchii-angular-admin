@@ -10,10 +10,24 @@
     /* @ngInject */
     function config($authProvider, $resourceProvider, $httpProvider, CONST) {
 
-        $authProvider.loginUrl = CONST.api_domain + 'auth/sign_in';
+        $authProvider.loginUrl = CONST.api_domain + '/auth/sign_in';
+        //$authProvider.tokenHeader = 'Access-Token';
+        //$authProvider.withCredentials = true;
+        // $authProvider.configure({
+        //     apiUrl: CONST.api_domain
+        //         //validateOnPageLoad: false
+        // });
+
+        //$httpProvider.defaults.withCredentials = true;
         $resourceProvider.defaults.stripTrailingSlashes = false;
-        $httpProvider.interceptors.push('myInterceptor');
+        //$httpProvider.interceptors.push('myInterceptor');
     }
+
+    // csrf.$inject = ['$http', '$cookies'];
+    // /* @ngInject */
+    // function csrf($http, $cookies) {
+    //     $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+    // }
 
     run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite'];
     /* @ngInject */
@@ -25,6 +39,7 @@
             if (localStorage.getItem('user') != 'undefined') {
                 var user = JSON.parse(localStorage.getItem('user'));
                 if (user && $auth.isAuthenticated()) {
+                    //if (user && $auth.validateUser()) {
                     $rootScope.authenticated = true;
                     $rootScope.currentUser = user;
 

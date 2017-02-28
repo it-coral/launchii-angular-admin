@@ -4,7 +4,9 @@
     angular.module('app.core', [
         'ngResource',
         'ui.router',
+        //'ngCookies',
         'satellizer',
+        //'ng-token-auth',
         'jcs-autoValidate',
         'ngProgressLite'
     ]);
