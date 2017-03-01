@@ -54,7 +54,6 @@
                     //params: {id: id}
                 })
                 .then(function(data) {
-                    console.log(data.data);
                     var brand = data.data;
                     brand["facebook"] = brand.facebook_url;
                     brand["twitter"] = brand.twitter_url;
