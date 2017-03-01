@@ -942,10 +942,12 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     angular.module('app')
         .factory('AuthService', AuthService);
 
-    AuthService.$inject = ['$auth', '$rootScope', '$http', '$q', '$injector', '$state'];
+    AuthService.$inject = ['$auth', '$rootScope', '$http', '$q', '$injector', '$state', 'CONST'];
 
     /* @ngInject */
-    function AuthService($auth, $rootScope, $http, $q, $injector, $state) {
+    function AuthService($auth, $rootScope, $http, $q, $injector, $state, CONST) {
+        var api = CONST.api_domain;
+
         var service = {
             login: login,
             errors: [],
@@ -962,7 +964,11 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         function logout() {
             $auth.logout().then(function() {
-                destroyAuthUser();
+                destroyAuthUser().then(function() {
+                    $state.go('auth');
+                }).catch(function() {
+                    console.error("Can't logout user. Something went wrong.");
+                });
             });
         }
 
@@ -999,15 +1005,15 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             $auth.login(credentials).then(function(data) {
                 var headers = data.headers();
 
-                //console.log(headers["access-token"]);
                 $auth.setToken(headers["access-token"]);
+                localStorage.setItem("access-client", headers["client"]);
+                localStorage.setItem("access-token", headers["access-token"]);
+
                 return data;
-                //return $http.get('api/authenticate/user');
+
             }, function(err) {
                 console.log(err);
-                service.errors = err;
                 d.reject(err);
-                throw (err);
             }).then(function(response) {
                 if (typeof response === 'undefined' || response === false) {
                     d.reject();
@@ -1055,11 +1061,36 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         }
 
         function destroyAuthUser() {
-            $auth.logout();
-            localStorage.removeItem('user');
-            $rootScope.authenticated = false;
-            $rootScope.currentUser = null;
-            $state.go('auth');
+            var d = $q.defer();
+
+            var url = api + '/auth/sign_out';
+            var client = localStorage.getItem('access-client');
+            var uid = $rootScope.currentUser.email;
+            var token = localStorage.getItem('access-token');
+
+            var params = {};
+            params['uid'] = uid;
+            params['access-token'] = token;
+            params['client'] = client;
+
+            var data = { params };
+
+            $http.delete(url, data)
+                .then(function(resp) {
+                    $auth.logout();
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('access-client');
+                    localStorage.removeItem('access-token');
+                    $rootScope.authenticated = false;
+                    $rootScope.currentUser = null;
+                    d.resolve(true);
+
+                }).catch(function(error) {
+                    console.log(error);
+                    d.reject(false);
+                });
+
+            return d.promise;
         }
 
         function getAuthUser() {
