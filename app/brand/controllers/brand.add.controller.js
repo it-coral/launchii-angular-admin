@@ -4,10 +4,10 @@
     angular.module('app')
         .controller('BrandAddController', BrandAddController);
 
-    BrandAddController.$inject = ['BrandService', '$scope'];
+    BrandAddController.$inject = ['BrandService', '$scope', 'HelperService', '$state'];
 
     /* @ngInject */
-    function BrandAddController(BrandService, $scope) {
+    function BrandAddController(BrandService, $scope, HelperService, $state) {
         var vm = this;
 
         vm.mode = "Add";
@@ -21,6 +21,8 @@
         ///////////////////
 
         function addBrand() {
+            vm.form.logo_image = "default.png"; //temporary
+            vm.form.brand_image = "default.png"; //temporary
 
             BrandService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
@@ -29,7 +31,7 @@
                 vm.isDone = true;
 
                 $scope.$parent.vm.getBrands();
-            }).catch(function() {
+            }).catch(function(errors) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add new Brand.";

@@ -10,13 +10,14 @@
     function BrandController(BrandService, brandPrepService) {
         var vm = this;
 
-        vm.brands = brandPrepService;
+        vm.prepBrands = brandPrepService;
+        vm.brands = vm.prepBrands.brands;
         vm.getBrands = getBrands;
         vm.hasDeleted = false;
         vm.response = {};
         vm.deleteBrand = deleteBrand;
 
-        activate();
+        //activate();
 
         ////////////////
 
@@ -26,7 +27,8 @@
 
         function getBrands() {
             return BrandService.getAll().then(function(data) {
-                vm.brands = data;
+                vm.prepBrands = data;
+                vm.brands = vm.prepBrands.brands;
                 return vm.brands;
             });
         }
@@ -34,7 +36,7 @@
         function deleteBrand(brand) {
             bootbox.confirm({
                 title: "Confirm Delete",
-                message: "Are you sure you want to delete brand: <b>" + brand.title + "</b>?",
+                message: "Are you sure you want to delete brand: <b>" + brand.name + "</b>?",
                 buttons: {
                     confirm: {
                         label: 'Yes',
@@ -47,7 +49,7 @@
                 },
                 callback: function(result) {
                     if (result) {
-                        doDelete(brand.id);
+                        doDelete(brand.uid);
                     }
                 }
             });

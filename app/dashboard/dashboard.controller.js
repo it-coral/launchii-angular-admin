@@ -11,6 +11,7 @@
         var vm = this;
 
         //vm.users = usersPrepService;
+
         vm.getUsers = getUsers;
 
         activate();
@@ -18,7 +19,11 @@
         //////////////
 
         function activate() {
-            //return getUsers();
+            vm.page_title = "Dashboard";
+        }
+
+        function setPageTitle(title) {
+            HelperService.setPageTitle(title);
         }
 
         function getUsers() {

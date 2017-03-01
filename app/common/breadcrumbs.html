@@ -1,7 +1,7 @@
 <!-- BEGIN PAGE BAR -->
 <div class="page-bar">
     <ul class="page-breadcrumb">
-        <li ng-repeat="crumb in $root.breadcrumbs">
+        <li ng-repeat="crumb in crumbs">
             <a ui-sref="crumb">{{crumb}}</a>
             <i class="fa fa-circle" ng-if="!$last"></i>
         </li>

@@ -33,11 +33,12 @@
             name: "logout",
             url: "/logout",
             views: {
-                "main": {
+                "login": {
                     templateUrl: "/app/login/login.html",
                     controller: "LoginController",
                     controllerAs: "vm",
                     resolve: {
+                        styleSheets: loginStyleSheets,
                         doLogout: doLogout
                     }
                 }
@@ -60,11 +61,58 @@
             }
         };
 
-        var deal = {
-            name: "deal",
-            url: "/deal",
+        var brand = {
+            name: "dashboard.brand",
+            url: "brand",
+            parent: dashboard,
             views: {
-                "main": {
+                "main_body": {
+                    templateUrl: "/app/brand/brand.html",
+                    controller: "BrandController",
+                    controllerAs: "vm",
+                    resolve: {
+                        brandPrepService: brandPrepService
+                    }
+                },
+                //"nav": nav
+            }
+        };
+
+        var brandAdd = {
+            name: "dashboard.brand.add",
+            url: "/add",
+            parent: brand,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/brand/brand.add.html",
+                    controller: "BrandAddController",
+                    controllerAs: "vm"
+                }
+            }
+        };
+
+        var brandEdit = {
+            name: "dashboard.brand.edit",
+            url: "/edit/:id",
+            parent: brand,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/brand/brand.add.html",
+                    controller: "BrandEditController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelBrand: prepSelBrand
+                    }
+                }
+            }
+        };
+
+        var deal = {
+            name: "dashboard.deal",
+            url: "/deal",
+            parent: dashboard,
+            views: {
+                "main_body": {
                     templateUrl: "/app/deals/deal.html",
                     controller: "DealController",
                     controllerAs: "vm",
@@ -100,51 +148,6 @@
                     controllerAs: "vm",
                     resolve: {
                         prepSelDeal: prepSelDeal
-                    }
-                }
-            }
-        };
-
-        var brand = {
-            name: "brand",
-            url: "/brand",
-            views: {
-                "main": {
-                    templateUrl: "/app/brand/brand.html",
-                    controller: "BrandController",
-                    controllerAs: "vm",
-                    resolve: {
-                        brandPrepService: brandPrepService
-                    }
-                },
-                //"nav": nav
-            }
-        };
-
-        var brandAdd = {
-            name: "brand.add",
-            url: "/add",
-            parent: brand,
-            views: {
-                "page_body": {
-                    templateUrl: "/app/brand/brand.add.html",
-                    controller: "BrandAddController",
-                    controllerAs: "vm"
-                }
-            }
-        };
-
-        var brandEdit = {
-            name: "brand.edit",
-            url: "/edit/:id",
-            parent: brand,
-            views: {
-                "page_body": {
-                    templateUrl: "/app/brand/brand.add.html",
-                    controller: "BrandEditController",
-                    controllerAs: "vm",
-                    resolve: {
-                        prepSelBrand: prepSelBrand
                     }
                 }
             }

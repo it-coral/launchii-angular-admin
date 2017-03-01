@@ -4,11 +4,11 @@
     angular.module('app')
         .factory('BrandService', BrandService);
 
-    BrandService.$inject = ['$http', 'CONST', '$q'];
+    BrandService.$inject = ['$http', 'CONST', '$q', '$rootScope'];
 
     /* @ngInject */
-    function BrandService($http, CONST, $q) {
-        var api = CONST.api_domain + 'brands/';
+    function BrandService($http, CONST, $q, $rootScope) {
+        var api = CONST.api_domain + '/admin/brands';
 
         var service = {
             lists: [],
@@ -27,12 +27,17 @@
         function getAll() {
             var d = $q.defer();
 
-            $http.get(api)
+            var req = {
+                method: 'GET',
+                url: api
+            };
+
+            $http(req)
                 .then(function(data) {
                     d.resolve(data.data);
                 })
                 .catch(function(error) {
-                    //console.log(error.data);
+                    console.log(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -42,14 +47,19 @@
 
         function find(id) {
             var d = $q.defer();
-
+            var url = api + '/' + id;
             $http({
                     method: 'GET',
-                    url: api + id,
+                    url: url,
                     //params: {id: id}
                 })
                 .then(function(data) {
-                    d.resolve(data.data);
+                    console.log(data.data);
+                    var brand = data.data;
+                    brand["facebook"] = brand.facebook_url;
+                    brand["twitter"] = brand.twitter_url;
+                    brand["instagram"] = brand.instagram_url;
+                    d.resolve(brand);
                 })
                 .catch(function(error) {
                     service.errors = error;
@@ -60,30 +70,30 @@
         }
 
         function add(data) {
-            var url = api + "add/";
+            var url = api;
             var d = $q.defer();
 
             $http.post(url, data)
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error.data);
+                    console.log(error);
                     service.errors = error;
-                    d.reject(error);
+                    d.reject(error.data.errors);
                 });
 
             return d.promise;
         }
 
-        function edit(data) {
-            var url = api + "edit/";
+        function edit(id, data) {
+            var url = api + "/" + id;
             var d = $q.defer();
 
-            $http.post(url, data)
+            $http.patch(url, data)
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error.data);
+                    console.log(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -92,14 +102,14 @@
         }
 
         function _delete(id) {
-            var url = api + "delete/" + id;
+            var url = api + "/" + id;
             var d = $q.defer();
 
-            $http.post(url, {})
+            $http.delete(url, {})
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error.data);
+                    console.log(error);
                     service.errors = error;
                     d.reject(error);
                 });

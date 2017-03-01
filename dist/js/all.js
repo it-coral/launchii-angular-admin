@@ -472,14 +472,17 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
     angular.module('app')
         .config(config)
-        .run(run);
+        .run(run)
+        .run(customHeaders);
 
     config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST'];
 
     /* @ngInject */
     function config($authProvider, $resourceProvider, $httpProvider, CONST) {
-
+        Layout.init();
         $authProvider.loginUrl = CONST.api_domain + '/auth/sign_in';
+        $authProvider.tokenHeader = 'access-token';
+        $authProvider.tokenType = '';
         //$authProvider.tokenHeader = 'Access-Token';
         //$authProvider.withCredentials = true;
         // $authProvider.configure({
@@ -498,16 +501,40 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     //     $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
     // }
 
-    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite'];
+    customHeaders.$inject = ["$http"];
     /* @ngInject */
-    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite) {
+    function customHeaders($http) {
+        var headers = {};
+
+        if (localStorage.getItem("access-token") !== null) {
+            headers["access-token"] = localStorage.getItem("access-token");
+            headers["client"] = localStorage.getItem("client");
+            headers["cache-control"] = localStorage.getItem("cache-control");
+            headers["content-type"] = localStorage.getItem("content-type");
+            headers["expiry"] = localStorage.getItem("expiry");
+            headers["token-type"] = localStorage.getItem("token-type");
+            headers["uid"] = localStorage.getItem("uid");
+        }
+
+        $http.defaults.headers.common = headers;
+    }
+
+    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService'];
+    /* @ngInject */
+    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService) {
         bootstrap3ElementModifier.enableValidationStateIcons(true);
+        var curr_state_name = $state.current.name;
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
             ngProgressLite.start();
+
+
+            //$rootScope.breadcrumbs = curr_state_name.split(".");
+
             if (localStorage.getItem('user') != 'undefined') {
                 var user = JSON.parse(localStorage.getItem('user'));
                 if (user && $auth.isAuthenticated()) {
+                    AuthService.setHeaders();
                     //if (user && $auth.validateUser()) {
                     $rootScope.authenticated = true;
                     $rootScope.currentUser = user;
@@ -517,14 +544,20 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                         $state.go('dashboard');
                     }
                 } else {
-                    localStorage.removeItem('user');
-                    $rootScope.authenticated = false;
-                    $rootScope.currentUser = null;
+                    AuthService.destroyAuthUser().then(function() {
+                        if (toState.name !== "auth") {
+                            event.preventDefault();
+                            $state.go('auth');
+                        }
+                    });
+                    // localStorage.removeItem('user');
+                    // $rootScope.authenticated = false;
+                    // $rootScope.currentUser = null;
 
-                    if (toState.name !== "auth") {
-                        event.preventDefault();
-                        $state.go('auth');
-                    }
+                    // if (toState.name !== "auth") {
+                    //     event.preventDefault();
+                    //     $state.go('auth');
+                    // }
                 }
             }
         });
@@ -573,11 +606,12 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             name: "logout",
             url: "/logout",
             views: {
-                "main": {
+                "login": {
                     templateUrl: "/app/login/login.html",
                     controller: "LoginController",
                     controllerAs: "vm",
                     resolve: {
+                        styleSheets: loginStyleSheets,
                         doLogout: doLogout
                     }
                 }
@@ -600,11 +634,58 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             }
         };
 
-        var deal = {
-            name: "deal",
-            url: "/deal",
+        var brand = {
+            name: "dashboard.brand",
+            url: "brand",
+            parent: dashboard,
             views: {
-                "main": {
+                "main_body": {
+                    templateUrl: "/app/brand/brand.html",
+                    controller: "BrandController",
+                    controllerAs: "vm",
+                    resolve: {
+                        brandPrepService: brandPrepService
+                    }
+                },
+                //"nav": nav
+            }
+        };
+
+        var brandAdd = {
+            name: "dashboard.brand.add",
+            url: "/add",
+            parent: brand,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/brand/brand.add.html",
+                    controller: "BrandAddController",
+                    controllerAs: "vm"
+                }
+            }
+        };
+
+        var brandEdit = {
+            name: "dashboard.brand.edit",
+            url: "/edit/:id",
+            parent: brand,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/brand/brand.add.html",
+                    controller: "BrandEditController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelBrand: prepSelBrand
+                    }
+                }
+            }
+        };
+
+        var deal = {
+            name: "dashboard.deal",
+            url: "/deal",
+            parent: dashboard,
+            views: {
+                "main_body": {
                     templateUrl: "/app/deals/deal.html",
                     controller: "DealController",
                     controllerAs: "vm",
@@ -640,51 +721,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     controllerAs: "vm",
                     resolve: {
                         prepSelDeal: prepSelDeal
-                    }
-                }
-            }
-        };
-
-        var brand = {
-            name: "brand",
-            url: "/brand",
-            views: {
-                "main": {
-                    templateUrl: "/app/brand/brand.html",
-                    controller: "BrandController",
-                    controllerAs: "vm",
-                    resolve: {
-                        brandPrepService: brandPrepService
-                    }
-                },
-                //"nav": nav
-            }
-        };
-
-        var brandAdd = {
-            name: "brand.add",
-            url: "/add",
-            parent: brand,
-            views: {
-                "page_body": {
-                    templateUrl: "/app/brand/brand.add.html",
-                    controller: "BrandAddController",
-                    controllerAs: "vm"
-                }
-            }
-        };
-
-        var brandEdit = {
-            name: "brand.edit",
-            url: "/edit/:id",
-            parent: brand,
-            views: {
-                "page_body": {
-                    templateUrl: "/app/brand/brand.add.html",
-                    controller: "BrandEditController",
-                    controllerAs: "vm",
-                    resolve: {
-                        prepSelBrand: prepSelBrand
                     }
                 }
             }
@@ -812,12 +848,17 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             addToList: addToList,
             refreshList: refreshList,
             emptyList: emptyList,
-            setCss: setCss
+            setCss: setCss,
+            setPageTitle: setPageTitle
         }
 
         return service;
 
         ////////////////
+        function setPageTitle(title) {
+            $rootScope.page_title = title;
+        }
+
         //css is an array e.g. ['/templates/assets/layouts/layout/css/layout.min.css']
         function setCss(css) {
             $rootScope.stylesheets = [];
@@ -939,6 +980,52 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
+    angular
+        .module('app')
+        .directive('sidebarSection', sidebarSection);
+
+    function sidebarSection() {
+        var directive = {
+            restrict: 'E',
+            link: function(scope) {
+                Layout.init();
+            },
+            replace: true,
+            templateUrl: "/app/nav/sidebar.html",
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('breadCrumbs', breadCrumbs);
+
+    breadCrumbs.$inject = ['$rootScope', '$state'];
+    /* @ngInject */
+    function breadCrumbs($rootScope, $state) {
+        var directive = {
+            restrict: 'E',
+            link: function(scope) {
+                var curr_state_name = $state.current.name;
+                //$rootScope.breadcrumbs = curr_state_name.split(".");
+                //scope.crumbs = curr_state_name.split(".");
+            },
+            replace: true,
+            templateUrl: "/app/common/breadcrumbs.html",
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
     angular.module('app')
         .factory('AuthService', AuthService);
 
@@ -955,7 +1042,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             createAuthUser: createAuthUser,
             destroyAuthUser: destroyAuthUser,
             getAuthUser: getAuthUser,
-            logout: logout
+            logout: logout,
+            setHeaders: setHeaders
         }
 
         return service;
@@ -1006,14 +1094,20 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 var headers = data.headers();
 
                 $auth.setToken(headers["access-token"]);
-                localStorage.setItem("access-client", headers["client"]);
+
+                localStorage.setItem("client", headers["client"]);
                 localStorage.setItem("access-token", headers["access-token"]);
+                localStorage.setItem("cache-control", headers["cache-control"]);
+                localStorage.setItem("content-type", headers["content-type"]);
+                localStorage.setItem("expiry", headers["expiry"]);
+                localStorage.setItem("token-type", headers["token-type"]);
+                localStorage.setItem("uid", headers["uid"]);
 
                 return data;
 
             }, function(err) {
                 console.log(err);
-                d.reject(err);
+                d.reject(err.data.errors[0]);
             }).then(function(response) {
                 if (typeof response === 'undefined' || response === false) {
                     d.reject();
@@ -1063,32 +1157,37 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         function destroyAuthUser() {
             var d = $q.defer();
 
-            var url = api + '/auth/sign_out';
-            var client = localStorage.getItem('access-client');
-            var uid = $rootScope.currentUser.email;
-            var token = localStorage.getItem('access-token');
+            if (typeof $rootScope.currentUser != 'undefined' && $rootScope.currentUser != null) {
+                var url = api + '/auth/sign_out';
+                var client = localStorage.getItem('client');
+                var uid = $rootScope.currentUser.email;
+                var token = localStorage.getItem('access-token');
 
-            var params = {};
-            params['uid'] = uid;
-            params['access-token'] = token;
-            params['client'] = client;
+                var params = {};
+                params['uid'] = uid;
+                params['access-token'] = token;
+                params['client'] = client;
 
-            var data = { params };
+                var data = { params };
 
-            $http.delete(url, data)
-                .then(function(resp) {
-                    $auth.logout();
-                    localStorage.removeItem('user');
-                    localStorage.removeItem('access-client');
-                    localStorage.removeItem('access-token');
-                    $rootScope.authenticated = false;
-                    $rootScope.currentUser = null;
-                    d.resolve(true);
+                $http.delete(url, data)
+                    .then(function(resp) {
+                        $auth.logout();
+                        localStorage.clear();
+                        // localStorage.removeItem('user');
+                        // localStorage.removeItem('client');
+                        // localStorage.removeItem('access-token');
+                        $rootScope.authenticated = false;
+                        $rootScope.currentUser = null;
+                        d.resolve(true);
 
-                }).catch(function(error) {
-                    console.log(error);
-                    d.reject(false);
-                });
+                    }).catch(function(error) {
+                        console.log(error);
+                        d.reject(false);
+                    });
+            }
+
+            d.resolve(true);
 
             return d.promise;
         }
@@ -1099,6 +1198,22 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             }
 
             return null;
+        }
+
+        function setHeaders() {
+            var headers = {};
+
+            if (localStorage.getItem("access-token") !== null) {
+                headers["access-token"] = localStorage.getItem("access-token");
+                headers["client"] = localStorage.getItem("client");
+                headers["cache-control"] = localStorage.getItem("cache-control");
+                headers["content-type"] = localStorage.getItem("content-type");
+                headers["expiry"] = localStorage.getItem("expiry");
+                headers["token-type"] = localStorage.getItem("token-type");
+                headers["uid"] = localStorage.getItem("uid");
+            }
+
+            $http.defaults.headers.common = headers;
         }
     }
 
@@ -1146,6 +1261,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         var vm = this;
 
         //vm.users = usersPrepService;
+
         vm.getUsers = getUsers;
 
         activate();
@@ -1153,7 +1269,11 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         //////////////
 
         function activate() {
-            //return getUsers();
+            vm.page_title = "Dashboard";
+        }
+
+        function setPageTitle(title) {
+            HelperService.setPageTitle(title);
         }
 
         function getUsers() {
@@ -1164,56 +1284,293 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         }
     }
 })();
-(function(){
-    'use strict';
-    
-    angular.module('app')
-            .controller('UserController', UserController);
-    
-    UserController.$inject = ['CONST']
-    
-    function UserController(CONST){
-        
-    }
-    
-})();
 (function() {
     'use strict';
 
     angular.module('app')
-        .factory('UserService', UserService);
+        .factory('BrandService', BrandService);
 
-    UserService.$inject = ['$http', 'CONST', '$q'];
+    BrandService.$inject = ['$http', 'CONST', '$q', '$rootScope'];
 
     /* @ngInject */
-    function UserService($http, CONST, $q) {
-        var api = CONST.api_domain + 'user/';
-        var d = $q.defer();
+    function BrandService($http, CONST, $q, $rootScope) {
+        var api = CONST.api_domain + '/admin/brands';
 
         var service = {
-            users: [],
+            lists: [],
             errors: [],
-            getUsers: getUsers
+            add: add,
+            edit: edit,
+            delete: _delete,
+            getAll: getAll,
+            find: find
         }
 
         return service;
 
-        ////////////////
+        //////// SERIVCE METHODS ////////
 
-        function getUsers() {
+        function getAll() {
             var d = $q.defer();
 
-            $http.get(api)
+            var req = {
+                method: 'GET',
+                url: api
+            };
+
+            $http(req)
                 .then(function(data) {
                     d.resolve(data.data);
                 })
                 .catch(function(error) {
+                    console.log(error);
                     service.errors = error;
-                    d.reject();
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function find(id) {
+            var d = $q.defer();
+            var url = api + '/' + id;
+            $http({
+                    method: 'GET',
+                    url: url,
+                    //params: {id: id}
+                })
+                .then(function(data) {
+                    console.log(data.data);
+                    var brand = data.data;
+                    brand["facebook"] = brand.facebook_url;
+                    brand["twitter"] = brand.twitter_url;
+                    brand["instagram"] = brand.instagram_url;
+                    d.resolve(brand);
+                })
+                .catch(function(error) {
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function add(data) {
+            var url = api;
+            var d = $q.defer();
+
+            $http.post(url, data)
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error.data.errors);
+                });
+
+            return d.promise;
+        }
+
+        function edit(id, data) {
+            var url = api + "/" + id;
+            var d = $q.defer();
+
+            $http.patch(url, data)
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function _delete(id) {
+            var url = api + "/" + id;
+            var d = $q.defer();
+
+            $http.delete(url, {})
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
                 });
 
             return d.promise;
         }
     }
 
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('BrandAddController', BrandAddController);
+
+    BrandAddController.$inject = ['BrandService', '$scope', 'HelperService', '$state'];
+
+    /* @ngInject */
+    function BrandAddController(BrandService, $scope, HelperService, $state) {
+        var vm = this;
+
+        vm.mode = "Add";
+        vm.form = {};
+        vm.response = {};
+        vm.isDone = false;
+
+        vm.prevState = HelperService.getPrevState();
+        vm.submitAction = addBrand;
+
+        ///////////////////
+
+        function addBrand() {
+            vm.form.logo_image = "default.png"; //temporary
+            vm.form.brand_image = "default.png"; //temporary
+
+            BrandService.add(vm.form).then(function() {
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Added new Brand.";
+                vm.isDone = true;
+
+                $scope.$parent.vm.getBrands();
+            }).catch(function(errors) {
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to add new Brand.";
+                vm.isDone = true;
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('BrandController', BrandController);
+
+    BrandController.$inject = ['BrandService', 'brandPrepService'];
+
+    /* @ngInject */
+    function BrandController(BrandService, brandPrepService) {
+        var vm = this;
+
+        vm.prepBrands = brandPrepService;
+        vm.brands = vm.prepBrands.brands;
+        vm.getBrands = getBrands;
+        vm.hasDeleted = false;
+        vm.response = {};
+        vm.deleteBrand = deleteBrand;
+
+        //activate();
+
+        ////////////////
+
+        function activate() {
+            return getBrands();
+        }
+
+        function getBrands() {
+            return BrandService.getAll().then(function(data) {
+                vm.prepBrands = data;
+                vm.brands = vm.prepBrands.brands;
+                return vm.brands;
+            });
+        }
+
+        function deleteBrand(brand) {
+            bootbox.confirm({
+                title: "Confirm Delete",
+                message: "Are you sure you want to delete brand: <b>" + brand.name + "</b>?",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function(result) {
+                    if (result) {
+                        doDelete(brand.uid);
+                    }
+                }
+            });
+
+        }
+
+        function doDelete(id) {
+            BrandService.delete(id).then(function(resp) {
+                vm.hasDeleted = true;
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = resp.data.message;
+                getBrands();
+                vm.hasAdded = true;
+            }).catch(function() {
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to delete brand.";
+                vm.hasAdded = true;
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('BrandEditController', BrandEditController);
+
+    BrandEditController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService'];
+
+    /* @ngInject */
+    function BrandEditController(BrandService, $stateParams, $scope, prepSelBrand, HelperService) {
+        var vm = this;
+
+        vm.mode = "Edit";
+        vm.response = {};
+        vm.brandId = $stateParams.id;
+        vm.selectedBrand = prepSelBrand;
+        vm.form = vm.selectedBrand;
+        vm.isDone = false;
+
+        vm.prevState = HelperService.getPrevState();
+        vm.submitAction = editPost;
+
+        //activate();
+
+        ///////////////////
+
+        function activate() {
+            BrandService.find(vm.brandId).then(function(data) {
+                vm.selectedBrand = data;
+                vm.form = vm.selectedBrand;
+            });
+        }
+
+        function editPost() {
+            vm.form.logo_image = "default.png"; //temporary
+            vm.form.brand_image = "default.png"; //temporary
+
+            BrandService.edit(vm.brandId, vm.form).then(function() {
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Updated Brand.";
+                vm.isDone = true;
+                $scope.$parent.vm.getBrands();
+            }).catch(function() {
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to update Brand.";
+                vm.isDone = true;
+            });
+        }
+    }
 })();

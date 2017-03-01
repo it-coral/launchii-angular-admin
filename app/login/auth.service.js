@@ -17,7 +17,8 @@
             createAuthUser: createAuthUser,
             destroyAuthUser: destroyAuthUser,
             getAuthUser: getAuthUser,
-            logout: logout
+            logout: logout,
+            setHeaders: setHeaders
         }
 
         return service;
@@ -68,14 +69,20 @@
                 var headers = data.headers();
 
                 $auth.setToken(headers["access-token"]);
-                localStorage.setItem("access-client", headers["client"]);
+
+                localStorage.setItem("client", headers["client"]);
                 localStorage.setItem("access-token", headers["access-token"]);
+                localStorage.setItem("cache-control", headers["cache-control"]);
+                localStorage.setItem("content-type", headers["content-type"]);
+                localStorage.setItem("expiry", headers["expiry"]);
+                localStorage.setItem("token-type", headers["token-type"]);
+                localStorage.setItem("uid", headers["uid"]);
 
                 return data;
 
             }, function(err) {
                 console.log(err);
-                d.reject(err);
+                d.reject(err.data.errors[0]);
             }).then(function(response) {
                 if (typeof response === 'undefined' || response === false) {
                     d.reject();
@@ -125,32 +132,37 @@
         function destroyAuthUser() {
             var d = $q.defer();
 
-            var url = api + '/auth/sign_out';
-            var client = localStorage.getItem('access-client');
-            var uid = $rootScope.currentUser.email;
-            var token = localStorage.getItem('access-token');
+            if (typeof $rootScope.currentUser != 'undefined' && $rootScope.currentUser != null) {
+                var url = api + '/auth/sign_out';
+                var client = localStorage.getItem('client');
+                var uid = $rootScope.currentUser.email;
+                var token = localStorage.getItem('access-token');
 
-            var params = {};
-            params['uid'] = uid;
-            params['access-token'] = token;
-            params['client'] = client;
+                var params = {};
+                params['uid'] = uid;
+                params['access-token'] = token;
+                params['client'] = client;
 
-            var data = { params };
+                var data = { params };
 
-            $http.delete(url, data)
-                .then(function(resp) {
-                    $auth.logout();
-                    localStorage.removeItem('user');
-                    localStorage.removeItem('access-client');
-                    localStorage.removeItem('access-token');
-                    $rootScope.authenticated = false;
-                    $rootScope.currentUser = null;
-                    d.resolve(true);
+                $http.delete(url, data)
+                    .then(function(resp) {
+                        $auth.logout();
+                        localStorage.clear();
+                        // localStorage.removeItem('user');
+                        // localStorage.removeItem('client');
+                        // localStorage.removeItem('access-token');
+                        $rootScope.authenticated = false;
+                        $rootScope.currentUser = null;
+                        d.resolve(true);
 
-                }).catch(function(error) {
-                    console.log(error);
-                    d.reject(false);
-                });
+                    }).catch(function(error) {
+                        console.log(error);
+                        d.reject(false);
+                    });
+            }
+
+            d.resolve(true);
 
             return d.promise;
         }
@@ -161,6 +173,22 @@
             }
 
             return null;
+        }
+
+        function setHeaders() {
+            var headers = {};
+
+            if (localStorage.getItem("access-token") !== null) {
+                headers["access-token"] = localStorage.getItem("access-token");
+                headers["client"] = localStorage.getItem("client");
+                headers["cache-control"] = localStorage.getItem("cache-control");
+                headers["content-type"] = localStorage.getItem("content-type");
+                headers["expiry"] = localStorage.getItem("expiry");
+                headers["token-type"] = localStorage.getItem("token-type");
+                headers["uid"] = localStorage.getItem("uid");
+            }
+
+            $http.defaults.headers.common = headers;
         }
     }
 

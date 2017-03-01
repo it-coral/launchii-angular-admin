@@ -15,12 +15,17 @@
             addToList: addToList,
             refreshList: refreshList,
             emptyList: emptyList,
-            setCss: setCss
+            setCss: setCss,
+            setPageTitle: setPageTitle
         }
 
         return service;
 
         ////////////////
+        function setPageTitle(title) {
+            $rootScope.page_title = title;
+        }
+
         //css is an array e.g. ['/templates/assets/layouts/layout/css/layout.min.css']
         function setCss(css) {
             $rootScope.stylesheets = [];
