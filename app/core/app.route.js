@@ -107,6 +107,22 @@
             }
         };
 
+        var brandView = {
+            name: "dashboard.brand.view",
+            url: "/:id",
+            parent: brand,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/brand/brand.view.html",
+                    controller: "BrandViewController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelBrand: prepSelBrand
+                    }
+                }
+            }
+        };
+
         var deal = {
             name: "dashboard.deal",
             url: "/deal",
@@ -164,7 +180,8 @@
             .state(dealEdit)
             .state(brand)
             .state(brandAdd)
-            .state(brandEdit);
+            .state(brandEdit)
+            .state(brandView);
 
         ////////////
 

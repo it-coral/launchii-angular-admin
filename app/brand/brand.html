@@ -39,6 +39,7 @@
                                     <td ng-bind="brand.slug"></td>
                                     <td ng-bind="brand.email"></td>
                                     <td>
+                                        <button type="button" class="btn btn-info" ui-sref="dashboard.brand.view({id:brand.uid})">View</button>
                                         <button type="button" class="btn btn-warning" ui-sref="dashboard.brand.edit({id:brand.uid})">Edit</button>
                                         <button type="button" class="btn btn-danger" ng-click="vm.deleteBrand(brand)">Delete</button>
                                     </td>

@@ -680,6 +680,22 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             }
         };
 
+        var brandView = {
+            name: "dashboard.brand.view",
+            url: "/:id",
+            parent: brand,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/brand/brand.view.html",
+                    controller: "BrandViewController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelBrand: prepSelBrand
+                    }
+                }
+            }
+        };
+
         var deal = {
             name: "dashboard.deal",
             url: "/deal",
@@ -737,7 +753,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             .state(dealEdit)
             .state(brand)
             .state(brandAdd)
-            .state(brandEdit);
+            .state(brandEdit)
+            .state(brandView);
 
         ////////////
 
@@ -1569,6 +1586,37 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update Brand.";
                 vm.isDone = true;
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('BrandViewController', BrandViewController);
+
+    BrandViewController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService'];
+
+    /* @ngInject */
+    function BrandViewController(BrandService, $stateParams, $scope, prepSelBrand, HelperService) {
+        var vm = this;
+
+        vm.mode = "View";
+        vm.response = {};
+        vm.brandId = $stateParams.id;
+        vm.brand = prepSelBrand;
+        vm.isDone = false;
+
+        vm.prevState = HelperService.getPrevState();
+
+        //activate();
+
+        ///////////////////
+
+        function activate() {
+            BrandService.find(vm.brandId).then(function(data) {
+                vm.brand = data;
             });
         }
     }

@@ -1,0 +1,74 @@
+<!-- /.row -->
+<div class="row mb-2">
+    <div class="col-lg-12">
+        <a ui-sref="{{vm.prevState.name}}">
+            <button type="button" class="btn btn-primary">Back</button>
+        </a>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-red-sunglo">
+                    <i class="icon-settings font-red-sunglo"></i>
+                    <span class="caption-subject bold uppercase"> {{ vm.brand.name }} </span>
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <form role="form" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="col-md-3">Slug</label>
+                            <div class="col-md-9">
+                                <p ng-bind="vm.brand.slug"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3">Description</label>
+                            <div class="col-md-9">
+                                <p ng-bind="vm.brand.description"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3"><i class="fa fa-envelope"></i> Email</label>
+                            <div class="col-md-9">
+                                <p ng-bind="vm.brand.email"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3"><i class="fa fa-facebook-official"></i> Facebook</label>
+                            <div class="col-md-9">
+                                <p ng-bind="vm.brand.facebook_url"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3"><i class="fa fa-twitter"></i> Twitter</label>
+                            <div class="col-md-9">
+                                <p ng-bind="vm.brand.twitter_url"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3"><i class="fa fa-instagram"></i> Instagram</label>
+                            <div class="col-md-9">
+                                <p ng-bind="vm.brand.instagram_url"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
