@@ -16,6 +16,8 @@
         vm.hasDeleted = false;
         vm.response = {};
         vm.deleteBrand = deleteBrand;
+        vm.response = {};
+        vm.isDone = false;
 
         //activate();
 
@@ -49,26 +51,28 @@
                 },
                 callback: function(result) {
                     if (result) {
-                        doDelete(brand.uid);
+                        doDelete(brand);
                     }
                 }
             });
 
         }
 
-        function doDelete(id) {
-            BrandService.delete(id).then(function(resp) {
+        function doDelete(brand) {
+            BrandService.delete(brand.uid).then(function(resp) {
                 vm.hasDeleted = true;
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = resp.data.message;
+                vm.response['msg'] = "Deleted brand: " + brand.name;
                 getBrands();
                 vm.hasAdded = true;
+                vm.isDone = true;
             }).catch(function() {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to delete brand.";
+                vm.response['msg'] = "Failed to delete brand: " + brand.name;
                 vm.hasAdded = true;
+                vm.isDone = true;
             });
         }
     }

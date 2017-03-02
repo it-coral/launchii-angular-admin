@@ -4,10 +4,10 @@
     angular.module('app')
         .factory('HelperService', HelperService);
 
-    HelperService.$inject = ['$state', '$rootScope'];
+    HelperService.$inject = ['$state', '$rootScope', '$anchorScroll', '$location'];
 
     /* @ngInject */
-    function HelperService($state, $rootScope) {
+    function HelperService($state, $rootScope, $anchorScroll, $location) {
         var service = {
             getCurrentState: getCurrentState,
             getPrevState: getPrevState,
@@ -16,12 +16,27 @@
             refreshList: refreshList,
             emptyList: emptyList,
             setCss: setCss,
-            setPageTitle: setPageTitle
+            setPageTitle: setPageTitle,
+            goToAnchor: goToAnchor
         }
 
         return service;
 
         ////////////////
+
+        function goToAnchor(anchor) {
+            var newHash = anchor;
+            if ($location.hash() !== newHash) {
+                // set the $location.hash to `newHash` and
+                // $anchorScroll will automatically scroll to it
+                $location.hash(anchor);
+            } else {
+                // call $anchorScroll() explicitly,
+                // since $location.hash hasn't changed
+                $anchorScroll();
+            }
+        }
+
         function setPageTitle(title) {
             $rootScope.page_title = title;
         }

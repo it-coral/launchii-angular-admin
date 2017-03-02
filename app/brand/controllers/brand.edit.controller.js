@@ -4,10 +4,10 @@
     angular.module('app')
         .controller('BrandEditController', BrandEditController);
 
-    BrandEditController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService'];
+    BrandEditController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService', '$state'];
 
     /* @ngInject */
-    function BrandEditController(BrandService, $stateParams, $scope, prepSelBrand, HelperService) {
+    function BrandEditController(BrandService, $stateParams, $scope, prepSelBrand, HelperService, $state) {
         var vm = this;
 
         vm.mode = "Edit";
@@ -38,14 +38,23 @@
             BrandService.edit(vm.brandId, vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Updated Brand.";
+                vm.response['msg'] = "Updated brand: " + vm.form.name;
                 vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
                 $scope.$parent.vm.getBrands();
-            }).catch(function() {
+                $state.go(vm.prevState);
+
+            }).catch(function(err) {
+                console.log(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update Brand.";
                 vm.isDone = true;
+
+                $scope.$parent.vm.isDone = false;
+                HelperService.goToAnchor('msg-info');
             });
         }
     }

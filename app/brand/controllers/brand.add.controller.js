@@ -12,6 +12,9 @@
 
         vm.mode = "Add";
         vm.form = {};
+        vm.form.facebook = "https://facebook.com/";
+        vm.form.twitter = "https://twitter.com/";
+        vm.form.instagram = "https://instagram.com/";
         vm.response = {};
         vm.isDone = false;
 
@@ -27,15 +30,22 @@
             BrandService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Added new Brand.";
+                vm.response['msg'] = "Added brand: " + vm.form.name;
                 vm.isDone = true;
 
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
                 $scope.$parent.vm.getBrands();
+                $state.go(vm.prevState);
+
             }).catch(function(errors) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add new Brand.";
                 vm.isDone = true;
+
+                $scope.$parent.vm.isDone = false;
+                HelperService.goToAnchor('msg-info');
             });
         }
     }

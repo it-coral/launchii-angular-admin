@@ -854,10 +854,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     angular.module('app')
         .factory('HelperService', HelperService);
 
-    HelperService.$inject = ['$state', '$rootScope'];
+    HelperService.$inject = ['$state', '$rootScope', '$anchorScroll', '$location'];
 
     /* @ngInject */
-    function HelperService($state, $rootScope) {
+    function HelperService($state, $rootScope, $anchorScroll, $location) {
         var service = {
             getCurrentState: getCurrentState,
             getPrevState: getPrevState,
@@ -866,12 +866,27 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             refreshList: refreshList,
             emptyList: emptyList,
             setCss: setCss,
-            setPageTitle: setPageTitle
+            setPageTitle: setPageTitle,
+            goToAnchor: goToAnchor
         }
 
         return service;
 
         ////////////////
+
+        function goToAnchor(anchor) {
+            var newHash = anchor;
+            if ($location.hash() !== newHash) {
+                // set the $location.hash to `newHash` and
+                // $anchorScroll will automatically scroll to it
+                $location.hash(anchor);
+            } else {
+                // call $anchorScroll() explicitly,
+                // since $location.hash hasn't changed
+                $anchorScroll();
+            }
+        }
+
         function setPageTitle(title) {
             $rootScope.page_title = title;
         }
@@ -1037,6 +1052,111 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         };
 
         return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('validateFacebookUrl', validateFacebookUrl);
+
+    validateFacebookUrl.$inject = ['defaultErrorMessageResolver', '$state'];
+    /* @ngInject */
+    function validateFacebookUrl(defaultErrorMessageResolver) {
+        defaultErrorMessageResolver.getErrorMessages().then(function(errorMessages) {
+            errorMessages['facebook'] = 'Please enter a valid facebook url';
+        });
+
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                validateFacebookUrl: '=validateFacebookUrl'
+            },
+            link: function(scope, element, attributes, ngModel) {
+
+                ngModel.$validators.facebook = function(modelValue) {
+                    var i = modelValue.indexOf("https://facebook.com/");
+                    return i > -1;
+                };
+
+                scope.$watch('facebook', function() {
+                    ngModel.$validate();
+                });
+            }
+        };
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('validateInstagramUrl', validateInstagramUrl);
+
+    validateInstagramUrl.$inject = ['defaultErrorMessageResolver', '$state'];
+    /* @ngInject */
+    function validateInstagramUrl(defaultErrorMessageResolver) {
+        defaultErrorMessageResolver.getErrorMessages().then(function(errorMessages) {
+            errorMessages['instagram'] = 'Please enter a valid instagram url';
+        });
+
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                validateInstagramUrl: '=validateInstagramUrl'
+            },
+            link: function(scope, element, attributes, ngModel) {
+
+                ngModel.$validators.instagram = function(modelValue) {
+                    var i = modelValue.indexOf("https://instagram.com/");
+                    return i > -1;
+                };
+
+                scope.$watch('instagram', function() {
+                    ngModel.$validate();
+                });
+            }
+        };
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('validateTwitterUrl', validateTwitterUrl);
+
+    validateTwitterUrl.$inject = ['defaultErrorMessageResolver', '$state'];
+    /* @ngInject */
+    function validateTwitterUrl(defaultErrorMessageResolver) {
+        defaultErrorMessageResolver.getErrorMessages().then(function(errorMessages) {
+            errorMessages['twitter'] = 'Please enter a valid twitter url';
+        });
+
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                validateTwitterUrl: '=validateTwitterUrl'
+            },
+            link: function(scope, element, attributes, ngModel) {
+
+                ngModel.$validators.twitter = function(modelValue) {
+                    var i = modelValue.indexOf("https://twitter.com/");
+                    return i > -1;
+                };
+
+                scope.$watch('twitter', function() {
+                    ngModel.$validate();
+                });
+            }
+        };
     }
 
 })();
@@ -1435,6 +1555,9 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         vm.mode = "Add";
         vm.form = {};
+        vm.form.facebook = "https://facebook.com/";
+        vm.form.twitter = "https://twitter.com/";
+        vm.form.instagram = "https://instagram.com/";
         vm.response = {};
         vm.isDone = false;
 
@@ -1450,15 +1573,22 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             BrandService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Added new Brand.";
+                vm.response['msg'] = "Added brand: " + vm.form.name;
                 vm.isDone = true;
 
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
                 $scope.$parent.vm.getBrands();
+                $state.go(vm.prevState);
+
             }).catch(function(errors) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add new Brand.";
                 vm.isDone = true;
+
+                $scope.$parent.vm.isDone = false;
+                HelperService.goToAnchor('msg-info');
             });
         }
     }
@@ -1481,6 +1611,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.hasDeleted = false;
         vm.response = {};
         vm.deleteBrand = deleteBrand;
+        vm.response = {};
+        vm.isDone = false;
 
         //activate();
 
@@ -1514,26 +1646,28 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 },
                 callback: function(result) {
                     if (result) {
-                        doDelete(brand.uid);
+                        doDelete(brand);
                     }
                 }
             });
 
         }
 
-        function doDelete(id) {
-            BrandService.delete(id).then(function(resp) {
+        function doDelete(brand) {
+            BrandService.delete(brand.uid).then(function(resp) {
                 vm.hasDeleted = true;
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = resp.data.message;
+                vm.response['msg'] = "Deleted brand: " + brand.name;
                 getBrands();
                 vm.hasAdded = true;
+                vm.isDone = true;
             }).catch(function() {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to delete brand.";
+                vm.response['msg'] = "Failed to delete brand: " + brand.name;
                 vm.hasAdded = true;
+                vm.isDone = true;
             });
         }
     }
@@ -1544,10 +1678,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     angular.module('app')
         .controller('BrandEditController', BrandEditController);
 
-    BrandEditController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService'];
+    BrandEditController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService', '$state'];
 
     /* @ngInject */
-    function BrandEditController(BrandService, $stateParams, $scope, prepSelBrand, HelperService) {
+    function BrandEditController(BrandService, $stateParams, $scope, prepSelBrand, HelperService, $state) {
         var vm = this;
 
         vm.mode = "Edit";
@@ -1578,14 +1712,23 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             BrandService.edit(vm.brandId, vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Updated Brand.";
+                vm.response['msg'] = "Updated brand: " + vm.form.name;
                 vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
                 $scope.$parent.vm.getBrands();
-            }).catch(function() {
+                $state.go(vm.prevState);
+
+            }).catch(function(err) {
+                console.log(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update Brand.";
                 vm.isDone = true;
+
+                $scope.$parent.vm.isDone = false;
+                HelperService.goToAnchor('msg-info');
             });
         }
     }
