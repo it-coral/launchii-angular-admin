@@ -17,12 +17,46 @@
             edit: edit,
             delete: _delete,
             getAll: getAll,
-            find: find
+            find: find,
+            findInList: findInList,
+            isEmpty: isEmpty
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function isEmpty() {
+            if (!angular.isDefined(service.lists.brands)) {
+                return true;
+            }
+
+            return service.lists.brands.length == 0;
+        }
+
+        function findInList(id) {
+            var d = $q.defer();
+
+            if (angular.isDefined(id)) {
+                if (!isEmpty()) {
+                    angular.forEach(service.lists.brands, function(value, key) {
+                        if (id == service.lists.brands[key].uid) {
+                            d.resolve(service.lists.brands[key]);
+                        }
+                    });
+                } else {
+                    find(id).then(function(brand) {
+                        d.resolve(brand);
+                    }).catch(function(err) {
+                        d.reject(err);
+                    });
+                }
+            } else {
+                d.resolve('Brand does not exist.');
+            }
+
+            return d.promise;
+        }
 
         function getAll() {
             var d = $q.defer();
@@ -34,6 +68,7 @@
 
             $http(req)
                 .then(function(data) {
+                    service.lists = data.data;
                     d.resolve(data.data);
                 })
                 .catch(function(error) {

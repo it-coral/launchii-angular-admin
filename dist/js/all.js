@@ -631,6 +631,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     }
                 },
                 //"nav": nav
+            },
+            data: {
+                title: 'Dashboard',
+                breadcrumbs: true
             }
         };
 
@@ -648,6 +652,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     }
                 },
                 //"nav": nav
+            },
+            data: {
+                title: 'Brand',
+                breadcrumbs: true
             }
         };
 
@@ -661,6 +669,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     controller: "BrandAddController",
                     controllerAs: "vm"
                 }
+            },
+            data: {
+                title: 'Add',
+                breadcrumbs: true
             }
         };
 
@@ -677,6 +689,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                         prepSelBrand: prepSelBrand
                     }
                 }
+            },
+            data: {
+                title: 'Edit',
+                breadcrumbs: true
             }
         };
 
@@ -693,12 +709,16 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                         prepSelBrand: prepSelBrand
                     }
                 }
+            },
+            data: {
+                title: 'View',
+                breadcrumbs: true
             }
         };
 
         var deal = {
             name: "dashboard.deal",
-            url: "/deal",
+            url: "deal",
             parent: dashboard,
             views: {
                 "main_body": {
@@ -710,24 +730,36 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     }
                 },
                 //"nav": nav
+            },
+            data: {
+                title: 'Deal',
+                breadcrumbs: true
             }
         };
 
         var dealAdd = {
-            name: "deal.add",
+            name: "dashboard.deal.add",
             url: "/add",
             parent: deal,
             views: {
                 "page_body": {
                     templateUrl: "/app/deals/deal.add.html",
                     controller: "DealAddController",
-                    controllerAs: "vm"
+                    controllerAs: "vm",
+                    resolve: {
+                        styleSheets: dateTimeStyleSheets,
+                        brandPrepService: brandPrepService
+                    }
                 }
+            },
+            data: {
+                title: 'Add',
+                breadcrumbs: true
             }
         };
 
         var dealEdit = {
-            name: "deal.edit",
+            name: "dashboard.deal.edit",
             url: "/edit/:id",
             parent: deal,
             views: {
@@ -736,9 +768,35 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     controller: "DealEditController",
                     controllerAs: "vm",
                     resolve: {
+                        styleSheets: dateTimeStyleSheets,
+                        prepSelDeal: prepSelDeal,
+                        brandPrepService: brandPrepService
+                    }
+                }
+            },
+            data: {
+                title: 'Edit',
+                breadcrumbs: true
+            }
+        };
+
+        var dealView = {
+            name: "dashboard.deal.view",
+            url: "/:id",
+            parent: deal,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/deals/deal.view.html",
+                    controller: "DealViewController",
+                    controllerAs: "vm",
+                    resolve: {
                         prepSelDeal: prepSelDeal
                     }
                 }
+            },
+            data: {
+                title: 'View',
+                breadcrumbs: true
             }
         };
 
@@ -751,12 +809,25 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             .state(deal)
             .state(dealAdd)
             .state(dealEdit)
+            .state(dealView)
             .state(brand)
             .state(brandAdd)
             .state(brandEdit)
             .state(brandView);
 
         ////////////
+
+        dateTimeStyleSheets.$inject = ['HelperService'];
+        /* @ngInject */
+        function dateTimeStyleSheets(HelperService) {
+            var css = ['/templates/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+                '/templates/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
+                '/templates/assets/layouts/layout/css/layout.min.css',
+                '/templates/assets/layouts/layout/css/themes/darkblue.min.css',
+                '/templates/assets/layouts/layout/css/custom.min.css'
+            ];
+            HelperService.setCss(css);
+        }
 
         loginStyleSheets.$inject = ['HelperService'];
         /* @ngInject */
@@ -867,12 +938,75 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             emptyList: emptyList,
             setCss: setCss,
             setPageTitle: setPageTitle,
-            goToAnchor: goToAnchor
+            goToAnchor: goToAnchor,
+            getDateNow: getDateNow,
+            combineDateTime: combineDateTime,
+            convertToDateTime: convertToDateTime
         }
 
         return service;
 
         ////////////////
+
+        function convertToDateTime(datetime) {
+            var toDate = new Date(datetime);
+            var dd = toDate.getDate();
+            var mm = toDate.getMonth() + 1; //January is 0!
+            var yyyy = toDate.getFullYear();
+
+            var hh = toDate.getHours();
+            var m = toDate.getMinutes();
+            var s = toDate.getSeconds();
+            var d = "AM";
+            var h = hh;
+
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+
+            if (h >= 12) {
+                h = hh - 12;
+                d = "PM";
+            }
+            if (h == 0) {
+                h = 12;
+            }
+            h = h < 10 ? "0" + h : h;
+            m = m < 10 ? "0" + m : m;
+            s = s < 10 ? "0" + s : s;
+
+            var date = yyyy + '-' + mm + '-' + dd;
+            var time = h + ':' + m + ':' + s + ' ' + d;
+
+            var cDateTime = { date: date, time: time };
+
+            return cDateTime;
+        }
+
+        function combineDateTime(date, time) {
+            return new Date(date + ' ' + time).toJSON().toString();
+        }
+
+        function getDateNow() {
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+            var yyyy = today.getFullYear();
+
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+
+            return yyyy + '-' + mm + '-' + dd;
+        }
 
         function goToAnchor(anchor) {
             var newHash = anchor;
@@ -1037,18 +1171,59 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         .module('app')
         .directive('breadCrumbs', breadCrumbs);
 
-    breadCrumbs.$inject = ['$rootScope', '$state'];
+    breadCrumbs.$inject = ['$state', '$stateParams'];
     /* @ngInject */
-    function breadCrumbs($rootScope, $state) {
+    function breadCrumbs($state, $stateParams) {
+
         var directive = {
             restrict: 'E',
-            link: function(scope) {
-                var curr_state_name = $state.current.name;
-                //$rootScope.breadcrumbs = curr_state_name.split(".");
-                //scope.crumbs = curr_state_name.split(".");
-            },
+            templateUrl: '/app/common/breadcrumbs.html',
             replace: true,
-            templateUrl: "/app/common/breadcrumbs.html",
+            compile: function(tElement, tAttrs) {
+                return function($scope, $elem, $attr) {
+                    $scope.show = function(state) {
+                        if (!angular.isDefined(state.data)) {
+                            return false;
+                        } else if (!angular.isDefined(state.data.breadcrumbs)) {
+                            return false;
+                        }
+                        return true;
+                    };
+
+                    $scope.states = $state.$current.path;
+                }
+            }
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('enableDatetimePicker', enableDatetimePicker);
+
+    enableDatetimePicker.$inject = ['HelperService'];
+    /* @ngInject */
+    function enableDatetimePicker(HelperService) {
+        var directive = {
+            restrict: 'A',
+            scope: {
+                enableDatetimePicker: '=enableDatetimePicker',
+
+            },
+            link: function(scope, element) {
+                console.log('test');
+
+                // document.querySelectorAll('input.date-picker').forEach(function(el) {
+                //     el.value = HelperService.getDateNow();
+                // });
+                scope.enableDatetimePicker.$pristine;
+                ComponentsDateTimePickers.init();
+            }
         };
 
         return directive;
@@ -1440,12 +1615,46 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             edit: edit,
             delete: _delete,
             getAll: getAll,
-            find: find
+            find: find,
+            findInList: findInList,
+            isEmpty: isEmpty
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function isEmpty() {
+            if (!angular.isDefined(service.lists.brands)) {
+                return true;
+            }
+
+            return service.lists.brands.length == 0;
+        }
+
+        function findInList(id) {
+            var d = $q.defer();
+
+            if (angular.isDefined(id)) {
+                if (!isEmpty()) {
+                    angular.forEach(service.lists.brands, function(value, key) {
+                        if (id == service.lists.brands[key].uid) {
+                            d.resolve(service.lists.brands[key]);
+                        }
+                    });
+                } else {
+                    find(id).then(function(brand) {
+                        d.resolve(brand);
+                    }).catch(function(err) {
+                        d.reject(err);
+                    });
+                }
+            } else {
+                d.resolve('Brand does not exist.');
+            }
+
+            return d.promise;
+        }
 
         function getAll() {
             var d = $q.defer();
@@ -1457,6 +1666,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
             $http(req)
                 .then(function(data) {
+                    service.lists = data.data;
                     d.resolve(data.data);
                 })
                 .catch(function(error) {
@@ -1760,6 +1970,420 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         function activate() {
             BrandService.find(vm.brandId).then(function(data) {
                 vm.brand = data;
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .factory('DealService', DealService);
+
+    DealService.$inject = ['$http', 'CONST', '$q', 'HelperService', 'BrandService'];
+
+    /* @ngInject */
+    function DealService($http, CONST, $q, HelperService, BrandService) {
+        var api = CONST.api_domain + '/admin/deals';
+
+        var service = {
+            lists: [],
+            errors: [],
+            add: add,
+            edit: edit,
+            delete: _delete,
+            getAll: getAll,
+            find: find,
+            findInList: findInList,
+            isEmpty: isEmpty
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function isEmpty() {
+            if (!angular.isDefined(service.lists.deals)) {
+                return true;
+            }
+
+            return service.lists.deals.length == 0;
+        }
+
+        function findInList(id) {
+            var d = $q.defer();
+
+            if (angular.isDefined(id)) {
+                if (!isEmpty()) {
+                    var deal = null;
+
+                    angular.forEach(service.lists.deals, function(value, key) {
+                        if (id == service.lists.deals[key].uid) {
+                            deal = service.lists.deals[key];
+                        }
+                    });
+
+                    deal["price"] = parseFloat(deal.price);
+                    deal["amazon_rating"] = parseFloat(deal.amazon_rating);
+
+                    var dateStart = HelperService.convertToDateTime(deal.starts_at);
+                    var dateEnd = HelperService.convertToDateTime(deal.ends_at);
+                    deal['date_start'] = dateStart;
+                    deal['date_end'] = dateEnd;
+
+                    BrandService.findInList(deal.brand_id).then(function(brand) {
+                        deal['brand'] = brand;
+                        d.resolve(deal);
+                    });
+
+                    d.resolve(deal);
+                } else {
+                    find(id).then(function(deal) {
+                        d.resolve(deal);
+                    }).catch(function(err) {
+                        d.reject(err);
+                    });
+                }
+            } else {
+                d.resolve('Deal does not exist.');
+            }
+
+            return d.promise;
+        }
+
+        function getAll() {
+            var d = $q.defer();
+
+            $http.get(api)
+                .then(function(data) {
+                    service.lists = data.data;
+                    d.resolve(data.data);
+                })
+                .catch(function(error) {
+                    console.log(error.data);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function find(id) {
+            var d = $q.defer();
+            var url = api + '/' + id;
+
+            $http({
+                    method: 'GET',
+                    url: url,
+                    //params: {id: id}
+                })
+                .then(function(data) {
+                    ComponentsDateTimePickers.init();
+                    var deal = data.data;
+                    deal["price"] = parseFloat(deal.price);
+                    deal["amazon_rating"] = parseFloat(deal.amazon_rating);
+
+                    var dateStart = HelperService.convertToDateTime(deal.starts_at);
+                    var dateEnd = HelperService.convertToDateTime(deal.ends_at);
+                    deal['date_start'] = dateStart;
+                    deal['date_end'] = dateEnd;
+                    //console.log(dateStart);
+                    //console.log(dateStart.date);
+                    deal['date_starts'] = dateStart.date;
+                    deal['time_starts'] = dateStart.time;
+
+                    deal['date_ends'] = dateEnd.date;
+                    deal['time_ends'] = dateEnd.time;
+
+                    BrandService.findInList(deal.brand_id).then(function(brand) {
+                        deal['brand'] = brand;
+                        d.resolve(deal);
+                    });
+
+                })
+                .catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function add(data) {
+            var url = api;
+            var d = $q.defer();
+
+            $http.post(url, data)
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function edit(id, data) {
+            var url = api + "/" + id;
+            var d = $q.defer();
+
+            $http.patch(url, data)
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function _delete(id) {
+            var url = api + "/" + id;
+            var d = $q.defer();
+
+            $http.delete(url, {})
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('DealAddController', DealAddController);
+
+    DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService'];
+
+    /* @ngInject */
+    function DealAddController(DealService, $scope, HelperService, $state, brandPrepService) {
+        var vm = this;
+
+        vm.mode = "Add";
+        vm.form = {};
+        vm.response = {};
+        vm.isDone = false;
+        vm.brands = brandPrepService.brands;
+        vm.default = vm.brands[0];
+
+        vm.prevState = HelperService.getPrevState();
+        vm.submitAction = addDeal;
+
+        ///////////////////
+
+        function addDeal() {
+            vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
+            vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
+
+            DealService.add(vm.form).then(function() {
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Added new deal: " + vm.form.name;
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
+                $scope.$parent.vm.getDeals();
+                $state.go(vm.prevState);
+
+            }).catch(function() {
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to add new deal.";
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = false;
+                HelperService.goToAnchor('msg-info');
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('DealController', DealController);
+
+    DealController.$inject = ['DealService', 'dealPrepService'];
+
+    /* @ngInject */
+    function DealController(DealService, dealPrepService) {
+        var vm = this;
+
+        vm.prepDeals = dealPrepService;
+        vm.deals = vm.prepDeals.deals;
+        vm.getDeals = getDeals;
+        vm.hasDeleted = false;
+        vm.response = {};
+        vm.deleteDeal = deleteDeal;
+        vm.response = {};
+        vm.isDone = false;
+
+        //activate();
+
+        ////////////////
+
+        function activate() {
+            return getDeals();
+        }
+
+        function getDeals() {
+            return DealService.getAll().then(function(data) {
+                vm.prepDeals = data;
+                vm.deals = vm.prepDeals.deals;
+                return vm.deals;
+            });
+        }
+
+        function deleteDeal(deal) {
+            bootbox.confirm({
+                title: "Confirm Delete",
+                message: "Are you sure you want to delete deal: <b>" + deal.name + "</b>?",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function(result) {
+                    if (result) {
+                        doDelete(deal);
+                    }
+                }
+            });
+
+        }
+
+        function doDelete(deal) {
+            DealService.delete(deal.uid).then(function(resp) {
+                vm.hasDeleted = true;
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Deleted deal: " + deal.name;
+                getDeals();
+                vm.hasAdded = true;
+                vm.isDone = true;
+            }).catch(function() {
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to delete deal: " + deal.name;
+                vm.hasAdded = true;
+                vm.isDone = true;
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('DealEditController', DealEditController);
+
+    DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService'];
+
+    /* @ngInject */
+    function DealEditController(DealService, $stateParams, $scope, prepSelDeal, HelperService, $state, brandPrepService) {
+        var vm = this;
+
+        vm.mode = "Edit";
+        vm.response = {};
+        vm.dealId = $stateParams.id;
+        vm.selectedDeal = prepSelDeal;
+        vm.form = vm.selectedDeal;
+        vm.isDone = false;
+        vm.brands = brandPrepService.brands;
+        vm.default = vm.brands[0];
+
+        vm.prevState = HelperService.getPrevState();
+        vm.submitAction = editDeal;
+
+        activate();
+
+        ///////////////////
+
+        function activate() {
+            // DealService.find(vm.dealId).then(function(data) {
+            //     vm.selectedDeal = data;
+            //     vm.form = vm.selectedDeal;
+            // });
+            //temporary workaround
+            jQuery(document).ready(function() {
+                ComponentsDateTimePickers.init();
+            });
+        }
+
+        function editDeal() {
+            vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
+            vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
+
+            DealService.edit(vm.dealId, vm.form).then(function() {
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Updated deal: " + vm.form.name;
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
+                $scope.$parent.vm.getDeals();
+                $state.go(vm.prevState);
+
+            }).catch(function(err) {
+                console.log(err);
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to update deal.";
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = false;
+                HelperService.goToAnchor('msg-info');
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('DealViewController', DealViewController);
+
+    DealViewController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService'];
+
+    /* @ngInject */
+    function DealViewController(DealService, $stateParams, $scope, prepSelDeal, HelperService) {
+        var vm = this;
+
+        vm.mode = "View";
+        vm.response = {};
+        vm.dealId = $stateParams.id;
+        vm.deal = prepSelDeal;
+        vm.isDone = false;
+
+        vm.prevState = HelperService.getPrevState();
+
+        //activate();
+
+        ///////////////////
+
+        function activate() {
+            DealService.find(vm.dealId).then(function(data) {
+                vm.deal = data;
             });
         }
     }

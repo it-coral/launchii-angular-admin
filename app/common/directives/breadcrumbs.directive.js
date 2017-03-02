@@ -5,18 +5,28 @@
         .module('app')
         .directive('breadCrumbs', breadCrumbs);
 
-    breadCrumbs.$inject = ['$rootScope', '$state'];
+    breadCrumbs.$inject = ['$state', '$stateParams'];
     /* @ngInject */
-    function breadCrumbs($rootScope, $state) {
+    function breadCrumbs($state, $stateParams) {
+
         var directive = {
             restrict: 'E',
-            link: function(scope) {
-                var curr_state_name = $state.current.name;
-                //$rootScope.breadcrumbs = curr_state_name.split(".");
-                //scope.crumbs = curr_state_name.split(".");
-            },
+            templateUrl: '/app/common/breadcrumbs.html',
             replace: true,
-            templateUrl: "/app/common/breadcrumbs.html",
+            compile: function(tElement, tAttrs) {
+                return function($scope, $elem, $attr) {
+                    $scope.show = function(state) {
+                        if (!angular.isDefined(state.data)) {
+                            return false;
+                        } else if (!angular.isDefined(state.data.breadcrumbs)) {
+                            return false;
+                        }
+                        return true;
+                    };
+
+                    $scope.states = $state.$current.path;
+                }
+            }
         };
 
         return directive;

@@ -10,13 +10,16 @@
     function DealController(DealService, dealPrepService) {
         var vm = this;
 
-        vm.deals = dealPrepService;
+        vm.prepDeals = dealPrepService;
+        vm.deals = vm.prepDeals.deals;
         vm.getDeals = getDeals;
         vm.hasDeleted = false;
         vm.response = {};
         vm.deleteDeal = deleteDeal;
+        vm.response = {};
+        vm.isDone = false;
 
-        activate();
+        //activate();
 
         ////////////////
 
@@ -26,7 +29,8 @@
 
         function getDeals() {
             return DealService.getAll().then(function(data) {
-                vm.deals = data;
+                vm.prepDeals = data;
+                vm.deals = vm.prepDeals.deals;
                 return vm.deals;
             });
         }
@@ -34,7 +38,7 @@
         function deleteDeal(deal) {
             bootbox.confirm({
                 title: "Confirm Delete",
-                message: "Are you sure you want to delete deal: <b>" + deal.title + "</b>?",
+                message: "Are you sure you want to delete deal: <b>" + deal.name + "</b>?",
                 buttons: {
                     confirm: {
                         label: 'Yes',
@@ -47,26 +51,28 @@
                 },
                 callback: function(result) {
                     if (result) {
-                        doDelete(deal.id);
+                        doDelete(deal);
                     }
                 }
             });
 
         }
 
-        function doDelete(id) {
-            DealService.delete(id).then(function(resp) {
+        function doDelete(deal) {
+            DealService.delete(deal.uid).then(function(resp) {
                 vm.hasDeleted = true;
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = resp.data.message;
+                vm.response['msg'] = "Deleted deal: " + deal.name;
                 getDeals();
                 vm.hasAdded = true;
+                vm.isDone = true;
             }).catch(function() {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to delete deal.";
+                vm.response['msg'] = "Failed to delete deal: " + deal.name;
                 vm.hasAdded = true;
+                vm.isDone = true;
             });
         }
     }

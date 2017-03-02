@@ -30,9 +30,8 @@ gulp.task('scripts', function() {
             './app/dashboard/*.js',
             './app/brand/*.js',
             './app/brand/*/*.js',
-            //'./app/category/*.js',
-            //'./app/post/*.js',
-            //'./app/tag/*.js'
+            './app/deals/*.js',
+            './app/deals/*/*.js'
         ])
         .pipe(concat('all.js'))
         .pipe(gulp.dest('./dist/js/'));

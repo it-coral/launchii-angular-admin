@@ -58,6 +58,10 @@
                     }
                 },
                 //"nav": nav
+            },
+            data: {
+                title: 'Dashboard',
+                breadcrumbs: true
             }
         };
 
@@ -75,6 +79,10 @@
                     }
                 },
                 //"nav": nav
+            },
+            data: {
+                title: 'Brand',
+                breadcrumbs: true
             }
         };
 
@@ -88,6 +96,10 @@
                     controller: "BrandAddController",
                     controllerAs: "vm"
                 }
+            },
+            data: {
+                title: 'Add',
+                breadcrumbs: true
             }
         };
 
@@ -104,6 +116,10 @@
                         prepSelBrand: prepSelBrand
                     }
                 }
+            },
+            data: {
+                title: 'Edit',
+                breadcrumbs: true
             }
         };
 
@@ -120,12 +136,16 @@
                         prepSelBrand: prepSelBrand
                     }
                 }
+            },
+            data: {
+                title: 'View',
+                breadcrumbs: true
             }
         };
 
         var deal = {
             name: "dashboard.deal",
-            url: "/deal",
+            url: "deal",
             parent: dashboard,
             views: {
                 "main_body": {
@@ -137,24 +157,36 @@
                     }
                 },
                 //"nav": nav
+            },
+            data: {
+                title: 'Deal',
+                breadcrumbs: true
             }
         };
 
         var dealAdd = {
-            name: "deal.add",
+            name: "dashboard.deal.add",
             url: "/add",
             parent: deal,
             views: {
                 "page_body": {
                     templateUrl: "/app/deals/deal.add.html",
                     controller: "DealAddController",
-                    controllerAs: "vm"
+                    controllerAs: "vm",
+                    resolve: {
+                        styleSheets: dateTimeStyleSheets,
+                        brandPrepService: brandPrepService
+                    }
                 }
+            },
+            data: {
+                title: 'Add',
+                breadcrumbs: true
             }
         };
 
         var dealEdit = {
-            name: "deal.edit",
+            name: "dashboard.deal.edit",
             url: "/edit/:id",
             parent: deal,
             views: {
@@ -163,9 +195,35 @@
                     controller: "DealEditController",
                     controllerAs: "vm",
                     resolve: {
+                        styleSheets: dateTimeStyleSheets,
+                        prepSelDeal: prepSelDeal,
+                        brandPrepService: brandPrepService
+                    }
+                }
+            },
+            data: {
+                title: 'Edit',
+                breadcrumbs: true
+            }
+        };
+
+        var dealView = {
+            name: "dashboard.deal.view",
+            url: "/:id",
+            parent: deal,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/deals/deal.view.html",
+                    controller: "DealViewController",
+                    controllerAs: "vm",
+                    resolve: {
                         prepSelDeal: prepSelDeal
                     }
                 }
+            },
+            data: {
+                title: 'View',
+                breadcrumbs: true
             }
         };
 
@@ -178,12 +236,25 @@
             .state(deal)
             .state(dealAdd)
             .state(dealEdit)
+            .state(dealView)
             .state(brand)
             .state(brandAdd)
             .state(brandEdit)
             .state(brandView);
 
         ////////////
+
+        dateTimeStyleSheets.$inject = ['HelperService'];
+        /* @ngInject */
+        function dateTimeStyleSheets(HelperService) {
+            var css = ['/templates/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+                '/templates/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
+                '/templates/assets/layouts/layout/css/layout.min.css',
+                '/templates/assets/layouts/layout/css/themes/darkblue.min.css',
+                '/templates/assets/layouts/layout/css/custom.min.css'
+            ];
+            HelperService.setCss(css);
+        }
 
         loginStyleSheets.$inject = ['HelperService'];
         /* @ngInject */
