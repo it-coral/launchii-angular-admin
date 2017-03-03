@@ -12,6 +12,7 @@
 
         vm.mode = "Add";
         vm.form = {};
+        vm.form.highlights = [];
         vm.response = {};
         vm.isDone = false;
         vm.brands = brandPrepService.brands;

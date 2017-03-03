@@ -526,6 +526,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function() {
+            console.log('test');
             AuthService.destroyAuthUser().then(function() {
                 //if (toState.name !== "auth") {
                 event.preventDefault();
@@ -912,16 +913,16 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             var headers = {};
 
             if (localStorage.getItem("access-token") !== null) {
-                headers["access-token"] = localStorage.getItem("access-token");
-                headers["client"] = localStorage.getItem("client");
-                headers["cache-control"] = localStorage.getItem("cache-control");
-                headers["content-type"] = localStorage.getItem("content-type");
-                headers["expiry"] = localStorage.getItem("expiry");
-                headers["token-type"] = localStorage.getItem("token-type");
-                headers["uid"] = localStorage.getItem("uid");
+                config.headers["access-token"] = localStorage.getItem("access-token");
+                config.headers["client"] = localStorage.getItem("client");
+                config.headers["cache-control"] = localStorage.getItem("cache-control");
+                config.headers["content-type"] = localStorage.getItem("content-type");
+                config.headers["expiry"] = localStorage.getItem("expiry");
+                config.headers["token-type"] = localStorage.getItem("token-type");
+                config.headers["uid"] = localStorage.getItem("uid");
             }
 
-            config.headers.common = headers;
+            //config.headers = headers;
 
             return config;
             /*
@@ -946,6 +947,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         }
 
         function responseError(response) {
+            console.log(response);
             if (response.status === 401) {
                 $rootScope.$broadcast('unauthorized');
             }
@@ -2211,6 +2213,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         vm.mode = "Add";
         vm.form = {};
+        vm.form.highlights = [];
         vm.response = {};
         vm.isDone = false;
         vm.brands = brandPrepService.brands;

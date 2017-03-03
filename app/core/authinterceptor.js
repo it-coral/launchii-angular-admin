@@ -21,16 +21,16 @@
             var headers = {};
 
             if (localStorage.getItem("access-token") !== null) {
-                headers["access-token"] = localStorage.getItem("access-token");
-                headers["client"] = localStorage.getItem("client");
-                headers["cache-control"] = localStorage.getItem("cache-control");
-                headers["content-type"] = localStorage.getItem("content-type");
-                headers["expiry"] = localStorage.getItem("expiry");
-                headers["token-type"] = localStorage.getItem("token-type");
-                headers["uid"] = localStorage.getItem("uid");
+                config.headers["access-token"] = localStorage.getItem("access-token");
+                config.headers["client"] = localStorage.getItem("client");
+                config.headers["cache-control"] = localStorage.getItem("cache-control");
+                config.headers["content-type"] = localStorage.getItem("content-type");
+                config.headers["expiry"] = localStorage.getItem("expiry");
+                config.headers["token-type"] = localStorage.getItem("token-type");
+                config.headers["uid"] = localStorage.getItem("uid");
             }
 
-            config.headers.common = headers;
+            //config.headers = headers;
 
             return config;
             /*
@@ -55,6 +55,7 @@
         }
 
         function responseError(response) {
+            console.log(response);
             if (response.status === 401) {
                 $rootScope.$broadcast('unauthorized');
             }

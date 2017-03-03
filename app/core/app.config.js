@@ -57,6 +57,7 @@
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function() {
+            console.log('test');
             AuthService.destroyAuthUser().then(function() {
                 //if (toState.name !== "auth") {
                 event.preventDefault();
