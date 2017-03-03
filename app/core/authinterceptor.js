@@ -29,7 +29,8 @@
                 config.headers["token-type"] = localStorage.getItem("token-type");
                 config.headers["uid"] = localStorage.getItem("uid");
             }
-
+            //console.log(localStorage.getItem("content-type"));
+            //console.log(config.headers["content-type"]);
             //config.headers = headers;
 
             return config;

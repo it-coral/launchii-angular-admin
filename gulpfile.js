@@ -8,6 +8,7 @@ gulp.task('scripts', function() {
             './node_modules/angular-resource/angular-resource.min.js',
             './node_modules/angular-ui-router/release/angular-ui-router.min.js',
             './node_modules/satellizer/dist/satellizer.min.js',
+            './node_modules/async/dist/async.min.js',
             //'./bower_components/angular-cookie/angular-cookie.min.js',
             //'./bower_components/angular-cookies/angular-cookies.min.js',
             //'./bower_components/ng-token-auth/dist/ng-token-auth.js',

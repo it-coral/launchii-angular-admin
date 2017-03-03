@@ -19,12 +19,48 @@
             getAll: getAll,
             find: find,
             findInList: findInList,
-            isEmpty: isEmpty
+            isEmpty: isEmpty,
+            addHighlights: addHighlights
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function addHighlights(dealId, highlights) {
+            var d = $q.defer();
+
+            var url = api + '/' + id + 'highlights';
+
+            var tasks = [];
+            angular.forEach(highlights, function(val, key) {
+                tasks.push(handleCb);
+
+                function handleCb(cb) {
+                    $http.post(url, highlights).then(function(resp) {
+                        //d.resolve(resp);
+                        cb(null, resp);
+                    }).catch(function(err) {
+                        // console.log(error);
+                        // service.errors = error;
+                        // d.reject(error);
+                        cb(err);
+                    });
+                }
+
+            });
+
+            async.parallel(tasks, function(error, results) {
+                if (error) {
+                    d.reject(error);
+                } else {
+                    d.resolve(results);
+                }
+
+            });
+
+            return d.promise;
+        }
 
         function isEmpty() {
             if (!angular.isDefined(service.lists.deals)) {

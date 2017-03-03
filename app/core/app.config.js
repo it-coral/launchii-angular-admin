@@ -56,14 +56,14 @@
         bootstrap3ElementModifier.enableValidationStateIcons(true);
         var curr_state_name = $state.current.name;
 
-        $rootScope.$on('unauthorized', function() {
+        $rootScope.$on('unauthorized', function(event) {
             console.log('test');
-            AuthService.destroyAuthUser().then(function() {
-                //if (toState.name !== "auth") {
-                event.preventDefault();
-                $state.go('auth');
-                //}
-            });
+            //AuthService.destroyAuthUser().then(function() {
+            //if (toState.name !== "auth") {
+            event.preventDefault();
+            $state.go('auth');
+            //}
+            //});
         });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
