@@ -23,7 +23,7 @@
 
         //$httpProvider.defaults.withCredentials = true;
         $resourceProvider.defaults.stripTrailingSlashes = false;
-        //$httpProvider.interceptors.push('myInterceptor');
+        $httpProvider.interceptors.push('authInterceptor');
     }
 
     // csrf.$inject = ['$http', '$cookies'];
@@ -56,6 +56,15 @@
         bootstrap3ElementModifier.enableValidationStateIcons(true);
         var curr_state_name = $state.current.name;
 
+        $rootScope.$on('unauthorized', function() {
+            AuthService.destroyAuthUser().then(function() {
+                //if (toState.name !== "auth") {
+                event.preventDefault();
+                $state.go('auth');
+                //}
+            });
+        });
+
         $rootScope.$on('$stateChangeStart', function(event, toState) {
             ngProgressLite.start();
 
@@ -65,7 +74,7 @@
             if (localStorage.getItem('user') != 'undefined') {
                 var user = JSON.parse(localStorage.getItem('user'));
                 if (user && $auth.isAuthenticated()) {
-                    AuthService.setHeaders();
+                    //AuthService.setHeaders();
                     //if (user && $auth.validateUser()) {
                     $rootScope.authenticated = true;
                     $rootScope.currentUser = user;
@@ -75,12 +84,13 @@
                         $state.go('dashboard');
                     }
                 } else {
-                    AuthService.destroyAuthUser().then(function() {
-                        if (toState.name !== "auth") {
-                            event.preventDefault();
-                            $state.go('auth');
-                        }
-                    });
+                    ngProgressLite.done();
+                    //AuthService.destroyAuthUser().then(function() {
+                    if (toState.name !== "auth") {
+                        event.preventDefault();
+                        $state.go('auth');
+                    }
+                    //});
                     // localStorage.removeItem('user');
                     // $rootScope.authenticated = false;
                     // $rootScope.currentUser = null;
@@ -91,6 +101,7 @@
                     // }
                 }
             }
+
         });
 
         $rootScope.$on('$stateChangeSuccess', function(event, toState) {

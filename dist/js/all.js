@@ -492,7 +492,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         //$httpProvider.defaults.withCredentials = true;
         $resourceProvider.defaults.stripTrailingSlashes = false;
-        //$httpProvider.interceptors.push('myInterceptor');
+        $httpProvider.interceptors.push('authInterceptor');
     }
 
     // csrf.$inject = ['$http', '$cookies'];
@@ -525,6 +525,15 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         bootstrap3ElementModifier.enableValidationStateIcons(true);
         var curr_state_name = $state.current.name;
 
+        $rootScope.$on('unauthorized', function() {
+            AuthService.destroyAuthUser().then(function() {
+                //if (toState.name !== "auth") {
+                event.preventDefault();
+                $state.go('auth');
+                //}
+            });
+        });
+
         $rootScope.$on('$stateChangeStart', function(event, toState) {
             ngProgressLite.start();
 
@@ -534,7 +543,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             if (localStorage.getItem('user') != 'undefined') {
                 var user = JSON.parse(localStorage.getItem('user'));
                 if (user && $auth.isAuthenticated()) {
-                    AuthService.setHeaders();
+                    //AuthService.setHeaders();
                     //if (user && $auth.validateUser()) {
                     $rootScope.authenticated = true;
                     $rootScope.currentUser = user;
@@ -544,12 +553,13 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                         $state.go('dashboard');
                     }
                 } else {
-                    AuthService.destroyAuthUser().then(function() {
-                        if (toState.name !== "auth") {
-                            event.preventDefault();
-                            $state.go('auth');
-                        }
-                    });
+                    ngProgressLite.done();
+                    //AuthService.destroyAuthUser().then(function() {
+                    if (toState.name !== "auth") {
+                        event.preventDefault();
+                        $state.go('auth');
+                    }
+                    //});
                     // localStorage.removeItem('user');
                     // $rootScope.authenticated = false;
                     // $rootScope.currentUser = null;
@@ -560,6 +570,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     // }
                 }
             }
+
         });
 
         $rootScope.$on('$stateChangeSuccess', function(event, toState) {
@@ -882,14 +893,15 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     'use strict';
 
     angular.module('app')
-        .factory('myInterceptor', myInterceptor);
+        .factory('authInterceptor', authInterceptor);
 
-    myInterceptor.$inject = ['$q', '$rootScope', '$injector', 'CONST'];
+    authInterceptor.$inject = ['$q', '$rootScope', '$injector', 'CONST'];
 
     /* @ngInject */
-    function myInterceptor($q, $rootScope, $injector, CONST) {
+    function authInterceptor($q, $rootScope, $injector, CONST) {
         var interceptor = {
-            request: request
+            request: request,
+            responseError: responseError
         }
 
         return interceptor;
@@ -897,6 +909,22 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         ////////////////
 
         function request(config) {
+            var headers = {};
+
+            if (localStorage.getItem("access-token") !== null) {
+                headers["access-token"] = localStorage.getItem("access-token");
+                headers["client"] = localStorage.getItem("client");
+                headers["cache-control"] = localStorage.getItem("cache-control");
+                headers["content-type"] = localStorage.getItem("content-type");
+                headers["expiry"] = localStorage.getItem("expiry");
+                headers["token-type"] = localStorage.getItem("token-type");
+                headers["uid"] = localStorage.getItem("uid");
+            }
+
+            config.headers.common = headers;
+
+            return config;
+            /*
             var d = $q.defer();
             var $state = $injector.get('$state');
 
@@ -914,7 +942,14 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             }
 
             return d.promise;
+            */
+        }
 
+        function responseError(response) {
+            if (response.status === 401) {
+                $rootScope.$broadcast('unauthorized');
+            }
+            return response;
         }
     }
 
@@ -1424,6 +1459,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 if (typeof response === 'undefined' || response === false) {
                     d.reject();
                 } else {
+                    $rootScope.$broadcast('authorized');
+
                     var user = JSON.stringify(response.data.user);
 
                     localStorage.setItem('user', user);

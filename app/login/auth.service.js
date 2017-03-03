@@ -87,6 +87,8 @@
                 if (typeof response === 'undefined' || response === false) {
                     d.reject();
                 } else {
+                    $rootScope.$broadcast('authorized');
+
                     var user = JSON.stringify(response.data.user);
 
                     localStorage.setItem('user', user);

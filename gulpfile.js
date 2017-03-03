@@ -20,7 +20,7 @@ gulp.task('scripts', function() {
             //'./app/core/exceptionhandler.js',
             './app/core/app.config.js',
             './app/core/app.route.js',
-            './app/core/requestinterceptor.js',
+            './app/core/authinterceptor.js',
             './app/core/app.helpers.js',
             './app/nav/*.js',
             './app/nav/*/*.js',
