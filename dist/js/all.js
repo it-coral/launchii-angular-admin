@@ -1256,7 +1256,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
             },
             link: function(scope, element) {
-                console.log('test');
 
                 // document.querySelectorAll('input.date-picker').forEach(function(el) {
                 //     el.value = HelperService.getDateNow();
@@ -2252,7 +2251,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         vm.mode = "Add";
         vm.form = {};
-        vm.form.highlights = [];
+        vm.form.highlights = {};
         vm.response = {};
         vm.isDone = false;
         vm.brands = brandPrepService.brands;
@@ -2261,12 +2260,19 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addDeal;
 
+        activate();
+
         ///////////////////
 
-        function addDeal() {
-            vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
-            vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
+        function activate() {
+            ComponentsDateTimePickers.init();
+        }
 
+        function addDeal() {
+            //vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
+            //vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
+            //console.log(vm.form.highlights);
+            //return false;
             DealService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
@@ -2386,6 +2392,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.dealId = $stateParams.id;
         vm.selectedDeal = prepSelDeal;
         vm.form = vm.selectedDeal;
+        vm.form.highlights = vm.selectedDeal.highlights;
         vm.isDone = false;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
@@ -2466,4 +2473,108 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             });
         }
     }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('HighlightController', HighlightController);
+
+    HighlightController.$inject = ['$scope', '$compile'];
+
+    /* @ngInject */
+    function HighlightController($scope, $compile) {
+        var hl = this;
+
+        hl.remove = remove;
+        hl.counter = 0;
+        hl.increCounter = increCounter;
+        hl.modelo = {};
+        hl.we = 'test';
+
+        //////////////
+
+        function remove(target) {
+            var parent = $(target).parent();
+
+            parent.remove();
+        }
+
+        function increCounter() {
+            hl.counter++;
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('addHighlight', addHighlight);
+
+    addHighlight.$inject = ['$compile'];
+    /* @ngInject */
+    function addHighlight($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/highlight.html',
+            replace: true,
+            scope: {
+                fieldModel: '=',
+                formMode: '='
+            },
+            transclude: true,
+            link: function(scope, element, attrs) {
+                element.find('button#add-highlight-btn').bind('click', function() {
+                    var html = '<highlight-field ></highlight-field>';
+
+                    var input = angular.element(html);
+
+                    var compile = $compile(input)(scope);
+
+                    element.find('#highlight-container').append(input);
+
+                    scope.hl.increCounter();
+                });
+
+            },
+            controller: 'HighlightController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('highlightField', highlightField);
+
+    highlightField.$inject = ['$compile'];
+    /* @ngInject */
+    function highlightField($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/highlight-field.html',
+            replace: true,
+            scope: true,
+            link: function(scope, element, attrs) {
+                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
+                scope.hl.counter = scope.$parent.hl.counter;
+                scope.hl.formMode = scope.$parent.hl.formMode;
+            },
+            controller: 'HighlightController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
 })();

@@ -15,6 +15,7 @@
         vm.dealId = $stateParams.id;
         vm.selectedDeal = prepSelDeal;
         vm.form = vm.selectedDeal;
+        vm.form.highlights = vm.selectedDeal.highlights;
         vm.isDone = false;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];

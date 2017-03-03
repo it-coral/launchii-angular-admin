@@ -77,6 +77,18 @@
                                 <p>{{ vm.deal.date_end.date }} {{ vm.deal.date_end.time }}</p>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3">Highlights</label>
+                            <div class="col-md-9" ng-if="vm.deal.highlights.length == 0">
+                                <h4>No Highlights</h4>
+                            </div>
+                            <div class="col-md-9" ng-if="vm.deal.highlights">
+                                <ul>
+                                    <li ng-repeat="h in vm.deal.highlights" ng-bind="h.title"></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
                 </form>

@@ -12,7 +12,7 @@
 
         vm.mode = "Add";
         vm.form = {};
-        vm.form.highlights = [];
+        vm.form.highlights = {};
         vm.response = {};
         vm.isDone = false;
         vm.brands = brandPrepService.brands;
@@ -21,12 +21,19 @@
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addDeal;
 
+        activate();
+
         ///////////////////
 
-        function addDeal() {
-            vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
-            vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
+        function activate() {
+            ComponentsDateTimePickers.init();
+        }
 
+        function addDeal() {
+            //vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
+            //vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
+            //console.log(vm.form.highlights);
+            //return false;
             DealService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";

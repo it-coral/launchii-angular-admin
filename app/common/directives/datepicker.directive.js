@@ -15,7 +15,6 @@
 
             },
             link: function(scope, element) {
-                console.log('test');
 
                 // document.querySelectorAll('input.date-picker').forEach(function(el) {
                 //     el.value = HelperService.getDateNow();
