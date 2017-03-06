@@ -2903,8 +2903,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.userId = $stateParams.id;
         vm.selectedUser = prepSelUser;
         vm.form = vm.selectedUser;
-        vm.defaultRole = vm.form.role;
-        vm.defaultStatus = vm.form.status;
+        vm.defaultRole = 'admin';
+        vm.defaultStatus = 'active';
         vm.isDone = false;
 
         vm.prevState = HelperService.getPrevState();
@@ -3049,8 +3049,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                                 user['role'] = 'admin';
                             } else if (user.is_vendor) {
                                 user['role'] = 'vendor';
-                            } else if (iser.is_customer) {
+                            } else if (user.is_customer) {
                                 user['role'] = 'customer';
+                            } else {
+                                user['role'] = '';
                             }
 
                             user['status'] = (user.is_active) ? 'active' : 'inactive';
@@ -3066,7 +3068,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     });
                 }
             } else {
-                d.resolve('User does not exist.');
+                d.reject('User does not exist.');
             }
 
             return d.promise;

@@ -15,8 +15,8 @@
         vm.userId = $stateParams.id;
         vm.selectedUser = prepSelUser;
         vm.form = vm.selectedUser;
-        vm.defaultRole = vm.form.role;
-        vm.defaultStatus = vm.form.status;
+        vm.defaultRole = 'admin';
+        vm.defaultStatus = 'active';
         vm.isDone = false;
 
         vm.prevState = HelperService.getPrevState();

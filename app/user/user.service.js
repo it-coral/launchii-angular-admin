@@ -80,8 +80,10 @@
                                 user['role'] = 'admin';
                             } else if (user.is_vendor) {
                                 user['role'] = 'vendor';
-                            } else if (iser.is_customer) {
+                            } else if (user.is_customer) {
                                 user['role'] = 'customer';
+                            } else {
+                                user['role'] = '';
                             }
 
                             user['status'] = (user.is_active) ? 'active' : 'inactive';
@@ -97,7 +99,7 @@
                     });
                 }
             } else {
-                d.resolve('User does not exist.');
+                d.reject('User does not exist.');
             }
 
             return d.promise;
