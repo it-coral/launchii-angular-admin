@@ -11,10 +11,14 @@
     <div class="form-group">
         <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
         <label class="control-label visible-ie8 visible-ie9">Email</label>
-        <input class="form-control form-control-solid placeholder-no-fix" type="email" autocomplete="off" placeholder="Email" name="email" ng-model="vm.form.email" required autofocus /> </div>
+        <div class="input-icon right">
+            <input class="form-control form-control-solid placeholder-no-fix" type="email" autocomplete="off" placeholder="Email" name="email" ng-model="vm.form.email" required autofocus />
+        </div>
+    </div>
     <div class="form-group">
         <label class="control-label visible-ie8 visible-ie9">Password</label>
-        <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" ng-minlength="3" ng-model="vm.form.password" required /> </div>
+        <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" ng-minlength="3" ng-model="vm.form.password" required />
+    </div>
     <div class="form-actions">
         <button type="submit" class="btn green uppercase">Login</button>
         <label class="rememberme check mt-checkbox mt-checkbox-outline">
@@ -23,7 +27,7 @@
                     </label>
         <a href="javascript:;" id="forget-password" class="forget-password">Forgot Password?</a>
     </div>
-    <div class="login-options">
+    <!--<div class="login-options">
         <h4>Or login with</h4>
         <ul class="social-icons">
             <li>
@@ -39,7 +43,7 @@
                 <a class="social-icon-color linkedin" data-original-title="Linkedin" href="javascript:;"></a>
             </li>
         </ul>
-    </div>
+    </div>-->
     <div class="create-account">
         <p>
             <a href="javascript:;" id="register-btn" class="uppercase">Create an account</a>

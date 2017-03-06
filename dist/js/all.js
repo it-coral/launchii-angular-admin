@@ -524,7 +524,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService'];
     /* @ngInject */
     function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService) {
-        bootstrap3ElementModifier.enableValidationStateIcons(true);
+        //bootstrap3ElementModifier.enableValidationStateIcons(true);
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {

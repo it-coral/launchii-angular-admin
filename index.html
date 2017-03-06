@@ -37,6 +37,12 @@ License: You must have a valid license purchased only from themeforest(the above
     <!-- BEGIN PAGE LEVEL PLUGINS -->
     <link href="/templates/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
     <link href="/templates/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/templates/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
+    <link href="/templates/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+    <link href="/templates/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="/templates/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
+    <link href="/templates/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css" />
+    <link href="/templates/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
     <!-- END PAGE LEVEL PLUGINS -->
     <!-- BEGIN THEME GLOBAL STYLES -->
     <link href="/templates/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
@@ -63,8 +69,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white" ng-class="{'login': !$root.authenticated}">
     <!-- BEGIN LOGO -->
     <div class="logo" ng-if="!$root.authenticated">
-        <a ui-sref="dashboard">
-            <img src="/templates/assets/pages/img/logo-big.png" alt="" /> </a>
+        <!--<img src="/templates/assets/pages/img/logo-big.png" alt="" /> </a>-->
+        <h2 class="font-white">Launchii</h2>
     </div>
     <!-- END LOGO -->
 

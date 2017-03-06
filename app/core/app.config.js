@@ -53,7 +53,7 @@
     run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService'];
     /* @ngInject */
     function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService) {
-        bootstrap3ElementModifier.enableValidationStateIcons(true);
+        //bootstrap3ElementModifier.enableValidationStateIcons(true);
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {
