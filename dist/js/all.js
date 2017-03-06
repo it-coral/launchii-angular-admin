@@ -1394,7 +1394,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             destroyAuthUser: destroyAuthUser,
             getAuthUser: getAuthUser,
             logout: logout,
-            setHeaders: setHeaders
+            setHeaders: setHeaders,
+            removeUserStorage: removeUserStorage
         }
 
         return service;
@@ -1525,13 +1526,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
                 $http.delete(url, data)
                     .then(function(resp) {
-                        $auth.logout();
-                        localStorage.clear();
-                        // localStorage.removeItem('user');
-                        // localStorage.removeItem('client');
-                        // localStorage.removeItem('access-token');
-                        $rootScope.authenticated = false;
-                        $rootScope.currentUser = null;
+                        removeUserStorage();
                         d.resolve(true);
 
                     }).catch(function(error) {
@@ -1543,6 +1538,16 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             d.resolve(true);
 
             return d.promise;
+        }
+
+        function removeUserStorage() {
+            $auth.logout();
+            localStorage.clear();
+            // localStorage.removeItem('user');
+            // localStorage.removeItem('client');
+            // localStorage.removeItem('access-token');
+            $rootScope.authenticated = false;
+            $rootScope.currentUser = null;
         }
 
         function getAuthUser() {
@@ -1686,7 +1691,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     d.resolve(results);
                 } else {
                     $http.get(url, { query: str }).then(function(resp) {
-                        console.log(resp);
                         service.searchedList = resp.data;
                         d.resolve(resp.data.brands);
                     }).catch(function(err) {

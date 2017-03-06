@@ -18,7 +18,8 @@
             destroyAuthUser: destroyAuthUser,
             getAuthUser: getAuthUser,
             logout: logout,
-            setHeaders: setHeaders
+            setHeaders: setHeaders,
+            removeUserStorage: removeUserStorage
         }
 
         return service;
@@ -149,13 +150,7 @@
 
                 $http.delete(url, data)
                     .then(function(resp) {
-                        $auth.logout();
-                        localStorage.clear();
-                        // localStorage.removeItem('user');
-                        // localStorage.removeItem('client');
-                        // localStorage.removeItem('access-token');
-                        $rootScope.authenticated = false;
-                        $rootScope.currentUser = null;
+                        removeUserStorage();
                         d.resolve(true);
 
                     }).catch(function(error) {
@@ -167,6 +162,16 @@
             d.resolve(true);
 
             return d.promise;
+        }
+
+        function removeUserStorage() {
+            $auth.logout();
+            localStorage.clear();
+            // localStorage.removeItem('user');
+            // localStorage.removeItem('client');
+            // localStorage.removeItem('access-token');
+            $rootScope.authenticated = false;
+            $rootScope.currentUser = null;
         }
 
         function getAuthUser() {

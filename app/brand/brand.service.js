@@ -47,7 +47,6 @@
                     d.resolve(results);
                 } else {
                     $http.get(url, { query: str }).then(function(resp) {
-                        console.log(resp);
                         service.searchedList = resp.data;
                         d.resolve(resp.data.brands);
                     }).catch(function(err) {
