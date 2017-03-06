@@ -5,9 +5,9 @@
         .module('app')
         .directive('breadCrumbs', breadCrumbs);
 
-    breadCrumbs.$inject = ['$state', '$stateParams'];
+    breadCrumbs.$inject = ['$state', '$stateParams', 'BreadCrumbService'];
     /* @ngInject */
-    function breadCrumbs($state, $stateParams) {
+    function breadCrumbs($state, $stateParams, BreadCrumbService) {
 
         var directive = {
             restrict: 'E',
@@ -15,16 +15,21 @@
             replace: true,
             compile: function(tElement, tAttrs) {
                 return function($scope, $elem, $attr) {
-                    $scope.show = function(state) {
-                        if (!angular.isDefined(state.data)) {
-                            return false;
-                        } else if (!angular.isDefined(state.data.breadcrumbs)) {
+
+                    $scope.states = BreadCrumbService.getCrumbs();
+
+                    $scope.show = function() {
+
+                        if ($scope.states.length == 0) {
                             return false;
                         }
+
                         return true;
                     };
 
-                    $scope.states = $state.$current.path;
+                    $scope.$watch(BreadCrumbService.getCrumbs(), function() {
+                        //console.log('crumb test');
+                    });
                 }
             }
         };

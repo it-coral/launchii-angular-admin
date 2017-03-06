@@ -521,14 +521,14 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         $http.defaults.headers.common = headers;
     }
 
-    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService'];
+    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService'];
     /* @ngInject */
-    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService) {
+    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService) {
         //bootstrap3ElementModifier.enableValidationStateIcons(true);
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {
-            console.log('test');
+            //console.log('test');
             AuthService.removeUserStorage();
             //AuthService.destroyAuthUser().then(function() {
             //if (toState.name !== "auth") {
@@ -539,6 +539,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
+            BreadCrumbService.set(toState.name);
             ngProgressLite.start();
 
 
@@ -951,7 +952,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         }
 
         function responseError(response) {
-            console.log(response);
+            //console.log(response);
             if (response.status === 401) {
                 $rootScope.$broadcast('unauthorized');
             }
@@ -1212,9 +1213,9 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         .module('app')
         .directive('breadCrumbs', breadCrumbs);
 
-    breadCrumbs.$inject = ['$state', '$stateParams'];
+    breadCrumbs.$inject = ['$state', '$stateParams', 'BreadCrumbService'];
     /* @ngInject */
-    function breadCrumbs($state, $stateParams) {
+    function breadCrumbs($state, $stateParams, BreadCrumbService) {
 
         var directive = {
             restrict: 'E',
@@ -1222,16 +1223,21 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             replace: true,
             compile: function(tElement, tAttrs) {
                 return function($scope, $elem, $attr) {
-                    $scope.show = function(state) {
-                        if (!angular.isDefined(state.data)) {
-                            return false;
-                        } else if (!angular.isDefined(state.data.breadcrumbs)) {
+
+                    $scope.states = BreadCrumbService.getCrumbs();
+
+                    $scope.show = function() {
+
+                        if ($scope.states.length == 0) {
                             return false;
                         }
+
                         return true;
                     };
 
-                    $scope.states = $state.$current.path;
+                    $scope.$watch(BreadCrumbService.getCrumbs(), function() {
+                        //console.log('crumb test');
+                    });
                 }
             }
         };
@@ -1372,6 +1378,46 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 });
             }
         };
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .factory('BreadCrumbService', BreadCrumbService);
+
+    BreadCrumbService.$inject = [];
+
+    /* @ngInject */
+    function BreadCrumbService() {
+
+        var service = {
+            crumbs: [],
+            set: set,
+            getCrumbs: getCrumbs
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function getCrumbs() {
+            return service.crumbs;
+        }
+
+        function set(str) {
+            //console.log('test')
+            var res = str.split('.');
+            service.crumbs = [];
+            angular.forEach(res, function(val, index) {
+                service.crumbs.push(ucFirst(val));
+            });
+        }
+
+        function ucFirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
     }
 
 })();

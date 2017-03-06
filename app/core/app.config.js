@@ -50,14 +50,14 @@
         $http.defaults.headers.common = headers;
     }
 
-    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService'];
+    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService'];
     /* @ngInject */
-    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService) {
+    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService) {
         //bootstrap3ElementModifier.enableValidationStateIcons(true);
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {
-            console.log('test');
+            //console.log('test');
             AuthService.removeUserStorage();
             //AuthService.destroyAuthUser().then(function() {
             //if (toState.name !== "auth") {
@@ -68,6 +68,7 @@
         });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
+            BreadCrumbService.set(toState.name);
             ngProgressLite.start();
 
 

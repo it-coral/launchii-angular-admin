@@ -56,7 +56,7 @@
         }
 
         function responseError(response) {
-            console.log(response);
+            //console.log(response);
             if (response.status === 401) {
                 $rootScope.$broadcast('unauthorized');
             }

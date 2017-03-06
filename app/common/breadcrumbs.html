@@ -1,9 +1,9 @@
 <!-- BEGIN PAGE BAR -->
 <div class="page-bar">
     <ul class="page-breadcrumb">
-        <li ng-repeat="state in states | filter: show">
-            <a ng-if="!$last" href="{{ state.url.format($stateParams) }}">{{ state.data.title }}</a>
-            <span ng-if="$last">{{ state.data.title }}</span>
+        <li ng-repeat="state in states | filter: show track by $index">
+            <a ng-if="!$last">{{ state }}</a>
+            <span ng-if="$last">{{ state }}</span>
             <i class="fa fa-circle" ng-if="!$last"></i>
         </li>
     </ul>
