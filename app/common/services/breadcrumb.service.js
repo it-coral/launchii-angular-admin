@@ -24,11 +24,18 @@
         }
 
         function set(str) {
-            //console.log('test')
             var res = str.split('.');
+            var state = '';
             service.crumbs = [];
             angular.forEach(res, function(val, index) {
-                service.crumbs.push(ucFirst(val));
+                if (index == 0) {
+                    state = val;
+                } else {
+                    state += '.' + val;
+                }
+
+                var obj = { name: ucFirst(val), state: state };
+                service.crumbs.push(obj);
             });
         }
 

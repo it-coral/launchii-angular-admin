@@ -540,6 +540,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
             BreadCrumbService.set(toState.name);
+            $rootScope.crumbs = BreadCrumbService.getCrumbs();
+
             ngProgressLite.start();
 
 
@@ -1221,25 +1223,25 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             restrict: 'E',
             templateUrl: '/app/common/breadcrumbs.html',
             replace: true,
-            compile: function(tElement, tAttrs) {
-                return function($scope, $elem, $attr) {
+            // compile: function(tElement, tAttrs) {
+            //     return function($scope, $elem, $attr) {
 
-                    $scope.states = BreadCrumbService.getCrumbs();
+            //         $scope.states = BreadCrumbService.getCrumbs();
 
-                    $scope.show = function() {
+            //         $scope.show = function() {
 
-                        if ($scope.states.length == 0) {
-                            return false;
-                        }
+            //             if ($scope.states.length == 0) {
+            //                 return false;
+            //             }
 
-                        return true;
-                    };
+            //             return true;
+            //         };
 
-                    $scope.$watch(BreadCrumbService.getCrumbs(), function() {
-                        //console.log('crumb test');
-                    });
-                }
-            }
+            //         $scope.$watch(BreadCrumbService.getCrumbs(), function() {
+            //             console.log('crumb test');
+            //         });
+            //     }
+            // }
         };
 
         return directive;
@@ -1407,11 +1409,18 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         }
 
         function set(str) {
-            //console.log('test')
             var res = str.split('.');
+            var state = '';
             service.crumbs = [];
             angular.forEach(res, function(val, index) {
-                service.crumbs.push(ucFirst(val));
+                if (index == 0) {
+                    state = val;
+                } else {
+                    state += '.' + val;
+                }
+
+                var obj = { name: ucFirst(val), state: state };
+                service.crumbs.push(obj);
             });
         }
 

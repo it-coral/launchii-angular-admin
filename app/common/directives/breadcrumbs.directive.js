@@ -13,25 +13,25 @@
             restrict: 'E',
             templateUrl: '/app/common/breadcrumbs.html',
             replace: true,
-            compile: function(tElement, tAttrs) {
-                return function($scope, $elem, $attr) {
+            // compile: function(tElement, tAttrs) {
+            //     return function($scope, $elem, $attr) {
 
-                    $scope.states = BreadCrumbService.getCrumbs();
+            //         $scope.states = BreadCrumbService.getCrumbs();
 
-                    $scope.show = function() {
+            //         $scope.show = function() {
 
-                        if ($scope.states.length == 0) {
-                            return false;
-                        }
+            //             if ($scope.states.length == 0) {
+            //                 return false;
+            //             }
 
-                        return true;
-                    };
+            //             return true;
+            //         };
 
-                    $scope.$watch(BreadCrumbService.getCrumbs(), function() {
-                        //console.log('crumb test');
-                    });
-                }
-            }
+            //         $scope.$watch(BreadCrumbService.getCrumbs(), function() {
+            //             console.log('crumb test');
+            //         });
+            //     }
+            // }
         };
 
         return directive;

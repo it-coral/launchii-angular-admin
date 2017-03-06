@@ -69,6 +69,8 @@
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
             BreadCrumbService.set(toState.name);
+            $rootScope.crumbs = BreadCrumbService.getCrumbs();
+
             ngProgressLite.start();
 
 

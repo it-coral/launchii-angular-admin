@@ -1,9 +1,9 @@
 <!-- BEGIN PAGE BAR -->
 <div class="page-bar">
     <ul class="page-breadcrumb">
-        <li ng-repeat="state in states | filter: show track by $index">
-            <a ng-if="!$last">{{ state }}</a>
-            <span ng-if="$last">{{ state }}</span>
+        <li ng-repeat="crumb in $root.crumbs track by $index">
+            <a ng-if="!$last" ui-sref="{{crumb.state}}">{{ crumb.name }}</a>
+            <span ng-if="$last">{{ crumb.name }}</span>
             <i class="fa fa-circle" ng-if="!$last"></i>
         </li>
     </ul>
