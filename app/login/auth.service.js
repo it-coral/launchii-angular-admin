@@ -37,6 +37,7 @@
         }
 
         function login(credentials) {
+            $rootScope.loginError = null;
             var d = $q.defer();
 
             // var credentials = {

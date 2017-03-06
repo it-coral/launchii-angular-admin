@@ -58,11 +58,13 @@
 
         $rootScope.$on('unauthorized', function(event) {
             //console.log('test');
+            $rootScope.loginError = "Your session has expired. Please login again.";
             AuthService.removeUserStorage();
             //AuthService.destroyAuthUser().then(function() {
             //if (toState.name !== "auth") {
             event.preventDefault();
             $state.go('auth');
+            ngProgressLite.done();
             //}
             //});
         });

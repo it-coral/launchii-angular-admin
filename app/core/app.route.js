@@ -44,7 +44,7 @@
                 }
             }
         };
-
+        //Dashboard routes
         var dashboard = {
             name: "dashboard",
             url: "/",
@@ -54,17 +54,16 @@
                     controller: "DashboardController",
                     controllerAs: "vm",
                     resolve: {
-                        styleSheets: dashboardStyleSheets
+                        styleSheets: dashboardStyleSheets,
+                        userPrepService: userPrepService
                     }
                 },
                 //"nav": nav
-            },
-            data: {
-                title: 'Dashboard',
-                breadcrumbs: true
             }
         };
+        //END Dashboard Route
 
+        //Brand routes
         var brand = {
             name: "dashboard.brand",
             url: "brand",
@@ -79,10 +78,6 @@
                     }
                 },
                 //"nav": nav
-            },
-            data: {
-                title: 'Brand',
-                breadcrumbs: true
             }
         };
 
@@ -96,10 +91,6 @@
                     controller: "BrandAddController",
                     controllerAs: "vm"
                 }
-            },
-            data: {
-                title: 'Add',
-                breadcrumbs: true
             }
         };
 
@@ -116,10 +107,6 @@
                         prepSelBrand: prepSelBrand
                     }
                 }
-            },
-            data: {
-                title: 'Edit',
-                breadcrumbs: true
             }
         };
 
@@ -136,13 +123,11 @@
                         prepSelBrand: prepSelBrand
                     }
                 }
-            },
-            data: {
-                title: 'View',
-                breadcrumbs: true
             }
         };
+        //END Brand routes
 
+        //Deal routes
         var deal = {
             name: "dashboard.deal",
             url: "deal",
@@ -157,10 +142,6 @@
                     }
                 },
                 //"nav": nav
-            },
-            data: {
-                title: 'Deal',
-                breadcrumbs: true
             }
         };
 
@@ -178,10 +159,6 @@
                         brandPrepService: brandPrepService
                     }
                 }
-            },
-            data: {
-                title: 'Add',
-                breadcrumbs: true
             }
         };
 
@@ -200,10 +177,6 @@
                         brandPrepService: brandPrepService
                     }
                 }
-            },
-            data: {
-                title: 'Edit',
-                breadcrumbs: true
             }
         };
 
@@ -220,10 +193,41 @@
                         prepSelDeal: prepSelDeal
                     }
                 }
-            },
-            data: {
-                title: 'View',
-                breadcrumbs: true
+            }
+        };
+        //END Deal routes
+
+        //User routes
+        var user = {
+            name: "dashboard.user",
+            url: "user",
+            parent: dashboard,
+            views: {
+                "main_body": {
+                    templateUrl: "/app/user/user.html",
+                    controller: "UserController",
+                    controllerAs: "vm",
+                    resolve: {
+                        userPrepService: userPrepService
+                    }
+                },
+                //"nav": nav
+            }
+        };
+
+        var userEdit = {
+            name: "dashboard.user.edit",
+            url: "/edit/:id",
+            parent: user,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/user/user.add.html",
+                    controller: "UserEditController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelUser: prepSelUser
+                    }
+                }
             }
         };
 
@@ -240,9 +244,23 @@
             .state(brand)
             .state(brandAdd)
             .state(brandEdit)
-            .state(brandView);
+            .state(brandView)
+            .state(user)
+            .state(userEdit);
 
         ////////////
+
+        prepSelUser.$inject = ['$stateParams', 'UserService'];
+        /* @ngInject */
+        function prepSelUser($stateParams, UserService) {
+            return UserService.findInList($stateParams.id);
+        }
+
+        userPrepService.$inject = ['UserService'];
+        /* @ngInject */
+        function userPrepService(UserService) {
+            return UserService.getAll();
+        }
 
         dateTimeStyleSheets.$inject = ['HelperService'];
         /* @ngInject */

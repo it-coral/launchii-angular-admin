@@ -529,11 +529,13 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         $rootScope.$on('unauthorized', function(event) {
             //console.log('test');
+            $rootScope.loginError = "Your session has expired. Please login again.";
             AuthService.removeUserStorage();
             //AuthService.destroyAuthUser().then(function() {
             //if (toState.name !== "auth") {
             event.preventDefault();
             $state.go('auth');
+            ngProgressLite.done();
             //}
             //});
         });
@@ -635,7 +637,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 }
             }
         };
-
+        //Dashboard routes
         var dashboard = {
             name: "dashboard",
             url: "/",
@@ -645,17 +647,16 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     controller: "DashboardController",
                     controllerAs: "vm",
                     resolve: {
-                        styleSheets: dashboardStyleSheets
+                        styleSheets: dashboardStyleSheets,
+                        userPrepService: userPrepService
                     }
                 },
                 //"nav": nav
-            },
-            data: {
-                title: 'Dashboard',
-                breadcrumbs: true
             }
         };
+        //END Dashboard Route
 
+        //Brand routes
         var brand = {
             name: "dashboard.brand",
             url: "brand",
@@ -670,10 +671,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     }
                 },
                 //"nav": nav
-            },
-            data: {
-                title: 'Brand',
-                breadcrumbs: true
             }
         };
 
@@ -687,10 +684,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     controller: "BrandAddController",
                     controllerAs: "vm"
                 }
-            },
-            data: {
-                title: 'Add',
-                breadcrumbs: true
             }
         };
 
@@ -707,10 +700,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                         prepSelBrand: prepSelBrand
                     }
                 }
-            },
-            data: {
-                title: 'Edit',
-                breadcrumbs: true
             }
         };
 
@@ -727,13 +716,11 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                         prepSelBrand: prepSelBrand
                     }
                 }
-            },
-            data: {
-                title: 'View',
-                breadcrumbs: true
             }
         };
+        //END Brand routes
 
+        //Deal routes
         var deal = {
             name: "dashboard.deal",
             url: "deal",
@@ -748,10 +735,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     }
                 },
                 //"nav": nav
-            },
-            data: {
-                title: 'Deal',
-                breadcrumbs: true
             }
         };
 
@@ -769,10 +752,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                         brandPrepService: brandPrepService
                     }
                 }
-            },
-            data: {
-                title: 'Add',
-                breadcrumbs: true
             }
         };
 
@@ -791,10 +770,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                         brandPrepService: brandPrepService
                     }
                 }
-            },
-            data: {
-                title: 'Edit',
-                breadcrumbs: true
             }
         };
 
@@ -811,10 +786,41 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                         prepSelDeal: prepSelDeal
                     }
                 }
-            },
-            data: {
-                title: 'View',
-                breadcrumbs: true
+            }
+        };
+        //END Deal routes
+
+        //User routes
+        var user = {
+            name: "dashboard.user",
+            url: "user",
+            parent: dashboard,
+            views: {
+                "main_body": {
+                    templateUrl: "/app/user/user.html",
+                    controller: "UserController",
+                    controllerAs: "vm",
+                    resolve: {
+                        userPrepService: userPrepService
+                    }
+                },
+                //"nav": nav
+            }
+        };
+
+        var userEdit = {
+            name: "dashboard.user.edit",
+            url: "/edit/:id",
+            parent: user,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/user/user.add.html",
+                    controller: "UserEditController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelUser: prepSelUser
+                    }
+                }
             }
         };
 
@@ -831,9 +837,23 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             .state(brand)
             .state(brandAdd)
             .state(brandEdit)
-            .state(brandView);
+            .state(brandView)
+            .state(user)
+            .state(userEdit);
 
         ////////////
+
+        prepSelUser.$inject = ['$stateParams', 'UserService'];
+        /* @ngInject */
+        function prepSelUser($stateParams, UserService) {
+            return UserService.findInList($stateParams.id);
+        }
+
+        userPrepService.$inject = ['UserService'];
+        /* @ngInject */
+        function userPrepService(UserService) {
+            return UserService.getAll();
+        }
 
         dateTimeStyleSheets.$inject = ['HelperService'];
         /* @ngInject */
@@ -1469,6 +1489,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         }
 
         function login(credentials) {
+            $rootScope.loginError = null;
             var d = $q.defer();
 
             // var credentials = {
@@ -2394,79 +2415,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
-    angular
-        .module('app')
-        .directive('addHighlight', addHighlight);
-
-    addHighlight.$inject = ['$compile'];
-    /* @ngInject */
-    function addHighlight($compile) {
-
-        var directive = {
-            restrict: 'E',
-            templateUrl: '/app/deals/highlight.html',
-            replace: true,
-            scope: {
-                fieldModel: '=',
-                formMode: '='
-            },
-            transclude: true,
-            link: function(scope, element, attrs) {
-                element.find('button#add-highlight-btn').bind('click', function() {
-                    var html = '<highlight-field ></highlight-field>';
-
-                    var input = angular.element(html);
-
-                    var compile = $compile(input)(scope);
-
-                    element.find('#highlight-container').append(input);
-
-                    scope.hl.increCounter();
-                });
-
-            },
-            controller: 'HighlightController',
-            controllerAs: 'hl',
-            bindToController: true
-        };
-
-        return directive;
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('highlightField', highlightField);
-
-    highlightField.$inject = ['$compile'];
-    /* @ngInject */
-    function highlightField($compile) {
-
-        var directive = {
-            restrict: 'E',
-            templateUrl: '/app/deals/highlight-field.html',
-            replace: true,
-            scope: true,
-            link: function(scope, element, attrs) {
-                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
-                scope.hl.counter = scope.$parent.hl.counter;
-                scope.hl.formMode = scope.$parent.hl.formMode;
-            },
-            controller: 'HighlightController',
-            controllerAs: 'hl',
-            bindToController: true
-        };
-
-        return directive;
-    }
-
-})();
-(function() {
-    'use strict';
-
     angular.module('app')
         .controller('DealAddController', DealAddController);
 
@@ -2758,4 +2706,462 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             hl.counter++;
         }
     }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('addHighlight', addHighlight);
+
+    addHighlight.$inject = ['$compile'];
+    /* @ngInject */
+    function addHighlight($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/highlight.html',
+            replace: true,
+            scope: {
+                fieldModel: '=',
+                formMode: '='
+            },
+            transclude: true,
+            link: function(scope, element, attrs) {
+                element.find('button#add-highlight-btn').bind('click', function() {
+                    var html = '<highlight-field ></highlight-field>';
+
+                    var input = angular.element(html);
+
+                    var compile = $compile(input)(scope);
+
+                    element.find('#highlight-container').append(input);
+
+                    scope.hl.increCounter();
+                });
+
+            },
+            controller: 'HighlightController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('highlightField', highlightField);
+
+    highlightField.$inject = ['$compile'];
+    /* @ngInject */
+    function highlightField($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/highlight-field.html',
+            replace: true,
+            scope: true,
+            link: function(scope, element, attrs) {
+                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
+                scope.hl.counter = scope.$parent.hl.counter;
+                scope.hl.formMode = scope.$parent.hl.formMode;
+            },
+            controller: 'HighlightController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('UserController', UserController);
+
+    UserController.$inject = ['UserService', 'userPrepService'];
+
+    /* @ngInject */
+    function UserController(UserService, userPrepService) {
+        var vm = this;
+
+        vm.prepBrands = userPrepService;
+        vm.users = vm.prepBrands.users;
+        vm.getUsers = getUsers;
+        vm.hasDeleted = false;
+        vm.response = {};
+        vm.deleteUser = deleteUser;
+        vm.response = {};
+        vm.isDone = false;
+        vm.search = search;
+        vm.searchItem = '';
+        vm.isLoading = false;
+        vm.isSearch = false;
+        vm.clearSearch = clearSearch;
+
+        //activate();
+
+        ////////////////
+
+        function activate() {
+            return getUsers();
+        }
+
+        function clearSearch() {
+            vm.searchItem = '';
+            search();
+        }
+
+        function search() {
+            vm.isLoading = true;
+
+            if (vm.searchItem.trim().length > 0) {
+                vm.isSearch = true;
+            } else {
+                vm.isSearch = false;
+            }
+
+            UserService.search(vm.searchItem).then(function(resp) {
+                vm.users = resp;
+                vm.isLoading = false;
+            }).catch(function(err) {
+                console.log(err);
+            });
+        }
+
+        function getUsers() {
+            return UserService.getAll().then(function(data) {
+                vm.prepBrands = data;
+                vm.users = vm.prepBrands.users;
+                return vm.users;
+            });
+        }
+
+        function deleteUser(user) {
+            bootbox.confirm({
+                title: "Confirm Delete",
+                message: "Are you sure you want to delete user: <b>" + user.name + "</b>?",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function(result) {
+                    if (result) {
+                        doDelete(user);
+                    }
+                }
+            });
+
+        }
+
+        function doDelete(user) {
+            UserService.delete(user.uid).then(function(resp) {
+                vm.hasDeleted = true;
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Deleted user: " + user.name;
+                getUsers();
+                vm.hasAdded = true;
+                vm.isDone = true;
+            }).catch(function() {
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to delete user: " + user.name;
+                vm.hasAdded = true;
+                vm.isDone = true;
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('UserEditController', UserEditController);
+
+    UserEditController.$inject = ['UserService', '$stateParams', '$scope', 'prepSelUser', 'HelperService', '$state'];
+
+    /* @ngInject */
+    function UserEditController(UserService, $stateParams, $scope, prepSelUser, HelperService, $state) {
+        var vm = this;
+
+        vm.mode = "Edit";
+        vm.response = {};
+        vm.userId = $stateParams.id;
+        vm.selectedUser = prepSelUser;
+        vm.form = vm.selectedUser;
+        vm.defaultRole = vm.form.role;
+        vm.defaultStatus = vm.form.status;
+        vm.isDone = false;
+
+        vm.prevState = HelperService.getPrevState();
+        vm.submitAction = editPost;
+
+        //activate();
+
+        ///////////////////
+
+        function activate() {
+            UserService.find(vm.userId).then(function(data) {
+                vm.selectedUser = data;
+                vm.form = vm.selectedUser;
+            });
+        }
+
+        function editPost() {
+            // console.log(vm.form);
+            // return false;
+            UserService.edit(vm.userId, vm.form).then(function() {
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Updated user: " + vm.form.name;
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
+                $scope.$parent.vm.getUsers();
+                $state.go(vm.prevState);
+
+            }).catch(function(err) {
+                console.log(err);
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to update User.";
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = false;
+                HelperService.goToAnchor('msg-info');
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .factory('UserService', UserService);
+
+    UserService.$inject = ['$http', 'CONST', '$q', '$rootScope'];
+
+    /* @ngInject */
+    function UserService($http, CONST, $q, $rootScope) {
+        var api = CONST.api_domain + '/admin/users';
+
+        var service = {
+            lists: [],
+            errors: [],
+            add: add,
+            edit: edit,
+            delete: _delete,
+            getAll: getAll,
+            find: find,
+            findInList: findInList,
+            isEmpty: isEmpty,
+            search: search,
+            searchedList: []
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function search(str) {
+            var url = api + '/search';
+            var d = $q.defer();
+            var q = str.toLowerCase();
+            var results = [];
+
+            if (str.trim() == '') {
+                d.resolve(service.lists.users);
+            } else {
+                angular.forEach(service.lists.users, function(user, index) {
+                    if (user.name.toLowerCase().indexOf(q) > -1) {
+                        results.push(user);
+                    }
+                });
+
+                if (results.length > 0) {
+                    d.resolve(results);
+                } else {
+                    $http.get(url, { query: str }).then(function(resp) {
+                        service.searchedList = resp.data;
+                        d.resolve(resp.data.users);
+                    }).catch(function(err) {
+                        console.log(err);
+                        d.reject(err);
+                    });
+                }
+            }
+
+            return d.promise;
+        }
+
+        function isEmpty() {
+            if (!angular.isDefined(service.lists.users)) {
+                return true;
+            }
+
+            return service.lists.users.length == 0;
+        }
+
+        function findInList(id) {
+            var d = $q.defer();
+
+            if (angular.isDefined(id)) {
+                if (!isEmpty()) {
+                    angular.forEach(service.lists.users, function(user, key) {
+
+                        if (id == user.uid) {
+
+                            if (user.is_admin) {
+                                user['role'] = 'admin';
+                            } else if (user.is_vendor) {
+                                user['role'] = 'vendor';
+                            } else if (iser.is_customer) {
+                                user['role'] = 'customer';
+                            }
+
+                            user['status'] = (user.is_active) ? 'active' : 'inactive';
+
+                            d.resolve(user);
+                        }
+                    });
+                } else {
+                    find(id).then(function(user) {
+                        d.resolve(user);
+                    }).catch(function(err) {
+                        d.reject(err);
+                    });
+                }
+            } else {
+                d.resolve('User does not exist.');
+            }
+
+            return d.promise;
+        }
+
+        function getAll() {
+            var d = $q.defer();
+
+            var req = {
+                method: 'GET',
+                url: api
+            };
+
+            $http(req)
+                .then(function(data) {
+                    var list = data.data;
+
+                    service.lists = list;
+                    d.resolve(list);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function find(id) {
+            var d = $q.defer();
+            var url = api + '/' + id;
+            $http({
+                    method: 'GET',
+                    url: url,
+                    //params: {id: id}
+                })
+                .then(function(data) {
+                    d.resolve(data.data);
+                })
+                .catch(function(error) {
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function add(data) {
+            var url = api;
+            var d = $q.defer();
+
+            $http.post(url, data)
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error.data.errors);
+                });
+
+            return d.promise;
+        }
+
+        function edit(id, data) {
+            var url = api + "/" + id;
+            var d = $q.defer();
+
+            $http.patch(url, data)
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function _delete(id) {
+            var url = api + "/" + id;
+            var d = $q.defer();
+
+            $http.delete(url, {})
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+    }
+
 })();
