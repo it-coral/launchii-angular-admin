@@ -18,6 +18,11 @@
         vm.deleteDeal = deleteDeal;
         vm.response = {};
         vm.isDone = false;
+        vm.search = search;
+        vm.searchItem = '';
+        vm.isLoading = false;
+        vm.isSearch = false;
+        vm.clearSearch = clearSearch;
 
         //activate();
 
@@ -25,6 +30,28 @@
 
         function activate() {
             return getDeals();
+        }
+
+        function clearSearch() {
+            vm.searchItem = '';
+            search();
+        }
+
+        function search() {
+            vm.isLoading = true;
+
+            if (vm.searchItem.trim().length > 0) {
+                vm.isSearch = true;
+            } else {
+                vm.isSearch = false;
+            }
+
+            DealService.search(vm.searchItem).then(function(resp) {
+                vm.deals = resp;
+                vm.isLoading = false;
+            }).catch(function(err) {
+                console.log(err);
+            });
         }
 
         function getDeals() {

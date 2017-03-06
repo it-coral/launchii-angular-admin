@@ -1658,12 +1658,46 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             getAll: getAll,
             find: find,
             findInList: findInList,
-            isEmpty: isEmpty
+            isEmpty: isEmpty,
+            search: search,
+            searchedList: []
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function search(str) {
+            var url = api + '/search';
+            var d = $q.defer();
+            var q = str.toLowerCase();
+            var results = [];
+
+            if (str.trim() == '') {
+                d.resolve(service.lists.brands);
+            } else {
+                angular.forEach(service.lists.brands, function(brand, index) {
+                    if (brand.name.toLowerCase().indexOf(q) > -1) {
+                        results.push(brand);
+                    }
+                });
+
+                if (results.length > 0) {
+                    d.resolve(results);
+                } else {
+                    $http.get(url, { query: str }).then(function(resp) {
+                        console.log(resp);
+                        service.searchedList = resp.data;
+                        d.resolve(resp.data.brands);
+                    }).catch(function(err) {
+                        console.log(err);
+                        d.reject(err);
+                    });
+                }
+            }
+
+            return d.promise;
+        }
 
         function isEmpty() {
             if (!angular.isDefined(service.lists.brands)) {
@@ -1864,6 +1898,11 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.deleteBrand = deleteBrand;
         vm.response = {};
         vm.isDone = false;
+        vm.search = search;
+        vm.searchItem = '';
+        vm.isLoading = false;
+        vm.isSearch = false;
+        vm.clearSearch = clearSearch;
 
         //activate();
 
@@ -1871,6 +1910,28 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         function activate() {
             return getBrands();
+        }
+
+        function clearSearch() {
+            vm.searchItem = '';
+            search();
+        }
+
+        function search() {
+            vm.isLoading = true;
+
+            if (vm.searchItem.trim().length > 0) {
+                vm.isSearch = true;
+            } else {
+                vm.isSearch = false;
+            }
+
+            BrandService.search(vm.searchItem).then(function(resp) {
+                vm.brands = resp;
+                vm.isLoading = false;
+            }).catch(function(err) {
+                console.log(err);
+            });
         }
 
         function getBrands() {
@@ -2037,12 +2098,45 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             find: find,
             findInList: findInList,
             isEmpty: isEmpty,
-            addHighlights: addHighlights
+            addHighlights: addHighlights,
+            search: search,
+            searchedList: []
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function search(str) {
+            var url = api + '/search';
+            var d = $q.defer();
+            var q = str.toLowerCase();
+            var results = [];
+
+            if (str.trim() == '') {
+                d.resolve(service.lists.deals);
+            } else {
+                angular.forEach(service.lists.deals, function(brand, index) {
+                    if (brand.name.toLowerCase().indexOf(q) > -1) {
+                        results.push(brand);
+                    }
+                });
+
+                if (results.length > 0) {
+                    d.resolve(results);
+                } else {
+                    $http.get(url, { query: str }).then(function(resp) {
+                        service.searchedList = resp.data;
+                        d.resolve(resp.data.deals);
+                    }).catch(function(err) {
+                        console.log(err);
+                        d.reject(err);
+                    });
+                }
+            }
+
+            return d.promise;
+        }
 
         function addHighlights(dealId, highlights) {
             var d = $q.defer();
@@ -2316,6 +2410,11 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.deleteDeal = deleteDeal;
         vm.response = {};
         vm.isDone = false;
+        vm.search = search;
+        vm.searchItem = '';
+        vm.isLoading = false;
+        vm.isSearch = false;
+        vm.clearSearch = clearSearch;
 
         //activate();
 
@@ -2323,6 +2422,28 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         function activate() {
             return getDeals();
+        }
+
+        function clearSearch() {
+            vm.searchItem = '';
+            search();
+        }
+
+        function search() {
+            vm.isLoading = true;
+
+            if (vm.searchItem.trim().length > 0) {
+                vm.isSearch = true;
+            } else {
+                vm.isSearch = false;
+            }
+
+            DealService.search(vm.searchItem).then(function(resp) {
+                vm.deals = resp;
+                vm.isLoading = false;
+            }).catch(function(err) {
+                console.log(err);
+            });
         }
 
         function getDeals() {

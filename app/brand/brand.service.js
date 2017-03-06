@@ -19,12 +19,46 @@
             getAll: getAll,
             find: find,
             findInList: findInList,
-            isEmpty: isEmpty
+            isEmpty: isEmpty,
+            search: search,
+            searchedList: []
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function search(str) {
+            var url = api + '/search';
+            var d = $q.defer();
+            var q = str.toLowerCase();
+            var results = [];
+
+            if (str.trim() == '') {
+                d.resolve(service.lists.brands);
+            } else {
+                angular.forEach(service.lists.brands, function(brand, index) {
+                    if (brand.name.toLowerCase().indexOf(q) > -1) {
+                        results.push(brand);
+                    }
+                });
+
+                if (results.length > 0) {
+                    d.resolve(results);
+                } else {
+                    $http.get(url, { query: str }).then(function(resp) {
+                        console.log(resp);
+                        service.searchedList = resp.data;
+                        d.resolve(resp.data.brands);
+                    }).catch(function(err) {
+                        console.log(err);
+                        d.reject(err);
+                    });
+                }
+            }
+
+            return d.promise;
+        }
 
         function isEmpty() {
             if (!angular.isDefined(service.lists.brands)) {
