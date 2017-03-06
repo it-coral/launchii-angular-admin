@@ -529,6 +529,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         $rootScope.$on('unauthorized', function(event) {
             console.log('test');
+            AuthService.removeUserStorage();
             //AuthService.destroyAuthUser().then(function() {
             //if (toState.name !== "auth") {
             event.preventDefault();
@@ -2338,6 +2339,79 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
+    angular
+        .module('app')
+        .directive('addHighlight', addHighlight);
+
+    addHighlight.$inject = ['$compile'];
+    /* @ngInject */
+    function addHighlight($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/highlight.html',
+            replace: true,
+            scope: {
+                fieldModel: '=',
+                formMode: '='
+            },
+            transclude: true,
+            link: function(scope, element, attrs) {
+                element.find('button#add-highlight-btn').bind('click', function() {
+                    var html = '<highlight-field ></highlight-field>';
+
+                    var input = angular.element(html);
+
+                    var compile = $compile(input)(scope);
+
+                    element.find('#highlight-container').append(input);
+
+                    scope.hl.increCounter();
+                });
+
+            },
+            controller: 'HighlightController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('highlightField', highlightField);
+
+    highlightField.$inject = ['$compile'];
+    /* @ngInject */
+    function highlightField($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/highlight-field.html',
+            replace: true,
+            scope: true,
+            link: function(scope, element, attrs) {
+                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
+                scope.hl.counter = scope.$parent.hl.counter;
+                scope.hl.formMode = scope.$parent.hl.formMode;
+            },
+            controller: 'HighlightController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
     angular.module('app')
         .controller('DealAddController', DealAddController);
 
@@ -2629,77 +2703,4 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             hl.counter++;
         }
     }
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('addHighlight', addHighlight);
-
-    addHighlight.$inject = ['$compile'];
-    /* @ngInject */
-    function addHighlight($compile) {
-
-        var directive = {
-            restrict: 'E',
-            templateUrl: '/app/deals/highlight.html',
-            replace: true,
-            scope: {
-                fieldModel: '=',
-                formMode: '='
-            },
-            transclude: true,
-            link: function(scope, element, attrs) {
-                element.find('button#add-highlight-btn').bind('click', function() {
-                    var html = '<highlight-field ></highlight-field>';
-
-                    var input = angular.element(html);
-
-                    var compile = $compile(input)(scope);
-
-                    element.find('#highlight-container').append(input);
-
-                    scope.hl.increCounter();
-                });
-
-            },
-            controller: 'HighlightController',
-            controllerAs: 'hl',
-            bindToController: true
-        };
-
-        return directive;
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('highlightField', highlightField);
-
-    highlightField.$inject = ['$compile'];
-    /* @ngInject */
-    function highlightField($compile) {
-
-        var directive = {
-            restrict: 'E',
-            templateUrl: '/app/deals/highlight-field.html',
-            replace: true,
-            scope: true,
-            link: function(scope, element, attrs) {
-                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
-                scope.hl.counter = scope.$parent.hl.counter;
-                scope.hl.formMode = scope.$parent.hl.formMode;
-            },
-            controller: 'HighlightController',
-            controllerAs: 'hl',
-            bindToController: true
-        };
-
-        return directive;
-    }
-
 })();

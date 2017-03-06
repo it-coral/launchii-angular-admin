@@ -58,6 +58,7 @@
 
         $rootScope.$on('unauthorized', function(event) {
             console.log('test');
+            AuthService.removeUserStorage();
             //AuthService.destroyAuthUser().then(function() {
             //if (toState.name !== "auth") {
             event.preventDefault();
