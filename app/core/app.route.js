@@ -174,7 +174,8 @@
                     resolve: {
                         styleSheets: dateTimeStyleSheets,
                         prepSelDeal: prepSelDeal,
-                        brandPrepService: brandPrepService
+                        brandPrepService: brandPrepService,
+                        prepSelHighlights: prepSelHighlights
                     }
                 }
             }
@@ -190,7 +191,8 @@
                     controller: "DealViewController",
                     controllerAs: "vm",
                     resolve: {
-                        prepSelDeal: prepSelDeal
+                        prepSelDeal: prepSelDeal,
+                        prepSelHighlights: prepSelHighlights
                     }
                 }
             }
@@ -249,6 +251,12 @@
             .state(userEdit);
 
         ////////////
+
+        prepSelHighlights.$inject = ['DealService', '$stateParams'];
+        /* @ngInject */
+        function prepSelHighlights(DealService, $stateParams) {
+            return DealService.getHighlights($stateParams.id)
+        }
 
         prepSelUser.$inject = ['$stateParams', 'UserService'];
         /* @ngInject */

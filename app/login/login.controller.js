@@ -14,16 +14,19 @@
         //vm.password = "";
         vm.form;
         vm.login = login;
+        vm.loggingIn = false;
 
         ///////////
 
         function login() {
-
+            vm.loggingIn = true;
             AuthService.login(vm.form).then(function(response) {
+                vm.loggingIn = false;
                 $state.go('dashboard');
             }, function(error) {
+                vm.loggingIn = false;
                 vm.loginError = true;
-                vm.loginErrorText = error;
+                vm.loginErrorText = error.data.errors[0];
             });
         }
     }

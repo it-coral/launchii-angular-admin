@@ -22,12 +22,100 @@
             isEmpty: isEmpty,
             addHighlights: addHighlights,
             search: search,
-            searchedList: []
+            searchedList: [],
+            highlights: [],
+            getHighlights: getHighlights,
+            removeHighlights: removeHighlights,
+            updateHighlights: updateHighlights
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function removeHighlights(dealId, highlights) {
+            var url = api + '/' + dealId + '/highlights';
+            var d = $q.defer();
+            var tasks = [];
+
+            angular.forEach(highlights, function(val, index) {
+                tasks.push(function(cb) {
+                    $http.delete(url + '/' + val.uid).then(function(resp) {
+                        //d.resolve(resp);
+                        cb(null, resp);
+                    }).catch(function(err) {
+                        console.log(error);
+                        // service.errors = error;
+                        // d.reject(error);
+                        cb(err);
+                    });
+                });
+            });
+
+            async.parallel(tasks, function(error, results) {
+                if (error) {
+                    console.log(error);
+                    d.reject(error);
+                } else {
+                    d.resolve(results);
+                }
+
+            });
+
+            return d.promise;
+        }
+
+        function updateHighlights(dealId, highlights) {
+            var url = api + '/' + dealId + '/highlights';
+            var d = $q.defer();
+            var tasks = [];
+
+            angular.forEach(highlights, function(val, index) {
+                tasks.push(function(cb) {
+                    var data = {
+                        title: val.title
+                    };
+
+                    $http.patch(url + '/' + val.uid, data).then(function(resp) {
+                        //d.resolve(resp);
+                        cb(null, resp);
+                    }).catch(function(err) {
+                        console.log(error);
+                        // service.errors = error;
+                        // d.reject(error);
+                        cb(err);
+                    });
+                });
+            });
+
+            async.parallel(tasks, function(error, results) {
+                if (error) {
+                    console.log(error);
+                    d.reject(error);
+                } else {
+                    d.resolve(results);
+                }
+
+            });
+
+            return d.promise;
+        }
+
+        function getHighlights(dealId) {
+            var url = api + '/' + dealId + '/highlights';
+            var d = $q.defer();
+
+            $http.get(url).then(function(resp) {
+                service.highlights = resp.data.highlights;
+                d.resolve(service.highlights);
+            }).catch(function(err) {
+                console.log(err);
+                service.errors.push(err);
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
 
         function search(str) {
             var url = api + '/search';
@@ -63,34 +151,58 @@
         function addHighlights(dealId, highlights) {
             var d = $q.defer();
 
-            var url = api + '/' + id + 'highlights';
+            var url = api + '/' + dealId + '/highlights/collection';
 
-            var tasks = [];
+            var highlightsArr = [];
             angular.forEach(highlights, function(val, key) {
-                tasks.push(handleCb);
+                var obj = {
+                    title: val
+                };
 
-                function handleCb(cb) {
-                    $http.post(url, highlights).then(function(resp) {
-                        //d.resolve(resp);
-                        cb(null, resp);
-                    }).catch(function(err) {
-                        // console.log(error);
-                        // service.errors = error;
-                        // d.reject(error);
-                        cb(err);
-                    });
-                }
+                highlightsArr.push(obj);
+
+                // function handleCb(cb) {
+                //     $http.post(url, highlights).then(function(resp) {
+                //         //d.resolve(resp);
+                //         cb(null, resp);
+                //     }).catch(function(err) {
+                //         // console.log(error);
+                //         // service.errors = error;
+                //         // d.reject(error);
+                //         cb(err);
+                //     });
+                // }
 
             });
+            var data = {
+                highlight: {
+                    highlights: highlightsArr
+                }
+            };
 
-            async.parallel(tasks, function(error, results) {
-                if (error) {
+            $http.post(url, data)
+                .then(function(resp) {
+                    // var dealId = resp.uid;
+                    // addHighlights(dealId, data.highlights).then(function(resp) {
+                    //     d.resolve(resp);
+                    // }).catch(function(err) {
+                    //     d.reject(err);
+                    // });
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
                     d.reject(error);
-                } else {
-                    d.resolve(results);
-                }
+                });
 
-            });
+            // async.parallel(tasks, function(error, results) {
+            //     if (error) {
+            //         d.reject(error);
+            //     } else {
+            //         d.resolve(results);
+            //     }
+
+            // });
 
             return d.promise;
         }
@@ -188,11 +300,12 @@
                     deal['date_ends'] = dateEnd.date;
                     deal['time_ends'] = dateEnd.time;
 
+                    //DISABLED
                     BrandService.findInList(deal.brand_id).then(function(brand) {
                         deal['brand'] = brand;
                         d.resolve(deal);
                     });
-
+                    //d.resolve(deal);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -209,7 +322,17 @@
 
             $http.post(url, data)
                 .then(function(resp) {
-                    d.resolve(resp);
+                    //console.log(resp);
+                    //return false;
+                    var dealId = resp.data.deal.uid;
+                    console.log(data.highlights);
+                    addHighlights(dealId, data.highlights).then(function(resp) {
+                        console.log(resp);
+                        d.resolve(resp);
+                    }).catch(function(err) {
+                        console.log(err);
+                        d.reject(err);
+                    });
                 }).catch(function(error) {
                     console.log(error);
                     service.errors = error;
@@ -223,14 +346,93 @@
             var url = api + "/" + id;
             var d = $q.defer();
 
-            $http.patch(url, data)
-                .then(function(resp) {
-                    d.resolve(resp);
-                }).catch(function(error) {
+            var tasks = [];
+
+            if (angular.isDefined(data.highlights) && data.highlights.length > 0) {
+                angular.forEach(data.highlights, function(val, index) {
+                    var url_h = url + '/highlights/' + val.uid;
+                    var data_h = {
+                        highlight: {
+                            title: val.title
+                        }
+                    };
+
+                    tasks.push(function(cb) {
+                        $http.patch(url_h, data_h).then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(error);
+                            cb(err);
+                        });
+                    });
+                });
+            }
+
+            if (angular.isDefined(data.removedHighlights) && data.removedHighlights.length > 0) {
+                angular.forEach(data.removedHighlights, function(val, index) {
+                    var url_h = url + '/highlights/' + val.uid;
+
+                    tasks.push(function(cb) {
+                        $http.delete(url_h).then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(error);
+                            cb(err);
+                        });
+                    });
+                });
+            }
+
+            if (angular.isDefined(data.form.highlights)) {
+                var highlightsArr = [];
+                angular.forEach(data.form.highlights, function(val, index) {
+                    var obj = {
+                        title: val
+                    };
+
+                    highlightsArr.push(obj);
+                });
+
+                var data_h = {
+                    highlight: {
+                        highlights: highlightsArr
+                    }
+                };
+
+                var url_ah = api + '/' + id + '/highlights/collection';
+
+                tasks.push(function(cb) {
+                    $http.post(url_ah, data_h)
+                        .then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(error) {
+                            console.log(error);
+                            cb(err);
+                        });
+                });
+
+            }
+
+            tasks.push(function(cb) {
+                $http.patch(url, data.form)
+                    .then(function(resp) {
+                        cb(null, resp);
+                    }).catch(function(error) {
+                        console.log(error);
+                        cb(err);
+                    });
+            });
+
+            async.parallel(tasks, function(error, results) {
+                if (error) {
                     console.log(error);
                     service.errors = error;
                     d.reject(error);
-                });
+                } else {
+                    d.resolve(results);
+                }
+
+            });
 
             return d.promise;
         }

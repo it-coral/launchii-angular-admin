@@ -16,6 +16,9 @@ gulp.task('scripts', function() {
             './node_modules/bootbox/bootbox.min.js',
             './bower_components/angular-auto-validate/dist/jcs-auto-validate.min.js',
             './node_modules/ngprogress-lite/ngprogress-lite.min.js',
+            './bower_components/ladda/js/spin.js',
+            './bower_components/ladda/js/ladda.js',
+            './bower_components/angular-ladda/dist/angular-ladda.min.js',
 
             //Cores
             './app/core/app.module.js',

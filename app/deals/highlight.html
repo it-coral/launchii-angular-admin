@@ -1,5 +1,7 @@
 <div class="row">
-    <div class="col-md-6" id="highlight-container"></div>
+    <div class="col-md-6" id="highlight-container">
+        <highlight-edit ng-if="hl.formMode == 'Edit'" ng-repeat="highlight in hl.highlightsData" form-mode="hl.formMode" highlight-item="highlight"></highlight-edit>
+    </div>
     <div class="col-md-12">
         <div class="form-group">
             <button type="button" class="btn btn-primary" id="add-highlight-btn">Add Highlight</button>

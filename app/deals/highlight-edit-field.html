@@ -1,0 +1,8 @@
+<div class="form-group">
+    <div class="input-group">
+        <input type="text" class="form-control" ng-if="hl.formMode == 'Edit'" ng-model="hl.highlightItem.title" />
+        <span class="input-group-addon" style="cursor: pointer" data-original-title="Remove" title="Remove" ng-click="remove($event.currentTarget, hl.highlightItem)">
+            <i class="fa fa-close font-red" ></i>
+        </span>
+    </div>
+</div>

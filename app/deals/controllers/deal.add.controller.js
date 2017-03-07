@@ -14,9 +14,10 @@
         vm.form = {};
         vm.form.highlights = {};
         vm.response = {};
-        vm.isDone = false;
+        vm.isDone = true;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
+        vm.removeHighlight = removeHighlight;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addDeal;
@@ -30,10 +31,15 @@
         }
 
         function addDeal() {
-            //vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
-            //vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
-            //console.log(vm.form.highlights);
-            //return false;
+            vm.isDone = false;
+            //temporary
+            //vm.form.brand_id = '3228eb88-6810-4b28-ae52-88a62e4655c3';
+
+            vm.isDone = false;
+            vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
+            vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
+            console.log(vm.form);
+            return false;
             DealService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
@@ -51,9 +57,13 @@
                 vm.response['msg'] = "Failed to add new deal.";
                 vm.isDone = true;
 
-                $scope.$parent.vm.isDone = false;
+                $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
             });
+        }
+
+        function removeHighlight(highlightId) {
+
         }
     }
 })();

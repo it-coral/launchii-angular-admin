@@ -55,12 +55,19 @@
             */
         }
 
-        function responseError(response) {
-            //console.log(response);
-            if (response.status === 401) {
+        function responseError(rejection) {
+
+            if (rejection.config.headers['access-token'] == 'undefined') {
+                console.log('test');
+                return $q.reject(rejection);
+            } else
+            if (rejection.status === 401) {
                 $rootScope.$broadcast('unauthorized');
+                return rejection;
+            } else {
+                return rejection;
             }
-            return response;
+
         }
     }
 

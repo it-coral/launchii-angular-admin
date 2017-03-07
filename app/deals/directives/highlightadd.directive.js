@@ -15,12 +15,14 @@
             replace: true,
             scope: {
                 fieldModel: '=',
-                formMode: '='
+                formMode: '=',
+                highlightsData: '='
             },
             transclude: true,
             link: function(scope, element, attrs) {
                 element.find('button#add-highlight-btn').bind('click', function() {
-                    var html = '<highlight-field ></highlight-field>';
+                    console.log(scope.hl.counter);
+                    var html = '<highlight-field field-model="hl.fieldModel" ></highlight-field>';
 
                     var input = angular.element(html);
 

@@ -3,30 +3,30 @@
 
     angular
         .module('app')
-        .directive('highlightField', highlightField);
+        .directive('highlightEdit', highlightEdit);
 
-    highlightField.$inject = ['$compile'];
+    highlightEdit.$inject = ['$compile'];
     /* @ngInject */
-    function highlightField($compile) {
+    function highlightEdit($compile) {
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/highlight-field.html',
+            templateUrl: '/app/deals/highlight-edit-field.html',
             replace: true,
             scope: {
-                fieldModel: '='
+                highlightItem: '=',
+                formMode: '='
             },
             link: function(scope, element, attrs) {
-                //console.log(scope);
-                // console.log(scope.hl.highlightItem);
                 scope.hl.fieldModel = scope.$parent.hl.fieldModel;
                 scope.hl.counter = scope.$parent.hl.counter;
                 scope.hl.formMode = scope.$parent.hl.formMode;
 
                 scope.remove = remove;
 
-                function remove(target) {
+                function remove(target, highlight) {
                     var parent = $(target).parent();
+                    scope.$parent.$parent.$parent.$parent.vm.removeHighlight(highlight);
                     parent.remove();
                 }
             },

@@ -68,38 +68,32 @@
 
 
             $auth.login(credentials).then(function(data) {
-                var headers = data.headers();
+                if (angular.isDefined(data)) {
+                    var headers = data.headers();
 
-                $auth.setToken(headers["access-token"]);
+                    $auth.setToken(headers["access-token"]);
+                    localStorage.setItem("client", headers["client"]);
+                    localStorage.setItem("access-token", headers["access-token"]);
+                    localStorage.setItem("cache-control", headers["cache-control"]);
+                    localStorage.setItem("content-type", headers["content-type"]);
+                    localStorage.setItem("expiry", headers["expiry"]);
+                    localStorage.setItem("token-type", headers["token-type"]);
+                    localStorage.setItem("uid", headers["uid"]);
 
-                localStorage.setItem("client", headers["client"]);
-                localStorage.setItem("access-token", headers["access-token"]);
-                localStorage.setItem("cache-control", headers["cache-control"]);
-                localStorage.setItem("content-type", headers["content-type"]);
-                localStorage.setItem("expiry", headers["expiry"]);
-                localStorage.setItem("token-type", headers["token-type"]);
-                localStorage.setItem("uid", headers["uid"]);
-
-                return data;
-
-            }, function(err) {
-                console.log(err);
-                d.reject(err.data.errors[0]);
-            }).then(function(response) {
-                if (typeof response === 'undefined' || response === false) {
-                    d.reject();
-                } else {
                     $rootScope.$broadcast('authorized');
 
-                    var user = JSON.stringify(response.data.user);
+                    var user = JSON.stringify(data.data.user);
 
                     localStorage.setItem('user', user);
                     $rootScope.authenticated = true;
-                    $rootScope.currentUser = response.data.user;
+                    $rootScope.currentUser = data.data.user;
 
-                    d.resolve();
+                    d.resolve(data);
+                } else {
+                    d.reject(data);
                 }
-
+            }).catch(function(err) {
+                d.reject(err);
             });
 
             // $auth.login(credentials).then(function(r) {

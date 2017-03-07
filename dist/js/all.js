@@ -435,6 +435,823 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 !function(a,b){"use strict";function c(){var a={},c=!0,d=!0,e=!1,f=!0,g=!0,h=function(a){var b;return a&&0!==a.length?(b=a.toLowerCase(),a=!("f"===b||"0"===b||"false"===b)):a=!1,a},i=function(a,b){var c;return void 0!==a&&(c=a.attr(b)||a.attr("data-"+b)),c},j=function(a,b){var c;return void 0!==a&&(c=void 0!==a.attr(b)||void 0!==a.attr("data-"+b)),c},k=function(a,b){return h(i(a,b))},l=function(a){return c&&!k(a,"disable-valid-styling")},m=function(a){return!k(a,"disable-auto-validate")},n=function(a){return d&&!k(a,"disable-invalid-styling")};this.enable=function(a){f=a},this.isEnabled=function(){return f},this.setDefaultElementModifier=function(b){if(void 0===a[b])throw new Error("Element modifier not registered: "+b);this.defaultElementModifier=b},this.registerDomModifier=function(b,c){a[b]=c},this.setErrorMessageResolver=function(a){this.errorMessageResolver=a},this.getErrorMessage=function(a,c){var d;if(void 0===this.errorMessageResolver)throw new Error("Please set an error message resolver via the setErrorMessageResolver function before attempting to resolve an error message.");return j(c,"disable-validation-message")?(d=b.injector(["ng"]).get("$q").defer(),d.resolve(""),d.promise):this.errorMessageResolver(a,c)},this.setValidElementStyling=function(a){c=a},this.setInvalidElementStyling=function(a){d=a},this.setFirstInvalidElementScrollingOnSubmit=function(a){e=a},this.firstInvalidElementScrollingOnSubmitEnabled=function(){return e},this.setFocusInputError=function(a){g=a},this.enableFocusInputError=function(){return g},this.getDomModifier=function(b){var c=(void 0!==b?b.attr("element-modifier"):this.defaultElementModifier)||(void 0!==b?b.attr("data-element-modifier"):this.defaultElementModifier)||this.defaultElementModifier;if(void 0===c)throw new Error("Please set a default dom modifier via the setDefaultElementModifier method on the validator class.");return a[c]},this.makeValid=function(a){m(a)&&(l(a)?this.getDomModifier(a).makeValid(a):this.makeDefault(a))},this.makeInvalid=function(a,b){m(a)&&(n(a)?this.getDomModifier(a).makeInvalid(a,b):this.makeDefault(a))},this.makeDefault=function(a){if(m(a)){var b=this.getDomModifier(a);b.makeDefault&&b.makeDefault(a)}},this.waitForAsyncValidators=function(a){if(m(a)){var b=this.getDomModifier(a);b.waitForAsyncValidators&&b.waitForAsyncValidators(a)}},this.defaultFormValidationOptions={forceValidation:!1,disabled:!1,validateNonVisibleControls:!1,removeExternalValidationErrorsOnSubmit:!0,validateOnFormSubmit:!1,waitForAsyncValidators:!0},this.$get=[function(){return this}]}function d(a){var c=!1,d=["<style>.glyphicon-spin-jcs {-webkit-animation: spin 1000ms infinite linear;animation: spin 1000ms infinite linear;}@-webkit-keyframes spin {0% {-webkit-transform: rotate(0deg);transform: rotate(0deg);}100% {-webkit-transform: rotate(359deg);transform: rotate(359deg);}}@keyframes spin {0% {-webkit-transform: rotate(0deg);transform: rotate(0deg);}100% {-webkit-transform: rotate(359deg);transform: rotate(359deg);}}</style>"].join(""),e=function(a){c===!1&&(b.element(document.body).append(b.element(d)),c=!0),b.forEach(a.find("span"),function(a){a=b.element(a),(a.hasClass("error-msg")||a.hasClass("form-control-feedback")||a.hasClass("control-feedback"))&&a.remove()}),a.removeClass("has-success has-error has-feedback")},f=function(a,b){for(var c,d=a,e=0;10>=e;e+=1){if(void 0!==d&&d.hasClass(b)){c=d;break}void 0!==d&&(d=d.parent())}return c},g=function(a,c){for(var d,e=0;e<a.children.length&&(d=a.children[e],void 0===d||!b.element(d).hasClass(c))&&!(void 0!==d.children&&(d=g(d,c),d.length>0));e+=1);return b.element(d)},h=function(a){return f(a,"form-group")},i=function(a){return g(a,"input-group")},j=function(a,b){a[0].parentNode.insertBefore(b[0],a[0].nextSibling)},k=!1,l=function(a){k=a},m=function(c){var d,f=h(c);if(f){if(e(f),d=i(f[0]),f.addClass("has-success "+(d.length>0||k===!1?"":"has-feedback")),k){var g='<span class="glyphicon glyphicon-ok form-control-feedback"></span>';d.length>0&&(g=g.replace("form-",""),g='<span class="input-group-addon control-feedback">'+g+"</span>"),j(c,b.element(g))}}else a.error("Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class")},n=function(c,d){var f,g=h(c),l=b.element('<span class="help-block has-error error-msg">'+d+"</span>");if(g){if(e(g),f=i(g[0]),g.addClass("has-error "+(f.length>0||k===!1?"":"has-feedback")),j(f.length>0?f:o(c),l),k){var m='<span class="glyphicon glyphicon-remove form-control-feedback"></span>';f.length>0&&(m=m.replace("form-",""),m='<span class="input-group-addon control-feedback">'+m+"</span>"),j(o(c),b.element(m))}}else a.error("Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class")},o=function(a){var b=a,c=a[0].type?a[0].type.toLowerCase():"";return"checkbox"!==c&&"radio"!==c||"label"!==a.parent()[0].nodeName.toLowerCase()||(b=a.parent()),b},p=function(b){var c=h(b);c?e(c):a.error("Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class")},q=function(c){var d,f=h(c);if(f){if(e(f),d=i(f[0]),f.addClass("has-feedback "+(d.length>0||k===!1?"":"has-feedback")),k){var g='<span class="glyphicon glyphicon-repeat glyphicon-spin-jcs form-control-feedback"></span>';d.length>0&&(g=g.replace("form-",""),g='<span class="input-group-addon control-feedback">'+g+"</span>"),j(c,b.element(g))}}else a.error("Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class")};return{makeValid:m,makeInvalid:n,makeDefault:p,waitForAsyncValidators:q,enableValidationStateIcons:l,key:"bs3"}}function e(a){var b=function(b,c,d){var e;return function(){var f=this,g=arguments,h=function(){e=null,d||b.apply(f,g)},i=d&&!e;a.cancel(e),e=a(h,c,!1),i&&b.apply(f,g)}};return{debounce:b}}function f(a,b){return a.replace(/{(\d+)}/g,function(a,c){return void 0!==typeof b[c]?b[c]:a})}function g(a,c){var d,e="default",g="js/angular-auto-validate/dist/lang",h=function(a){return d=c.get(f("{0}/jcs-auto-validate_{1}.json",[g,a.toLowerCase()]))},i=function(a){g=a},j=function(c,f){var g=a.defer();return f=f||h,e=c.toLowerCase(),void 0===b.autoValidate.errorMessages[e]?(d=f(c),d.then(function(a){d=void 0,b.autoValidate.errorMessages[e]=a.data,g.resolve(b.autoValidate.errorMessages[e])},function(a){b.autoValidate.errorMessages[e]={defaultMsg:"Loading culture failed!"},d=null,g.reject(a)})):g.resolve(b.autoValidate.errorMessages[e]),g.promise},k=function(c){var f=a.defer();return c=void 0===c?e:c.toLowerCase(),void 0!==d?d.then(function(){f.resolve(b.autoValidate.errorMessages[c])},function(a){f.reject(a)}):f.resolve(b.autoValidate.errorMessages[c]),f.promise},l=function(a,b){var c;return b&&(a+="-err-type",c=b.attr("ng-"+a),void 0===c&&(c=b.attr("data-ng-"+a)||b.attr(a)),c&&(c=c.replace(/[\W]/g,""))),c},m=function(c,g){var h,i,j,k=a.defer(),n=[];if(void 0!==d)d.then(function(){m(c,g).then(function(a){k.resolve(a)})});else{if(h=b.autoValidate.errorMessages[e][c],j=l(c,g),j&&(h=b.autoValidate.errorMessages[e][j]),void 0===h&&void 0!==j?h=f(b.autoValidate.errorMessages[e].defaultMsg,[j]):void 0===h&&(h=f(b.autoValidate.errorMessages[e].defaultMsg,[c])),g&&g.attr)try{i=g.attr("ng-"+c),void 0===i&&(i=g.attr("data-ng-"+c)||g.attr(c)),n.push(i||""),h=f(h,n)}catch(o){}k.resolve(h)}return k.promise};return{setI18nFileRootPath:i,setCulture:j,getErrorMessages:k,resolve:m}}function h(){var a=function(a,c){b.forEach(a.find("small"),function(a){b.element(a).hasClass("error")&&b.element(a).remove()}),c.removeClass("error")},c=function(a){for(var b=a,c=0;3>=c&&(void 0===b||!b.hasClass("columns")&&!b.hasClass("column"));c+=1)void 0!==b&&(b=b.parent());return b},d=function(b){var d=c(b);a(d&&d.length>0?d:b,b)},e=function(d,e){var f,g=c(d);a(g||d,d),d.addClass("error"),g&&(f=b.element('<small class="error">'+e+"</small>"),g.append(f))},f=function(a){d(a)};return{makeValid:d,makeInvalid:e,makeDefault:f,key:"foundation5"}}function i(){var a=function(a,c){b.forEach(a.find("small"),function(a){b.element(a).hasClass("form-error is-visible")&&b.element(a).remove()}),c.removeClass("alert callout")},c=function(a){for(var b=a,c=0;3>=c&&(void 0===b||!b.hasClass("columns")&&!b.hasClass("column"));c+=1)void 0!==b&&(b=b.parent());return b},d=function(b){var d=c(b);a(d&&d.length>0?d:b,b)},e=function(d,e){var f,g=c(d);a(g||d,d),d.addClass("alert callout"),g&&(f=b.element('<small class="form-error is-visible">'+e+"</small>"),g.append(f))},f=function(a){d(a)};return{makeValid:d,makeInvalid:e,makeDefault:f,key:"foundation6"}}function j(){var a=function(a){return a[0].offsetWidth>0&&a[0].offsetHeight>0};return{isElementVisible:a}}function k(a,c,d){var e=["input","textarea","select","form"],f=function(a){return c.isElementVisible(a)},g=function(c){var d,e=b.element(c).controller("form");return d=void 0!==e&&null!==e?e.autoValidateFormOptions:a.defaultFormValidationOptions},h=function(a,b,c){var d,g,h,i=a&&a.length>0,j=i&&"#comment"===a[0].nodeName.toLowerCase();return i&&j===!1&&(d=f(a)||b.validateNonVisibleControls,g=e.indexOf(a[0].nodeName.toLowerCase())>-1||a[0].hasAttribute("register-custom-form-control"),h=b.validateOnFormSubmit===!1||b.validateOnFormSubmit===!0&&c===!0),i&&!j&&d&&g&&h},i=function(c,d,e){var f,i=!0,j=e||g(d),k=c.$pristine===!1||j.forceValidation,l=function(a){var c,d=!0;return b.forEach(a,function(a,b){d&&a&&(d=!1,c=b)}),c};return j.disabled===!1&&(j.forceValidation||h(d,j,j.getFormController().$submitted)&&c&&k)&&(i=!c.$invalid,j.removeExternalValidationErrorsOnSubmit&&c.removeAllExternalValidation&&c.removeAllExternalValidation(),void 0!==c.$pending&&e.waitForAsyncValidators===!0?a.waitForAsyncValidators(d):i?a.makeValid(d):(f=l(c.$errors||c.$error),void 0===f?i=!0:a.getErrorMessage(f,d).then(function(b){a.makeInvalid(d,b)}))),i},j=function(b){a.makeDefault(b)},k=function(a){b.forEach(a[0].all||a[0].elements||a[0],function(a){var c,d=b.element(a);c=d.controller("ngModel"),void 0!==c&&("form"===d[0].nodeName.toLowerCase()?k(d):c.$setPristine())})},l=function(c){var e,f=!0,j=null,k=c?b.element(c).controller("form"):void 0,m=function(c,e,m){var n,o,p,q;if(c=b.element(c),n=c.controller("ngModel"),void 0!==n&&(e||h(c,m,k.$submitted)))if("form"===c[0].nodeName.toLowerCase())l(c);else{p=g(c),q=p.forceValidation,p.forceValidation=e;try{if(o=i(n,c,p),a.enableFocusInputError()&&!o&&f&&(j||(j=c[0],j.focus())),a.firstInvalidElementScrollingOnSubmitEnabled()&&!o&&f){var r=c.attr("id");r&&d(r)}f=f&&o}finally{p.forceValidation=q}}};return void 0===c||void 0!==k&&k.autoValidateFormOptions.disabled?void 0!==c:(e=b.copy(k.autoValidateFormOptions),e.forceValidation=!0,b.forEach(c[0].elements||c[0].all||c[0],function(a){m(a,!0,e)}),c[0].customHTMLFormControlsCollection&&b.forEach(c[0].customHTMLFormControlsCollection,function(a){m(a,!0,e)}),f)},m=function(b,c,d){d?a.makeInvalid(b,d):a.getErrorMessage(c,b).then(function(c){a.makeInvalid(b,c)})};return{setElementValidationError:m,validateElement:i,validateForm:l,resetElement:j,resetForm:k}}function l(a,b){return void 0!==a&&null!==a||void 0===b?"false"!==a:b}function m(a,c,d){var e=a.autoValidateFormOptions=a.autoValidateFormOptions||b.copy(c.defaultFormValidationOptions);e.getFormController=function(){return a},e.waitForAsyncValidators=l(d.waitForAsyncValidators,e.waitForAsyncValidators),e.forceValidation=!1,e.disabled=!c.isEnabled()||l(d.disableDynamicValidation,e.disabled),e.validateNonVisibleControls=l(d.validateNonVisibleControls,e.validateNonVisibleControls),e.validateOnFormSubmit=l(d.validateOnFormSubmit,e.validateOnFormSubmit),e.removeExternalValidationErrorsOnSubmit=void 0===d.removeExternalValidationErrorsOnSubmit?e.removeExternalValidationErrorsOnSubmit:l(d.removeExternalValidationErrorsOnSubmit,e.removeExternalValidationErrorsOnSubmit),c.isEnabled()===!1&&"false"===d.disableDynamicValidation&&(e.disabled=!1)}function n(a){return{restrict:"E",link:function(b,c){function d(){a.resetForm(c),e.$setPristine&&e.$setPristine(),e.$setUntouched&&e.$setUntouched()}var e=c.controller("form");void 0!==e&&e.autoValidateFormOptions&&e.autoValidateFormOptions.disabled===!1&&(c.on("reset",d),b.$on("$destroy",function(){c.off("reset",d)}))}}}function o(){var a=function(a){for(var c=a,d=0;50>=d&&(void 0===c||"form"!==c.nodeName.toLowerCase());d+=1)void 0!==c&&(c=b.element(c).parent()[0]);return c};return{restrict:"A",link:function(b,c){var d=a(c.parent()[0]);d&&(d.customHTMLFormControlsCollection=d.customHTMLFormControlsCollection||[],d.customHTMLFormControlsCollection.push(c[0]))}}}function p(a,b,c){return a[0].compile=function(a,d){var e=b(d.ngSubmit),f="true"===d.ngSubmitForce;return function(a,b){function d(d){a.$apply(function(){void 0!==i&&null!==i&&i.autoValidateFormOptions&&i.autoValidateFormOptions.disabled===!0?e(a,{$event:d}):(void 0===i.$setSubmitted&&(i.$submitted=!0),(c.validateForm(b)||f===!0)&&e(a,{$event:d}))})}function g(){b[0].reset?b[0].reset():c.resetForm(b)}var h,i=b.controller("form");i&&i.autoValidateFormOptions&&(i.autoValidateFormOptions.resetForm=g,void 0!==i.$name&&""!==i.$name&&(h=a.$on("form:"+i.$name+":reset",g))),b.on("submit",d),a.$on("$destroy",function(){b.off("submit",d),h&&h()})}},a}function q(a){a.decorator("ngSubmitDirective",p)}function r(a,b,c,d,e){a.setErrorMessageResolver(b.resolve),a.registerDomModifier(c.key,c),a.registerDomModifier(d.key,d),a.registerDomModifier(e.key,e),a.setDefaultElementModifier(c.key)}b.module("jcs-autoValidate",[]),b.module("jcs-autoValidate").provider("validator",c),d.$inject=["$log"],b.module("jcs-autoValidate").factory("bootstrap3ElementModifier",d),e.$inject=["$timeout"],b.module("jcs-autoValidate").factory("jcs-debounce",e),b.autoValidate=b.autoValidate||{errorMessages:{}},b.autoValidate.errorMessages["default"]={defaultMsg:"Please add error message for {0}",email:"Please enter a valid email address",minlength:"Please enter at least {0} characters",maxlength:"You have entered more than the maximum {0} characters",min:"Please enter the minimum number of {0}",max:"Please enter the maximum number of {0}",required:"This field is required",date:"Please enter a valid date",pattern:"Please ensure the entered information adheres to this pattern {0}",number:"Please enter a valid number",url:"Please enter a valid URL in the format of http(s)://www.google.com"},g.$inject=["$q","$http"],b.module("jcs-autoValidate").factory("defaultErrorMessageResolver",g),b.module("jcs-autoValidate").factory("foundation5ElementModifier",h),b.module("jcs-autoValidate").factory("foundation6ElementModifier",i),k.$inject=["validator","jcs-elementUtils","$anchorScroll"],b.module("jcs-autoValidate").factory("jcs-elementUtils",j),b.module("jcs-autoValidate").factory("validationManager",k),b.module("jcs-autoValidate").directive("form",["validator",function(a){return{restrict:"E",require:"form",compile:function(){return{pre:function(b,c,d,e){m(e,a,d)}}}}}]),b.module("jcs-autoValidate").directive("ngForm",["validator",function(a){return{restrict:"EA",require:"form",priority:9999,compile:function(){return{pre:function(b,c,d,e){m(e,a,d)}}}}}]),n.$inject=["validationManager"],b.module("jcs-autoValidate").directive("form",n),b.module("jcs-autoValidate").directive("registerCustomFormControl",o),p.$inject=["$delegate","$parse","validationManager"],q.$inject=["$provide"],b.module("jcs-autoValidate").config(q),b.module("jcs-autoValidate").config(["$provide",function(a){a.decorator("ngModelDirective",["$timeout","$delegate","validationManager","jcs-debounce",function(a,c,d,e){var f=c[0],g=f.link||f.compile;return f.compile=function(a){var c=b.version.major>=1&&b.version.minor>=3,f=g;return c&&b.isFunction(g)&&(f=g(a)),{pre:function(a,g,h,i){var j=i[0],k=i[1],l=void 0===h.ngModelOptions?void 0:a.$eval(h.ngModelOptions),m=j.$setValidity,n=j.$setPristine,o=e.debounce(function(){var a=void 0!==k&&null!==k?k.autoValidateFormOptions:void 0;d.validateElement(j,g,a)},100);return void 0===h.formnovalidate&&void 0!==k&&null!==k&&k.autoValidateFormOptions&&k.autoValidateFormOptions.disabled===!1&&(c||!c||void 0===l||void 0===l.updateOn||""===l.updateOn?j.$setValidity=function(a,b){m.call(j,a,b),o()}:(g.on(l.updateOn,function(){o()}),a.$on("$destroy",function(){g.off(l.updateOn)})),j.$setPristine=function(){n.call(j),d.resetElement(g)},j.autoValidated=!0),j.setExternalValidation=function(a,b,c){c&&j.$setValidity(a,!1),j.externalErrors=j.externalErrors||{},j.externalErrors[a]=!1,d.setElementValidationError(g,a,b)},j.removeExternalValidation=function(a,b){if(b){j.$setValidity(a,!0);var c=j.$error||j.$errors;delete c[a]}j.externalErrors&&delete j.externalErrors[a],d.resetElement(g)},j.removeAllExternalValidation=function(){if(j.externalErrors){var a=j.$error||j.$errors;b.forEach(j.externalErrors,function(b,c){j.$setValidity(c,!0),delete a[c]}),j.externalErrors={},d.resetElement(g)}},k&&(k.setExternalValidation=function(a,b,c,d){var e=!1;return k[a]&&(k[a].setExternalValidation(b,c,d),e=!0),e},k.removeExternalValidation=function(a,b,c,d){var e=!1;return k[a]&&(k[a].removeExternalValidation(b,d),e=!0),e}),f.pre?f.pre.apply(this,arguments):this},post:function(a,b,c,d){return f.post?f.post.apply(this,arguments):f.apply(this,arguments)}}},c}])}]),r.$inject=["validator","defaultErrorMessageResolver","bootstrap3ElementModifier","foundation5ElementModifier","foundation6ElementModifier"],b.module("jcs-autoValidate").run(r)}(String,angular);
 /*! ngprogress-lite - v1.0.8 (http://labs.voronianski.com/ngprogress-lite.js) */
 !function(a,b){"undefined"!=typeof module&&module.exports?module.exports=b(require("angular")):"function"==typeof define&&define.amd?define(["angular"],b):b(a.angular)}(this,function(a){"use strict";return a.module("ngProgressLite",[]).provider("ngProgressLite",function(){var b=this.settings={minimum:.08,speed:300,ease:"ease",trickleRate:.02,trickleSpeed:500,template:'<div class="ngProgressLite"><div class="ngProgressLiteBar"><div class="ngProgressLiteBarShadow"></div></div></div>'};this.$get=["$document",function(c){var d,e,f,g=c.find("body"),h={render:function(){return this.isRendered()?d:(g.addClass("ngProgressLite-on"),d=a.element(b.template),g.append(d),f=!1,d)},remove:function(){g.removeClass("ngProgressLite-on"),d.remove(),f=!0},isRendered:function(){return d&&d.children().length>0&&!f},trickle:function(){return i.inc(Math.random()*b.trickleRate)},clamp:function(a,b,c){return b>a?b:a>c?c:a},toBarPercents:function(a){return 100*a},positioning:function(a,b,c){return{width:this.toBarPercents(a)+"%",transition:"all "+b+"ms "+c}}},i={set:function(a){var c=h.render();return a=h.clamp(a,b.minimum,1),e=1===a?null:a,setTimeout(function(){c.children().eq(0).css(h.positioning(a,b.speed,b.ease))},100),1===a&&setTimeout(function(){c.css({transition:"all "+b.speed+"ms linear",opacity:0}),setTimeout(function(){h.remove()},b.speed)},b.speed),i},get:function(){return e},start:function(){e||i.set(0);var a=function(){setTimeout(function(){e&&(h.trickle(),a())},b.trickleSpeed)};return a(),i},inc:function(a){var b=e;return b?("number"!=typeof a&&(a=(1-b)*h.clamp(Math.random()*b,.1,.95)),b=h.clamp(b+a,0,.994),i.set(b)):i.start()},done:function(){e&&i.inc(.3+.5*Math.random()).set(1)}};return i}]}).name});
+/**
+ * Copyright (c) 2011-2014 Felix Gnass
+ * Licensed under the MIT license
+ */
+(function(root, factory) {
+
+  // CommonJS
+  if (typeof exports == 'object') {
+    module.exports = factory();
+  }
+  // AMD module
+  else if (typeof define == 'function' && define.amd) {
+    define(factory);
+  }
+  // Browser global
+  else {
+    root.Spinner = factory();
+  }
+
+}
+(this, function() {
+  "use strict";
+
+  var prefixes = ['webkit', 'Moz', 'ms', 'O'] /* Vendor prefixes */
+    , animations = {} /* Animation rules keyed by their name */
+    , useCssAnimations /* Whether to use CSS animations or setTimeout */
+
+  /**
+   * Utility function to create elements. If no tag name is given,
+   * a DIV is created. Optionally properties can be passed.
+   */
+  function createEl(tag, prop) {
+    var el = document.createElement(tag || 'div')
+      , n
+
+    for(n in prop) el[n] = prop[n]
+    return el
+  }
+
+  /**
+   * Appends children and returns the parent.
+   */
+  function ins(parent /* child1, child2, ...*/) {
+    for (var i=1, n=arguments.length; i<n; i++)
+      parent.appendChild(arguments[i])
+
+    return parent
+  }
+
+  /**
+   * Insert a new stylesheet to hold the @keyframe or VML rules.
+   */
+  var sheet = (function() {
+    var el = createEl('style', {type : 'text/css'})
+    ins(document.getElementsByTagName('head')[0], el)
+    return el.sheet || el.styleSheet
+  }())
+
+  /**
+   * Creates an opacity keyframe animation rule and returns its name.
+   * Since most mobile Webkits have timing issues with animation-delay,
+   * we create separate rules for each line/segment.
+   */
+  function addAnimation(alpha, trail, i, lines) {
+    var name = ['opacity', trail, ~~(alpha*100), i, lines].join('-')
+      , start = 0.01 + i/lines * 100
+      , z = Math.max(1 - (1-alpha) / trail * (100-start), alpha)
+      , prefix = useCssAnimations.substring(0, useCssAnimations.indexOf('Animation')).toLowerCase()
+      , pre = prefix && '-' + prefix + '-' || ''
+
+    if (!animations[name]) {
+      sheet.insertRule(
+        '@' + pre + 'keyframes ' + name + '{' +
+        '0%{opacity:' + z + '}' +
+        start + '%{opacity:' + alpha + '}' +
+        (start+0.01) + '%{opacity:1}' +
+        (start+trail) % 100 + '%{opacity:' + alpha + '}' +
+        '100%{opacity:' + z + '}' +
+        '}', sheet.cssRules.length)
+
+      animations[name] = 1
+    }
+
+    return name
+  }
+
+  /**
+   * Tries various vendor prefixes and returns the first supported property.
+   */
+  function vendor(el, prop) {
+    var s = el.style
+      , pp
+      , i
+
+    prop = prop.charAt(0).toUpperCase() + prop.slice(1)
+    for(i=0; i<prefixes.length; i++) {
+      pp = prefixes[i]+prop
+      if(s[pp] !== undefined) return pp
+    }
+    if(s[prop] !== undefined) return prop
+  }
+
+  /**
+   * Sets multiple style properties at once.
+   */
+  function css(el, prop) {
+    for (var n in prop)
+      el.style[vendor(el, n)||n] = prop[n]
+
+    return el
+  }
+
+  /**
+   * Fills in default values.
+   */
+  function merge(obj) {
+    for (var i=1; i < arguments.length; i++) {
+      var def = arguments[i]
+      for (var n in def)
+        if (obj[n] === undefined) obj[n] = def[n]
+    }
+    return obj
+  }
+
+  /**
+   * Returns the absolute page-offset of the given element.
+   */
+  function pos(el) {
+    var o = { x:el.offsetLeft, y:el.offsetTop }
+    while((el = el.offsetParent))
+      o.x+=el.offsetLeft, o.y+=el.offsetTop
+
+    return o
+  }
+
+  /**
+   * Returns the line color from the given string or array.
+   */
+  function getColor(color, idx) {
+    return typeof color == 'string' ? color : color[idx % color.length]
+  }
+
+  // Built-in defaults
+
+  var defaults = {
+    lines: 12,            // The number of lines to draw
+    length: 7,            // The length of each line
+    width: 5,             // The line thickness
+    radius: 10,           // The radius of the inner circle
+    rotate: 0,            // Rotation offset
+    corners: 1,           // Roundness (0..1)
+    color: '#000',        // #rgb or #rrggbb
+    direction: 1,         // 1: clockwise, -1: counterclockwise
+    speed: 1,             // Rounds per second
+    trail: 100,           // Afterglow percentage
+    opacity: 1/4,         // Opacity of the lines
+    fps: 20,              // Frames per second when using setTimeout()
+    zIndex: 2e9,          // Use a high z-index by default
+    className: 'spinner', // CSS class to assign to the element
+    top: '50%',           // center vertically
+    left: '50%',          // center horizontally
+    position: 'absolute'  // element position
+  }
+
+  /** The constructor */
+  function Spinner(o) {
+    this.opts = merge(o || {}, Spinner.defaults, defaults)
+  }
+
+  // Global defaults that override the built-ins:
+  Spinner.defaults = {}
+
+  merge(Spinner.prototype, {
+
+    /**
+     * Adds the spinner to the given target element. If this instance is already
+     * spinning, it is automatically removed from its previous target b calling
+     * stop() internally.
+     */
+    spin: function(target) {
+      this.stop()
+
+      var self = this
+        , o = self.opts
+        , el = self.el = css(createEl(0, {className: o.className}), {position: o.position, width: 0, zIndex: o.zIndex})
+        , mid = o.radius+o.length+o.width
+
+      css(el, {
+        left: o.left,
+        top: o.top
+      })
+        
+      if (target) {
+        target.insertBefore(el, target.firstChild||null)
+      }
+
+      el.setAttribute('role', 'progressbar')
+      self.lines(el, self.opts)
+
+      if (!useCssAnimations) {
+        // No CSS animation support, use setTimeout() instead
+        var i = 0
+          , start = (o.lines - 1) * (1 - o.direction) / 2
+          , alpha
+          , fps = o.fps
+          , f = fps/o.speed
+          , ostep = (1-o.opacity) / (f*o.trail / 100)
+          , astep = f/o.lines
+
+        ;(function anim() {
+          i++;
+          for (var j = 0; j < o.lines; j++) {
+            alpha = Math.max(1 - (i + (o.lines - j) * astep) % f * ostep, o.opacity)
+
+            self.opacity(el, j * o.direction + start, alpha, o)
+          }
+          self.timeout = self.el && setTimeout(anim, ~~(1000/fps))
+        })()
+      }
+      return self
+    },
+
+    /**
+     * Stops and removes the Spinner.
+     */
+    stop: function() {
+      var el = this.el
+      if (el) {
+        clearTimeout(this.timeout)
+        if (el.parentNode) el.parentNode.removeChild(el)
+        this.el = undefined
+      }
+      return this
+    },
+
+    /**
+     * Internal method that draws the individual lines. Will be overwritten
+     * in VML fallback mode below.
+     */
+    lines: function(el, o) {
+      var i = 0
+        , start = (o.lines - 1) * (1 - o.direction) / 2
+        , seg
+
+      function fill(color, shadow) {
+        return css(createEl(), {
+          position: 'absolute',
+          width: (o.length+o.width) + 'px',
+          height: o.width + 'px',
+          background: color,
+          boxShadow: shadow,
+          transformOrigin: 'left',
+          transform: 'rotate(' + ~~(360/o.lines*i+o.rotate) + 'deg) translate(' + o.radius+'px' +',0)',
+          borderRadius: (o.corners * o.width>>1) + 'px'
+        })
+      }
+
+      for (; i < o.lines; i++) {
+        seg = css(createEl(), {
+          position: 'absolute',
+          top: 1+~(o.width/2) + 'px',
+          transform: o.hwaccel ? 'translate3d(0,0,0)' : '',
+          opacity: o.opacity,
+          animation: useCssAnimations && addAnimation(o.opacity, o.trail, start + i * o.direction, o.lines) + ' ' + 1/o.speed + 's linear infinite'
+        })
+
+        if (o.shadow) ins(seg, css(fill('#000', '0 0 4px ' + '#000'), {top: 2+'px'}))
+        ins(el, ins(seg, fill(getColor(o.color, i), '0 0 1px rgba(0,0,0,.1)')))
+      }
+      return el
+    },
+
+    /**
+     * Internal method that adjusts the opacity of a single line.
+     * Will be overwritten in VML fallback mode below.
+     */
+    opacity: function(el, i, val) {
+      if (i < el.childNodes.length) el.childNodes[i].style.opacity = val
+    }
+
+  })
+
+
+  function initVML() {
+
+    /* Utility function to create a VML tag */
+    function vml(tag, attr) {
+      return createEl('<' + tag + ' xmlns="urn:schemas-microsoft.com:vml" class="spin-vml">', attr)
+    }
+
+    // No CSS transforms but VML support, add a CSS rule for VML elements:
+    sheet.addRule('.spin-vml', 'behavior:url(#default#VML)')
+
+    Spinner.prototype.lines = function(el, o) {
+      var r = o.length+o.width
+        , s = 2*r
+
+      function grp() {
+        return css(
+          vml('group', {
+            coordsize: s + ' ' + s,
+            coordorigin: -r + ' ' + -r
+          }),
+          { width: s, height: s }
+        )
+      }
+
+      var margin = -(o.width+o.length)*2 + 'px'
+        , g = css(grp(), {position: 'absolute', top: margin, left: margin})
+        , i
+
+      function seg(i, dx, filter) {
+        ins(g,
+          ins(css(grp(), {rotation: 360 / o.lines * i + 'deg', left: ~~dx}),
+            ins(css(vml('roundrect', {arcsize: o.corners}), {
+                width: r,
+                height: o.width,
+                left: o.radius,
+                top: -o.width>>1,
+                filter: filter
+              }),
+              vml('fill', {color: getColor(o.color, i), opacity: o.opacity}),
+              vml('stroke', {opacity: 0}) // transparent stroke to fix color bleeding upon opacity change
+            )
+          )
+        )
+      }
+
+      if (o.shadow)
+        for (i = 1; i <= o.lines; i++)
+          seg(i, -2, 'progid:DXImageTransform.Microsoft.Blur(pixelradius=2,makeshadow=1,shadowopacity=.3)')
+
+      for (i = 1; i <= o.lines; i++) seg(i)
+      return ins(el, g)
+    }
+
+    Spinner.prototype.opacity = function(el, i, val, o) {
+      var c = el.firstChild
+      o = o.shadow && o.lines || 0
+      if (c && i+o < c.childNodes.length) {
+        c = c.childNodes[i+o]; c = c && c.firstChild; c = c && c.firstChild
+        if (c) c.opacity = val
+      }
+    }
+  }
+
+  var probe = css(createEl('group'), {behavior: 'url(#default#VML)'})
+
+  if (!vendor(probe, 'transform') && probe.adj) initVML()
+  else useCssAnimations = vendor(probe, 'animation')
+
+  return Spinner
+
+}));
+
+/*!
+ * Ladda
+ * http://lab.hakim.se/ladda
+ * MIT licensed
+ *
+ * Copyright (C) 2016 Hakim El Hattab, http://hakim.se
+ */
+/* jshint node:true, browser:true */
+(function( root, factory ) {
+
+	// CommonJS
+	if( typeof exports === 'object' )  {
+		module.exports = factory(require('spin.js'));
+	}
+	// AMD module
+	else if( typeof define === 'function' && define.amd ) {
+		define( [ 'spin' ], factory );
+	}
+	// Browser global
+	else {
+		root.Ladda = factory( root.Spinner );
+	}
+
+}
+(this, function( Spinner ) {
+	'use strict';
+
+	// All currently instantiated instances of Ladda
+	var ALL_INSTANCES = [];
+
+	/**
+	 * Creates a new instance of Ladda which wraps the
+	 * target button element.
+	 *
+	 * @return An API object that can be used to control
+	 * the loading animation state.
+	 */
+	function create( button ) {
+
+		if( typeof button === 'undefined' ) {
+			console.warn( "Ladda button target must be defined." );
+			return;
+		}
+
+		// The button must have the class "ladda-button"
+		if( !/ladda-button/i.test( button.className ) ) {
+			button.className += ' ladda-button';
+		}
+
+		// Style is required, default to "expand-right"
+		if( !button.hasAttribute( 'data-style' ) ) {
+			button.setAttribute( 'data-style', 'expand-right' );
+		}
+
+		// The text contents must be wrapped in a ladda-label
+		// element, create one if it doesn't already exist
+		if( !button.querySelector( '.ladda-label' ) ) {
+			var laddaLabel = document.createElement( 'span' );
+			laddaLabel.className = 'ladda-label';
+			wrapContent( button, laddaLabel );
+		}
+
+		// The spinner component
+		var spinner,
+			spinnerWrapper = button.querySelector( '.ladda-spinner' );
+
+		// Wrapper element for the spinner
+		if( !spinnerWrapper ) {
+			spinnerWrapper = document.createElement( 'span' );
+			spinnerWrapper.className = 'ladda-spinner';
+		}
+
+		button.appendChild( spinnerWrapper );
+
+		// Timer used to delay starting/stopping
+		var timer;
+
+		var instance = {
+
+			/**
+			 * Enter the loading state.
+			 */
+			start: function() {
+
+				// Create the spinner if it doesn't already exist
+				if( !spinner ) spinner = createSpinner( button );
+
+				button.setAttribute( 'disabled', '' );
+				button.setAttribute( 'data-loading', '' );
+
+				clearTimeout( timer );
+				spinner.spin( spinnerWrapper );
+
+				this.setProgress( 0 );
+
+				return this; // chain
+
+			},
+
+			/**
+			 * Enter the loading state, after a delay.
+			 */
+			startAfter: function( delay ) {
+
+				clearTimeout( timer );
+				timer = setTimeout( function() { instance.start(); }, delay );
+
+				return this; // chain
+
+			},
+
+			/**
+			 * Exit the loading state.
+			 */
+			stop: function() {
+
+				button.removeAttribute( 'disabled' );
+				button.removeAttribute( 'data-loading' );
+
+				// Kill the animation after a delay to make sure it
+				// runs for the duration of the button transition
+				clearTimeout( timer );
+
+				if( spinner ) {
+					timer = setTimeout( function() { spinner.stop(); }, 1000 );
+				}
+
+				return this; // chain
+
+			},
+
+			/**
+			 * Toggle the loading state on/off.
+			 */
+			toggle: function() {
+
+				if( this.isLoading() ) {
+					this.stop();
+				}
+				else {
+					this.start();
+				}
+
+				return this; // chain
+
+			},
+
+			/**
+			 * Sets the width of the visual progress bar inside of
+			 * this Ladda button
+			 *
+			 * @param {Number} progress in the range of 0-1
+			 */
+			setProgress: function( progress ) {
+
+				// Cap it
+				progress = Math.max( Math.min( progress, 1 ), 0 );
+
+				var progressElement = button.querySelector( '.ladda-progress' );
+
+				// Remove the progress bar if we're at 0 progress
+				if( progress === 0 && progressElement && progressElement.parentNode ) {
+					progressElement.parentNode.removeChild( progressElement );
+				}
+				else {
+					if( !progressElement ) {
+						progressElement = document.createElement( 'div' );
+						progressElement.className = 'ladda-progress';
+						button.appendChild( progressElement );
+					}
+
+					progressElement.style.width = ( ( progress || 0 ) * button.offsetWidth ) + 'px';
+				}
+
+			},
+
+			enable: function() {
+
+				this.stop();
+
+				return this; // chain
+
+			},
+
+			disable: function () {
+
+				this.stop();
+				button.setAttribute( 'disabled', '' );
+
+				return this; // chain
+
+			},
+
+			isLoading: function() {
+
+				return button.hasAttribute( 'data-loading' );
+
+			},
+
+			remove: function() {
+
+				clearTimeout( timer );
+
+				button.removeAttribute( 'disabled', '' );
+				button.removeAttribute( 'data-loading', '' );
+
+				if( spinner ) {
+					spinner.stop();
+					spinner = null;
+				}
+
+				for( var i = 0, len = ALL_INSTANCES.length; i < len; i++ ) {
+					if( instance === ALL_INSTANCES[i] ) {
+						ALL_INSTANCES.splice( i, 1 );
+						break;
+					}
+				}
+
+			}
+
+		};
+
+		ALL_INSTANCES.push( instance );
+
+		return instance;
+
+	}
+
+	/**
+	* Get the first ancestor node from an element, having a
+	* certain type.
+	*
+	* @param elem An HTML element
+	* @param type an HTML tag type (uppercased)
+	*
+	* @return An HTML element
+	*/
+	function getAncestorOfTagType( elem, type ) {
+
+		while ( elem.parentNode && elem.tagName !== type ) {
+			elem = elem.parentNode;
+		}
+
+		return ( type === elem.tagName ) ? elem : undefined;
+
+	}
+
+	/**
+	 * Returns a list of all inputs in the given form that
+	 * have their `required` attribute set.
+	 *
+	 * @param form The from HTML element to look in
+	 *
+	 * @return A list of elements
+	 */
+	function getRequiredFields( form ) {
+
+		var requirables = [ 'input', 'textarea', 'select' ];
+		var inputs = [];
+
+		for( var i = 0; i < requirables.length; i++ ) {
+			var candidates = form.getElementsByTagName( requirables[i] );
+			for( var j = 0; j < candidates.length; j++ ) {
+				if ( candidates[j].hasAttribute( 'required' ) ) {
+					inputs.push( candidates[j] );
+				}
+			}
+		}
+
+		return inputs;
+
+	}
+
+
+	/**
+	 * Binds the target buttons to automatically enter the
+	 * loading state when clicked.
+	 *
+	 * @param target Either an HTML element or a CSS selector.
+	 * @param options
+	 *          - timeout Number of milliseconds to wait before
+	 *            automatically cancelling the animation.
+	 */
+	function bind( target, options ) {
+
+		options = options || {};
+
+		var targets = [];
+
+		if( typeof target === 'string' ) {
+			targets = toArray( document.querySelectorAll( target ) );
+		}
+		else if( typeof target === 'object' && typeof target.nodeName === 'string' ) {
+			targets = [ target ];
+		}
+
+		for( var i = 0, len = targets.length; i < len; i++ ) {
+
+			(function() {
+				var element = targets[i];
+
+				// Make sure we're working with a DOM element
+				if( typeof element.addEventListener === 'function' ) {
+					var instance = create( element );
+					var timeout = -1;
+
+					element.addEventListener( 'click', function( event ) {
+
+						// If the button belongs to a form, make sure all the
+						// fields in that form are filled out
+						var valid = true;
+						var form = getAncestorOfTagType( element, 'FORM' );
+
+						if( typeof form !== 'undefined' ) {
+							// Modern form validation
+							if( typeof form.checkValidity === 'function' ) {
+								valid = form.checkValidity();
+							}
+							// Fallback to manual validation for old browsers
+							else {
+								var requireds = getRequiredFields( form );
+								for( var i = 0; i < requireds.length; i++ ) {
+
+									if( requireds[i].value.replace( /^\s+|\s+$/g, '' ) === '' ) {
+										valid = false;
+									}
+
+									// Radiobuttons and Checkboxes need to be checked for the "checked" attribute
+									if( (requireds[i].type === 'checkbox' || requireds[i].type === 'radio' ) && !requireds[i].checked ) {
+										valid = false;
+									}
+
+									// Email field validation
+									if( requireds[i].type === 'email' ) {
+										valid = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test( requireds[i].value );
+									}
+
+								}
+							}
+						}
+
+						if( valid ) {
+							// This is asynchronous to avoid an issue where setting
+							// the disabled attribute on the button prevents forms
+							// from submitting
+							instance.startAfter( 1 );
+
+							// Set a loading timeout if one is specified
+							if( typeof options.timeout === 'number' ) {
+								clearTimeout( timeout );
+								timeout = setTimeout( instance.stop, options.timeout );
+							}
+
+							// Invoke callbacks
+							if( typeof options.callback === 'function' ) {
+								options.callback.apply( null, [ instance ] );
+							}
+						}
+
+					}, false );
+				}
+			})();
+
+		}
+
+	}
+
+	/**
+	 * Stops ALL current loading animations.
+	 */
+	function stopAll() {
+
+		for( var i = 0, len = ALL_INSTANCES.length; i < len; i++ ) {
+			ALL_INSTANCES[i].stop();
+		}
+
+	}
+
+	function createSpinner( button ) {
+
+		var height = button.offsetHeight,
+			spinnerColor,
+			spinnerLines;
+
+		if( height === 0 ) {
+			// We may have an element that is not visible so
+			// we attempt to get the height in a different way
+			height = parseFloat( window.getComputedStyle( button ).height );
+		}
+
+		// If the button is tall we can afford some padding
+		if( height > 32 ) {
+			height *= 0.8;
+		}
+
+		// Prefer an explicit height if one is defined
+		if( button.hasAttribute( 'data-spinner-size' ) ) {
+			height = parseInt( button.getAttribute( 'data-spinner-size' ), 10 );
+		}
+
+		// Allow buttons to specify the color of the spinner element
+		if( button.hasAttribute( 'data-spinner-color' ) ) {
+			spinnerColor = button.getAttribute( 'data-spinner-color' );
+		}
+
+		// Allow buttons to specify the number of lines of the spinner
+		if( button.hasAttribute( 'data-spinner-lines' ) ) {
+			spinnerLines = parseInt( button.getAttribute( 'data-spinner-lines' ), 10 );
+		}
+
+		var radius = height * 0.2,
+			length = radius * 0.6,
+			width = radius < 7 ? 2 : 3;
+
+		return new Spinner( {
+			color: spinnerColor || '#fff',
+			lines: spinnerLines || 12,
+			radius: radius,
+			length: length,
+			width: width,
+			zIndex: 'auto',
+			top: 'auto',
+			left: 'auto',
+			className: ''
+		} );
+
+	}
+
+	function toArray( nodes ) {
+
+		var a = [];
+
+		for ( var i = 0; i < nodes.length; i++ ) {
+			a.push( nodes[ i ] );
+		}
+
+		return a;
+
+	}
+
+	function wrapContent( node, wrapper ) {
+
+		var r = document.createRange();
+		r.selectNodeContents( node );
+		r.surroundContents( wrapper );
+		node.appendChild( wrapper );
+
+	}
+
+	// Public API
+	return {
+
+		bind: bind,
+		create: create,
+		stopAll: stopAll
+
+	};
+
+}));
+
+/*! angular-ladda 0.4.3 */
+!function(e,n){"use strict";if("function"==typeof define&&define.amd)define(["angular","ladda"],n);else{if("undefined"==typeof module||"object"!=typeof module.exports)return n(e.angular,e.Ladda);module.exports=n(window.angular||require("angular"),require("ladda"))}}(this,function(e,n){"use strict";var t="angular-ladda";return e.module(t,[]).provider("ladda",function(){var n={style:"zoom-in"};return{setOption:function(t){e.extend(n,t)},$get:function(){return n}}}).directive("ladda",["ladda","$timeout",function(t,a){return{restrict:"A",priority:-1,link:function(r,i,d){a(function(){if(i.addClass("ladda-button"),e.isUndefined(i.attr("data-style"))&&i.attr("data-style",t.style||"zoom-in"),e.isUndefined(i.attr("data-spinner-size"))&&t.spinnerSize&&i.attr("data-spinner-size",t.spinnerSize),e.isUndefined(i.attr("data-spinner-color"))&&t.spinnerColor&&i.attr("data-spinner-color",t.spinnerColor),!i[0].querySelector(".ladda-label")){var a=document.createElement("span");a.className="ladda-label",e.element(a).append(i.contents()),i.append(a)}var o=n.create(i[0]);r.$watch(d.ladda,function(n){return n||e.isNumber(n)?(o.isLoading()||o.start(),void(e.isNumber(n)&&o.setProgress(n))):(o.stop(),void(d.ngDisabled&&i.attr("disabled",r.$eval(d.ngDisabled))))}),r.$on("$destroy",function(){o&&o.remove()})})}}}]),t});
 (function() {
     'use strict';
 
@@ -465,7 +1282,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         'satellizer',
         //'ng-token-auth',
         'jcs-autoValidate',
-        'ngProgressLite'
+        'ngProgressLite',
+        'angular-ladda'
     ]);
 
 })();
@@ -477,10 +1295,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         .run(run)
         .run(customHeaders);
 
-    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST'];
+    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider'];
 
     /* @ngInject */
-    function config($authProvider, $resourceProvider, $httpProvider, CONST) {
+    function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider) {
         Layout.init();
         $authProvider.loginUrl = CONST.api_domain + '/auth/sign_in';
         $authProvider.tokenHeader = 'access-token';
@@ -495,6 +1313,9 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         //$httpProvider.defaults.withCredentials = true;
         $resourceProvider.defaults.stripTrailingSlashes = false;
         $httpProvider.interceptors.push('authInterceptor');
+        laddaProvider.setOption({
+            style: 'expand-right'
+        });
     }
 
     // csrf.$inject = ['$http', '$cookies'];
@@ -767,7 +1588,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     resolve: {
                         styleSheets: dateTimeStyleSheets,
                         prepSelDeal: prepSelDeal,
-                        brandPrepService: brandPrepService
+                        brandPrepService: brandPrepService,
+                        prepSelHighlights: prepSelHighlights
                     }
                 }
             }
@@ -783,7 +1605,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     controller: "DealViewController",
                     controllerAs: "vm",
                     resolve: {
-                        prepSelDeal: prepSelDeal
+                        prepSelDeal: prepSelDeal,
+                        prepSelHighlights: prepSelHighlights
                     }
                 }
             }
@@ -842,6 +1665,12 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             .state(userEdit);
 
         ////////////
+
+        prepSelHighlights.$inject = ['DealService', '$stateParams'];
+        /* @ngInject */
+        function prepSelHighlights(DealService, $stateParams) {
+            return DealService.getHighlights($stateParams.id)
+        }
 
         prepSelUser.$inject = ['$stateParams', 'UserService'];
         /* @ngInject */
@@ -973,12 +1802,19 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             */
         }
 
-        function responseError(response) {
-            //console.log(response);
-            if (response.status === 401) {
+        function responseError(rejection) {
+
+            if (rejection.config.headers['access-token'] == 'undefined') {
+                console.log('test');
+                return $q.reject(rejection);
+            } else
+            if (rejection.status === 401) {
                 $rootScope.$broadcast('unauthorized');
+                return rejection;
+            } else {
+                return rejection;
             }
-            return response;
+
         }
     }
 
@@ -1520,38 +2356,32 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
 
             $auth.login(credentials).then(function(data) {
-                var headers = data.headers();
+                if (angular.isDefined(data)) {
+                    var headers = data.headers();
 
-                $auth.setToken(headers["access-token"]);
+                    $auth.setToken(headers["access-token"]);
+                    localStorage.setItem("client", headers["client"]);
+                    localStorage.setItem("access-token", headers["access-token"]);
+                    localStorage.setItem("cache-control", headers["cache-control"]);
+                    localStorage.setItem("content-type", headers["content-type"]);
+                    localStorage.setItem("expiry", headers["expiry"]);
+                    localStorage.setItem("token-type", headers["token-type"]);
+                    localStorage.setItem("uid", headers["uid"]);
 
-                localStorage.setItem("client", headers["client"]);
-                localStorage.setItem("access-token", headers["access-token"]);
-                localStorage.setItem("cache-control", headers["cache-control"]);
-                localStorage.setItem("content-type", headers["content-type"]);
-                localStorage.setItem("expiry", headers["expiry"]);
-                localStorage.setItem("token-type", headers["token-type"]);
-                localStorage.setItem("uid", headers["uid"]);
-
-                return data;
-
-            }, function(err) {
-                console.log(err);
-                d.reject(err.data.errors[0]);
-            }).then(function(response) {
-                if (typeof response === 'undefined' || response === false) {
-                    d.reject();
-                } else {
                     $rootScope.$broadcast('authorized');
 
-                    var user = JSON.stringify(response.data.user);
+                    var user = JSON.stringify(data.data.user);
 
                     localStorage.setItem('user', user);
                     $rootScope.authenticated = true;
-                    $rootScope.currentUser = response.data.user;
+                    $rootScope.currentUser = data.data.user;
 
-                    d.resolve();
+                    d.resolve(data);
+                } else {
+                    d.reject(data);
                 }
-
+            }).catch(function(err) {
+                d.reject(err);
             });
 
             // $auth.login(credentials).then(function(r) {
@@ -1669,16 +2499,19 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         //vm.password = "";
         vm.form;
         vm.login = login;
+        vm.loggingIn = false;
 
         ///////////
 
         function login() {
-
+            vm.loggingIn = true;
             AuthService.login(vm.form).then(function(response) {
+                vm.loggingIn = false;
                 $state.go('dashboard');
             }, function(error) {
+                vm.loggingIn = false;
                 vm.loginError = true;
-                vm.loginErrorText = error;
+                vm.loginErrorText = error.data.errors[0];
             });
         }
     }
@@ -2181,12 +3014,100 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             isEmpty: isEmpty,
             addHighlights: addHighlights,
             search: search,
-            searchedList: []
+            searchedList: [],
+            highlights: [],
+            getHighlights: getHighlights,
+            removeHighlights: removeHighlights,
+            updateHighlights: updateHighlights
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function removeHighlights(dealId, highlights) {
+            var url = api + '/' + dealId + '/highlights';
+            var d = $q.defer();
+            var tasks = [];
+
+            angular.forEach(highlights, function(val, index) {
+                tasks.push(function(cb) {
+                    $http.delete(url + '/' + val.uid).then(function(resp) {
+                        //d.resolve(resp);
+                        cb(null, resp);
+                    }).catch(function(err) {
+                        console.log(error);
+                        // service.errors = error;
+                        // d.reject(error);
+                        cb(err);
+                    });
+                });
+            });
+
+            async.parallel(tasks, function(error, results) {
+                if (error) {
+                    console.log(error);
+                    d.reject(error);
+                } else {
+                    d.resolve(results);
+                }
+
+            });
+
+            return d.promise;
+        }
+
+        function updateHighlights(dealId, highlights) {
+            var url = api + '/' + dealId + '/highlights';
+            var d = $q.defer();
+            var tasks = [];
+
+            angular.forEach(highlights, function(val, index) {
+                tasks.push(function(cb) {
+                    var data = {
+                        title: val.title
+                    };
+
+                    $http.patch(url + '/' + val.uid, data).then(function(resp) {
+                        //d.resolve(resp);
+                        cb(null, resp);
+                    }).catch(function(err) {
+                        console.log(error);
+                        // service.errors = error;
+                        // d.reject(error);
+                        cb(err);
+                    });
+                });
+            });
+
+            async.parallel(tasks, function(error, results) {
+                if (error) {
+                    console.log(error);
+                    d.reject(error);
+                } else {
+                    d.resolve(results);
+                }
+
+            });
+
+            return d.promise;
+        }
+
+        function getHighlights(dealId) {
+            var url = api + '/' + dealId + '/highlights';
+            var d = $q.defer();
+
+            $http.get(url).then(function(resp) {
+                service.highlights = resp.data.highlights;
+                d.resolve(service.highlights);
+            }).catch(function(err) {
+                console.log(err);
+                service.errors.push(err);
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
 
         function search(str) {
             var url = api + '/search';
@@ -2222,34 +3143,58 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         function addHighlights(dealId, highlights) {
             var d = $q.defer();
 
-            var url = api + '/' + id + 'highlights';
+            var url = api + '/' + dealId + '/highlights/collection';
 
-            var tasks = [];
+            var highlightsArr = [];
             angular.forEach(highlights, function(val, key) {
-                tasks.push(handleCb);
+                var obj = {
+                    title: val
+                };
 
-                function handleCb(cb) {
-                    $http.post(url, highlights).then(function(resp) {
-                        //d.resolve(resp);
-                        cb(null, resp);
-                    }).catch(function(err) {
-                        // console.log(error);
-                        // service.errors = error;
-                        // d.reject(error);
-                        cb(err);
-                    });
-                }
+                highlightsArr.push(obj);
+
+                // function handleCb(cb) {
+                //     $http.post(url, highlights).then(function(resp) {
+                //         //d.resolve(resp);
+                //         cb(null, resp);
+                //     }).catch(function(err) {
+                //         // console.log(error);
+                //         // service.errors = error;
+                //         // d.reject(error);
+                //         cb(err);
+                //     });
+                // }
 
             });
+            var data = {
+                highlight: {
+                    highlights: highlightsArr
+                }
+            };
 
-            async.parallel(tasks, function(error, results) {
-                if (error) {
+            $http.post(url, data)
+                .then(function(resp) {
+                    // var dealId = resp.uid;
+                    // addHighlights(dealId, data.highlights).then(function(resp) {
+                    //     d.resolve(resp);
+                    // }).catch(function(err) {
+                    //     d.reject(err);
+                    // });
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    console.log(error);
+                    service.errors = error;
                     d.reject(error);
-                } else {
-                    d.resolve(results);
-                }
+                });
 
-            });
+            // async.parallel(tasks, function(error, results) {
+            //     if (error) {
+            //         d.reject(error);
+            //     } else {
+            //         d.resolve(results);
+            //     }
+
+            // });
 
             return d.promise;
         }
@@ -2347,11 +3292,12 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     deal['date_ends'] = dateEnd.date;
                     deal['time_ends'] = dateEnd.time;
 
+                    //DISABLED
                     BrandService.findInList(deal.brand_id).then(function(brand) {
                         deal['brand'] = brand;
                         d.resolve(deal);
                     });
-
+                    //d.resolve(deal);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -2368,7 +3314,17 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
             $http.post(url, data)
                 .then(function(resp) {
-                    d.resolve(resp);
+                    //console.log(resp);
+                    //return false;
+                    var dealId = resp.data.deal.uid;
+                    console.log(data.highlights);
+                    addHighlights(dealId, data.highlights).then(function(resp) {
+                        console.log(resp);
+                        d.resolve(resp);
+                    }).catch(function(err) {
+                        console.log(err);
+                        d.reject(err);
+                    });
                 }).catch(function(error) {
                     console.log(error);
                     service.errors = error;
@@ -2382,14 +3338,93 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             var url = api + "/" + id;
             var d = $q.defer();
 
-            $http.patch(url, data)
-                .then(function(resp) {
-                    d.resolve(resp);
-                }).catch(function(error) {
+            var tasks = [];
+
+            if (angular.isDefined(data.highlights) && data.highlights.length > 0) {
+                angular.forEach(data.highlights, function(val, index) {
+                    var url_h = url + '/highlights/' + val.uid;
+                    var data_h = {
+                        highlight: {
+                            title: val.title
+                        }
+                    };
+
+                    tasks.push(function(cb) {
+                        $http.patch(url_h, data_h).then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(error);
+                            cb(err);
+                        });
+                    });
+                });
+            }
+
+            if (angular.isDefined(data.removedHighlights) && data.removedHighlights.length > 0) {
+                angular.forEach(data.removedHighlights, function(val, index) {
+                    var url_h = url + '/highlights/' + val.uid;
+
+                    tasks.push(function(cb) {
+                        $http.delete(url_h).then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(error);
+                            cb(err);
+                        });
+                    });
+                });
+            }
+
+            if (angular.isDefined(data.form.highlights)) {
+                var highlightsArr = [];
+                angular.forEach(data.form.highlights, function(val, index) {
+                    var obj = {
+                        title: val
+                    };
+
+                    highlightsArr.push(obj);
+                });
+
+                var data_h = {
+                    highlight: {
+                        highlights: highlightsArr
+                    }
+                };
+
+                var url_ah = api + '/' + id + '/highlights/collection';
+
+                tasks.push(function(cb) {
+                    $http.post(url_ah, data_h)
+                        .then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(error) {
+                            console.log(error);
+                            cb(err);
+                        });
+                });
+
+            }
+
+            tasks.push(function(cb) {
+                $http.patch(url, data.form)
+                    .then(function(resp) {
+                        cb(null, resp);
+                    }).catch(function(error) {
+                        console.log(error);
+                        cb(err);
+                    });
+            });
+
+            async.parallel(tasks, function(error, results) {
+                if (error) {
                     console.log(error);
                     service.errors = error;
                     d.reject(error);
-                });
+                } else {
+                    d.resolve(results);
+                }
+
+            });
 
             return d.promise;
         }
@@ -2428,9 +3463,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.form = {};
         vm.form.highlights = {};
         vm.response = {};
-        vm.isDone = false;
+        vm.isDone = true;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
+        vm.removeHighlight = removeHighlight;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addDeal;
@@ -2444,10 +3480,15 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         }
 
         function addDeal() {
-            //vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
-            //vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
-            //console.log(vm.form.highlights);
-            //return false;
+            vm.isDone = false;
+            //temporary
+            //vm.form.brand_id = '3228eb88-6810-4b28-ae52-88a62e4655c3';
+
+            vm.isDone = false;
+            vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
+            vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
+            console.log(vm.form);
+            return false;
             DealService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
@@ -2465,9 +3506,13 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 vm.response['msg'] = "Failed to add new deal.";
                 vm.isDone = true;
 
-                $scope.$parent.vm.isDone = false;
+                $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
             });
+        }
+
+        function removeHighlight(highlightId) {
+
         }
     }
 })();
@@ -2583,10 +3628,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     angular.module('app')
         .controller('DealEditController', DealEditController);
 
-    DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService'];
+    DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService', 'prepSelHighlights'];
 
     /* @ngInject */
-    function DealEditController(DealService, $stateParams, $scope, prepSelDeal, HelperService, $state, brandPrepService) {
+    function DealEditController(DealService, $stateParams, $scope, prepSelDeal, HelperService, $state, brandPrepService, prepSelHighlights) {
         var vm = this;
 
         vm.mode = "Edit";
@@ -2594,10 +3639,14 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.dealId = $stateParams.id;
         vm.selectedDeal = prepSelDeal;
         vm.form = vm.selectedDeal;
-        vm.form.highlights = vm.selectedDeal.highlights;
-        vm.isDone = false;
+        vm.form.highlights = {};
+        //vm.form.highlights = vm.selectedDeal.highlights;
+        vm.highlights = prepSelHighlights;
+        vm.isDone = true;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
+        vm.removeHighlight = removeHighlight;
+        vm.removedHighlightObjs = [];
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
@@ -2617,11 +3666,36 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             });
         }
 
+        function removeHighlight(highlight) {
+            angular.forEach(vm.highlights, function(val, index) {
+                if (val.uid == highlight.uid) {
+                    vm.highlights.splice(index, 1);
+                }
+            });
+            vm.removedHighlightObjs.push(highlight);
+        }
+
+        function deleteHighligts() {
+
+        }
+
         function editDeal() {
+            vm.isDone = false;
+            //temporary
+            //vm.form.brand_id = '3228eb88-6810-4b28-ae52-88a62e4655c3';
+
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
-
-            DealService.edit(vm.dealId, vm.form).then(function() {
+            // console.log(vm.form);
+            // console.log(vm.highlights);
+            // console.log(vm.removedHighlightObjs);
+            // return false;
+            var data = {
+                form: vm.form,
+                highlights: vm.highlights,
+                removedHighlights: vm.removedHighlightObjs
+            };
+            DealService.edit(vm.dealId, data).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
                 vm.response['msg'] = "Updated deal: " + vm.form.name;
@@ -2639,7 +3713,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 vm.response['msg'] = "Failed to update deal.";
                 vm.isDone = true;
 
-                $scope.$parent.vm.isDone = false;
+                $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
             });
         }
@@ -2651,10 +3725,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     angular.module('app')
         .controller('DealViewController', DealViewController);
 
-    DealViewController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService'];
+    DealViewController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', 'prepSelHighlights'];
 
     /* @ngInject */
-    function DealViewController(DealService, $stateParams, $scope, prepSelDeal, HelperService) {
+    function DealViewController(DealService, $stateParams, $scope, prepSelDeal, HelperService, prepSelHighlights) {
         var vm = this;
 
         vm.mode = "View";
@@ -2662,7 +3736,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.dealId = $stateParams.id;
         vm.deal = prepSelDeal;
         vm.isDone = false;
-
+        vm.highlights = prepSelHighlights;
         vm.prevState = HelperService.getPrevState();
 
         //activate();
@@ -2688,19 +3762,21 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     function HighlightController($scope, $compile) {
         var hl = this;
 
-        hl.remove = remove;
+        //hl.remove = remove;
         hl.counter = 0;
         hl.increCounter = increCounter;
         hl.modelo = {};
         hl.we = 'test';
+        //hl.form = $scope.$parent.$parent.vm.form;
 
         //////////////
 
-        function remove(target) {
-            var parent = $(target).parent();
-
-            parent.remove();
-        }
+        // function remove(target, highlight) {
+        //     var parent = $(target).parent();
+        //     console.log($scope);
+        //     //$parent.$parent.vm.removeHighlight(highlight);
+        //     parent.remove();
+        // }
 
         function increCounter() {
             hl.counter++;
@@ -2724,12 +3800,14 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             replace: true,
             scope: {
                 fieldModel: '=',
-                formMode: '='
+                formMode: '=',
+                highlightsData: '='
             },
             transclude: true,
             link: function(scope, element, attrs) {
                 element.find('button#add-highlight-btn').bind('click', function() {
-                    var html = '<highlight-field ></highlight-field>';
+                    console.log(scope.hl.counter);
+                    var html = '<highlight-field field-model="hl.fieldModel" ></highlight-field>';
 
                     var input = angular.element(html);
 
@@ -2755,6 +3833,47 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
     angular
         .module('app')
+        .directive('highlightEdit', highlightEdit);
+
+    highlightEdit.$inject = ['$compile'];
+    /* @ngInject */
+    function highlightEdit($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/highlight-edit-field.html',
+            replace: true,
+            scope: {
+                highlightItem: '=',
+                formMode: '='
+            },
+            link: function(scope, element, attrs) {
+                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
+                scope.hl.counter = scope.$parent.hl.counter;
+                scope.hl.formMode = scope.$parent.hl.formMode;
+
+                scope.remove = remove;
+
+                function remove(target, highlight) {
+                    var parent = $(target).parent();
+                    scope.$parent.$parent.$parent.$parent.vm.removeHighlight(highlight);
+                    parent.remove();
+                }
+            },
+            controller: 'HighlightController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
         .directive('highlightField', highlightField);
 
     highlightField.$inject = ['$compile'];
@@ -2765,11 +3884,22 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             restrict: 'E',
             templateUrl: '/app/deals/highlight-field.html',
             replace: true,
-            scope: true,
+            scope: {
+                fieldModel: '='
+            },
             link: function(scope, element, attrs) {
+                //console.log(scope);
+                // console.log(scope.hl.highlightItem);
                 scope.hl.fieldModel = scope.$parent.hl.fieldModel;
                 scope.hl.counter = scope.$parent.hl.counter;
                 scope.hl.formMode = scope.$parent.hl.formMode;
+
+                scope.remove = remove;
+
+                function remove(target) {
+                    var parent = $(target).parent();
+                    parent.remove();
+                }
             },
             controller: 'HighlightController',
             controllerAs: 'hl',

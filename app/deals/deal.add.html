@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="portlet-body form">
-                <div class="alert {{vm.response.success}}" id="msg-info" ng-if="vm.isDone">
+                <div class="alert {{vm.response.success}}" id="msg-info" ng-if="!vm.isDone">
                     <strong>{{vm.response.alert}}</strong> {{vm.response.msg}}
                 </div>
                 <form role="form" id="deal-form" ng-submit="vm.submitAction()" novalidate="novalidate">
@@ -102,14 +102,13 @@
                         <!--Highlights-->
                         <hr />
                         <h4>Highlights</h4>
-                        <add-highlight field-model="vm.form.highlights" form-mode="vm.mode">
-                            <highlight-field ng-if="vm.mode == 'Edit'" ng-repeat="highlight in vm.form.highlights"></highlight-field>
+                        <add-highlight field-model="vm.form.highlights" form-mode="vm.mode" highlights-data="vm.highlights">
                         </add-highlight>
                     </div>
                     <div class="form-actions">
                         <div class="row">
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-default">{{ vm.mode }}</button>
+                                <button type="submit" class="btn btn-default" ladda="!vm.isDone" data-spinner-color="#000000">{{ vm.mode }}</button>
                                 <button type="button" ui-sref="{{vm.prevState.name}}" class="btn btn-default">Back</button>
                             </div>
                         </div>

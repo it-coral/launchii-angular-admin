@@ -8,7 +8,8 @@
         'satellizer',
         //'ng-token-auth',
         'jcs-autoValidate',
-        'ngProgressLite'
+        'ngProgressLite',
+        'angular-ladda'
     ]);
 
 })();
