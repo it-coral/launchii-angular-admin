@@ -6,10 +6,10 @@
         .run(run)
         .run(customHeaders);
 
-    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider'];
+    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST'];
 
     /* @ngInject */
-    function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider) {
+    function config($authProvider, $resourceProvider, $httpProvider, CONST) {
         Layout.init();
         $authProvider.loginUrl = CONST.api_domain + '/auth/sign_in';
         $authProvider.tokenHeader = 'access-token';
@@ -24,9 +24,9 @@
         //$httpProvider.defaults.withCredentials = true;
         $resourceProvider.defaults.stripTrailingSlashes = false;
         $httpProvider.interceptors.push('authInterceptor');
-        laddaProvider.setOption({
-            style: 'expand-right'
-        });
+        // laddaProvider.setOption({
+        //     style: 'expand-right'
+        // });
     }
 
     // csrf.$inject = ['$http', '$cookies'];

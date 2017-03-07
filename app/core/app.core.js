@@ -9,7 +9,7 @@
         //'ng-token-auth',
         'jcs-autoValidate',
         'ngProgressLite',
-        'angular-ladda'
+        //'angular-ladda'
     ]);
 
 })();

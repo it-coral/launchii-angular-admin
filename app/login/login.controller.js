@@ -4,10 +4,10 @@
     angular.module('app')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['AuthService', '$state'];
+    LoginController.$inject = ['AuthService', '$state', '$rootScope'];
 
     /* @ngInject */
-    function LoginController(AuthService, $state) {
+    function LoginController(AuthService, $state, $rootScope) {
         var vm = this;
 
         //vm.email = "";
@@ -21,8 +21,12 @@
         function login() {
             vm.loggingIn = true;
             AuthService.login(vm.form).then(function(response) {
+
                 vm.loggingIn = false;
-                $state.go('dashboard');
+                if ($rootScope.authenticated) {
+                    $state.go('dashboard');
+                }
+
             }, function(error) {
                 vm.loggingIn = false;
                 vm.loginError = true;
