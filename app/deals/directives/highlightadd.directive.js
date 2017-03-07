@@ -21,7 +21,6 @@
             transclude: true,
             link: function(scope, element, attrs) {
                 element.find('button#add-highlight-btn').bind('click', function() {
-                    console.log(scope.hl.counter);
                     var html = '<highlight-field field-model="hl.fieldModel" ></highlight-field>';
 
                     var input = angular.element(html);

@@ -3454,133 +3454,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
-    angular
-        .module('app')
-        .directive('addHighlight', addHighlight);
-
-    addHighlight.$inject = ['$compile'];
-    /* @ngInject */
-    function addHighlight($compile) {
-
-        var directive = {
-            restrict: 'E',
-            templateUrl: '/app/deals/highlight.html',
-            replace: true,
-            scope: {
-                fieldModel: '=',
-                formMode: '=',
-                highlightsData: '='
-            },
-            transclude: true,
-            link: function(scope, element, attrs) {
-                element.find('button#add-highlight-btn').bind('click', function() {
-                    console.log(scope.hl.counter);
-                    var html = '<highlight-field field-model="hl.fieldModel" ></highlight-field>';
-
-                    var input = angular.element(html);
-
-                    var compile = $compile(input)(scope);
-
-                    element.find('#highlight-container').append(input);
-
-                    scope.hl.increCounter();
-                });
-
-            },
-            controller: 'HighlightController',
-            controllerAs: 'hl',
-            bindToController: true
-        };
-
-        return directive;
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('highlightEdit', highlightEdit);
-
-    highlightEdit.$inject = ['$compile'];
-    /* @ngInject */
-    function highlightEdit($compile) {
-
-        var directive = {
-            restrict: 'E',
-            templateUrl: '/app/deals/highlight-edit-field.html',
-            replace: true,
-            scope: {
-                highlightItem: '=',
-                formMode: '='
-            },
-            link: function(scope, element, attrs) {
-                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
-                scope.hl.counter = scope.$parent.hl.counter;
-                scope.hl.formMode = scope.$parent.hl.formMode;
-
-                scope.remove = remove;
-
-                function remove(target, highlight) {
-                    var parent = $(target).parent();
-                    scope.$parent.$parent.$parent.$parent.vm.removeHighlight(highlight);
-                    parent.remove();
-                }
-            },
-            controller: 'HighlightController',
-            controllerAs: 'hl',
-            bindToController: true
-        };
-
-        return directive;
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .directive('highlightField', highlightField);
-
-    highlightField.$inject = ['$compile'];
-    /* @ngInject */
-    function highlightField($compile) {
-
-        var directive = {
-            restrict: 'E',
-            templateUrl: '/app/deals/highlight-field.html',
-            replace: true,
-            scope: {
-                fieldModel: '='
-            },
-            link: function(scope, element, attrs) {
-                //console.log(scope);
-                // console.log(scope.hl.highlightItem);
-                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
-                scope.hl.counter = scope.$parent.hl.counter;
-                scope.hl.formMode = scope.$parent.hl.formMode;
-
-                scope.remove = remove;
-
-                function remove(target) {
-                    var parent = $(target).parent();
-                    parent.remove();
-                }
-            },
-            controller: 'HighlightController',
-            controllerAs: 'hl',
-            bindToController: true
-        };
-
-        return directive;
-    }
-
-})();
-(function() {
-    'use strict';
-
     angular.module('app')
         .controller('DealAddController', DealAddController);
 
@@ -3618,8 +3491,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             vm.isDone = false;
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
-            console.log(vm.form);
-            return false;
+
             DealService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
@@ -3913,6 +3785,132 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             hl.counter++;
         }
     }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('addHighlight', addHighlight);
+
+    addHighlight.$inject = ['$compile'];
+    /* @ngInject */
+    function addHighlight($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/highlight.html',
+            replace: true,
+            scope: {
+                fieldModel: '=',
+                formMode: '=',
+                highlightsData: '='
+            },
+            transclude: true,
+            link: function(scope, element, attrs) {
+                element.find('button#add-highlight-btn').bind('click', function() {
+                    var html = '<highlight-field field-model="hl.fieldModel" ></highlight-field>';
+
+                    var input = angular.element(html);
+
+                    var compile = $compile(input)(scope);
+
+                    element.find('#highlight-container').append(input);
+
+                    scope.hl.increCounter();
+                });
+
+            },
+            controller: 'HighlightController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('highlightEdit', highlightEdit);
+
+    highlightEdit.$inject = ['$compile'];
+    /* @ngInject */
+    function highlightEdit($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/highlight-edit-field.html',
+            replace: true,
+            scope: {
+                highlightItem: '=',
+                formMode: '='
+            },
+            link: function(scope, element, attrs) {
+                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
+                scope.hl.counter = scope.$parent.hl.counter;
+                scope.hl.formMode = scope.$parent.hl.formMode;
+
+                scope.remove = remove;
+
+                function remove(target, highlight) {
+                    var parent = $(target).parent();
+                    scope.$parent.$parent.$parent.$parent.vm.removeHighlight(highlight);
+                    parent.remove();
+                }
+            },
+            controller: 'HighlightController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('highlightField', highlightField);
+
+    highlightField.$inject = ['$compile'];
+    /* @ngInject */
+    function highlightField($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/highlight-field.html',
+            replace: true,
+            scope: {
+                fieldModel: '='
+            },
+            link: function(scope, element, attrs) {
+                //console.log(scope);
+                // console.log(scope.hl.highlightItem);
+                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
+                scope.hl.counter = scope.$parent.hl.counter;
+                scope.hl.formMode = scope.$parent.hl.formMode;
+
+                scope.remove = remove;
+
+                function remove(target) {
+                    var parent = $(target).parent();
+                    parent.remove();
+                }
+            },
+            controller: 'HighlightController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
 })();
 (function() {
     'use strict';

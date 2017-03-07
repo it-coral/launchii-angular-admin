@@ -38,8 +38,7 @@
             vm.isDone = false;
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
-            console.log(vm.form);
-            return false;
+
             DealService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
