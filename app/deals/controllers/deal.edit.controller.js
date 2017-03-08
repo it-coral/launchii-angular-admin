@@ -101,7 +101,7 @@
             // console.log(vm.removedHighlightObjs);
             // return false;
             vm.form.templates.splice(vm.form.templates.length - 1, 1);
-            vm.form.highlights.splice(vm.form.highlights.length - 1, 1);
+            //vm.form.highlights.splice(vm.form.highlights.length - 1, 1);
             //console.log(vm.form);
             var data = {
                 form: vm.form,

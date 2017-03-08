@@ -3706,6 +3706,32 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     'use strict';
 
     angular.module('app')
+        .factory('TemplateService', TemplateService);
+
+    TemplateService.$inject = ['$scope'];
+
+    /* @ngInject */
+    function TemplateService($scope) {
+
+        var service = {
+            lists: [],
+            setList: setList
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function setList(list) {
+            service.lists = list;
+        }
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
         .controller('DealAddController', DealAddController);
 
     DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes'];
@@ -4014,7 +4040,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             // console.log(vm.removedHighlightObjs);
             // return false;
             vm.form.templates.splice(vm.form.templates.length - 1, 1);
-            vm.form.highlights.splice(vm.form.highlights.length - 1, 1);
+            //vm.form.highlights.splice(vm.form.highlights.length - 1, 1);
             //console.log(vm.form);
             var data = {
                 form: vm.form,
@@ -4082,32 +4108,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             });
         }
     }
-})();
-(function() {
-    'use strict';
-
-    angular.module('app')
-        .factory('TemplateService', TemplateService);
-
-    TemplateService.$inject = ['$scope'];
-
-    /* @ngInject */
-    function TemplateService($scope) {
-
-        var service = {
-            lists: [],
-            setList: setList
-        }
-
-        return service;
-
-        //////// SERIVCE METHODS ////////
-
-        function setList(list) {
-            service.lists = list;
-        }
-    }
-
 })();
 (function() {
     'use strict';
@@ -4609,25 +4609,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
-    angular
-        .module('app')
-        .filter('isYesNo', isYesNo);
-
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
-
-            return 'No';
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
     angular.module('app')
         .controller('UserController', UserController);
 
@@ -4792,6 +4773,25 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             });
         }
     }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
+    }
+
 })();
 (function() {
     'use strict';
