@@ -4,10 +4,10 @@
     angular.module('app')
         .controller('DealEditController', DealEditController);
 
-    DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService', 'prepSelHighlights'];
+    DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService', 'prepSelHighlights', 'prepSelTemplates', 'prepTemplateNames', 'prepTemplateTypes'];
 
     /* @ngInject */
-    function DealEditController(DealService, $stateParams, $scope, prepSelDeal, HelperService, $state, brandPrepService, prepSelHighlights) {
+    function DealEditController(DealService, $stateParams, $scope, prepSelDeal, HelperService, $state, brandPrepService, prepSelHighlights, prepSelTemplates, prepTemplateNames, prepTemplateTypes) {
         var vm = this;
 
         vm.mode = "Edit";
@@ -15,14 +15,27 @@
         vm.dealId = $stateParams.id;
         vm.selectedDeal = prepSelDeal;
         vm.form = vm.selectedDeal;
-        vm.form.highlights = {};
+        vm.form.highlights = [];
+        vm.form.templates = [];
         //vm.form.highlights = vm.selectedDeal.highlights;
         vm.highlights = prepSelHighlights;
+        vm.templates = prepSelTemplates;
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
         vm.removeHighlight = removeHighlight;
         vm.removedHighlightObjs = [];
+        vm.removedTemplateObjs = [];
+
+        vm.templateCounter = 0;
+        vm.increTemplateCounter = increTemplateCounter;
+        vm.selTemplateIndex = 0;
+        vm.setSelTemplateIndex = setSelTemplateIndex;
+        vm.selTemplateObj = {};
+        vm.setSelTemplateObj = setSelTemplateObj;
+        vm.templateNames = prepTemplateNames;
+        vm.templateTypes = prepTemplateTypes;
+        vm.removeTemplate = removeTemplate;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
@@ -40,6 +53,27 @@
             jQuery(document).ready(function() {
                 ComponentsDateTimePickers.init();
             });
+        }
+
+        function setSelTemplateObj(tobj) {
+            vm.selTemplateObj = tobj;
+        }
+
+        function setSelTemplateIndex(index) {
+            vm.selTemplateIndex = index;
+        }
+
+        function increTemplateCounter() {
+            vm.templateCounter++;
+        }
+
+        function removeTemplate(template) {
+            angular.forEach(vm.templates, function(val, index) {
+                if (val.uid == template.uid) {
+                    vm.templates.splice(index, 1);
+                }
+            });
+            vm.removedTemplateObjs.push(template);
         }
 
         function removeHighlight(highlight) {
@@ -66,11 +100,20 @@
             // console.log(vm.highlights);
             // console.log(vm.removedHighlightObjs);
             // return false;
+            vm.form.templates.splice(vm.form.templates.length - 1, 1);
+            vm.form.highlights.splice(vm.form.highlights.length - 1, 1);
+            //console.log(vm.form);
             var data = {
                 form: vm.form,
                 highlights: vm.highlights,
-                removedHighlights: vm.removedHighlightObjs
+                removedHighlights: vm.removedHighlightObjs,
+                templates: vm.templates,
+                removedTemplates: vm.removedTemplateObjs
             };
+
+            // console.log(data);
+            // return false;
+
             DealService.edit(vm.dealId, data).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";

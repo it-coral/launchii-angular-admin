@@ -19,6 +19,7 @@ gulp.task('scripts', function() {
             './bower_components/ladda/js/spin.js',
             './bower_components/ladda/js/ladda.js',
             './bower_components/angular-ladda/dist/angular-ladda.min.js',
+            // './node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js',
 
             //Cores
             './app/core/app.module.js',
@@ -49,6 +50,14 @@ gulp.task('scripts', function() {
             //Deal Module
             './app/deals/*.js',
             './app/deals/*/*.js',
+
+            //Highlight Module
+            './app/deals/highlight/*.js',
+            './app/deals/highlight/*/*.js',
+
+            //Template Module
+            './app/deals/template/*.js',
+            './app/deals/template/*/*.js',
 
             //User Module
             './app/user/*/*.js',

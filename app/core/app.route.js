@@ -156,7 +156,9 @@
                     controllerAs: "vm",
                     resolve: {
                         styleSheets: dateTimeStyleSheets,
-                        brandPrepService: brandPrepService
+                        brandPrepService: brandPrepService,
+                        prepTemplateNames: prepTemplateNames,
+                        prepTemplateTypes: prepTemplateTypes
                     }
                 }
             }
@@ -175,7 +177,10 @@
                         styleSheets: dateTimeStyleSheets,
                         prepSelDeal: prepSelDeal,
                         brandPrepService: brandPrepService,
-                        prepSelHighlights: prepSelHighlights
+                        prepSelHighlights: prepSelHighlights,
+                        prepSelTemplates: prepSelTemplates,
+                        prepTemplateNames: prepTemplateNames,
+                        prepTemplateTypes: prepTemplateTypes
                     }
                 }
             }
@@ -192,7 +197,8 @@
                     controllerAs: "vm",
                     resolve: {
                         prepSelDeal: prepSelDeal,
-                        prepSelHighlights: prepSelHighlights
+                        prepSelHighlights: prepSelHighlights,
+                        prepSelTemplates: prepSelTemplates
                     }
                 }
             }
@@ -251,6 +257,24 @@
             .state(userEdit);
 
         ////////////
+
+        prepSelTemplates.$inject = ['DealService', '$stateParams'];
+        /* @ngInject */
+        function prepSelTemplates(DealService, $stateParams) {
+            return DealService.getTemplates($stateParams.id);
+        }
+
+        prepTemplateTypes.$inject = ['DealService'];
+        /* @ngInject */
+        function prepTemplateTypes(DealService) {
+            return DealService.getTemplateTypes();
+        }
+
+        prepTemplateNames.$inject = ['DealService'];
+        /* @ngInject */
+        function prepTemplateNames(DealService) {
+            return DealService.getTemplateNames();
+        }
 
         prepSelHighlights.$inject = ['DealService', '$stateParams'];
         /* @ngInject */

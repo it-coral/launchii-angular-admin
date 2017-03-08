@@ -11,7 +11,7 @@
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/highlight.html',
+            templateUrl: '/app/deals/highlight/highlight.html',
             replace: true,
             scope: {
                 fieldModel: '=',

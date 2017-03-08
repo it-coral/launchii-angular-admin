@@ -9,6 +9,7 @@
         //'ng-token-auth',
         'jcs-autoValidate',
         'ngProgressLite',
+        // 'ui.bootstrap',
         //'angular-ladda'
     ]);
 

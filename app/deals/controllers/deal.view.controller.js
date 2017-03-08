@@ -4,10 +4,10 @@
     angular.module('app')
         .controller('DealViewController', DealViewController);
 
-    DealViewController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', 'prepSelHighlights'];
+    DealViewController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', 'prepSelHighlights', 'prepSelTemplates'];
 
     /* @ngInject */
-    function DealViewController(DealService, $stateParams, $scope, prepSelDeal, HelperService, prepSelHighlights) {
+    function DealViewController(DealService, $stateParams, $scope, prepSelDeal, HelperService, prepSelHighlights, prepSelTemplates) {
         var vm = this;
 
         vm.mode = "View";
@@ -16,6 +16,7 @@
         vm.deal = prepSelDeal;
         vm.isDone = false;
         vm.highlights = prepSelHighlights;
+        vm.templates = prepSelTemplates;
         vm.prevState = HelperService.getPrevState();
 
         //activate();

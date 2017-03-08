@@ -104,6 +104,12 @@
                         <h4>Highlights</h4>
                         <add-highlight field-model="vm.form.highlights" form-mode="vm.mode" highlights-data="vm.highlights">
                         </add-highlight>
+
+                        <!--Templates-->
+                        <hr />
+                        <h4>Templates</h4>
+                        <add-template field-model="vm.form.templates" form-mode="vm.mode" templates-data="vm.templates">
+                        </add-template>
                     </div>
                     <div class="form-actions">
                         <div class="row">
@@ -123,3 +129,5 @@
     <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
+<template-modal field-model="vm.form.highlights" form-mode="vm.mode"></template-modal>
+<template-modal-edit field-model="vm.form.highlights" form-mode="vm.mode"></template-modal-edit>

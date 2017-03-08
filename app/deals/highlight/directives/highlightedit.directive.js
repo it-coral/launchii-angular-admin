@@ -11,7 +11,7 @@
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/highlight-edit-field.html',
+            templateUrl: '/app/deals/highlight/highlight-edit-field.html',
             replace: true,
             scope: {
                 highlightItem: '=',

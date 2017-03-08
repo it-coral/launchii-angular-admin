@@ -1283,6 +1283,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         //'ng-token-auth',
         'jcs-autoValidate',
         'ngProgressLite',
+        // 'ui.bootstrap',
         //'angular-ladda'
     ]);
 
@@ -1570,7 +1571,9 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     controllerAs: "vm",
                     resolve: {
                         styleSheets: dateTimeStyleSheets,
-                        brandPrepService: brandPrepService
+                        brandPrepService: brandPrepService,
+                        prepTemplateNames: prepTemplateNames,
+                        prepTemplateTypes: prepTemplateTypes
                     }
                 }
             }
@@ -1589,7 +1592,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                         styleSheets: dateTimeStyleSheets,
                         prepSelDeal: prepSelDeal,
                         brandPrepService: brandPrepService,
-                        prepSelHighlights: prepSelHighlights
+                        prepSelHighlights: prepSelHighlights,
+                        prepSelTemplates: prepSelTemplates,
+                        prepTemplateNames: prepTemplateNames,
+                        prepTemplateTypes: prepTemplateTypes
                     }
                 }
             }
@@ -1606,7 +1612,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     controllerAs: "vm",
                     resolve: {
                         prepSelDeal: prepSelDeal,
-                        prepSelHighlights: prepSelHighlights
+                        prepSelHighlights: prepSelHighlights,
+                        prepSelTemplates: prepSelTemplates
                     }
                 }
             }
@@ -1665,6 +1672,24 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             .state(userEdit);
 
         ////////////
+
+        prepSelTemplates.$inject = ['DealService', '$stateParams'];
+        /* @ngInject */
+        function prepSelTemplates(DealService, $stateParams) {
+            return DealService.getTemplates($stateParams.id);
+        }
+
+        prepTemplateTypes.$inject = ['DealService'];
+        /* @ngInject */
+        function prepTemplateTypes(DealService) {
+            return DealService.getTemplateTypes();
+        }
+
+        prepTemplateNames.$inject = ['DealService'];
+        /* @ngInject */
+        function prepTemplateNames(DealService) {
+            return DealService.getTemplateNames();
+        }
 
         prepSelHighlights.$inject = ['DealService', '$stateParams'];
         /* @ngInject */
@@ -3017,17 +3042,64 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             findInList: findInList,
             isEmpty: isEmpty,
             addHighlights: addHighlights,
+            addTemplates: addTemplates,
             search: search,
             searchedList: [],
             highlights: [],
+            templates: [],
             getHighlights: getHighlights,
+            getTemplates: getTemplates,
             removeHighlights: removeHighlights,
-            updateHighlights: updateHighlights
+            updateHighlights: updateHighlights,
+            //removeTemplates: removeTemplates,
+            //updateTemplates: updateTemplates,
+            templateNames: [],
+            templateTypes: [],
+            getTemplateNames: getTemplateNames,
+            getTemplateTypes: getTemplateTypes
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function getTemplateTypes() {
+            var d = $q.defer();
+
+            if (service.templateTypes.length > 0) {
+                d.resolve(service.templateTypes);
+            } else {
+                var url = CONST.api_domain + '/templates/types';
+                $http.get(url).then(function(resp) {
+                    service.templateTypes = resp.data.template_types;
+                    d.resolve(resp.data.template_types);
+                }).catch(function(err) {
+                    console.log(err);
+                    d.reject(err);
+                });
+            }
+
+            return d.promise;
+        }
+
+        function getTemplateNames() {
+            var d = $q.defer();
+
+            if (service.templateNames.length > 0) {
+                d.resolve(service.templateNames);
+            } else {
+                var url = CONST.api_domain + '/templates/names';
+                $http.get(url).then(function(resp) {
+                    service.templateNames = resp.data.template_names;
+                    d.resolve(resp.data.template_names);
+                }).catch(function(err) {
+                    console.log(err);
+                    d.reject(err);
+                });
+            }
+
+            return d.promise;
+        }
 
         function removeHighlights(dealId, highlights) {
             var url = api + '/' + dealId + '/highlights';
@@ -3092,6 +3164,37 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     d.resolve(results);
                 }
 
+            });
+
+            return d.promise;
+        }
+
+        function getTemplates(dealId) {
+            var url = api + '/' + dealId + '/templates';
+            var d = $q.defer();
+
+            $http.get(url).then(function(resp) {
+                service.templates = resp.data.templates;
+
+                angular.forEach(service.templates, function(template, index) {
+                    if (template.is_archived) {
+                        service.templates[index]['status'] = 'archived';
+                    } else if (template.is_draft) {
+                        service.templates[index]['status'] = 'draft';
+                    } else if (template.is_published) {
+                        service.templates[index]['status'] = 'published';
+                    } else {
+                        service.templates[index]['status'] = 'draft';
+                    }
+                });
+
+
+
+                d.resolve(service.templates);
+            }).catch(function(err) {
+                console.log(err);
+                service.errors.push(err);
+                d.reject(err);
             });
 
             return d.promise;
@@ -3312,6 +3415,47 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             return d.promise;
         }
 
+        function addTemplates(deal_id, templates) {
+            var d = $q.defer();
+
+            var url = api + '/' + deal_id + '/templates';
+
+            var tasks = [];
+
+            angular.forEach(templates, function(template, index) {
+                if (angular.isDefined(template.name) && template.name.trim() != '') {
+                    tasks.push(function(cb) {
+                        template['templatable_id'] = deal_id;
+
+                        $http.post(url, template).then(function(resp) {
+                            //d.resolve(resp);
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(error);
+                            // service.errors = error;
+                            // d.reject(error);
+                            cb(err);
+                        });
+
+                    });
+                }
+
+            });
+
+            async.parallel(tasks, function(error, results) {
+                if (error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                } else {
+                    d.resolve(results);
+                }
+
+            });
+
+            return d.promise;
+        }
+
         function add(data) {
             var url = api;
             var d = $q.defer();
@@ -3321,14 +3465,48 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     //console.log(resp);
                     //return false;
                     var dealId = resp.data.deal.uid;
-                    console.log(data.highlights);
-                    addHighlights(dealId, data.highlights).then(function(resp) {
-                        console.log(resp);
+
+                    var tasks = [];
+
+                    if (data.highlights.length > 0) {
+                        //console.log(data.highlights);
+                        tasks.push(function(cb) {
+                            addHighlights(dealId, data.highlights).then(function(resp) {
+                                cb(null, resp);
+                            }).catch(function(err) {
+                                console.log(err);
+                                cb(err);
+                            });
+                        });
+                    }
+
+                    if (angular.isDefined(data.templates[0]) && angular.isDefined(data.templates[0].name) && data.templates[0].name.trim() != '') {
+                        tasks.push(function(cb) {
+                            addTemplates(dealId, data.templates).then(function(resp) {
+                                cb(null, resp);
+                            }).catch(function(err) {
+                                console.log(err);
+                                cb(err);
+                            });
+                        });
+                    }
+
+                    if (tasks.length > 0) {
+                        async.parallel(tasks, function(error, results) {
+                            if (error) {
+                                console.log(error);
+                                service.errors = error;
+                                d.reject(error);
+                            } else {
+                                d.resolve(results);
+                            }
+
+                        });
+                    } else {
                         d.resolve(resp);
-                    }).catch(function(err) {
-                        console.log(err);
-                        d.reject(err);
-                    });
+                    }
+
+
                 }).catch(function(error) {
                     console.log(error);
                     service.errors = error;
@@ -3338,12 +3516,54 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             return d.promise;
         }
 
+        function setOnePublish(templates) {
+            var hasPublish = false;
+            angular.forEach(templates, function(template, index) {
+                if (template.status == 'published' && !hasPublish) {
+                    hasPublish = true;
+                } else if (template.status == 'published' && hasPublish) {
+                    templates[index].status = 'draft';
+                }
+            });
+
+            return templates;
+        }
+
         function edit(id, data) {
             var url = api + "/" + id;
             var d = $q.defer();
 
             var tasks = [];
 
+            //TEMPLATE ADD
+            //console.log(data.form.templates);
+            // data.form.templates.splice(data.form.templates.length - 1, 1);
+            // console.log(data.form.templates);
+            // data.form.templates = setOnePublish(data.form.templates);
+            // console.log(data.form.templates);
+            if (angular.isDefined(data.form.templates) && data.form.templates.length > 0) {
+                var url_ah = api + '/' + id + '/templates';
+
+                angular.forEach(data.form.templates, function(template, index) {
+                    //console.log(angular.isDefined(template.name));
+                    //console.log(template.name);
+                    if (angular.isDefined(template.name) && template.name.trim() != '') {
+                        tasks.push(function(cb) {
+                            template['templatable_id'] = id;
+                            $http.post(url_ah, template)
+                                .then(function(resp) {
+                                    cb(null, resp);
+                                }).catch(function(error) {
+                                    console.log(error);
+                                    cb(err);
+                                });
+                        });
+                    }
+
+                });
+            }
+
+            //HIGHLIGHT
             if (angular.isDefined(data.highlights) && data.highlights.length > 0) {
                 angular.forEach(data.highlights, function(val, index) {
                     var url_h = url + '/highlights/' + val.uid;
@@ -3363,7 +3583,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     });
                 });
             }
-
+            //HIGHLIGHT
             if (angular.isDefined(data.removedHighlights) && data.removedHighlights.length > 0) {
                 angular.forEach(data.removedHighlights, function(val, index) {
                     var url_h = url + '/highlights/' + val.uid;
@@ -3378,8 +3598,39 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     });
                 });
             }
+            //TEMPLATE
+            if (angular.isDefined(data.templates) && data.templates.length > 0) {
+                angular.forEach(data.templates, function(template, index) {
+                    var url_h = url + '/templates/' + template.uid;
 
-            if (angular.isDefined(data.form.highlights)) {
+                    tasks.push(function(cb) {
+                        template['templatable_id'] = id;
+                        $http.patch(url_h, template).then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(error);
+                            cb(err);
+                        });
+                    });
+                });
+            }
+            //TEMPLATE
+            if (angular.isDefined(data.removedTemplates) && data.removedTemplates.length > 0) {
+                angular.forEach(data.removedTemplates, function(val, index) {
+                    var url_h = url + '/templates/' + val.uid;
+
+                    tasks.push(function(cb) {
+                        $http.delete(url_h).then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(error);
+                            cb(err);
+                        });
+                    });
+                });
+            }
+            //HIHGLIGHT
+            if (angular.isDefined(data.form.highlights) && data.form.highlights.length > 0) {
                 var highlightsArr = [];
                 angular.forEach(data.form.highlights, function(val, index) {
                     var obj = {
@@ -3396,7 +3647,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 };
 
                 var url_ah = api + '/' + id + '/highlights/collection';
-
+                console.log(data_h);
                 tasks.push(function(cb) {
                     $http.post(url_ah, data_h)
                         .then(function(resp) {
@@ -3457,20 +3708,30 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     angular.module('app')
         .controller('DealAddController', DealAddController);
 
-    DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService'];
+    DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes'];
 
     /* @ngInject */
-    function DealAddController(DealService, $scope, HelperService, $state, brandPrepService) {
+    function DealAddController(DealService, $scope, HelperService, $state, brandPrepService, prepTemplateNames, prepTemplateTypes) {
         var vm = this;
 
         vm.mode = "Add";
         vm.form = {};
-        vm.form.highlights = {};
+        vm.form.highlights = [];
+        vm.form.templates = [];
         vm.response = {};
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
         vm.removeHighlight = removeHighlight;
+        vm.templateCounter = 0;
+        vm.increTemplateCounter = increTemplateCounter;
+        vm.selTemplateIndex = 0;
+        vm.setSelTemplateIndex = setSelTemplateIndex;
+        vm.selTemplateObj = {};
+        vm.setSelTemplateObj = setSelTemplateObj;
+        vm.templateNames = prepTemplateNames;
+        vm.templateTypes = prepTemplateTypes;
+        vm.removeTemplate = removeTemplate;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addDeal;
@@ -3483,6 +3744,28 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             ComponentsDateTimePickers.init();
         }
 
+        function removeTemplate(template_index) {
+            console.log(template_index);
+            angular.forEach(vm.form.templates, function(val, index) {
+                if (index == template_index) {
+                    console.log('test')
+                    vm.form.templates.splice(index, 1);
+                }
+            });
+        }
+
+        function setSelTemplateObj(tobj) {
+            vm.selTemplateObj = tobj;
+        }
+
+        function setSelTemplateIndex(index) {
+            vm.selTemplateIndex = index;
+        }
+
+        function increTemplateCounter() {
+            vm.templateCounter++;
+        }
+
         function addDeal() {
             vm.isDone = false;
             //temporary
@@ -3491,6 +3774,9 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             vm.isDone = false;
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
+
+            //console.log(vm.form);
+            // return false;
 
             DealService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
@@ -3631,10 +3917,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     angular.module('app')
         .controller('DealEditController', DealEditController);
 
-    DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService', 'prepSelHighlights'];
+    DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService', 'prepSelHighlights', 'prepSelTemplates', 'prepTemplateNames', 'prepTemplateTypes'];
 
     /* @ngInject */
-    function DealEditController(DealService, $stateParams, $scope, prepSelDeal, HelperService, $state, brandPrepService, prepSelHighlights) {
+    function DealEditController(DealService, $stateParams, $scope, prepSelDeal, HelperService, $state, brandPrepService, prepSelHighlights, prepSelTemplates, prepTemplateNames, prepTemplateTypes) {
         var vm = this;
 
         vm.mode = "Edit";
@@ -3642,14 +3928,27 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.dealId = $stateParams.id;
         vm.selectedDeal = prepSelDeal;
         vm.form = vm.selectedDeal;
-        vm.form.highlights = {};
+        vm.form.highlights = [];
+        vm.form.templates = [];
         //vm.form.highlights = vm.selectedDeal.highlights;
         vm.highlights = prepSelHighlights;
+        vm.templates = prepSelTemplates;
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
         vm.removeHighlight = removeHighlight;
         vm.removedHighlightObjs = [];
+        vm.removedTemplateObjs = [];
+
+        vm.templateCounter = 0;
+        vm.increTemplateCounter = increTemplateCounter;
+        vm.selTemplateIndex = 0;
+        vm.setSelTemplateIndex = setSelTemplateIndex;
+        vm.selTemplateObj = {};
+        vm.setSelTemplateObj = setSelTemplateObj;
+        vm.templateNames = prepTemplateNames;
+        vm.templateTypes = prepTemplateTypes;
+        vm.removeTemplate = removeTemplate;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
@@ -3667,6 +3966,27 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             jQuery(document).ready(function() {
                 ComponentsDateTimePickers.init();
             });
+        }
+
+        function setSelTemplateObj(tobj) {
+            vm.selTemplateObj = tobj;
+        }
+
+        function setSelTemplateIndex(index) {
+            vm.selTemplateIndex = index;
+        }
+
+        function increTemplateCounter() {
+            vm.templateCounter++;
+        }
+
+        function removeTemplate(template) {
+            angular.forEach(vm.templates, function(val, index) {
+                if (val.uid == template.uid) {
+                    vm.templates.splice(index, 1);
+                }
+            });
+            vm.removedTemplateObjs.push(template);
         }
 
         function removeHighlight(highlight) {
@@ -3693,11 +4013,20 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             // console.log(vm.highlights);
             // console.log(vm.removedHighlightObjs);
             // return false;
+            vm.form.templates.splice(vm.form.templates.length - 1, 1);
+            vm.form.highlights.splice(vm.form.highlights.length - 1, 1);
+            //console.log(vm.form);
             var data = {
                 form: vm.form,
                 highlights: vm.highlights,
-                removedHighlights: vm.removedHighlightObjs
+                removedHighlights: vm.removedHighlightObjs,
+                templates: vm.templates,
+                removedTemplates: vm.removedTemplateObjs
             };
+
+            // console.log(data);
+            // return false;
+
             DealService.edit(vm.dealId, data).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
@@ -3728,10 +4057,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     angular.module('app')
         .controller('DealViewController', DealViewController);
 
-    DealViewController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', 'prepSelHighlights'];
+    DealViewController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', 'prepSelHighlights', 'prepSelTemplates'];
 
     /* @ngInject */
-    function DealViewController(DealService, $stateParams, $scope, prepSelDeal, HelperService, prepSelHighlights) {
+    function DealViewController(DealService, $stateParams, $scope, prepSelDeal, HelperService, prepSelHighlights, prepSelTemplates) {
         var vm = this;
 
         vm.mode = "View";
@@ -3740,6 +4069,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.deal = prepSelDeal;
         vm.isDone = false;
         vm.highlights = prepSelHighlights;
+        vm.templates = prepSelTemplates;
         vm.prevState = HelperService.getPrevState();
 
         //activate();
@@ -3752,6 +4082,32 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             });
         }
     }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .factory('TemplateService', TemplateService);
+
+    TemplateService.$inject = ['$scope'];
+
+    /* @ngInject */
+    function TemplateService($scope) {
+
+        var service = {
+            lists: [],
+            setList: setList
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function setList(list) {
+            service.lists = list;
+        }
+    }
+
 })();
 (function() {
     'use strict';
@@ -3799,7 +4155,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/highlight.html',
+            templateUrl: '/app/deals/highlight/highlight.html',
             replace: true,
             scope: {
                 fieldModel: '=',
@@ -3843,7 +4199,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/highlight-edit-field.html',
+            templateUrl: '/app/deals/highlight/highlight-edit-field.html',
             replace: true,
             scope: {
                 highlightItem: '=',
@@ -3884,7 +4240,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/highlight-field.html',
+            templateUrl: '/app/deals/highlight/highlight-field.html',
             replace: true,
             scope: {
                 fieldModel: '='
@@ -3909,6 +4265,363 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         };
 
         return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('TemplateController', TemplateController);
+
+    TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+    /* @ngInject */
+    function TemplateController($scope, $compile, $document) {
+        var hl = this;
+
+        hl.counter = 0;
+        hl.increCounter = increCounter;
+        hl.openModal = openModal;
+        hl.currModel = {};
+        //hl.addTemplate = addTemplate;
+        //hl.modalContainer = $('#template-modal');
+
+        //////////////
+
+        function openModal() {
+            $('#template-modal').modal('show');
+
+            $("#template-modal").on("hidden.bs.modal", function() {
+                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+            });
+        }
+
+
+
+        function increCounter() {
+            hl.counter++;
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('addTemplate', addTemplate);
+
+    addTemplate.$inject = ['$compile', '$document'];
+    /* @ngInject */
+    function addTemplate($compile, $document) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/template/template.html',
+            replace: true,
+            scope: {
+                fieldModel: '=',
+                formMode: '=',
+                templatesData: '='
+            },
+            transclude: true,
+            link: function(scope, element, attrs) {
+                element.find('button#add-template-btn').bind('click', function() {
+                    // var html = '<template-field field-model="hl.fieldModel" ></template-field>';
+
+                    // var input = angular.element(html);
+
+                    // var compile = $compile(input)(scope);
+
+                    // element.find('#template-container').append(input);
+
+                    scope.hl.openModal();
+                    scope.hl.increCounter();
+                    //scope.$parent.vm.increTemplateCounter();
+                });
+
+            },
+            controller: 'TemplateController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('templateEdit', templateEdit);
+
+    templateEdit.$inject = ['$compile'];
+    /* @ngInject */
+    function templateEdit($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/template/template-edit-field.html',
+            replace: true,
+            scope: {
+                templateCounter: '=',
+                fieldModel: '='
+            },
+            link: function(scope, element, attrs) {
+                //scope.fieldModel = scope.$parent.$parent.vm.form.templates[scope.templateCounter];
+                //console.log(scope);
+                scope.openModal = openModal;
+                scope.remove = remove;
+
+
+                ///////////////////
+
+                function openModal() {
+                    //scope.$parent.$parent.vm.setSelTemplateIndex(scope.templateCounter);
+                    $('#template-modal-edit').modal('show');
+                    scope.$parent.$parent.$parent.$parent.vm.setSelTemplateObj(scope.fieldModel);
+                    // $("#template-modal-edit").on("hidden.bs.modal", function() {
+                    //     console.log(scope.$parent.$parent.vm.templateCounter);
+                    //     scope.$parent.$parent.vm.setSelTemplateIndex(scope.$parent.$parent.vm.templateCounter);
+                    // });
+                }
+
+                function remove(target) {
+                    var parent = $(target).parent();
+                    parent.remove();
+                    scope.$parent.$parent.$parent.$parent.vm.removeTemplate(scope.fieldModel);
+                }
+            },
+            // controller: 'TemplateController',
+            // controllerAs: 'hl',
+            // bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('templateField', templateField);
+
+    templateField.$inject = ['$compile'];
+    /* @ngInject */
+    function templateField($compile) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/template/template-field.html',
+            replace: true,
+            scope: {
+                templateCounter: '='
+            },
+            link: function(scope, element, attrs) {
+                scope.fieldModel = scope.$parent.$parent.vm.form.templates[scope.templateCounter];
+
+                scope.openModal = openModal;
+                scope.remove = remove;
+
+                ///////////////////
+
+                function openModal() {
+                    //scope.$parent.$parent.vm.setSelTemplateIndex(scope.templateCounter);
+                    $('#template-modal-edit').modal('show');
+                    scope.$parent.$parent.vm.setSelTemplateObj(scope.fieldModel);
+                    // $("#template-modal-edit").on("hidden.bs.modal", function() {
+                    //     console.log(scope.$parent.$parent.vm.templateCounter);
+                    //     scope.$parent.$parent.vm.setSelTemplateIndex(scope.$parent.$parent.vm.templateCounter);
+                    // });
+                }
+
+                function remove(target) {
+                    var parent = $(target).parent();
+                    parent.remove();
+                    scope.$parent.$parent.vm.removeTemplate(scope.templateCounter);
+                }
+            },
+            // controller: 'TemplateController',
+            // controllerAs: 'hl',
+            // bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('templateModal', templateModal);
+
+    templateModal.$inject = ['$compile', '$document'];
+    /* @ngInject */
+    function templateModal($compile, $document) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/template/template-modal.html',
+            replace: true,
+            scope: {
+                fieldModel: '=',
+                formMode: '=',
+                templatesData: '='
+            },
+            transclude: true,
+            link: function(scope, element, attrs) {
+                //console.log(scope.$parent);
+                scope.hl.templates = scope.$parent.vm.templateNames;
+                scope.hl.types = scope.$parent.vm.templateTypes;
+
+                scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].template_type = scope.hl.templates[0].value;
+                scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].templatable_type = scope.hl.types[0].value;
+
+                scope.$parent.vm.setSelTemplateIndex(scope.$parent.vm.templateCounter);
+                scope.addTemplate = addTemplate;
+                //scope.statusChange = statusChange;
+
+                /////////////
+
+                function statusChange() {
+                    var status = scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].status;
+
+                    if (status == 'published') {
+                        angular.forEach(scope.$parent.vm.form.templates, function(t, index) {
+                            if (index != scope.$parent.vm.selTemplateIndex) {
+                                if (t.status == 'published') {
+                                    t.status = 'draft';
+                                }
+
+                            }
+                        });
+
+                        if (scope.hl.formMode == 'Edit') {
+                            angular.forEach(scope.$parent.vm.templates, function(t, index) {
+                                if (t.status == 'published') {
+                                    t.status = 'draft';
+                                }
+                            });
+                        }
+                    }
+                }
+
+                function addTemplate() {
+                    statusChange();
+
+                    var html = '<template-field template-counter="' + scope.$parent.vm.selTemplateIndex + '" ></template-field>';
+                    var input = angular.element(html);
+                    var compile = $compile(input)(scope);
+
+                    $document.find('#template-container').append(input);
+                    $('#template-modal').modal('hide');
+                    scope.$parent.vm.increTemplateCounter();
+                    scope.$parent.vm.setSelTemplateIndex(scope.$parent.vm.templateCounter);
+
+                    scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex] = {};
+
+                    scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].template_type = scope.hl.templates[0].value;
+                    scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].templatable_type = scope.hl.types[0].value;
+                    scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].status = 'draft';
+                }
+            },
+            controller: 'TemplateController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('templateModalEdit', templateModalEdit);
+
+    templateModalEdit.$inject = ['$compile', '$document'];
+    /* @ngInject */
+    function templateModalEdit($compile, $document) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: '/app/deals/template/template-modal-edit.html',
+            replace: true,
+            scope: {
+                fieldModel: '=',
+                formMode: '=',
+                templatesData: '='
+            },
+            transclude: true,
+            link: function(scope, element, attrs) {
+                scope.templates = scope.$parent.vm.templateNames;
+                scope.types = scope.$parent.vm.templateTypes;
+                scope.closeModal = closeModal;
+
+                scope.$parent.vm.setSelTemplateIndex(scope.$parent.vm.templateCounter);
+
+                //////////////////////////
+
+                function statusChange() {
+                    var tobj = scope.$parent.vm.selTemplateObj;
+
+                    if (tobj.status == 'published') {
+                        angular.forEach(scope.$parent.vm.form.templates, function(t, index) {
+
+                            if (t.status == 'published') {
+                                t.status = 'draft';
+                            }
+                        });
+
+                        angular.forEach(scope.$parent.vm.templates, function(t, index) {
+                            if (t.uid != tobj.uid) {
+                                if (t.status == 'published') {
+                                    t.status = 'draft';
+                                }
+
+                            }
+                        });
+                    }
+                }
+
+                $("#template-modal-edit").on("hidden.bs.modal", function() {
+                    statusChange();
+                });
+
+                function closeModal() {
+                    $('#template-modal-edit').modal('hide');
+                }
+            }
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
     }
 
 })();
@@ -4079,25 +4792,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             });
         }
     }
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('isYesNo', isYesNo);
-
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
-
-            return 'No';
-        }
-
-    }
-
 })();
 (function() {
     'use strict';

@@ -21,17 +21,64 @@
             findInList: findInList,
             isEmpty: isEmpty,
             addHighlights: addHighlights,
+            addTemplates: addTemplates,
             search: search,
             searchedList: [],
             highlights: [],
+            templates: [],
             getHighlights: getHighlights,
+            getTemplates: getTemplates,
             removeHighlights: removeHighlights,
-            updateHighlights: updateHighlights
+            updateHighlights: updateHighlights,
+            //removeTemplates: removeTemplates,
+            //updateTemplates: updateTemplates,
+            templateNames: [],
+            templateTypes: [],
+            getTemplateNames: getTemplateNames,
+            getTemplateTypes: getTemplateTypes
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function getTemplateTypes() {
+            var d = $q.defer();
+
+            if (service.templateTypes.length > 0) {
+                d.resolve(service.templateTypes);
+            } else {
+                var url = CONST.api_domain + '/templates/types';
+                $http.get(url).then(function(resp) {
+                    service.templateTypes = resp.data.template_types;
+                    d.resolve(resp.data.template_types);
+                }).catch(function(err) {
+                    console.log(err);
+                    d.reject(err);
+                });
+            }
+
+            return d.promise;
+        }
+
+        function getTemplateNames() {
+            var d = $q.defer();
+
+            if (service.templateNames.length > 0) {
+                d.resolve(service.templateNames);
+            } else {
+                var url = CONST.api_domain + '/templates/names';
+                $http.get(url).then(function(resp) {
+                    service.templateNames = resp.data.template_names;
+                    d.resolve(resp.data.template_names);
+                }).catch(function(err) {
+                    console.log(err);
+                    d.reject(err);
+                });
+            }
+
+            return d.promise;
+        }
 
         function removeHighlights(dealId, highlights) {
             var url = api + '/' + dealId + '/highlights';
@@ -96,6 +143,37 @@
                     d.resolve(results);
                 }
 
+            });
+
+            return d.promise;
+        }
+
+        function getTemplates(dealId) {
+            var url = api + '/' + dealId + '/templates';
+            var d = $q.defer();
+
+            $http.get(url).then(function(resp) {
+                service.templates = resp.data.templates;
+
+                angular.forEach(service.templates, function(template, index) {
+                    if (template.is_archived) {
+                        service.templates[index]['status'] = 'archived';
+                    } else if (template.is_draft) {
+                        service.templates[index]['status'] = 'draft';
+                    } else if (template.is_published) {
+                        service.templates[index]['status'] = 'published';
+                    } else {
+                        service.templates[index]['status'] = 'draft';
+                    }
+                });
+
+
+
+                d.resolve(service.templates);
+            }).catch(function(err) {
+                console.log(err);
+                service.errors.push(err);
+                d.reject(err);
             });
 
             return d.promise;
@@ -316,6 +394,47 @@
             return d.promise;
         }
 
+        function addTemplates(deal_id, templates) {
+            var d = $q.defer();
+
+            var url = api + '/' + deal_id + '/templates';
+
+            var tasks = [];
+
+            angular.forEach(templates, function(template, index) {
+                if (angular.isDefined(template.name) && template.name.trim() != '') {
+                    tasks.push(function(cb) {
+                        template['templatable_id'] = deal_id;
+
+                        $http.post(url, template).then(function(resp) {
+                            //d.resolve(resp);
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(error);
+                            // service.errors = error;
+                            // d.reject(error);
+                            cb(err);
+                        });
+
+                    });
+                }
+
+            });
+
+            async.parallel(tasks, function(error, results) {
+                if (error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                } else {
+                    d.resolve(results);
+                }
+
+            });
+
+            return d.promise;
+        }
+
         function add(data) {
             var url = api;
             var d = $q.defer();
@@ -325,14 +444,48 @@
                     //console.log(resp);
                     //return false;
                     var dealId = resp.data.deal.uid;
-                    console.log(data.highlights);
-                    addHighlights(dealId, data.highlights).then(function(resp) {
-                        console.log(resp);
+
+                    var tasks = [];
+
+                    if (data.highlights.length > 0) {
+                        //console.log(data.highlights);
+                        tasks.push(function(cb) {
+                            addHighlights(dealId, data.highlights).then(function(resp) {
+                                cb(null, resp);
+                            }).catch(function(err) {
+                                console.log(err);
+                                cb(err);
+                            });
+                        });
+                    }
+
+                    if (angular.isDefined(data.templates[0]) && angular.isDefined(data.templates[0].name) && data.templates[0].name.trim() != '') {
+                        tasks.push(function(cb) {
+                            addTemplates(dealId, data.templates).then(function(resp) {
+                                cb(null, resp);
+                            }).catch(function(err) {
+                                console.log(err);
+                                cb(err);
+                            });
+                        });
+                    }
+
+                    if (tasks.length > 0) {
+                        async.parallel(tasks, function(error, results) {
+                            if (error) {
+                                console.log(error);
+                                service.errors = error;
+                                d.reject(error);
+                            } else {
+                                d.resolve(results);
+                            }
+
+                        });
+                    } else {
                         d.resolve(resp);
-                    }).catch(function(err) {
-                        console.log(err);
-                        d.reject(err);
-                    });
+                    }
+
+
                 }).catch(function(error) {
                     console.log(error);
                     service.errors = error;
@@ -342,12 +495,54 @@
             return d.promise;
         }
 
+        function setOnePublish(templates) {
+            var hasPublish = false;
+            angular.forEach(templates, function(template, index) {
+                if (template.status == 'published' && !hasPublish) {
+                    hasPublish = true;
+                } else if (template.status == 'published' && hasPublish) {
+                    templates[index].status = 'draft';
+                }
+            });
+
+            return templates;
+        }
+
         function edit(id, data) {
             var url = api + "/" + id;
             var d = $q.defer();
 
             var tasks = [];
 
+            //TEMPLATE ADD
+            //console.log(data.form.templates);
+            // data.form.templates.splice(data.form.templates.length - 1, 1);
+            // console.log(data.form.templates);
+            // data.form.templates = setOnePublish(data.form.templates);
+            // console.log(data.form.templates);
+            if (angular.isDefined(data.form.templates) && data.form.templates.length > 0) {
+                var url_ah = api + '/' + id + '/templates';
+
+                angular.forEach(data.form.templates, function(template, index) {
+                    //console.log(angular.isDefined(template.name));
+                    //console.log(template.name);
+                    if (angular.isDefined(template.name) && template.name.trim() != '') {
+                        tasks.push(function(cb) {
+                            template['templatable_id'] = id;
+                            $http.post(url_ah, template)
+                                .then(function(resp) {
+                                    cb(null, resp);
+                                }).catch(function(error) {
+                                    console.log(error);
+                                    cb(err);
+                                });
+                        });
+                    }
+
+                });
+            }
+
+            //HIGHLIGHT
             if (angular.isDefined(data.highlights) && data.highlights.length > 0) {
                 angular.forEach(data.highlights, function(val, index) {
                     var url_h = url + '/highlights/' + val.uid;
@@ -367,7 +562,7 @@
                     });
                 });
             }
-
+            //HIGHLIGHT
             if (angular.isDefined(data.removedHighlights) && data.removedHighlights.length > 0) {
                 angular.forEach(data.removedHighlights, function(val, index) {
                     var url_h = url + '/highlights/' + val.uid;
@@ -382,8 +577,39 @@
                     });
                 });
             }
+            //TEMPLATE
+            if (angular.isDefined(data.templates) && data.templates.length > 0) {
+                angular.forEach(data.templates, function(template, index) {
+                    var url_h = url + '/templates/' + template.uid;
 
-            if (angular.isDefined(data.form.highlights)) {
+                    tasks.push(function(cb) {
+                        template['templatable_id'] = id;
+                        $http.patch(url_h, template).then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(error);
+                            cb(err);
+                        });
+                    });
+                });
+            }
+            //TEMPLATE
+            if (angular.isDefined(data.removedTemplates) && data.removedTemplates.length > 0) {
+                angular.forEach(data.removedTemplates, function(val, index) {
+                    var url_h = url + '/templates/' + val.uid;
+
+                    tasks.push(function(cb) {
+                        $http.delete(url_h).then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(error);
+                            cb(err);
+                        });
+                    });
+                });
+            }
+            //HIHGLIGHT
+            if (angular.isDefined(data.form.highlights) && data.form.highlights.length > 0) {
                 var highlightsArr = [];
                 angular.forEach(data.form.highlights, function(val, index) {
                     var obj = {
@@ -400,7 +626,7 @@
                 };
 
                 var url_ah = api + '/' + id + '/highlights/collection';
-
+                console.log(data_h);
                 tasks.push(function(cb) {
                     $http.post(url_ah, data_h)
                         .then(function(resp) {
