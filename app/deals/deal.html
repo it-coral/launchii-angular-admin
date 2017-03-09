@@ -51,7 +51,7 @@
                                     <td>
                                         <a href="{{deal.link}}" ng-bind="deal.link" target="_blank"></a>
                                     </td>
-                                    <td ng-bind="deal.price"></td>
+                                    <td ng-bind="deal.price | toCurrencyFormat"></td>
                                     <td>
                                         <a ui-sref="dashboard.deal.view({id:deal.uid})" class="btn btn-outline btn-circle blue btn-sm blue">
                                             <i class="fa fa-share"></i> View

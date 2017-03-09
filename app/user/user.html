@@ -32,7 +32,7 @@
 
                 </div>
                 <div class="portlet-body">
-                    <div class="alert {{vm.response.success}}" ng-if="vm.isDone">
+                    <div class="alert {{vm.response.success}}" ng-if="vm.response.msg">
                         <strong>{{vm.response.alert}}</strong> {{vm.response.msg}}
                     </div>
                     <div class="table-scrollable" ng-if="vm.users">
@@ -42,9 +42,10 @@
                                     <th> Name </th>
                                     <th> Email </th>
                                     <th> Confirmed </th>
-                                    <th> Admin </th>
+                                    <!--<th> Admin </th>
                                     <th> Vendor </th>
-                                    <th> Customer </th>
+                                    <th> Customer </th>-->
+                                    <th> Role </th>
                                     <th> Active </th>
                                     <th>Action</th>
                                 </tr>
@@ -54,9 +55,10 @@
                                     <td ng-bind="user.name"></td>
                                     <td ng-bind="user.email"></td>
                                     <td ng-bind="user.is_confirmed | isYesNo"></td>
-                                    <td ng-bind="user.is_admin | isYesNo"></td>
+                                    <!--<td ng-bind="user.is_admin | isYesNo"></td>
                                     <td ng-bind="user.is_vendor | isYesNo"></td>
-                                    <td ng-bind="user.is_customer | isYesNo"></td>
+                                    <td ng-bind="user.is_customer | isYesNo"></td>-->
+                                    <td ng-bind="user | isRole"></td>
                                     <td ng-bind="user.is_active | isYesNo"></td>
                                     <td>
                                         <a ui-sref="dashboard.user.view({id:user.uid})" class="btn btn-outline btn-circle blue btn-sm blue">

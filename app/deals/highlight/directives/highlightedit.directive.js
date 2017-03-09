@@ -18,6 +18,7 @@
                 formMode: '='
             },
             link: function(scope, element, attrs) {
+                $('[data-toggle="tooltip"]').tooltip();
                 scope.hl.fieldModel = scope.$parent.hl.fieldModel;
                 scope.hl.counter = scope.$parent.hl.counter;
                 scope.hl.formMode = scope.$parent.hl.formMode;

@@ -18,6 +18,7 @@
                 fieldModel: '='
             },
             link: function(scope, element, attrs) {
+                $('[data-toggle="tooltip"]').tooltip();
                 //scope.fieldModel = scope.$parent.$parent.vm.form.templates[scope.templateCounter];
                 //console.log(scope);
                 scope.openModal = openModal;

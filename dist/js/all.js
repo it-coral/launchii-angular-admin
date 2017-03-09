@@ -4086,6 +4086,28 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
+    angular
+        .module('app')
+        .filter('toCurrencyFormat', toCurrencyFormat);
+
+    function toCurrencyFormat() {
+        return function(input) {
+            if (input) {
+                var num = parseFloat(input);
+                var currency = '$ ' + num.toFixed(2);
+
+                return currency;
+            }
+
+            return input;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
     angular.module('app')
         .factory('TemplateService', TemplateService);
 
@@ -4206,6 +4228,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 formMode: '='
             },
             link: function(scope, element, attrs) {
+                $('[data-toggle="tooltip"]').tooltip();
                 scope.hl.fieldModel = scope.$parent.hl.fieldModel;
                 scope.hl.counter = scope.$parent.hl.counter;
                 scope.hl.formMode = scope.$parent.hl.formMode;
@@ -4246,6 +4269,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 fieldModel: '='
             },
             link: function(scope, element, attrs) {
+                $('[data-toggle="tooltip"]').tooltip();
                 //console.log(scope);
                 // console.log(scope.hl.highlightItem);
                 scope.hl.fieldModel = scope.$parent.hl.fieldModel;
@@ -4370,6 +4394,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 fieldModel: '='
             },
             link: function(scope, element, attrs) {
+                $('[data-toggle="tooltip"]').tooltip();
                 //scope.fieldModel = scope.$parent.$parent.vm.form.templates[scope.templateCounter];
                 //console.log(scope);
                 scope.openModal = openModal;
@@ -4422,6 +4447,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 templateCounter: '='
             },
             link: function(scope, element, attrs) {
+                $('[data-toggle="tooltip"]').tooltip();
                 scope.fieldModel = scope.$parent.$parent.vm.form.templates[scope.templateCounter];
 
                 scope.openModal = openModal;
@@ -4641,6 +4667,33 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             }
 
             return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isRole', isRole);
+
+    function isRole() {
+        return function(user) {
+            if (user) {
+                if (user.is_admin) {
+                    return 'Admin';
+                }
+                if (user.is_vendor) {
+                    return 'Vendor';
+                }
+                if (user.is_customer) {
+                    return 'Customer';
+                }
+            }
+
+            return 'No Role';
         }
 
     }

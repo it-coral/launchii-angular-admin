@@ -17,6 +17,7 @@
                 fieldModel: '='
             },
             link: function(scope, element, attrs) {
+                $('[data-toggle="tooltip"]').tooltip();
                 //console.log(scope);
                 // console.log(scope.hl.highlightItem);
                 scope.hl.fieldModel = scope.$parent.hl.fieldModel;
