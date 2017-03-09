@@ -28,6 +28,7 @@
         vm.templateNames = prepTemplateNames;
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
+        vm.priceFormat = priceFormat;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addDeal;
@@ -38,6 +39,17 @@
 
         function activate() {
             ComponentsDateTimePickers.init();
+
+            // vm.$watch('vm.form.price', function(newVal, oldVal) {
+            //     console.log(newVal);
+            //     return newVal.toFixed(2);
+            // });
+        }
+
+        function priceFormat() {
+            var price = vm.form.price;
+
+            vm.form.price = parseFloat(price).toFixed(2) + '';
         }
 
         function removeTemplate(template_index) {

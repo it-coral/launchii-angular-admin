@@ -49,11 +49,11 @@
                         </div>
                         <div class="form-group">
                             <label>Price</label>
-                            <input type="number" class="form-control input-small" placeholder="Enter name" ng-model="vm.form.price" required />
+                            <input type="number" class="form-control input-small" placeholder="Enter price" string-to-number ng-model="vm.form.price" ng-change="vm.priceFormat()" required />
                         </div>
                         <div class="form-group">
                             <label>Amazon Rating</label>
-                            <input type="number" class="form-control input-small" placeholder="Enter name" ng-model="vm.form.amazon_rating" required />
+                            <input type="number" class="form-control input-small" placeholder="Enter rating" ng-model="vm.form.amazon_rating" required />
                         </div>
                         <div class="row">
                             <div class="col-md-3">
