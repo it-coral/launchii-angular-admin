@@ -2267,6 +2267,25 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
+    angular
+        .module('app')
+        .filter('ucFirst', ucFirst);
+
+    function ucFirst() {
+        return function(string) {
+            if (string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            return string;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
     angular.module('app')
         .factory('BreadCrumbService', BreadCrumbService);
 
@@ -4295,42 +4314,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
-    angular.module('app')
-        .controller('TemplateController', TemplateController);
-
-    TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-    /* @ngInject */
-    function TemplateController($scope, $compile, $document) {
-        var hl = this;
-
-        hl.counter = 0;
-        hl.increCounter = increCounter;
-        hl.openModal = openModal;
-        hl.currModel = {};
-        //hl.addTemplate = addTemplate;
-        //hl.modalContainer = $('#template-modal');
-
-        //////////////
-
-        function openModal() {
-            $('#template-modal').modal('show');
-
-            $("#template-modal").on("hidden.bs.modal", function() {
-                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-            });
-        }
-
-
-
-        function increCounter() {
-            hl.counter++;
-        }
-    }
-})();
-(function() {
-    'use strict';
-
     angular
         .module('app')
         .directive('addTemplate', addTemplate);
@@ -4656,48 +4639,38 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
-    angular
-        .module('app')
-        .filter('isYesNo', isYesNo);
+    angular.module('app')
+        .controller('TemplateController', TemplateController);
 
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
+    TemplateController.$inject = ['$scope', '$compile', '$document'];
 
-            return 'No';
+    /* @ngInject */
+    function TemplateController($scope, $compile, $document) {
+        var hl = this;
+
+        hl.counter = 0;
+        hl.increCounter = increCounter;
+        hl.openModal = openModal;
+        hl.currModel = {};
+        //hl.addTemplate = addTemplate;
+        //hl.modalContainer = $('#template-modal');
+
+        //////////////
+
+        function openModal() {
+            $('#template-modal').modal('show');
+
+            $("#template-modal").on("hidden.bs.modal", function() {
+                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+            });
         }
 
-    }
 
-})();
-(function() {
-    'use strict';
 
-    angular
-        .module('app')
-        .filter('isRole', isRole);
-
-    function isRole() {
-        return function(user) {
-            if (user) {
-                if (user.is_admin) {
-                    return 'Admin';
-                }
-                if (user.is_vendor) {
-                    return 'Vendor';
-                }
-                if (user.is_customer) {
-                    return 'Customer';
-                }
-            }
-
-            return 'No Role';
+        function increCounter() {
+            hl.counter++;
         }
-
     }
-
 })();
 (function() {
     'use strict';
@@ -4867,6 +4840,52 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             });
         }
     }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isRole', isRole);
+
+    function isRole() {
+        return function(user) {
+            if (user) {
+                if (user.is_admin) {
+                    return 'Admin';
+                }
+                if (user.is_vendor) {
+                    return 'Vendor';
+                }
+                if (user.is_customer) {
+                    return 'Customer';
+                }
+            }
+
+            return 'No Role';
+        }
+
+    }
+
 })();
 (function() {
     'use strict';

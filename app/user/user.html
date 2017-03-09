@@ -58,7 +58,7 @@
                                     <!--<td ng-bind="user.is_admin | isYesNo"></td>
                                     <td ng-bind="user.is_vendor | isYesNo"></td>
                                     <td ng-bind="user.is_customer | isYesNo"></td>-->
-                                    <td ng-bind="user | isRole"></td>
+                                    <td ng-bind="user.role | ucFirst"></td>
                                     <td ng-bind="user.is_active | isYesNo"></td>
                                     <td>
                                         <a ui-sref="dashboard.user.view({id:user.uid})" class="btn btn-outline btn-circle blue btn-sm blue">
