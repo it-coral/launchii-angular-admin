@@ -25,7 +25,7 @@
                 scope.hl.types = scope.$parent.vm.templateTypes;
 
                 scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].template_type = scope.hl.templates[0].value;
-                scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].templatable_type = scope.hl.types[0].value;
+                scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].template_location = scope.hl.types[0].value;
 
                 scope.$parent.vm.setSelTemplateIndex(scope.$parent.vm.templateCounter);
                 scope.addTemplate = addTemplate;
@@ -90,7 +90,7 @@
                     scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex] = {};
 
                     scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].template_type = scope.hl.templates[0].value;
-                    scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].templatable_type = scope.hl.types[0].value;
+                    scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].template_location = scope.hl.types[0].value;
                     scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].status = 'draft';
                 }
             },

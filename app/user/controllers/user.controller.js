@@ -17,7 +17,7 @@
         vm.response = {};
         vm.deleteUser = deleteUser;
         vm.response = {};
-        vm.isDone = false;
+        vm.isDone = true;
         vm.search = search;
         vm.searchItem = '';
         vm.isLoading = false;

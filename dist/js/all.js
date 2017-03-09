@@ -1284,7 +1284,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         'jcs-autoValidate',
         'ngProgressLite',
         // 'ui.bootstrap',
-        //'angular-ladda'
+        'angular-ladda'
     ]);
 
 })();
@@ -1296,10 +1296,10 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         .run(run)
         .run(customHeaders);
 
-    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST'];
+    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider'];
 
     /* @ngInject */
-    function config($authProvider, $resourceProvider, $httpProvider, CONST) {
+    function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider) {
         Layout.init();
         $authProvider.loginUrl = CONST.api_domain + '/auth/sign_in';
         $authProvider.tokenHeader = 'access-token';
@@ -1314,9 +1314,9 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         //$httpProvider.defaults.withCredentials = true;
         $resourceProvider.defaults.stripTrailingSlashes = false;
         $httpProvider.interceptors.push('authInterceptor');
-        // laddaProvider.setOption({
-        //     style: 'expand-right'
-        // });
+        laddaProvider.setOption({
+            style: 'expand-right'
+        });
     }
 
     // csrf.$inject = ['$http', '$cookies'];
@@ -4271,6 +4271,42 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
+    angular.module('app')
+        .controller('TemplateController', TemplateController);
+
+    TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+    /* @ngInject */
+    function TemplateController($scope, $compile, $document) {
+        var hl = this;
+
+        hl.counter = 0;
+        hl.increCounter = increCounter;
+        hl.openModal = openModal;
+        hl.currModel = {};
+        //hl.addTemplate = addTemplate;
+        //hl.modalContainer = $('#template-modal');
+
+        //////////////
+
+        function openModal() {
+            $('#template-modal').modal('show');
+
+            $("#template-modal").on("hidden.bs.modal", function() {
+                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+            });
+        }
+
+
+
+        function increCounter() {
+            hl.counter++;
+        }
+    }
+})();
+(function() {
+    'use strict';
+
     angular
         .module('app')
         .directive('addTemplate', addTemplate);
@@ -4445,7 +4481,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 scope.hl.types = scope.$parent.vm.templateTypes;
 
                 scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].template_type = scope.hl.templates[0].value;
-                scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].templatable_type = scope.hl.types[0].value;
+                scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].template_location = scope.hl.types[0].value;
 
                 scope.$parent.vm.setSelTemplateIndex(scope.$parent.vm.templateCounter);
                 scope.addTemplate = addTemplate;
@@ -4510,7 +4546,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex] = {};
 
                     scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].template_type = scope.hl.templates[0].value;
-                    scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].templatable_type = scope.hl.types[0].value;
+                    scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].template_location = scope.hl.types[0].value;
                     scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].status = 'draft';
                 }
             },
@@ -4594,38 +4630,21 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
-    angular.module('app')
-        .controller('TemplateController', TemplateController);
+    angular
+        .module('app')
+        .filter('isYesNo', isYesNo);
 
-    TemplateController.$inject = ['$scope', '$compile', '$document'];
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
 
-    /* @ngInject */
-    function TemplateController($scope, $compile, $document) {
-        var hl = this;
-
-        hl.counter = 0;
-        hl.increCounter = increCounter;
-        hl.openModal = openModal;
-        hl.currModel = {};
-        //hl.addTemplate = addTemplate;
-        //hl.modalContainer = $('#template-modal');
-
-        //////////////
-
-        function openModal() {
-            $('#template-modal').modal('show');
-
-            $("#template-modal").on("hidden.bs.modal", function() {
-                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-            });
+            return 'No';
         }
 
-
-
-        function increCounter() {
-            hl.counter++;
-        }
     }
+
 })();
 (function() {
     'use strict';
@@ -4646,7 +4665,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.response = {};
         vm.deleteUser = deleteUser;
         vm.response = {};
-        vm.isDone = false;
+        vm.isDone = true;
         vm.search = search;
         vm.searchItem = '';
         vm.isLoading = false;
@@ -4752,7 +4771,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.form = vm.selectedUser;
         vm.defaultRole = 'admin';
         vm.defaultStatus = 'active';
-        vm.isDone = false;
+        vm.isDone = true;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editPost;
@@ -4769,6 +4788,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         }
 
         function editPost() {
+            vm.isDone = false;
             // console.log(vm.form);
             // return false;
             UserService.edit(vm.userId, vm.form).then(function() {
@@ -4789,30 +4809,11 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 vm.response['msg'] = "Failed to update User.";
                 vm.isDone = true;
 
-                $scope.$parent.vm.isDone = false;
+                $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
             });
         }
     }
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('isYesNo', isYesNo);
-
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
-
-            return 'No';
-        }
-
-    }
-
 })();
 (function() {
     'use strict';

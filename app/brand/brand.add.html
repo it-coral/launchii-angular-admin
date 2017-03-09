@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="portlet-body form">
-                <div class="alert {{vm.response.success}}" id="msg-info" ng-if="!vm.isDone">
+                <div class="alert {{vm.response.success}}" id="msg-info" ng-if="vm.isDone">
                     <strong>{{vm.response.alert}}</strong> {{vm.response.msg}}
                 </div>
                 <form role="form" ng-submit="vm.submitAction()" novalidate="novalidate">

@@ -17,7 +17,7 @@
         vm.form = vm.selectedUser;
         vm.defaultRole = 'admin';
         vm.defaultStatus = 'active';
-        vm.isDone = false;
+        vm.isDone = true;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editPost;
@@ -34,6 +34,7 @@
         }
 
         function editPost() {
+            vm.isDone = false;
             // console.log(vm.form);
             // return false;
             UserService.edit(vm.userId, vm.form).then(function() {
@@ -54,7 +55,7 @@
                 vm.response['msg'] = "Failed to update User.";
                 vm.isDone = true;
 
-                $scope.$parent.vm.isDone = false;
+                $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
             });
         }
