@@ -62,7 +62,7 @@
             });
         }
 
-        function deleteBrand(brand) {
+        function deleteBrand(element, brand) {
             bootbox.confirm({
                 title: "Confirm Delete",
                 message: "Are you sure you want to delete brand: <b>" + brand.name + "</b>?",
@@ -78,6 +78,7 @@
                 },
                 callback: function(result) {
                     if (result) {
+                        Ladda.create(element).start();
                         doDelete(brand);
                     }
                 }

@@ -12,10 +12,10 @@
             <div class="portlet-title">
                 <div class="caption font-red-sunglo">
                     <i class="icon-settings font-red-sunglo"></i>
-                    <span class="caption-subject bold uppercase"> {{ vm.brand.name }} </span>
+                    <span class="caption-subject bold uppercase"> {{ vm.user.name }} </span>
                 </div>
                 <div class="actions">
-                    <a ui-sref="dashboard.brand.edit({id:vm.brandId})" class="btn btn-outline btn-circle btn-sm purple">
+                    <a ui-sref="dashboard.user.edit({id:vm.userId})" ng-if="!(vm.user | isSuperAdmin)" class="btn btn-outline btn-circle btn-sm purple">
                         <i class="fa fa-edit"></i> Edit
                     </a>
                 </div>
@@ -24,46 +24,33 @@
                 <form role="form" class="form-horizontal">
                     <div class="form-body">
                         <div class="form-group">
-                            <label class="col-md-3">Slug</label>
+                            <label class="col-md-3">Email</label>
                             <div class="col-md-9">
-                                <p ng-bind="vm.brand.slug"></p>
+                                <p ng-bind="vm.user.email"></p>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3">Description</label>
+                            <label class="col-md-3">Confirmed</label>
                             <div class="col-md-9">
-                                <p ng-bind="vm.brand.description"></p>
+                                <p ng-bind="vm.user.is_confirmed | isYesNo"></p>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3"><i class="fa fa-envelope"></i> Email</label>
+                            <label class="col-md-3">Role</label>
                             <div class="col-md-9">
-                                <p ng-bind="vm.brand.email"></p>
+                                <p ng-bind="vm.user.role | ucFirst"></p>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3"><i class="fa fa-facebook-official"></i> Facebook</label>
+                            <label class="col-md-3">Active</label>
                             <div class="col-md-9">
-                                <p ng-bind="vm.brand.facebook_url"></p>
+                                <p ng-bind="vm.user.is_active | isYesNo"></p>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-md-3"><i class="fa fa-twitter"></i> Twitter</label>
-                            <div class="col-md-9">
-                                <p ng-bind="vm.brand.twitter_url"></p>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-md-3"><i class="fa fa-instagram"></i> Instagram</label>
-                            <div class="col-md-9">
-                                <p ng-bind="vm.brand.instagram_url"></p>
-                            </div>
-                        </div>
                     </div>
 
                 </form>

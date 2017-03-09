@@ -62,7 +62,7 @@
             });
         }
 
-        function deleteUser(user) {
+        function deleteUser(element, user) {
             bootbox.confirm({
                 title: "Confirm Delete",
                 message: "Are you sure you want to delete user: <b>" + user.name + "</b>?",
@@ -78,6 +78,7 @@
                 },
                 callback: function(result) {
                     if (result) {
+                        Ladda.create(element).start();
                         doDelete(user);
                     }
                 }

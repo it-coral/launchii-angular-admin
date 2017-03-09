@@ -239,6 +239,22 @@
             }
         };
 
+        var userView = {
+            name: "dashboard.user.view",
+            url: "/view/:id",
+            parent: user,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/user/user.view.html",
+                    controller: "UserViewController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelUser: prepSelUser
+                    }
+                }
+            }
+        };
+
         ////////////
 
         $stateProvider
@@ -254,7 +270,8 @@
             .state(brandEdit)
             .state(brandView)
             .state(user)
-            .state(userEdit);
+            .state(userEdit)
+            .state(userView);
 
         ////////////
 

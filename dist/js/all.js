@@ -1654,6 +1654,22 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             }
         };
 
+        var userView = {
+            name: "dashboard.user.view",
+            url: "/view/:id",
+            parent: user,
+            views: {
+                "page_body": {
+                    templateUrl: "/app/user/user.view.html",
+                    controller: "UserViewController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelUser: prepSelUser
+                    }
+                }
+            }
+        };
+
         ////////////
 
         $stateProvider
@@ -1669,7 +1685,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             .state(brandEdit)
             .state(brandView)
             .state(user)
-            .state(userEdit);
+            .state(userEdit)
+            .state(userView);
 
         ////////////
 
@@ -2261,6 +2278,32 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 });
             }
         };
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isLoading', isLoading);
+
+    function isLoading() {
+        return function(target) {
+            console.log(target);
+            if (target) {
+                var scope = angular.element(target).scope();
+
+                if (angular.isDefined(scope.isLoading) && scope.isLoading) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            return false;
+        }
+
     }
 
 })();
@@ -2904,7 +2947,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             });
         }
 
-        function deleteBrand(brand) {
+        function deleteBrand(element, brand) {
             bootbox.confirm({
                 title: "Confirm Delete",
                 message: "Are you sure you want to delete brand: <b>" + brand.name + "</b>?",
@@ -2920,6 +2963,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 },
                 callback: function(result) {
                     if (result) {
+                        Ladda.create(element).start();
                         doDelete(brand);
                     }
                 }
@@ -3888,7 +3932,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             });
         }
 
-        function deleteDeal(deal) {
+        function deleteDeal(element, deal) {
             bootbox.confirm({
                 title: "Confirm Delete",
                 message: "Are you sure you want to delete deal: <b>" + deal.name + "</b>?",
@@ -3904,11 +3948,11 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 },
                 callback: function(result) {
                     if (result) {
+                        Ladda.create(element).start();
                         doDelete(deal);
                     }
                 }
             });
-
         }
 
         function doDelete(deal) {
@@ -4314,6 +4358,42 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
+    angular.module('app')
+        .controller('TemplateController', TemplateController);
+
+    TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+    /* @ngInject */
+    function TemplateController($scope, $compile, $document) {
+        var hl = this;
+
+        hl.counter = 0;
+        hl.increCounter = increCounter;
+        hl.openModal = openModal;
+        hl.currModel = {};
+        //hl.addTemplate = addTemplate;
+        //hl.modalContainer = $('#template-modal');
+
+        //////////////
+
+        function openModal() {
+            $('#template-modal').modal('show');
+
+            $("#template-modal").on("hidden.bs.modal", function() {
+                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+            });
+        }
+
+
+
+        function increCounter() {
+            hl.counter++;
+        }
+    }
+})();
+(function() {
+    'use strict';
+
     angular
         .module('app')
         .directive('addTemplate', addTemplate);
@@ -4640,42 +4720,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     'use strict';
 
     angular.module('app')
-        .controller('TemplateController', TemplateController);
-
-    TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-    /* @ngInject */
-    function TemplateController($scope, $compile, $document) {
-        var hl = this;
-
-        hl.counter = 0;
-        hl.increCounter = increCounter;
-        hl.openModal = openModal;
-        hl.currModel = {};
-        //hl.addTemplate = addTemplate;
-        //hl.modalContainer = $('#template-modal');
-
-        //////////////
-
-        function openModal() {
-            $('#template-modal').modal('show');
-
-            $("#template-modal").on("hidden.bs.modal", function() {
-                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-            });
-        }
-
-
-
-        function increCounter() {
-            hl.counter++;
-        }
-    }
-})();
-(function() {
-    'use strict';
-
-    angular.module('app')
         .controller('UserController', UserController);
 
     UserController.$inject = ['UserService', 'userPrepService'];
@@ -4736,7 +4780,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             });
         }
 
-        function deleteUser(user) {
+        function deleteUser(element, user) {
             bootbox.confirm({
                 title: "Confirm Delete",
                 message: "Are you sure you want to delete user: <b>" + user.name + "</b>?",
@@ -4752,6 +4796,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 },
                 callback: function(result) {
                     if (result) {
+                        Ladda.create(element).start();
                         doDelete(user);
                     }
                 }
@@ -4844,6 +4889,36 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
+    angular.module('app')
+        .controller('UserViewController', UserViewController);
+
+    UserViewController.$inject = ['UserService', '$stateParams', 'prepSelUser', 'HelperService'];
+
+    /* @ngInject */
+    function UserViewController(UserService, $stateParams, prepSelUser, HelperService) {
+        var vm = this;
+
+        vm.mode = "View";
+        vm.response = {};
+        vm.userId = $stateParams.id;
+        vm.user = prepSelUser;
+        vm.isDone = false;
+        vm.prevState = HelperService.getPrevState();
+
+        //activate();
+
+        ///////////////////
+
+        function activate() {
+            DealService.find(vm.dealId).then(function(data) {
+                vm.deal = data;
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
     angular
         .module('app')
         .filter('isYesNo', isYesNo);
@@ -4855,6 +4930,28 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             }
 
             return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isSuperAdmin', isSuperAdmin);
+
+    function isSuperAdmin() {
+        return function(user) {
+            if (user) {
+                if (user.email == 'admin@example.com') {
+                    return true;
+                }
+
+            }
+
+            return false;
         }
 
     }

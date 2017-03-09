@@ -62,7 +62,7 @@
             });
         }
 
-        function deleteDeal(deal) {
+        function deleteDeal(element, deal) {
             bootbox.confirm({
                 title: "Confirm Delete",
                 message: "Are you sure you want to delete deal: <b>" + deal.name + "</b>?",
@@ -78,11 +78,11 @@
                 },
                 callback: function(result) {
                     if (result) {
+                        Ladda.create(element).start();
                         doDelete(deal);
                     }
                 }
             });
-
         }
 
         function doDelete(deal) {

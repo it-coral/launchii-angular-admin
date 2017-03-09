@@ -14,6 +14,11 @@
                     <i class="icon-settings font-red-sunglo"></i>
                     <span class="caption-subject bold uppercase"> {{ vm.deal.name }} </span>
                 </div>
+                <div class="actions">
+                    <a ui-sref="dashboard.deal.edit({id:vm.dealId})" class="btn btn-outline btn-circle btn-sm purple">
+                        <i class="fa fa-edit"></i> Edit
+                    </a>
+                </div>
             </div>
             <div class="portlet-body form">
                 <form role="form" class="form-horizontal">
