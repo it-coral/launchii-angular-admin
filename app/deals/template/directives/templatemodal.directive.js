@@ -29,6 +29,8 @@
 
                 scope.$parent.vm.setSelTemplateIndex(scope.$parent.vm.templateCounter);
                 scope.addTemplate = addTemplate;
+
+                scope.disableAdd = true;
                 //scope.statusChange = statusChange;
 
                 /////////////
@@ -56,7 +58,24 @@
                     }
                 }
 
+                scope.$watch('$parent.vm.form.templates[$parent.vm.selTemplateIndex].name', function(newValue, oldValue) {
+                    if (angular.isDefined(newValue)) {
+                        if (newValue.trim() == '') {
+                            scope.disableAdd = true;
+                        } else {
+                            scope.disableAdd = false;
+                        }
+                    } else {
+                        scope.disableAdd = true;
+                    }
+
+                });
+
                 function addTemplate() {
+                    if (!angular.isDefined(scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].name) || scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].name.trim() == '') {
+                        return false;
+                    }
+
                     statusChange();
 
                     var html = '<template-field template-counter="' + scope.$parent.vm.selTemplateIndex + '" ></template-field>';

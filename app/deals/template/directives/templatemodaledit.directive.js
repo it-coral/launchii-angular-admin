@@ -33,10 +33,12 @@
 
                     if (tobj.status == 'published') {
                         angular.forEach(scope.$parent.vm.form.templates, function(t, index) {
-
-                            if (t.status == 'published') {
-                                t.status = 'draft';
+                            if (t.uid != tobj.uid) {
+                                if (t.status == 'published') {
+                                    t.status = 'draft';
+                                }
                             }
+
                         });
 
                         angular.forEach(scope.$parent.vm.templates, function(t, index) {

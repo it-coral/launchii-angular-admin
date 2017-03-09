@@ -3706,32 +3706,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     'use strict';
 
     angular.module('app')
-        .factory('TemplateService', TemplateService);
-
-    TemplateService.$inject = ['$scope'];
-
-    /* @ngInject */
-    function TemplateService($scope) {
-
-        var service = {
-            lists: [],
-            setList: setList
-        }
-
-        return service;
-
-        //////// SERIVCE METHODS ////////
-
-        function setList(list) {
-            service.lists = list;
-        }
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular.module('app')
         .controller('DealAddController', DealAddController);
 
     DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes'];
@@ -4113,6 +4087,32 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     'use strict';
 
     angular.module('app')
+        .factory('TemplateService', TemplateService);
+
+    TemplateService.$inject = ['$scope'];
+
+    /* @ngInject */
+    function TemplateService($scope) {
+
+        var service = {
+            lists: [],
+            setList: setList
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function setList(list) {
+            service.lists = list;
+        }
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
         .controller('HighlightController', HighlightController);
 
     HighlightController.$inject = ['$scope', '$compile'];
@@ -4267,42 +4267,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         return directive;
     }
 
-})();
-(function() {
-    'use strict';
-
-    angular.module('app')
-        .controller('TemplateController', TemplateController);
-
-    TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-    /* @ngInject */
-    function TemplateController($scope, $compile, $document) {
-        var hl = this;
-
-        hl.counter = 0;
-        hl.increCounter = increCounter;
-        hl.openModal = openModal;
-        hl.currModel = {};
-        //hl.addTemplate = addTemplate;
-        //hl.modalContainer = $('#template-modal');
-
-        //////////////
-
-        function openModal() {
-            $('#template-modal').modal('show');
-
-            $("#template-modal").on("hidden.bs.modal", function() {
-                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-            });
-        }
-
-
-
-        function increCounter() {
-            hl.counter++;
-        }
-    }
 })();
 (function() {
     'use strict';
@@ -4485,6 +4449,8 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
                 scope.$parent.vm.setSelTemplateIndex(scope.$parent.vm.templateCounter);
                 scope.addTemplate = addTemplate;
+
+                scope.disableAdd = true;
                 //scope.statusChange = statusChange;
 
                 /////////////
@@ -4512,7 +4478,24 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                     }
                 }
 
+                scope.$watch('$parent.vm.form.templates[$parent.vm.selTemplateIndex].name', function(newValue, oldValue) {
+                    if (angular.isDefined(newValue)) {
+                        if (newValue.trim() == '') {
+                            scope.disableAdd = true;
+                        } else {
+                            scope.disableAdd = false;
+                        }
+                    } else {
+                        scope.disableAdd = true;
+                    }
+
+                });
+
                 function addTemplate() {
+                    if (!angular.isDefined(scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].name) || scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex].name.trim() == '') {
+                        return false;
+                    }
+
                     statusChange();
 
                     var html = '<template-field template-counter="' + scope.$parent.vm.selTemplateIndex + '" ></template-field>';
@@ -4575,10 +4558,12 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 
                     if (tobj.status == 'published') {
                         angular.forEach(scope.$parent.vm.form.templates, function(t, index) {
-
-                            if (t.status == 'published') {
-                                t.status = 'draft';
+                            if (t.uid != tobj.uid) {
+                                if (t.status == 'published') {
+                                    t.status = 'draft';
+                                }
                             }
+
                         });
 
                         angular.forEach(scope.$parent.vm.templates, function(t, index) {
@@ -4605,6 +4590,42 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         return directive;
     }
 
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('TemplateController', TemplateController);
+
+    TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+    /* @ngInject */
+    function TemplateController($scope, $compile, $document) {
+        var hl = this;
+
+        hl.counter = 0;
+        hl.increCounter = increCounter;
+        hl.openModal = openModal;
+        hl.currModel = {};
+        //hl.addTemplate = addTemplate;
+        //hl.modalContainer = $('#template-modal');
+
+        //////////////
+
+        function openModal() {
+            $('#template-modal').modal('show');
+
+            $("#template-modal").on("hidden.bs.modal", function() {
+                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+            });
+        }
+
+
+
+        function increCounter() {
+            hl.counter++;
+        }
+    }
 })();
 (function() {
     'use strict';
