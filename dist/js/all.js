@@ -2871,7 +2871,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.form.twitter = "https://twitter.com/";
         vm.form.instagram = "https://instagram.com/";
         vm.response = {};
-        vm.isDone = false;
+        vm.isDone = true;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addBrand;
@@ -2879,6 +2879,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         ///////////////////
 
         function addBrand() {
+            vm.isDone = false;
             vm.form.logo_image = "default.png"; //temporary
             vm.form.brand_image = "default.png"; //temporary
 
@@ -2899,7 +2900,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 vm.response['msg'] = "Failed to add new Brand.";
                 vm.isDone = true;
 
-                $scope.$parent.vm.isDone = false;
+                $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
             });
         }
@@ -3029,7 +3030,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         vm.brandId = $stateParams.id;
         vm.selectedBrand = prepSelBrand;
         vm.form = vm.selectedBrand;
-        vm.isDone = false;
+        vm.isDone = true;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editPost;
@@ -3046,6 +3047,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         }
 
         function editPost() {
+            vm.isDone = false;
             vm.form.logo_image = "default.png"; //temporary
             vm.form.brand_image = "default.png"; //temporary
 
@@ -3067,7 +3069,7 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
                 vm.response['msg'] = "Failed to update Brand.";
                 vm.isDone = true;
 
-                $scope.$parent.vm.isDone = false;
+                $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
             });
         }
@@ -3791,6 +3793,32 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     'use strict';
 
     angular.module('app')
+        .factory('TemplateService', TemplateService);
+
+    TemplateService.$inject = ['$scope'];
+
+    /* @ngInject */
+    function TemplateService($scope) {
+
+        var service = {
+            lists: [],
+            setList: setList
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function setList(list) {
+            service.lists = list;
+        }
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app')
         .controller('DealAddController', DealAddController);
 
     DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes'];
@@ -4237,32 +4265,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
     'use strict';
 
     angular.module('app')
-        .factory('TemplateService', TemplateService);
-
-    TemplateService.$inject = ['$scope'];
-
-    /* @ngInject */
-    function TemplateService($scope) {
-
-        var service = {
-            lists: [],
-            setList: setList
-        }
-
-        return service;
-
-        //////// SERIVCE METHODS ////////
-
-        function setList(list) {
-            service.lists = list;
-        }
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular.module('app')
         .controller('HighlightController', HighlightController);
 
     HighlightController.$inject = ['$scope', '$compile'];
@@ -4419,42 +4421,6 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
         return directive;
     }
 
-})();
-(function() {
-    'use strict';
-
-    angular.module('app')
-        .controller('TemplateController', TemplateController);
-
-    TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-    /* @ngInject */
-    function TemplateController($scope, $compile, $document) {
-        var hl = this;
-
-        hl.counter = 0;
-        hl.increCounter = increCounter;
-        hl.openModal = openModal;
-        hl.currModel = {};
-        //hl.addTemplate = addTemplate;
-        //hl.modalContainer = $('#template-modal');
-
-        //////////////
-
-        function openModal() {
-            $('#template-modal').modal('show');
-
-            $("#template-modal").on("hidden.bs.modal", function() {
-                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-            });
-        }
-
-
-
-        function increCounter() {
-            hl.counter++;
-        }
-    }
 })();
 (function() {
     'use strict';
@@ -4784,70 +4750,38 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
 (function() {
     'use strict';
 
-    angular
-        .module('app')
-        .filter('isYesNo', isYesNo);
+    angular.module('app')
+        .controller('TemplateController', TemplateController);
 
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
+    TemplateController.$inject = ['$scope', '$compile', '$document'];
 
-            return 'No';
+    /* @ngInject */
+    function TemplateController($scope, $compile, $document) {
+        var hl = this;
+
+        hl.counter = 0;
+        hl.increCounter = increCounter;
+        hl.openModal = openModal;
+        hl.currModel = {};
+        //hl.addTemplate = addTemplate;
+        //hl.modalContainer = $('#template-modal');
+
+        //////////////
+
+        function openModal() {
+            $('#template-modal').modal('show');
+
+            $("#template-modal").on("hidden.bs.modal", function() {
+                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+            });
         }
 
-    }
 
-})();
-(function() {
-    'use strict';
 
-    angular
-        .module('app')
-        .filter('isSuperAdmin', isSuperAdmin);
-
-    function isSuperAdmin() {
-        return function(user) {
-            if (user) {
-                if (user.email == 'admin@example.com') {
-                    return true;
-                }
-
-            }
-
-            return false;
+        function increCounter() {
+            hl.counter++;
         }
-
     }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('isRole', isRole);
-
-    function isRole() {
-        return function(user) {
-            if (user) {
-                if (user.is_admin) {
-                    return 'Admin';
-                }
-                if (user.is_vendor) {
-                    return 'Vendor';
-                }
-                if (user.is_customer) {
-                    return 'Customer';
-                }
-            }
-
-            return 'No Role';
-        }
-
-    }
-
 })();
 (function() {
     'use strict';
@@ -5048,6 +4982,74 @@ for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a
             });
         }
     }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isSuperAdmin', isSuperAdmin);
+
+    function isSuperAdmin() {
+        return function(user) {
+            if (user) {
+                if (user.email == 'admin@example.com') {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isRole', isRole);
+
+    function isRole() {
+        return function(user) {
+            if (user) {
+                if (user.is_admin) {
+                    return 'Admin';
+                }
+                if (user.is_vendor) {
+                    return 'Vendor';
+                }
+                if (user.is_customer) {
+                    return 'Customer';
+                }
+            }
+
+            return 'No Role';
+        }
+
+    }
+
 })();
 (function() {
     'use strict';

@@ -32,7 +32,7 @@
 
                 </div>
                 <div class="portlet-body">
-                    <div class="alert {{vm.response.success}}" ng-if="vm.isDone">
+                    <div class="alert {{vm.response.success}}" ng-if="vm.response.msg">
                         <strong>{{vm.response.alert}}</strong> {{vm.response.msg}}
                     </div>
                     <div class="table-scrollable" ng-if="vm.brands">

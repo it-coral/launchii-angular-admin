@@ -15,7 +15,7 @@
         vm.brandId = $stateParams.id;
         vm.selectedBrand = prepSelBrand;
         vm.form = vm.selectedBrand;
-        vm.isDone = false;
+        vm.isDone = true;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editPost;
@@ -32,6 +32,7 @@
         }
 
         function editPost() {
+            vm.isDone = false;
             vm.form.logo_image = "default.png"; //temporary
             vm.form.brand_image = "default.png"; //temporary
 
@@ -53,7 +54,7 @@
                 vm.response['msg'] = "Failed to update Brand.";
                 vm.isDone = true;
 
-                $scope.$parent.vm.isDone = false;
+                $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
             });
         }

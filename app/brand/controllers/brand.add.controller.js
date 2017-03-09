@@ -16,7 +16,7 @@
         vm.form.twitter = "https://twitter.com/";
         vm.form.instagram = "https://instagram.com/";
         vm.response = {};
-        vm.isDone = false;
+        vm.isDone = true;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addBrand;
@@ -24,6 +24,7 @@
         ///////////////////
 
         function addBrand() {
+            vm.isDone = false;
             vm.form.logo_image = "default.png"; //temporary
             vm.form.brand_image = "default.png"; //temporary
 
@@ -44,7 +45,7 @@
                 vm.response['msg'] = "Failed to add new Brand.";
                 vm.isDone = true;
 
-                $scope.$parent.vm.isDone = false;
+                $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
             });
         }
