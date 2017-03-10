@@ -502,14 +502,14 @@
             var tasks = [];
 
             angular.forEach(discounts, function(discount, index) {
-                console.log(discount);
-                return false;
+                // console.log(discount);
+                // return false;
                 if (angular.isDefined(discount.value) && discount.value.trim() != '') {
                     tasks.push(function(cb) {
                         var formData = new FormData();
                         discount.coupons_file_expire_at = HelperService.combineDateTime(discount.coupons_file_expire_at, '00:00:00');
                         //formData.append('coupons_txt', discount.coupons_txt);
-                        //discount.coupons_txt = formData.get('coupons_txt');
+                        //discount.coupons_txt = "JELLANQD";
                         //var f_data = new FormData(discount);
                         $http.post(url, discount, {
                             // transformRequest: function(data) {
