@@ -10,7 +10,9 @@
         'jcs-autoValidate',
         'ngProgressLite',
         // 'ui.bootstrap',
-        'angular-ladda'
+        'angular-ladda',
+        'ngFileUpload',
+        'file-model'
     ]);
 
 })();

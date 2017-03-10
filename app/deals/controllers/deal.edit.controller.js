@@ -4,10 +4,10 @@
     angular.module('app')
         .controller('DealEditController', DealEditController);
 
-    DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService', 'prepSelHighlights', 'prepSelTemplates', 'prepTemplateNames', 'prepTemplateTypes'];
+    DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService', 'prepSelHighlights', 'prepSelTemplates', 'prepTemplateNames', 'prepTemplateTypes', 'prepStandardD', 'prepEarlyBirdD'];
 
     /* @ngInject */
-    function DealEditController(DealService, $stateParams, $scope, prepSelDeal, HelperService, $state, brandPrepService, prepSelHighlights, prepSelTemplates, prepTemplateNames, prepTemplateTypes) {
+    function DealEditController(DealService, $stateParams, $scope, prepSelDeal, HelperService, $state, brandPrepService, prepSelHighlights, prepSelTemplates, prepTemplateNames, prepTemplateTypes, prepStandardD, prepEarlyBirdD) {
         var vm = this;
 
         vm.mode = "Edit";
@@ -19,14 +19,15 @@
         vm.form.templates = [];
         //vm.form.highlights = vm.selectedDeal.highlights;
         vm.highlights = prepSelHighlights;
-        vm.templates = prepSelTemplates;
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
         vm.removeHighlight = removeHighlight;
         vm.removedHighlightObjs = [];
-        vm.removedTemplateObjs = [];
 
+        //template
+        vm.templates = prepSelTemplates;
+        vm.removedTemplateObjs = [];
         vm.templateCounter = 0;
         vm.increTemplateCounter = increTemplateCounter;
         vm.selTemplateIndex = 0;
@@ -36,8 +37,20 @@
         vm.templateNames = prepTemplateNames;
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
-
         vm.priceFormat = priceFormat;
+
+        //discount
+        vm.discounts = prepStandardD.concat(prepEarlyBirdD);
+        vm.removedDiscountObjs = [];
+        vm.discountCounter = 0;
+        vm.increDiscountCounter = increDiscountCounter;
+        vm.selDiscountIndex = 0;
+        vm.setSelDiscountIndex = setSelDiscountIndex;
+        vm.selDiscountObj = {};
+        vm.setSelDiscountObj = setSelDiscountObj;
+        vm.removeDiscount = removeDiscount;
+        vm.standardDiscounts = prepStandardD;
+        vm.earlyBirdDiscounts = prepEarlyBirdD;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
@@ -47,6 +60,7 @@
         ///////////////////
 
         function activate() {
+            //console.log(vm.discounts);
             priceFormat();
             // DealService.find(vm.dealId).then(function(data) {
             //     vm.selectedDeal = data;
@@ -57,6 +71,30 @@
                 ComponentsDateTimePickers.init();
             });
         }
+
+        //Discount
+        function removeDiscount(discount_index) {
+            console.log(discount_index);
+            angular.forEach(vm.form.discounts, function(val, index) {
+                if (index == discount_index) {
+                    vm.form.discounts.splice(index, 1);
+                }
+            });
+            vm.removedDiscountObjs.push(template);
+        }
+
+        function setSelDiscountObj(dobj) {
+            vm.selDiscountObj = dobj;
+        }
+
+        function setSelDiscountIndex(index) {
+            vm.selDiscountIndex = index;
+        }
+
+        function increDiscountCounter() {
+            vm.discountCounter++;
+        }
+        //End Discount
 
         function priceFormat() {
             var price = vm.form.price;
@@ -117,7 +155,9 @@
                 highlights: vm.highlights,
                 removedHighlights: vm.removedHighlightObjs,
                 templates: vm.templates,
-                removedTemplates: vm.removedTemplateObjs
+                removedTemplates: vm.removedTemplateObjs,
+                discounts: vm.discounts,
+                removedDiscounts: vm.removedDiscountObjs
             };
 
             // console.log(data);
@@ -143,6 +183,7 @@
 
                 $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
+
             });
         }
     }

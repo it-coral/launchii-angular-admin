@@ -35,12 +35,71 @@
             templateNames: [],
             templateTypes: [],
             getTemplateNames: getTemplateNames,
-            getTemplateTypes: getTemplateTypes
+            getTemplateTypes: getTemplateTypes,
+            getStandardDiscounts: getStandardDiscounts,
+            getEarlyBirdDiscounts: getEarlyBirdDiscounts
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function getEarlyBirdDiscounts(dealId) {
+            var d = $q.defer();
+            var url = api + '/' + dealId + '/discounts/early_bird';
+
+            $http.get(url).then(function(resp) {
+                var discounts = resp.data.discounts;
+                angular.forEach(discounts, function(discount, index) {
+                    if (discount.is_active) {
+                        discounts[index]['status'] = 'active';
+                    } else if (discount.is_suspended) {
+                        discounts[index]['status'] = 'suspended';
+                    }
+
+                    if (discount.is_percentage) {
+                        discounts[index]['value_type'] = 'percentage';
+                    } else if (discount.is_unit) {
+                        discounts[index]['value_type'] = 'unit';
+                    }
+                });
+                d.resolve(discounts);
+            }).catch(function(err) {
+                console.log(err);
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
+
+        function getStandardDiscounts(dealId) {
+            var d = $q.defer();
+            var url = api + '/' + dealId + '/discounts/standard';
+
+            $http.get(url).then(function(resp) {
+                console.log(resp);
+                var discounts = resp.data.discounts;
+                angular.forEach(discounts, function(discount, index) {
+                    if (discount.is_active) {
+                        discounts[index]['status'] = 'active';
+                    } else if (discount.is_suspended) {
+                        discounts[index]['status'] = 'suspended';
+                    }
+
+                    if (discount.is_percentage) {
+                        discounts[index]['value_type'] = 'percentage';
+                    } else if (discount.is_unit) {
+                        discounts[index]['value_type'] = 'unit';
+                    }
+                });
+                d.resolve(discounts);
+            }).catch(function(err) {
+                console.log(err);
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
 
         function getTemplateTypes() {
             var d = $q.defer();
@@ -410,7 +469,7 @@
                             //d.resolve(resp);
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(error);
+                            console.log(err);
                             // service.errors = error;
                             // d.reject(error);
                             cb(err);
@@ -427,6 +486,67 @@
                     service.errors = error;
                     d.reject(error);
                 } else {
+                    d.resolve(results);
+                }
+
+            });
+
+            return d.promise;
+        }
+
+        function addDiscounts(deal_id, discounts) {
+            var d = $q.defer();
+
+            var url = api + '/' + deal_id + '/discounts';
+
+            var tasks = [];
+
+            angular.forEach(discounts, function(discount, index) {
+                console.log(discount);
+                return false;
+                if (angular.isDefined(discount.value) && discount.value.trim() != '') {
+                    tasks.push(function(cb) {
+                        var formData = new FormData();
+                        discount.coupons_file_expire_at = HelperService.combineDateTime(discount.coupons_file_expire_at, '00:00:00');
+                        //formData.append('coupons_txt', discount.coupons_txt);
+                        //discount.coupons_txt = formData.get('coupons_txt');
+                        //var f_data = new FormData(discount);
+                        $http.post(url, discount, {
+                            // transformRequest: function(data) {
+                            //     console.log(data);
+                            //     var formData = new FormData();
+
+                            //     angular.forEach(data, function(item, attr) {
+                            //         formData.append(attr, item);
+                            //     });
+
+                            //     //formData.append("coupons_txt", data.coupons_txt);
+                            //     console.log(formData.get("coupons_txt"));
+                            //     return formData;
+                            // },
+                            headers: { 'Content-Type': undefined }
+                        }).then(function(resp) {
+                            //d.resolve(resp);
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(err);
+                            // service.errors = error;
+                            // d.reject(error);
+                            cb(err);
+                        });
+
+                    });
+                }
+
+            });
+
+            async.parallel(tasks, function(error, results) {
+                if (error) {
+                    console.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                } else {
+                    console.log(results);
                     d.resolve(results);
                 }
 
@@ -462,6 +582,17 @@
                     if (angular.isDefined(data.templates[0]) && angular.isDefined(data.templates[0].name) && data.templates[0].name.trim() != '') {
                         tasks.push(function(cb) {
                             addTemplates(dealId, data.templates).then(function(resp) {
+                                cb(null, resp);
+                            }).catch(function(err) {
+                                console.log(err);
+                                cb(err);
+                            });
+                        });
+                    }
+
+                    if (angular.isDefined(data.discounts[0]) && angular.isDefined(data.discounts[0].value) && data.discounts[0].value.trim() != '') {
+                        tasks.push(function(cb) {
+                            addDiscounts(dealId, data.discounts).then(function(resp) {
                                 cb(null, resp);
                             }).catch(function(err) {
                                 console.log(err);
@@ -513,13 +644,9 @@
             var d = $q.defer();
 
             var tasks = [];
+            var tasksSeries = [];
 
             //TEMPLATE ADD
-            //console.log(data.form.templates);
-            // data.form.templates.splice(data.form.templates.length - 1, 1);
-            // console.log(data.form.templates);
-            // data.form.templates = setOnePublish(data.form.templates);
-            // console.log(data.form.templates);
             if (angular.isDefined(data.form.templates) && data.form.templates.length > 0) {
                 var url_ah = api + '/' + id + '/templates';
 
@@ -532,8 +659,8 @@
                             $http.post(url_ah, template)
                                 .then(function(resp) {
                                     cb(null, resp);
-                                }).catch(function(error) {
-                                    console.log(error);
+                                }).catch(function(err) {
+                                    console.log(err);
                                     cb(err);
                                 });
                         });
@@ -556,7 +683,7 @@
                         $http.patch(url_h, data_h).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(error);
+                            console.log(err);
                             cb(err);
                         });
                     });
@@ -571,13 +698,13 @@
                         $http.delete(url_h).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(error);
+                            console.log(err);
                             cb(err);
                         });
                     });
                 });
             }
-            //TEMPLATE
+            //TEMPLATE UPDATE
             if (angular.isDefined(data.templates) && data.templates.length > 0) {
                 angular.forEach(data.templates, function(template, index) {
                     var url_h = url + '/templates/' + template.uid;
@@ -587,13 +714,13 @@
                         $http.patch(url_h, template).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(error);
+                            console.log(err);
                             cb(err);
                         });
                     });
                 });
             }
-            //TEMPLATE
+            //TEMPLATE DELETE
             if (angular.isDefined(data.removedTemplates) && data.removedTemplates.length > 0) {
                 angular.forEach(data.removedTemplates, function(val, index) {
                     var url_h = url + '/templates/' + val.uid;
@@ -602,7 +729,7 @@
                         $http.delete(url_h).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(error);
+                            console.log(err);
                             cb(err);
                         });
                     });
@@ -631,8 +758,8 @@
                     $http.post(url_ah, data_h)
                         .then(function(resp) {
                             cb(null, resp);
-                        }).catch(function(error) {
-                            console.log(error);
+                        }).catch(function(err) {
+                            console.log(err);
                             cb(err);
                         });
                 });
@@ -643,22 +770,102 @@
                 $http.patch(url, data.form)
                     .then(function(resp) {
                         cb(null, resp);
-                    }).catch(function(error) {
-                        console.log(error);
+                    }).catch(function(err) {
+                        console.log(err);
                         cb(err);
                     });
             });
 
-            async.parallel(tasks, function(error, results) {
-                if (error) {
-                    console.log(error);
-                    service.errors = error;
-                    d.reject(error);
+            tasksSeries.push(function(cb) {
+                async.parallel(tasks, function(err, results) {
+                    if (err) {
+                        // console.log(err);
+                        // service.errors = err;
+                        // d.reject(err);
+                        cb(err);
+                    } else {
+                        //d.resolve(results);
+                        cb(null, results);
+                    }
+
+                });
+            });
+            // async.parallel(tasks, function(err, results) {
+            //     if (err) {
+            //         console.log(err);
+            //         service.errors = err;
+            //         d.reject(err);
+            //     } else {
+            //         d.resolve(results);
+            //     }
+
+            // });
+
+            //DISCOUNT DELETE
+            if (angular.isDefined(data.removedDiscounts) && data.removedDiscounts.length > 0) {
+                angular.forEach(data.removedDiscounts, function(val, index) {
+                    var url_h = url + '/discounts/' + val.uid;
+
+                    tasksSeries.push(function(cb) {
+                        $http.delete(url_h).then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(err);
+                            cb(err);
+                        });
+                    });
+                });
+            }
+
+            //DISCOUNT UPDATE
+            if (angular.isDefined(data.discounts) && data.discounts.length > 0) {
+                angular.forEach(data.discounts, function(discount, index) {
+                    var url_h = url + '/discounts/' + discount.uid;
+
+                    tasksSeries.push(function(cb) {
+
+                        $http.patch(url_h, discount).then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            console.log(err);
+                            cb(err);
+                        });
+                    });
+                });
+            }
+
+            //DISCOUNT ADD
+            if (angular.isDefined(data.form.discounts) && data.form.discounts.length > 0) {
+                var url_ah = url + '/discounts';
+
+                angular.forEach(data.form.discounts, function(discount, index) {
+                    if (angular.isDefined(discount.value) && discount.value.trim() != '') {
+                        tasksSeries.push(function(cb) {
+
+                            $http.post(url_ah, discount)
+                                .then(function(resp) {
+                                    cb(null, resp);
+                                }).catch(function(err) {
+                                    console.log(err);
+                                    cb(err);
+                                });
+                        });
+                    }
+
+                });
+            }
+
+            //DISCOUNT only
+            async.series(tasksSeries, function(err, results) {
+                if (err) {
+                    console.log(err);
+                    service.errors = err;
+                    d.reject(err);
                 } else {
                     d.resolve(results);
                 }
-
             });
+
 
             return d.promise;
         }

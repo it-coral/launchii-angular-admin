@@ -14,11 +14,13 @@
         vm.form = {};
         vm.form.highlights = [];
         vm.form.templates = [];
+        vm.form.discounts = [];
         vm.response = {};
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
         vm.removeHighlight = removeHighlight;
+        //template
         vm.templateCounter = 0;
         vm.increTemplateCounter = increTemplateCounter;
         vm.selTemplateIndex = 0;
@@ -29,6 +31,14 @@
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
         vm.priceFormat = priceFormat;
+        //discount
+        vm.discountCounter = 0;
+        vm.increDiscountCounter = increDiscountCounter;
+        vm.selDiscountIndex = 0;
+        vm.setSelDiscountIndex = setSelDiscountIndex;
+        vm.selDiscountObj = {};
+        vm.setSelDiscountObj = setSelDiscountObj;
+        vm.removeDiscount = removeDiscount;
 
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addDeal;
@@ -45,7 +55,31 @@
             //     return newVal.toFixed(2);
             // });
         }
+        //Discount
+        function removeDiscount(discount_index) {
+            console.log(discount_index);
+            angular.forEach(vm.form.discounts, function(val, index) {
+                if (index == discount_index) {
+                    console.log('test')
+                    vm.form.discounts.splice(index, 1);
+                }
+            });
+        }
 
+        function setSelDiscountObj(dobj) {
+            vm.selDiscountObj = dobj;
+        }
+
+        function setSelDiscountIndex(index) {
+            vm.selDiscountIndex = index;
+        }
+
+        function increDiscountCounter() {
+            vm.discountCounter++;
+        }
+        //End Discount
+
+        //Template
         function priceFormat() {
             var price = vm.form.price;
 
@@ -53,7 +87,6 @@
         }
 
         function removeTemplate(template_index) {
-            console.log(template_index);
             angular.forEach(vm.form.templates, function(val, index) {
                 if (index == template_index) {
                     console.log('test')
@@ -73,6 +106,8 @@
         function increTemplateCounter() {
             vm.templateCounter++;
         }
+        //END Template
+
 
         function addDeal() {
             vm.isDone = false;
@@ -83,8 +118,8 @@
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
 
-            //console.log(vm.form);
-            // return false;
+            console.log(vm.form);
+            //return false;
 
             DealService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";

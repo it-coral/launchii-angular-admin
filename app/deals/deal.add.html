@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="portlet-body form">
-                <div class="alert {{vm.response.success}}" id="msg-info" ng-if="vm.response.msg">
+                <div class="alert {{vm.response.success}}" id="msg-info" ng-show="vm.response.msg">
                     <strong>{{vm.response.alert}}</strong> {{vm.response.msg}}
                 </div>
                 <form role="form" id="deal-form" ng-submit="vm.submitAction()" novalidate="novalidate">
@@ -34,10 +34,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="input-group">
-                                <label>Name</label>
-                                <input type="text" class="form-control" placeholder="Enter name" ng-model="vm.form.name" required />
-                            </div>
+                            <label>Name</label>
+                            <input type="text" class="form-control" placeholder="Enter name" ng-model="vm.form.name" required />
                         </div>
                         <div class="form-group">
                             <label>Link</label>
@@ -110,6 +108,12 @@
                         <h4>Templates</h4>
                         <add-template field-model="vm.form.templates" form-mode="vm.mode" templates-data="vm.templates">
                         </add-template>
+
+                        <!--Discounts-->
+                        <hr />
+                        <h4>Discounts</h4>
+                        <add-discount field-model="vm.form.discounts" form-mode="vm.mode" discounts-data="vm.discounts">
+                        </add-discount>
                     </div>
                     <div class="form-actions">
                         <div class="row">
@@ -129,5 +133,8 @@
     <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
-<template-modal field-model="vm.form.highlights" form-mode="vm.mode"></template-modal>
-<template-modal-edit field-model="vm.form.highlights" form-mode="vm.mode"></template-modal-edit>
+<template-modal field-model="vm.form.templates" form-mode="vm.mode"></template-modal>
+<template-modal-edit field-model="vm.form.templates" form-mode="vm.mode"></template-modal-edit>
+
+<discount-modal field-model="vm.form.discounts" form-mode="vm.mode"></discount-modal>
+<discount-modal-edit field-model="vm.form.discounts" form-mode="vm.mode"></discount-modal-edit>

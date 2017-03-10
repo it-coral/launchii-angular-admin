@@ -4,10 +4,10 @@
     angular.module('app')
         .factory('HelperService', HelperService);
 
-    HelperService.$inject = ['$state', '$rootScope', '$anchorScroll', '$location'];
+    HelperService.$inject = ['$state', '$rootScope', '$anchorScroll', '$location', '$document', 'SmoothScroll'];
 
     /* @ngInject */
-    function HelperService($state, $rootScope, $anchorScroll, $location) {
+    function HelperService($state, $rootScope, $anchorScroll, $location, $document, SmoothScroll) {
         var service = {
             getCurrentState: getCurrentState,
             getPrevState: getPrevState,
@@ -88,16 +88,28 @@
         }
 
         function goToAnchor(anchor) {
-            var newHash = anchor;
-            if ($location.hash() !== newHash) {
-                // set the $location.hash to `newHash` and
-                // $anchorScroll will automatically scroll to it
-                $location.hash(anchor);
-            } else {
-                // call $anchorScroll() explicitly,
-                // since $location.hash hasn't changed
-                $anchorScroll();
-            }
+            // var newHash = anchor;
+            // if ($location.hash() !== newHash) {
+            //     // set the $location.hash to `newHash` and
+            //     // $anchorScroll will automatically scroll to it
+            //     $location.hash(anchor);
+            // } else {
+            //     // call $anchorScroll() explicitly,
+            //     // since $location.hash hasn't changed
+            //     $anchorScroll();
+            // }
+            // var top = 400;
+            // var duration = 2000; //milliseconds
+
+            // //Scroll to the exact position
+            // $document.scrollTop(top, duration).then(function() {
+            //     console && console.log('You just scrolled to the top!');
+            // });
+
+            // var elem = angular.element(document.getElementById(anchor));
+            // console.log(elem);
+            // $document.scrollToElement(elem);
+            SmoothScroll.scrollTo('msg-info');
         }
 
         function setPageTitle(title) {

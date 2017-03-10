@@ -180,7 +180,9 @@
                         prepSelHighlights: prepSelHighlights,
                         prepSelTemplates: prepSelTemplates,
                         prepTemplateNames: prepTemplateNames,
-                        prepTemplateTypes: prepTemplateTypes
+                        prepTemplateTypes: prepTemplateTypes,
+                        prepStandardD: prepStandardD,
+                        prepEarlyBirdD: prepEarlyBirdD
                     }
                 }
             }
@@ -274,6 +276,18 @@
             .state(userView);
 
         ////////////
+
+        prepStandardD.$inject = ['DealService', '$stateParams'];
+        /* @ngInject */
+        function prepStandardD(DealService, $stateParams) {
+            return DealService.getStandardDiscounts($stateParams.id);
+        }
+
+        prepEarlyBirdD.$inject = ['DealService', '$stateParams'];
+        /* @ngInject */
+        function prepEarlyBirdD(DealService, $stateParams) {
+            return DealService.getEarlyBirdDiscounts($stateParams.id);
+        }
 
         prepSelTemplates.$inject = ['DealService', '$stateParams'];
         /* @ngInject */

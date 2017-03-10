@@ -20,6 +20,10 @@ gulp.task('scripts', function() {
             './node_modules/ladda/js/ladda.js',
             './node_modules/angular-ladda/dist/angular-ladda.min.js',
             // './node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js',
+            './node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js',
+            './node_modules/ng-file-upload/dist/ng-file-upload.min.js',
+            './node_modules/angular-scroll/angular-scroll.min.js',
+            './bower_components/angular-file-model/angular-file-model.js',
 
             //Cores
             './app/core/app.module.js',
@@ -58,6 +62,10 @@ gulp.task('scripts', function() {
             //Template Module
             './app/deals/template/*.js',
             './app/deals/template/*/*.js',
+
+            //Discount Module
+            './app/deals/discount/*.js',
+            './app/deals/discount/*/*.js',
 
             //User Module
             './app/user/*/*.js',
