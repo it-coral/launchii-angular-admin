@@ -64,7 +64,7 @@
                                     <label>Starting date</label>
                                     <div class="input-icon">
                                         <i class="fa fa-calendar"></i>
-                                        <input type="text" class="form-control input-medium date-picker" data-date-format="yyyy-mm-dd" ng-change="vm.updateDateDiff()" data-date-start-date="+0d" size="16" ng-model="vm.form.date_starts" required />
+                                        <input type="text" class="form-control input-medium date date-picker" data-date-format="yyyy-mm-dd" ng-change="vm.updateDateDiff()" data-date-start-date="+0d" size="16" ng-model="vm.form.date_starts" required />
                                     </div>
                                 </div>
                             </div>
@@ -105,7 +105,7 @@
                         <!--Highlights-->
                         <hr />
                         <h4>Highlights</h4>
-                        <add-highlight field-model="vm.form.highlights" form-mode="vm.mode" highlights-data="vm.highlights">
+                        <add-highlight field-model="vm.form.highlights" form-mode="vm.mode" highlights-data="vm.highlights" counter="0">
                         </add-highlight>
 
                         <!--Templates-->

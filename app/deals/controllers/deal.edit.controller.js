@@ -61,6 +61,10 @@
         ///////////////////
 
         function activate() {
+            // angular.element('.start-date').datepicker({
+            //     orientation: "left",
+            //     autoclose: true
+            // });
             //console.log(vm.discounts);
             priceFormat();
             // DealService.find(vm.dealId).then(function(data) {
@@ -68,9 +72,9 @@
             //     vm.form = vm.selectedDeal;
             // });
             //temporary workaround
-            // jQuery(document).ready(function() {
-            //     ComponentsDateTimePickers.init();
-            // });
+            $(document).ready(function() {
+                ComponentsDateTimePickers.init();
+            });
         }
 
         function updateDateDiff() {

@@ -5,6 +5,9 @@
         var $controller, DealService;
 
         beforeEach(angular.mock.module('ui.router'));
+        beforeEach(angular.mock.module('app.deals.highlightadd'));
+        beforeEach(angular.mock.module('app.deals.highlightedit'));
+        beforeEach(angular.mock.module('app.deals.highlightfield'));
         beforeEach(angular.mock.module('app.deals'));
 
         beforeEach(function() {

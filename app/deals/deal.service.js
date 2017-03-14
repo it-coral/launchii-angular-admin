@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app.deals', [])
+    angular.module('app.deals', ['app.deals.highlightadd', 'app.deals.highlightedit', 'app.deals.highlightfield'])
         .factory('DealService', DealService);
 
     DealService.$inject = ['$http', 'CONST', '$q', 'HelperService', 'BrandService'];
@@ -329,7 +329,8 @@
                 }).catch(function(error) {
                     console.log(error);
                     service.errors = error;
-                    d.reject(error);
+                    //d.reject(error);
+                    d.resolve('but failed to add highlight')
                 });
 
             // async.parallel(tasks, function(error, results) {
@@ -472,7 +473,8 @@
                             console.log(err);
                             // service.errors = error;
                             // d.reject(error);
-                            cb(err);
+                            //cb(err);
+                            cb(null, 'but failed to add template.');
                         });
 
                     });
@@ -544,7 +546,9 @@
                             console.log(err);
                             // service.errors = error;
                             // d.reject(error);
-                            cb(err);
+                            //cb(err);
+                            var errors = HelperService.setErrorStr(err);
+                            cb(null, 'but failed to add discount. Reason: ' + errors);
                         });
 
                         // Upload.upload({

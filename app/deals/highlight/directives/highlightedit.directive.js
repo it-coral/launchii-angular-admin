@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.deals')
+        .module('app.deals.highlightedit', [])
         .directive('highlightEdit', highlightEdit);
 
     highlightEdit.$inject = ['$compile'];
@@ -11,7 +11,7 @@
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/highlight/highlight-edit-field.html',
+            templateUrl: 'app/deals/highlight/highlight-edit-field.html',
             replace: true,
             scope: {
                 highlightItem: '=',
@@ -19,9 +19,10 @@
             },
             link: function(scope, element, attrs) {
                 $('[data-toggle="tooltip"]').tooltip();
-                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
-                scope.hl.counter = scope.$parent.hl.counter;
-                scope.hl.formMode = scope.$parent.hl.formMode;
+                scope.fieldModel = scope.$parent.fieldModel;
+                scope.counter = scope.$parent.counter;
+                console.log(scope.formMode);
+                //scope.formMode = scope.$parent.formMode ? scope.$parent.formMode : 'Edit';
 
                 scope.remove = remove;
 
@@ -31,9 +32,9 @@
                     parent.remove();
                 }
             },
-            controller: 'HighlightController',
-            controllerAs: 'hl',
-            bindToController: true
+            // controller: 'HighlightController',
+            // controllerAs: 'hl',
+            // bindToController: true
         };
 
         return directive;

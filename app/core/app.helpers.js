@@ -20,12 +20,26 @@
             goToAnchor: goToAnchor,
             getDateNow: getDateNow,
             combineDateTime: combineDateTime,
-            convertToDateTime: convertToDateTime
+            convertToDateTime: convertToDateTime,
+            setErrorStr: setErrorStr
         }
 
         return service;
 
-        ////////////////
+        ////////////////   
+
+        function setErrorStr(err) {
+            var errorStr = '';
+            angular.forEach(err.data.errors, function(error, index, arr) {
+                if (index === arr.length - 1) { //last iteration
+                    errorStr += error;
+                } else {
+                    errorStr += error + ', ';
+                }
+            });
+
+            return errorStr;
+        }
 
         function convertToDateTime(datetime) {
             var toDate = new Date(datetime);

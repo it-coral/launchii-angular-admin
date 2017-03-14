@@ -1963,12 +1963,26 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             goToAnchor: goToAnchor,
             getDateNow: getDateNow,
             combineDateTime: combineDateTime,
-            convertToDateTime: convertToDateTime
+            convertToDateTime: convertToDateTime,
+            setErrorStr: setErrorStr
         }
 
         return service;
 
-        ////////////////
+        ////////////////   
+
+        function setErrorStr(err) {
+            var errorStr = '';
+            angular.forEach(err.data.errors, function(error, index, arr) {
+                if (index === arr.length - 1) { //last iteration
+                    errorStr += error;
+                } else {
+                    errorStr += error + ', ';
+                }
+            });
+
+            return errorStr;
+        }
 
         function convertToDateTime(datetime) {
             var toDate = new Date(datetime);
@@ -2316,6 +2330,40 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 scope.$watch('facebook', function() {
                     ngModel.$validate();
                 });
+            }
+        };
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .directive('initDatePicker', initDatePicker);
+
+    function initDatePicker() {
+
+        return {
+            restrict: 'A',
+            scope: {
+                varModel: '='
+            },
+            link: function(scope, element) {
+                // angular.element(element).datepicker({
+                //     rtl: App.isRTL(),
+                //     orientation: "left",
+                //     autoclose: true
+                // });
+                // angular.element(element).datepicker({
+                //     //autoclose: true
+                // });
+
+                // element.bind('click', function() {
+                //     angular.element(element).datepicker({
+                //         autoclose: true
+                //     });
+                // });
             }
         };
     }
@@ -3287,7 +3335,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
-    angular.module('app.deals', [])
+    angular.module('app.deals', ['app.deals.highlightadd', 'app.deals.highlightedit', 'app.deals.highlightfield'])
         .factory('DealService', DealService);
 
     DealService.$inject = ['$http', 'CONST', '$q', 'HelperService', 'BrandService'];
@@ -3615,7 +3663,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 }).catch(function(error) {
                     console.log(error);
                     service.errors = error;
-                    d.reject(error);
+                    //d.reject(error);
+                    d.resolve('but failed to add highlight')
                 });
 
             // async.parallel(tasks, function(error, results) {
@@ -3758,7 +3807,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                             console.log(err);
                             // service.errors = error;
                             // d.reject(error);
-                            cb(err);
+                            //cb(err);
+                            cb(null, 'but failed to add template.');
                         });
 
                     });
@@ -3830,7 +3880,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                             console.log(err);
                             // service.errors = error;
                             // d.reject(error);
-                            cb(err);
+                            //cb(err);
+                            var errors = HelperService.setErrorStr(err);
+                            cb(null, 'but failed to add discount. Reason: ' + errors);
                         });
 
                         // Upload.upload({
@@ -4260,8 +4312,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         ///////////////////
 
         function activate() {
+            // angular.element('.start-date').datepicker({
+            //     orientation: "left",
+            //     autoclose: true
+            // });
             //ComponentsDateTimePickers.init();
-
+            $(document).ready(function() {
+                ComponentsDateTimePickers.init();
+            });
             // vm.$watch('vm.form.price', function(newVal, oldVal) {
             //     console.log(newVal);
             //     return newVal.toFixed(2);
@@ -4351,10 +4409,11 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             console.log(vm.form);
             //return false;
 
-            DealService.add(vm.form).then(function() {
+            DealService.add(vm.form).then(function(resp) {
+                console.log(resp);
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Added new deal: " + vm.form.name;
+                vm.response['msg'] = "Added new deal: " + vm.form.name + ' ' + resp;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -4548,6 +4607,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         ///////////////////
 
         function activate() {
+            // angular.element('.start-date').datepicker({
+            //     orientation: "left",
+            //     autoclose: true
+            // });
             //console.log(vm.discounts);
             priceFormat();
             // DealService.find(vm.dealId).then(function(data) {
@@ -4555,9 +4618,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //     vm.form = vm.selectedDeal;
             // });
             //temporary workaround
-            // jQuery(document).ready(function() {
-            //     ComponentsDateTimePickers.init();
-            // });
+            $(document).ready(function() {
+                ComponentsDateTimePickers.init();
+            });
         }
 
         function updateDateDiff() {
@@ -4799,7 +4862,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular
-        .module('app.deals')
+        .module('app.deals.highlightadd', [])
         .directive('addHighlight', addHighlight);
 
     addHighlight.$inject = ['$compile'];
@@ -4808,31 +4871,38 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/highlight/highlight.html',
+            templateUrl: 'app/deals/highlight/highlight.html',
             replace: true,
             scope: {
                 fieldModel: '=',
                 formMode: '=',
-                highlightsData: '='
+                highlightsData: '=',
+                counter: '='
             },
             transclude: true,
             link: function(scope, element, attrs) {
+                //scope.counter = 0;
+                scope.increCounter = increCounter;
                 element.find('button#add-highlight-btn').bind('click', function() {
-                    var html = '<highlight-field field-model="hl.fieldModel" ></highlight-field>';
-
+                    var html = '<highlight-field field-model="fieldModel" ></highlight-field>';
                     var input = angular.element(html);
-
                     var compile = $compile(input)(scope);
 
                     element.find('#highlight-container').append(input);
 
-                    scope.hl.increCounter();
+                    increCounter();
                 });
 
+                //////////////
+
+                function increCounter() {
+                    scope.counter++;
+                }
+
             },
-            controller: 'HighlightController',
-            controllerAs: 'hl',
-            bindToController: true
+            // controller: 'HighlightController',
+            // controllerAs: 'hl',
+            // bindToController: true
         };
 
         return directive;
@@ -4843,7 +4913,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular
-        .module('app.deals')
+        .module('app.deals.highlightedit', [])
         .directive('highlightEdit', highlightEdit);
 
     highlightEdit.$inject = ['$compile'];
@@ -4852,7 +4922,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/highlight/highlight-edit-field.html',
+            templateUrl: 'app/deals/highlight/highlight-edit-field.html',
             replace: true,
             scope: {
                 highlightItem: '=',
@@ -4860,9 +4930,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             },
             link: function(scope, element, attrs) {
                 $('[data-toggle="tooltip"]').tooltip();
-                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
-                scope.hl.counter = scope.$parent.hl.counter;
-                scope.hl.formMode = scope.$parent.hl.formMode;
+                scope.fieldModel = scope.$parent.fieldModel;
+                scope.counter = scope.$parent.counter;
+                console.log(scope.formMode);
+                //scope.formMode = scope.$parent.formMode ? scope.$parent.formMode : 'Edit';
 
                 scope.remove = remove;
 
@@ -4872,9 +4943,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     parent.remove();
                 }
             },
-            controller: 'HighlightController',
-            controllerAs: 'hl',
-            bindToController: true
+            // controller: 'HighlightController',
+            // controllerAs: 'hl',
+            // bindToController: true
         };
 
         return directive;
@@ -4885,7 +4956,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular
-        .module('app.deals')
+        .module('app.deals.highlightfield', [])
         .directive('highlightField', highlightField);
 
     highlightField.$inject = ['$compile'];
@@ -4894,18 +4965,17 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/highlight/highlight-field.html',
+            templateUrl: 'app/deals/highlight/highlight-field.html',
             replace: true,
             scope: {
                 fieldModel: '='
             },
             link: function(scope, element, attrs) {
                 $('[data-toggle="tooltip"]').tooltip();
-                //console.log(scope);
-                // console.log(scope.hl.highlightItem);
-                scope.hl.fieldModel = scope.$parent.hl.fieldModel;
-                scope.hl.counter = scope.$parent.hl.counter;
-                scope.hl.formMode = scope.$parent.hl.formMode;
+
+                scope.fieldModel = scope.$parent.fieldModel;
+                scope.counter = scope.$parent.counter;
+                scope.formMode = scope.$parent.formMode;
 
                 scope.remove = remove;
 
@@ -4914,48 +4984,48 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     parent.remove();
                 }
             },
-            controller: 'HighlightController',
-            controllerAs: 'hl',
-            bindToController: true
+            // controller: 'HighlightController',
+            // controllerAs: 'hl',
+            // bindToController: true
         };
 
         return directive;
     }
 
 })();
-(function() {
-    'use strict';
+// (function() {
+//     'use strict';
 
-    angular.module('app.deals')
-        .controller('HighlightController', HighlightController);
+//     angular.module('app.deals')
+//         .controller('HighlightController', HighlightController);
 
-    HighlightController.$inject = ['$scope', '$compile'];
+//     HighlightController.$inject = ['$scope', '$compile'];
 
-    /* @ngInject */
-    function HighlightController($scope, $compile) {
-        var hl = this;
+//     /* @ngInject */
+//     function HighlightController($scope, $compile) {
+//         var hl = this;
 
-        //hl.remove = remove;
-        hl.counter = 0;
-        hl.increCounter = increCounter;
-        hl.modelo = {};
-        hl.we = 'test';
-        //hl.form = $scope.$parent.$parent.vm.form;
+//         //hl.remove = remove;
+//         hl.counter = 0;
+//         hl.increCounter = increCounter;
+//         hl.modelo = {};
+//         hl.we = 'test';
+//         //hl.form = $scope.$parent.$parent.vm.form;
 
-        //////////////
+//         //////////////
 
-        // function remove(target, highlight) {
-        //     var parent = $(target).parent();
-        //     console.log($scope);
-        //     //$parent.$parent.vm.removeHighlight(highlight);
-        //     parent.remove();
-        // }
+//         // function remove(target, highlight) {
+//         //     var parent = $(target).parent();
+//         //     console.log($scope);
+//         //     //$parent.$parent.vm.removeHighlight(highlight);
+//         //     parent.remove();
+//         // }
 
-        function increCounter() {
-            hl.counter++;
-        }
-    }
-})();
+//         function increCounter() {
+//             hl.counter++;
+//         }
+//     }
+// })();
 (function() {
     'use strict';
 

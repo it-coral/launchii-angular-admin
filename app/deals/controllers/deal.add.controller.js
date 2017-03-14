@@ -51,8 +51,14 @@
         ///////////////////
 
         function activate() {
+            // angular.element('.start-date').datepicker({
+            //     orientation: "left",
+            //     autoclose: true
+            // });
             //ComponentsDateTimePickers.init();
-
+            $(document).ready(function() {
+                ComponentsDateTimePickers.init();
+            });
             // vm.$watch('vm.form.price', function(newVal, oldVal) {
             //     console.log(newVal);
             //     return newVal.toFixed(2);
@@ -142,10 +148,11 @@
             console.log(vm.form);
             //return false;
 
-            DealService.add(vm.form).then(function() {
+            DealService.add(vm.form).then(function(resp) {
+                console.log(resp);
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Added new deal: " + vm.form.name;
+                vm.response['msg'] = "Added new deal: " + vm.form.name + ' ' + resp;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
