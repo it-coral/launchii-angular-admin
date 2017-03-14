@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app')
+        .module('app.deals')
         .filter('roundPrice', roundPrice);
 
     function roundPrice() {

@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app')
+        .module('app.deals')
         .directive('templateEdit', templateEdit);
 
     templateEdit.$inject = ['$compile'];

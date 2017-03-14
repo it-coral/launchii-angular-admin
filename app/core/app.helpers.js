@@ -1,13 +1,13 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.helpers', [])
         .factory('HelperService', HelperService);
 
-    HelperService.$inject = ['$state', '$rootScope', '$anchorScroll', '$location', '$document', 'SmoothScroll'];
+    HelperService.$inject = ['$state', '$rootScope', '$document', 'SmoothScroll'];
 
     /* @ngInject */
-    function HelperService($state, $rootScope, $anchorScroll, $location, $document, SmoothScroll) {
+    function HelperService($state, $rootScope, $document, SmoothScroll) {
         var service = {
             getCurrentState: getCurrentState,
             getPrevState: getPrevState,

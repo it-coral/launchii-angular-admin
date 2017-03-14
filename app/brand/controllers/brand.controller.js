@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.brands')
         .controller('BrandController', BrandController);
 
     BrandController.$inject = ['BrandService', 'brandPrepService'];
@@ -23,6 +23,7 @@
         vm.isLoading = false;
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
+        vm.isBrandEmpty = BrandService.isEmpty();
 
         //activate();
 

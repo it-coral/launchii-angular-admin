@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.deals')
         .controller('TemplateController', TemplateController);
 
     TemplateController.$inject = ['$scope', '$compile', '$document'];

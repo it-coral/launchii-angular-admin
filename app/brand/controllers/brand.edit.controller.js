@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.brands')
         .controller('BrandEditController', BrandEditController);
 
     BrandEditController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService', '$state'];

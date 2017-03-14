@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.deals')
         .controller('DealEditController', DealEditController);
 
     DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService', 'prepSelHighlights', 'prepSelTemplates', 'prepTemplateNames', 'prepTemplateTypes', 'prepStandardD', 'prepEarlyBirdD'];
@@ -52,6 +52,7 @@
         vm.standardDiscounts = prepStandardD;
         vm.earlyBirdDiscounts = prepEarlyBirdD;
 
+        vm.updateDateDiff = updateDateDiff;
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
 
@@ -67,9 +68,26 @@
             //     vm.form = vm.selectedDeal;
             // });
             //temporary workaround
-            jQuery(document).ready(function() {
-                ComponentsDateTimePickers.init();
+            // jQuery(document).ready(function() {
+            //     ComponentsDateTimePickers.init();
+            // });
+        }
+
+        function updateDateDiff() {
+            vm.form.date_ends = '';
+
+            var dateNow = new Date();
+            var dateComp = new Date(vm.form.date_starts);
+
+            var timeDiff = Math.abs(dateComp.getTime() - dateNow.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+            $('#ending_date').datepicker({
+                autoclose: true
             });
+
+            $('#ending_date').datepicker('setStartDate', '+' + diffDays + 'd');
+
         }
 
         //Discount

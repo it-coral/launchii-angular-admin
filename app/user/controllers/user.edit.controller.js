@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.users')
         .controller('UserEditController', UserEditController);
 
     UserEditController.$inject = ['UserService', '$stateParams', '$scope', 'prepSelUser', 'HelperService', '$state'];

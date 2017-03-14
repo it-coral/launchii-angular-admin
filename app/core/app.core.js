@@ -12,7 +12,8 @@
         // 'ui.bootstrap',
         'angular-ladda',
         'ngFileUpload',
-        'file-model'
+        'file-model',
+        'naif.base64'
     ]);
 
 })();

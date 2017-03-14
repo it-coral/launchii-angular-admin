@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.deals')
         .controller('DealAddController', DealAddController);
 
     DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes'];
@@ -40,21 +40,42 @@
         vm.setSelDiscountObj = setSelDiscountObj;
         vm.removeDiscount = removeDiscount;
 
+        vm.updateDateDiff = updateDateDiff;
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addDeal;
+        vm.isDealEmpty = DealService.isEmpty();
+        vm.isBrandEmpty = brandPrepService.total == 0;
 
         activate();
 
         ///////////////////
 
         function activate() {
-            ComponentsDateTimePickers.init();
+            //ComponentsDateTimePickers.init();
 
             // vm.$watch('vm.form.price', function(newVal, oldVal) {
             //     console.log(newVal);
             //     return newVal.toFixed(2);
             // });
         }
+
+        function updateDateDiff() {
+            vm.form.date_ends = '';
+
+            var dateNow = new Date();
+            var dateComp = new Date(vm.form.date_starts);
+
+            var timeDiff = Math.abs(dateComp.getTime() - dateNow.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+            $('#ending_date').datepicker({
+                autoclose: true
+            });
+
+            $('#ending_date').datepicker('setStartDate', '+' + diffDays + 'd');
+
+        }
+
         //Discount
         function removeDiscount(discount_index) {
             console.log(discount_index);
@@ -132,10 +153,10 @@
                 $scope.$parent.vm.getDeals();
                 $state.go(vm.prevState);
 
-            }).catch(function() {
+            }).catch(function(err) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to add new deal.";
+                vm.response['msg'] = "Failed to add " + err;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;

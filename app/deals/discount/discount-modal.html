@@ -46,7 +46,8 @@
 
                         <div class="form-group">
                             <label for="name">Coupons Text</label>
-                            <input type="file" id="name" class="form-control" file-model="$parent.vm.form.discounts[$parent.vm.selDiscountIndex].coupons_txt" />
+                            <!--<input type="file" id="name" class="form-control" file-model="$parent.vm.form.discounts[$parent.vm.selDiscountIndex].coupons_txt" />-->
+                            <input type="file" id="name" class="form-control" base-sixty-four-input ng-model="$parent.vm.form.discounts[$parent.vm.selDiscountIndex].coupons_txt" />
                         </div>
 
                         <div class="form-group">

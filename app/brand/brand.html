@@ -35,7 +35,7 @@
                     <div class="alert {{vm.response.success}}" ng-if="vm.response.msg">
                         <strong>{{vm.response.alert}}</strong> {{vm.response.msg}}
                     </div>
-                    <div class="table-scrollable" ng-if="vm.brands">
+                    <div class="table-scrollable" ng-if="!vm.isBrandEmpty">
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
@@ -70,7 +70,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="text-center" ng-if="!vm.brands">
+                    <div class="text-center" ng-if="vm.isBrandEmpty">
                         <h3>No brands</h3>
                         <a ui-sref="dashboard.brand.add">
                             <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add Brand</button>

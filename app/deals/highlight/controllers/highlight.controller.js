@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.deals')
         .controller('HighlightController', HighlightController);
 
     HighlightController.$inject = ['$scope', '$compile'];

@@ -1,8 +1,20 @@
-var gulp = require('gulp');
-var concat = require('gulp-concat');
+// Karma configuration
+// Generated on Mon Mar 13 2017 21:13:09 GMT+0800 (PHT)
 
-gulp.task('scripts', function() {
-    return gulp.src([
+module.exports = function(config) {
+    config.set({
+
+        // base path that will be used to resolve all patterns (eg. files, exclude)
+        basePath: '',
+
+
+        // frameworks to use
+        // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
+        frameworks: ['jasmine'],
+
+
+        // list of files / patterns to load in the browser
+        files: [
             //Libraries
             './node_modules/angular/angular.min.js',
             './node_modules/angular-animate/angular-animate.min.js',
@@ -25,6 +37,7 @@ gulp.task('scripts', function() {
             './node_modules/angular-scroll/angular-scroll.min.js',
             './bower_components/angular-file-model/angular-file-model.js',
             './node_modules/angular-base64-upload/dist/angular-base64-upload.min.js',
+            './node_modules/angular-mocks/angular-mocks.js',
 
             //Cores
             './app/core/app.module.js',
@@ -52,28 +65,63 @@ gulp.task('scripts', function() {
             //Brand Module
             './app/brand/*.js',
             './app/brand/*/*.js',
+            './app/brand/spec/unit/*.js',
 
             //Deal Module
             './app/deals/*.js',
             './app/deals/*/*.js',
-
-            //Highlight Module
-            './app/deals/highlight/*.js',
-            './app/deals/highlight/*/*.js',
-
-            //Template Module
-            './app/deals/template/*.js',
-            './app/deals/template/*/*.js',
-
-            //Discount Module
-            './app/deals/discount/*.js',
-            './app/deals/discount/*/*.js',
+            './app/deals/spec/unit/*.js',
 
             //User Module
             './app/user/*.js',
             './app/user/*/*.js',
+            './app/user/spec/unit/*.js'
+        ],
 
-        ])
-        .pipe(concat('all.js'))
-        .pipe(gulp.dest('./dist/js/'));
-});
+
+        // list of files to exclude
+        exclude: [],
+
+
+        // preprocess matching files before serving them to the browser
+        // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+        preprocessors: {},
+
+
+        // test results reporter to use
+        // possible values: 'dots', 'progress'
+        // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+        reporters: ['spec'],
+
+
+        // web server port
+        port: 9876,
+
+
+        // enable / disable colors in the output (reporters and logs)
+        colors: true,
+
+
+        // level of logging
+        // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+        logLevel: config.LOG_INFO,
+
+
+        // enable / disable watching file and executing tests whenever any file changes
+        autoWatch: true,
+
+
+        // start these browsers
+        // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+        browsers: ['Chrome'],
+
+
+        // Continuous Integration mode
+        // if true, Karma captures browsers, runs the tests and exits
+        singleRun: false,
+
+        // Concurrency level
+        // how many browser should be started simultaneous
+        concurrency: Infinity
+    })
+}

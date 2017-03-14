@@ -9,6 +9,10 @@ dependencies:
   cache_directories:
     - ~/nvm
 
+test:
+  override:
+    - karma start
+
 deployment:
   production:
     branch: master

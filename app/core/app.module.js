@@ -6,5 +6,10 @@
         'app.core',
 
         /* Features */
+        'app.auth',
+        'app.helpers',
+        'app.brands',
+        'app.deals',
+        'app.users'
     ]);
 })();

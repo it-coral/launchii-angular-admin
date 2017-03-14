@@ -20,19 +20,24 @@
                     <strong>{{vm.response.alert}}</strong> {{vm.response.msg}}
                 </div>
                 <form role="form" id="deal-form" ng-submit="vm.submitAction()" novalidate="novalidate">
-                    <div class="form-body">
+                    <div class="form-body pb-0">
                         <div class="row">
                             <div class="col-md-5">
                                 <div class="form-group">
                                     <label>Select a Brand</label>
-                                    <a ui-sref="dashboard.brand.add" ng-if="!vm.brands">
-                                        <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add Brand</button>
-                                    </a>
-                                    <select name="" id="" class="form-control" ng-if="vm.brands" ng-model="vm.form.brand_id" ng-init="vm.form.brand_id = vm.default.uid" ng-options="brand.uid as brand.name for brand in vm.brands" required>
+                                    <div ng-if="vm.isBrandEmpty">
+                                        <label for="">No existing brand. Add a brand first.</label>
+                                        <a ui-sref="dashboard.brand.add">
+                                            <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add Brand</button>
+                                        </a>
+                                    </div>
+                                    <select name="" id="" class="form-control" ng-if="!vm.isBrandEmpty" ng-model="vm.form.brand_id" ng-init="vm.form.brand_id = vm.default.uid" ng-options="brand.uid as brand.name for brand in vm.brands" required>
                             </select>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="form-body pt-0" ng-if="!vm.isBrandEmpty">
                         <div class="form-group">
                             <label>Name</label>
                             <input type="text" class="form-control" placeholder="Enter name" ng-model="vm.form.name" required />
@@ -59,7 +64,7 @@
                                     <label>Starting date</label>
                                     <div class="input-icon">
                                         <i class="fa fa-calendar"></i>
-                                        <input type="text" class="form-control input-medium date-picker" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" size="16" ng-model="vm.form.date_starts" required />
+                                        <input type="text" class="form-control input-medium date-picker" data-date-format="yyyy-mm-dd" ng-change="vm.updateDateDiff()" data-date-start-date="+0d" size="16" ng-model="vm.form.date_starts" required />
                                     </div>
                                 </div>
                             </div>
@@ -81,7 +86,7 @@
                                     <label>Ending date</label>
                                     <div class="input-icon">
                                         <i class="fa fa-calendar"></i>
-                                        <input type="text" class="form-control input-medium date date-picker" size="16" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" ng-model="vm.form.date_ends" required />
+                                        <input type="text" class="form-control input-medium" id="ending_date" size="16" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" ng-model="vm.form.date_ends" required />
                                     </div>
                                 </div>
                             </div>
@@ -115,7 +120,7 @@
                         <add-discount field-model="vm.form.discounts" form-mode="vm.mode" discounts-data="vm.discounts">
                         </add-discount>
                     </div>
-                    <div class="form-actions">
+                    <div class="form-actions" ng-if="!vm.isBrandEmpty">
                         <div class="row">
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-default" ladda="!vm.isDone" data-spinner-color="#000000">{{ vm.mode }}</button>

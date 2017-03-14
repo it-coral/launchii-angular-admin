@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app')
+        .module('app.deals')
         .directive('discountModalEdit', discountModalEdit);
 
     discountModalEdit.$inject = ['$compile', '$document'];

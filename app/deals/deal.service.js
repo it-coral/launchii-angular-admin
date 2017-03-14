@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.deals', [])
         .factory('DealService', DealService);
 
     DealService.$inject = ['$http', 'CONST', '$q', 'HelperService', 'BrandService'];
@@ -349,7 +349,7 @@
                 return true;
             }
 
-            return service.lists.deals.length == 0;
+            return service.lists.total == 0;
         }
 
         function findInList(id) {
@@ -484,7 +484,7 @@
                 if (error) {
                     console.log(error);
                     service.errors = error;
-                    d.reject(error);
+                    d.reject('template');
                 } else {
                     d.resolve(results);
                 }
@@ -508,10 +508,22 @@
                     tasks.push(function(cb) {
                         var formData = new FormData();
                         discount.coupons_file_expire_at = HelperService.combineDateTime(discount.coupons_file_expire_at, '00:00:00');
+                        // var coupons_txt = discount.coupons_txt;
+
+                        // delete discount.coupons_txt;
                         //formData.append('coupons_txt', discount.coupons_txt);
                         //discount.coupons_txt = "JELLANQD";
                         //var f_data = new FormData(discount);
+                        // var formData = new FormData();
+
+                        // angular.forEach(discount, function(item, attr) {
+                        //     formData.append(attr, item);
+                        // });
+
+                        //formData.append("coupons_txt", data.coupons_txt);
+                        console.log(discount);
                         $http.post(url, discount, {
+                            //transformRequest: angular.identity,
                             // transformRequest: function(data) {
                             //     console.log(data);
                             //     var formData = new FormData();
@@ -535,6 +547,27 @@
                             cb(err);
                         });
 
+                        // Upload.upload({
+                        //     url: url,
+                        //     method: "POST",
+                        //     data: discount,
+                        //     file: coupons_txt,
+                        //     fileFormDataName: "discounts[coupons_txt]",
+                        //     formDataAppender: function(fd, key, val) {
+                        //         if (angular.isArray(val)) {
+                        //             angular.forEach(val, function(v) {
+                        //                 fd.append('discounts[' + key + ']', v);
+                        //             });
+                        //         } else {
+                        //             fd.append('discounts[' + key + ']', val);
+                        //         }
+                        //     }
+                        // }).then(function(resp) {
+                        //     cb(null, resp);
+                        // }).catch(function(err) {
+                        //     cb(err);
+                        // });
+
                     });
                 }
 
@@ -544,7 +577,7 @@
                 if (error) {
                     console.log(error);
                     service.errors = error;
-                    d.reject(error);
+                    d.reject('discount');
                 } else {
                     console.log(results);
                     d.resolve(results);
@@ -620,7 +653,7 @@
                 }).catch(function(error) {
                     console.log(error);
                     service.errors = error;
-                    d.reject(error);
+                    d.reject('deal');
                 });
 
             return d.promise;
