@@ -4798,39 +4798,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
-    angular.module('app.deals')
-        .controller('HighlightController', HighlightController);
-
-    HighlightController.$inject = ['$scope', '$compile'];
-
-    /* @ngInject */
-    function HighlightController($scope, $compile) {
-        var hl = this;
-
-        //hl.remove = remove;
-        hl.counter = 0;
-        hl.increCounter = increCounter;
-        hl.modelo = {};
-        hl.we = 'test';
-        //hl.form = $scope.$parent.$parent.vm.form;
-
-        //////////////
-
-        // function remove(target, highlight) {
-        //     var parent = $(target).parent();
-        //     console.log($scope);
-        //     //$parent.$parent.vm.removeHighlight(highlight);
-        //     parent.remove();
-        // }
-
-        function increCounter() {
-            hl.counter++;
-        }
-    }
-})();
-(function() {
-    'use strict';
-
     angular
         .module('app.deals')
         .directive('addHighlight', addHighlight);
@@ -4955,6 +4922,75 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         return directive;
     }
 
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.deals')
+        .controller('HighlightController', HighlightController);
+
+    HighlightController.$inject = ['$scope', '$compile'];
+
+    /* @ngInject */
+    function HighlightController($scope, $compile) {
+        var hl = this;
+
+        //hl.remove = remove;
+        hl.counter = 0;
+        hl.increCounter = increCounter;
+        hl.modelo = {};
+        hl.we = 'test';
+        //hl.form = $scope.$parent.$parent.vm.form;
+
+        //////////////
+
+        // function remove(target, highlight) {
+        //     var parent = $(target).parent();
+        //     console.log($scope);
+        //     //$parent.$parent.vm.removeHighlight(highlight);
+        //     parent.remove();
+        // }
+
+        function increCounter() {
+            hl.counter++;
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.deals')
+        .controller('TemplateController', TemplateController);
+
+    TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+    /* @ngInject */
+    function TemplateController($scope, $compile, $document) {
+        var hl = this;
+
+        hl.counter = 0;
+        hl.increCounter = increCounter;
+        hl.openModal = openModal;
+        hl.currModel = {};
+        //hl.addTemplate = addTemplate;
+        //hl.modalContainer = $('#template-modal');
+
+        //////////////
+
+        function openModal() {
+            $('#template-modal').modal('show');
+
+            $("#template-modal").on("hidden.bs.modal", function() {
+                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+            });
+        }
+
+
+
+        function increCounter() {
+            hl.counter++;
+        }
+    }
 })();
 (function() {
     'use strict';
@@ -5280,42 +5316,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         return directive;
     }
 
-})();
-(function() {
-    'use strict';
-
-    angular.module('app.deals')
-        .controller('TemplateController', TemplateController);
-
-    TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-    /* @ngInject */
-    function TemplateController($scope, $compile, $document) {
-        var hl = this;
-
-        hl.counter = 0;
-        hl.increCounter = increCounter;
-        hl.openModal = openModal;
-        hl.currModel = {};
-        //hl.addTemplate = addTemplate;
-        //hl.modalContainer = $('#template-modal');
-
-        //////////////
-
-        function openModal() {
-            $('#template-modal').modal('show');
-
-            $("#template-modal").on("hidden.bs.modal", function() {
-                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-            });
-        }
-
-
-
-        function increCounter() {
-            hl.counter++;
-        }
-    }
 })();
 (function() {
     'use strict';
