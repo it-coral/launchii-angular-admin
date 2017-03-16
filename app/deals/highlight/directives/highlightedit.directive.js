@@ -21,7 +21,7 @@
                 $('[data-toggle="tooltip"]').tooltip();
                 scope.fieldModel = scope.$parent.fieldModel;
                 scope.counter = scope.$parent.counter;
-                console.log(scope.formMode);
+                //console.log(scope.formMode);
                 //scope.formMode = scope.$parent.formMode ? scope.$parent.formMode : 'Edit';
 
                 scope.remove = remove;

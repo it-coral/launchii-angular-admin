@@ -45,14 +45,15 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="name">Coupons Text</label>
+                            <label for="name">Codes Text</label>
                             <!--<input type="file" id="name" class="form-control" file-model="$parent.vm.form.discounts[$parent.vm.selDiscountIndex].coupons_txt" />-->
-                            <input type="file" id="name" class="form-control" base-sixty-four-input ng-model="$parent.vm.form.discounts[$parent.vm.selDiscountIndex].coupons_txt" />
+                            <!--<input type="file" id="name" class="form-control" base-sixty-four-input ng-model="$parent.vm.form.discounts[$parent.vm.selDiscountIndex].coupons_txt" />-->
+                            <textarea name="" id="" cols="30" rows="3" class="form-control" ng-model="$parent.vm.form.discounts[$parent.vm.selDiscountIndex].codes_txt"></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label for="name">Coupons Expire At</label>
-                            <input type="text" id="name" class="form-control date-picker" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" size="16" ng-model="$parent.vm.form.discounts[$parent.vm.selDiscountIndex].coupons_file_expire_at" />
+                            <label for="name">Codes Expire At</label>
+                            <input type="text" id="name" class="form-control date-picker" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" size="16" ng-model="$parent.vm.form.discounts[$parent.vm.selDiscountIndex].codes_expire_at" />
                         </div>
 
                         <div class="form-group">

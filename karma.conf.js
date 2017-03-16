@@ -73,12 +73,22 @@ module.exports = function(config) {
             //Deal Module
             'app/deals/*.js',
             'app/deals/*/*.js',
+            'app/deals/spec/unit/*.js',
 
 
             //Highlight Module
             'app/deals/highlight/*.html',
             'app/deals/highlight/*/*.js',
-            'app/deals/spec/unit/*.js',
+            'app/deals/highlight/spec/unit/*.js',
+
+            //Template Module
+            'app/deals/template/*.html',
+            'app/deals/template/*/*.js',
+            'app/deals/template/spec/unit/*.js',
+
+            //Image Module
+            'app/deals/image/*.html',
+            'app/deals/image/*/*.js',
 
             //User Module
             'app/user/*.js',
@@ -93,7 +103,8 @@ module.exports = function(config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'app/deals/highlight/*.html': ['ng-html2js']
+            'app/deals/highlight/*.html': ['ng-html2js'],
+            'app/deals/template/*.html': ['ng-html2js']
         },
 
         ngHtml2JsPreprocessor: {

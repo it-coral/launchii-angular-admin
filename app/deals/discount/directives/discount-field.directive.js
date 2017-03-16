@@ -33,7 +33,7 @@
                 function remove(target) {
                     var parent = $(target).parent();
                     parent.remove();
-                    scope.$parent.$parent.vm.removeDiscount(scope.discountCounter);
+                    scope.$parent.$parent.vm.removeDiscount(scope.fieldModel);
                 }
             }
         };

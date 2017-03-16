@@ -1496,7 +1496,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             url: "/auth",
             views: {
                 "login": {
-                    templateUrl: "/app/login/login.html",
+                    templateUrl: "app/login/login.html",
                     controller: "LoginController",
                     controllerAs: "vm",
                     resolve: {
@@ -1511,7 +1511,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             url: "/logout",
             views: {
                 "login": {
-                    templateUrl: "/app/login/login.html",
+                    templateUrl: "app/login/login.html",
                     controller: "LoginController",
                     controllerAs: "vm",
                     resolve: {
@@ -1527,7 +1527,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             url: "/",
             views: {
                 "main": {
-                    templateUrl: "/app/dashboard/dashboard.html",
+                    templateUrl: "app/dashboard/dashboard.html",
                     controller: "DashboardController",
                     controllerAs: "vm",
                     resolve: {
@@ -1547,7 +1547,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             parent: dashboard,
             views: {
                 "main_body": {
-                    templateUrl: "/app/brand/brand.html",
+                    templateUrl: "app/brand/brand.html",
                     controller: "BrandController",
                     controllerAs: "vm",
                     resolve: {
@@ -1564,7 +1564,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             parent: brand,
             views: {
                 "page_body": {
-                    templateUrl: "/app/brand/brand.add.html",
+                    templateUrl: "app/brand/brand.add.html",
                     controller: "BrandAddController",
                     controllerAs: "vm"
                 }
@@ -1577,7 +1577,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             parent: brand,
             views: {
                 "page_body": {
-                    templateUrl: "/app/brand/brand.add.html",
+                    templateUrl: "app/brand/brand.add.html",
                     controller: "BrandEditController",
                     controllerAs: "vm",
                     resolve: {
@@ -1593,7 +1593,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             parent: brand,
             views: {
                 "page_body": {
-                    templateUrl: "/app/brand/brand.view.html",
+                    templateUrl: "app/brand/brand.view.html",
                     controller: "BrandViewController",
                     controllerAs: "vm",
                     resolve: {
@@ -1611,7 +1611,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             parent: dashboard,
             views: {
                 "main_body": {
-                    templateUrl: "/app/deals/deal.html",
+                    templateUrl: "app/deals/deal.html",
                     controller: "DealController",
                     controllerAs: "vm",
                     resolve: {
@@ -1628,7 +1628,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             parent: deal,
             views: {
                 "page_body": {
-                    templateUrl: "/app/deals/deal.add.html",
+                    templateUrl: "app/deals/deal.add.html",
                     controller: "DealAddController",
                     controllerAs: "vm",
                     resolve: {
@@ -1647,7 +1647,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             parent: deal,
             views: {
                 "page_body": {
-                    templateUrl: "/app/deals/deal.add.html",
+                    templateUrl: "app/deals/deal.add.html",
                     controller: "DealEditController",
                     controllerAs: "vm",
                     resolve: {
@@ -1659,7 +1659,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         prepTemplateNames: prepTemplateNames,
                         prepTemplateTypes: prepTemplateTypes,
                         prepStandardD: prepStandardD,
-                        prepEarlyBirdD: prepEarlyBirdD
+                        prepEarlyBirdD: prepEarlyBirdD,
+                        prepDealImages: prepDealImages
                     }
                 }
             }
@@ -1671,7 +1672,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             parent: deal,
             views: {
                 "page_body": {
-                    templateUrl: "/app/deals/deal.view.html",
+                    templateUrl: "app/deals/deal.view.html",
                     controller: "DealViewController",
                     controllerAs: "vm",
                     resolve: {
@@ -1691,7 +1692,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             parent: dashboard,
             views: {
                 "main_body": {
-                    templateUrl: "/app/user/user.html",
+                    templateUrl: "app/user/user.html",
                     controller: "UserController",
                     controllerAs: "vm",
                     resolve: {
@@ -1708,7 +1709,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             parent: user,
             views: {
                 "page_body": {
-                    templateUrl: "/app/user/user.add.html",
+                    templateUrl: "app/user/user.add.html",
                     controller: "UserEditController",
                     controllerAs: "vm",
                     resolve: {
@@ -1724,7 +1725,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             parent: user,
             views: {
                 "page_body": {
-                    templateUrl: "/app/user/user.view.html",
+                    templateUrl: "app/user/user.view.html",
                     controller: "UserViewController",
                     controllerAs: "vm",
                     resolve: {
@@ -1753,6 +1754,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             .state(userView);
 
         ////////////
+
+        prepDealImages.$inject = ['DealService', '$stateParams'];
+        /* @ngInject */
+        function prepDealImages(DealService, $stateParams) {
+            return DealService.getDealImages($stateParams.id);
+        }
 
         prepStandardD.$inject = ['DealService', '$stateParams'];
         /* @ngInject */
@@ -2217,6 +2224,51 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
     angular
         .module('app')
+        .filter('isLoading', isLoading);
+
+    function isLoading() {
+        return function(target) {
+            console.log(target);
+            if (target) {
+                var scope = angular.element(target).scope();
+
+                if (angular.isDefined(scope.isLoading) && scope.isLoading) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('ucFirst', ucFirst);
+
+    function ucFirst() {
+        return function(string) {
+            if (string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            return string;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
         .directive('breadCrumbs', breadCrumbs);
 
     breadCrumbs.$inject = ['$state', '$stateParams', 'BreadCrumbService'];
@@ -2458,51 +2510,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 });
             }
         };
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('isLoading', isLoading);
-
-    function isLoading() {
-        return function(target) {
-            console.log(target);
-            if (target) {
-                var scope = angular.element(target).scope();
-
-                if (angular.isDefined(scope.isLoading) && scope.isLoading) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('ucFirst', ucFirst);
-
-    function ucFirst() {
-        return function(string) {
-            if (string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
-            }
-
-            return string;
-        }
-
     }
 
 })();
@@ -3335,7 +3342,17 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
-    angular.module('app.deals', ['app.deals.highlightadd', 'app.deals.highlightedit', 'app.deals.highlightfield'])
+    angular.module('app.deals', [
+            'app.deals.highlightadd',
+            'app.deals.highlightedit',
+            'app.deals.highlightfield',
+            'app.deals.templateadd',
+            'app.deals.templateedit',
+            'app.deals.templatefield',
+            'app.deals.templatemodal',
+            'app.deals.templatemodaledit',
+            'app.deals.image'
+        ])
         .factory('DealService', DealService);
 
     DealService.$inject = ['$http', 'CONST', '$q', 'HelperService', 'BrandService'];
@@ -3371,12 +3388,42 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             getTemplateNames: getTemplateNames,
             getTemplateTypes: getTemplateTypes,
             getStandardDiscounts: getStandardDiscounts,
-            getEarlyBirdDiscounts: getEarlyBirdDiscounts
+            getEarlyBirdDiscounts: getEarlyBirdDiscounts,
+            dealImagesList: [],
+            getDealImages: getDealImages
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function getDealImages(dealId) {
+            var d = $q.defer();
+
+            // if (service.dealImagesList.length > 0) {
+            //     d.resolve(service.dealImagesList);
+            // } else {
+            //     var url = api + '/' + dealId + '/images';
+            //     $http.get(url).then(function(resp) {
+            //         service.dealImagesList = resp.data.images;
+            //         d.resolve(resp.data.images);
+            //     }).catch(function(err) {
+            //         console.log(err);
+            //         d.reject(err);
+            //     });
+            // }
+
+            var url = api + '/' + dealId + '/images';
+            $http.get(url).then(function(resp) {
+                service.dealImagesList = resp.data.images;
+                d.resolve(resp.data.images);
+            }).catch(function(err) {
+                console.log(err);
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
 
         function getEarlyBirdDiscounts(dealId) {
             var d = $q.defer();
@@ -3411,7 +3458,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var url = api + '/' + dealId + '/discounts/standard';
 
             $http.get(url).then(function(resp) {
-                console.log(resp);
+                //console.log(resp);
                 var discounts = resp.data.discounts;
                 angular.forEach(discounts, function(discount, index) {
                     if (discount.is_active) {
@@ -3659,12 +3706,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     // }).catch(function(err) {
                     //     d.reject(err);
                     // });
-                    d.resolve(resp);
+                    // d.resolve(resp);
+                    d.resolve('');
                 }).catch(function(error) {
                     console.log(error);
                     service.errors = error;
                     //d.reject(error);
-                    d.resolve('but failed to add highlight')
+                    d.resolve('Failed to add highlight. ')
                 });
 
             // async.parallel(tasks, function(error, results) {
@@ -3802,13 +3850,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                         $http.post(url, template).then(function(resp) {
                             //d.resolve(resp);
-                            cb(null, resp);
+                            // cb(null, resp);
+                            cb(null, '');
                         }).catch(function(err) {
                             console.log(err);
                             // service.errors = error;
                             // d.reject(error);
                             //cb(err);
-                            cb(null, 'but failed to add template.');
+                            cb(null, 'Failed to add template. ');
                         });
 
                     });
@@ -3843,7 +3892,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 if (angular.isDefined(discount.value) && discount.value.trim() != '') {
                     tasks.push(function(cb) {
                         var formData = new FormData();
-                        discount.coupons_file_expire_at = HelperService.combineDateTime(discount.coupons_file_expire_at, '00:00:00');
+                        //discount.codes_expire_at = HelperService.combineDateTime(discount.codes_expire_at, '00:00:00');
                         // var coupons_txt = discount.coupons_txt;
 
                         // delete discount.coupons_txt;
@@ -3875,14 +3924,15 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                             headers: { 'Content-Type': undefined }
                         }).then(function(resp) {
                             //d.resolve(resp);
-                            cb(null, resp);
+                            // cb(null, resp);
+                            cb(null, '');
                         }).catch(function(err) {
                             console.log(err);
                             // service.errors = error;
                             // d.reject(error);
                             //cb(err);
                             var errors = HelperService.setErrorStr(err);
-                            cb(null, 'but failed to add discount. Reason: ' + errors);
+                            cb(null, 'Failed to add discount. Reason: ' + errors + '. ');
                         });
 
                         // Upload.upload({
@@ -3926,6 +3976,30 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             return d.promise;
         }
 
+        function addFileImage(dealId, file) {
+            var d = $q.defer();
+            var url = api + '/' + dealId + '/images';
+
+            var filebase64 = 'data:' + file.file.filetype + ';base64,' + file.file.base64;
+
+            var data = {
+
+                image: {
+                    file: filebase64,
+                    description: file.description
+                }
+
+            };
+            //console.log(data);
+            $http.post(url, data).then(function(resp) {
+                d.resolve(resp);
+            }).catch(function(err) {
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
+
         function add(data) {
             var url = api;
             var d = $q.defer();
@@ -3937,6 +4011,24 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     var dealId = resp.data.deal.uid;
 
                     var tasks = [];
+
+                    if (data.file.length > 0) {
+                        angular.forEach(data.file, function(img, index) {
+
+                            if (angular.isObject(img.file)) {
+                                tasks.push(function(cb) {
+                                    addFileImage(dealId, img).then(function(resp) {
+                                        cb(null, resp);
+                                    }).catch(function(err) {
+                                        console.log(err);
+                                        cb(err);
+                                    });
+                                });
+                            }
+
+                        });
+
+                    }
 
                     if (data.highlights.length > 0) {
                         //console.log(data.highlights);
@@ -3950,7 +4042,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         });
                     }
 
-                    if (angular.isDefined(data.templates[0]) && angular.isDefined(data.templates[0].name) && data.templates[0].name.trim() != '') {
+                    if (angular.isDefined(data.templates[0]) && angular.isDefined(data.templates[0].name) && data.templates[0].name.trim() != '' && data.templates[0].name.trim() != 'null') {
                         tasks.push(function(cb) {
                             addTemplates(dealId, data.templates).then(function(resp) {
                                 cb(null, resp);
@@ -3961,7 +4053,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         });
                     }
 
-                    if (angular.isDefined(data.discounts[0]) && angular.isDefined(data.discounts[0].value) && data.discounts[0].value.trim() != '') {
+                    if (angular.isDefined(data.discounts[0]) && angular.isDefined(data.discounts[0].value) && data.discounts[0].value.trim() != '' && data.discounts[0].value.trim() != 'null') {
                         tasks.push(function(cb) {
                             addDiscounts(dealId, data.discounts).then(function(resp) {
                                 cb(null, resp);
@@ -4017,17 +4109,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var tasks = [];
             var tasksSeries = [];
 
-            //TEMPLATE ADD
-            if (angular.isDefined(data.form.templates) && data.form.templates.length > 0) {
-                var url_ah = api + '/' + id + '/templates';
+            //IMAGE ADD
+            if (angular.isDefined(data.form.file)) {
 
-                angular.forEach(data.form.templates, function(template, index) {
-                    //console.log(angular.isDefined(template.name));
-                    //console.log(template.name);
-                    if (angular.isDefined(template.name) && template.name.trim() != '') {
+                angular.forEach(data.form.file, function(img, index) {
+                    if (angular.isObject(img.file) && angular.isDefined(img.file.filetype)) {
+
                         tasks.push(function(cb) {
-                            template['templatable_id'] = id;
-                            $http.post(url_ah, template)
+                            addFileImage(id, img)
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
@@ -4040,10 +4129,78 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 });
             }
 
-            //HIGHLIGHT
+            //IMAGE DELETE
+            if (angular.isDefined(data.removedImages)) {
+                angular.forEach(data.removedImages, function(image, index) {
+                    tasks.push(function(cb) {
+                        $http.delete(api + '/' + id + '/images/' + image.uid)
+                            .then(function(resp) {
+                                cb(null, resp);
+                            }).catch(function(err) {
+                                cb(err);
+                            });
+                    });
+                });
+
+            }
+
+            //IMAGE EDIT
+            if (angular.isDefined(data.images)) {
+
+                angular.forEach(data.images, function(img, index) {
+                    if (angular.isObject(img.file) && angular.isDefined(img.file.filetype)) {
+                        var filebase64 = 'data:' + img.file.filetype + ';base64,' + img.file.base64;
+
+                        var data = {
+
+                            image: {
+                                file: filebase64,
+                                description: img.description
+                            }
+
+                        }
+
+                        tasks.push(function(cb) {
+                            $http.patch(api + '/' + id + '/images/' + img.uid, data)
+                                .then(function(resp) {
+                                    cb(null, resp);
+                                }).catch(function(err) {
+                                    console.log(err);
+                                    cb(err);
+                                });
+                        });
+                    }
+
+                });
+            }
+
+            //TEMPLATE ADD
+            if (angular.isDefined(data.form.templates) && data.form.templates.length > 0) {
+                //var url_ah = api + '/' + id + '/templates';
+
+                angular.forEach(data.form.templates, function(template, index) {
+                    //console.log(angular.isDefined(template.name));
+                    //console.log(template.name);
+                    if (angular.isDefined(template.name) && template.name.trim() != '') {
+                        tasks.push(function(cb) {
+                            template['templatable_id'] = id;
+                            $http.post(api + '/' + id + '/templates', template)
+                                .then(function(resp) {
+                                    cb(null, resp);
+                                }).catch(function(err) {
+                                    console.log(err);
+                                    cb(err);
+                                });
+                        });
+                    }
+
+                });
+            }
+
+            //HIGHLIGHT UPDATE
             if (angular.isDefined(data.highlights) && data.highlights.length > 0) {
                 angular.forEach(data.highlights, function(val, index) {
-                    var url_h = url + '/highlights/' + val.uid;
+                    //var url_h = url + '/highlights/' + val.uid;
                     var data_h = {
                         highlight: {
                             title: val.title
@@ -4051,7 +4208,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     };
 
                     tasks.push(function(cb) {
-                        $http.patch(url_h, data_h).then(function(resp) {
+                        $http.patch(url + '/highlights/' + val.uid, data_h).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -4060,13 +4217,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     });
                 });
             }
-            //HIGHLIGHT
+            //HIGHLIGHT DELETE
             if (angular.isDefined(data.removedHighlights) && data.removedHighlights.length > 0) {
                 angular.forEach(data.removedHighlights, function(val, index) {
-                    var url_h = url + '/highlights/' + val.uid;
+                    //var url_h = url + '/highlights/' + val.uid;
 
                     tasks.push(function(cb) {
-                        $http.delete(url_h).then(function(resp) {
+                        $http.delete(url + '/highlights/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -4078,11 +4235,11 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //TEMPLATE UPDATE
             if (angular.isDefined(data.templates) && data.templates.length > 0) {
                 angular.forEach(data.templates, function(template, index) {
-                    var url_h = url + '/templates/' + template.uid;
+                    //var url_h = url + '/templates/' + template.uid;
 
                     tasks.push(function(cb) {
                         template['templatable_id'] = id;
-                        $http.patch(url_h, template).then(function(resp) {
+                        $http.patch(url + '/templates/' + template.uid, template).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -4094,10 +4251,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //TEMPLATE DELETE
             if (angular.isDefined(data.removedTemplates) && data.removedTemplates.length > 0) {
                 angular.forEach(data.removedTemplates, function(val, index) {
-                    var url_h = url + '/templates/' + val.uid;
+                    //var url_h = url + '/templates/' + val.uid;
 
                     tasks.push(function(cb) {
-                        $http.delete(url_h).then(function(resp) {
+                        $http.delete(url + '/templates/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -4123,10 +4280,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     }
                 };
 
-                var url_ah = api + '/' + id + '/highlights/collection';
+                //var url_ah = api + '/' + id + '/highlights/collection';
                 console.log(data_h);
                 tasks.push(function(cb) {
-                    $http.post(url_ah, data_h)
+                    $http.post(api + '/' + id + '/highlights/collection', data_h)
                         .then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
@@ -4175,10 +4332,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //DISCOUNT DELETE
             if (angular.isDefined(data.removedDiscounts) && data.removedDiscounts.length > 0) {
                 angular.forEach(data.removedDiscounts, function(val, index) {
-                    var url_h = url + '/discounts/' + val.uid;
+                    //var url_h = url + '/discounts/' + val.uid;
 
                     tasksSeries.push(function(cb) {
-                        $http.delete(url_h).then(function(resp) {
+                        $http.delete(url + '/discounts/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -4191,11 +4348,11 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //DISCOUNT UPDATE
             if (angular.isDefined(data.discounts) && data.discounts.length > 0) {
                 angular.forEach(data.discounts, function(discount, index) {
-                    var url_h = url + '/discounts/' + discount.uid;
+                    //var url_h = url + '/discounts/' + discount.uid;
 
                     tasksSeries.push(function(cb) {
 
-                        $http.patch(url_h, discount).then(function(resp) {
+                        $http.patch(url + '/discounts/' + discount.uid, discount).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -4204,16 +4361,18 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     });
                 });
             }
-
+            //console.log(data.form);
             //DISCOUNT ADD
             if (angular.isDefined(data.form.discounts) && data.form.discounts.length > 0) {
-                var url_ah = url + '/discounts';
+                //var url_ah = url + '/discounts';
 
                 angular.forEach(data.form.discounts, function(discount, index) {
-                    if (angular.isDefined(discount.value) && discount.value.trim() != '') {
+                    if (angular.isDefined(discount.value) && discount.value.trim() != '' && discount.value.trim() !== 'null') {
+                        //discount.codes_expire_at = HelperService.combineDateTime(discount.codes_expire_at, '00:00:00');
+                        //console.log(discount);
                         tasksSeries.push(function(cb) {
 
-                            $http.post(url_ah, discount)
+                            $http.post(url + '/discounts', discount)
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
@@ -4281,6 +4440,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
         vm.removeHighlight = removeHighlight;
+
         //template
         vm.templateCounter = 0;
         vm.increTemplateCounter = increTemplateCounter;
@@ -4292,6 +4452,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
         vm.priceFormat = priceFormat;
+
         //discount
         vm.discountCounter = 0;
         vm.increDiscountCounter = increDiscountCounter;
@@ -4300,6 +4461,15 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.selDiscountObj = {};
         vm.setSelDiscountObj = setSelDiscountObj;
         vm.removeDiscount = removeDiscount;
+
+        //image
+        vm.form.file = [];
+        vm.imageCounter = 0;
+        vm.getImageCounter = getImageCounter;
+        vm.removeAddedImage = removeAddedImage;
+        vm.insertNewImageObj = insertNewImageObj;
+        vm.latestImgIndex = latestImgIndex;
+        vm.blankFn = blankFn;
 
         vm.updateDateDiff = updateDateDiff;
         vm.prevState = HelperService.getPrevState();
@@ -4317,6 +4487,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //     autoclose: true
             // });
             //ComponentsDateTimePickers.init();
+            insertNewImageObj();
             $(document).ready(function() {
                 ComponentsDateTimePickers.init();
             });
@@ -4324,6 +4495,34 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //     console.log(newVal);
             //     return newVal.toFixed(2);
             // });
+        }
+
+        function blankFn() {
+            return false;
+        }
+
+        function latestImgIndex() {
+            return vm.form.file.length - 1;
+        }
+
+        function insertNewImageObj() {
+            var obj = {
+                file: "",
+                description: ""
+            };
+            vm.form.file.push(obj);
+        }
+
+        function removeAddedImage(image) {
+            angular.forEach(vm.form.file, function(img, index) {
+                if (img === image) {
+                    vm.form.file.splice(index, 1);
+                }
+            });
+        }
+
+        function getImageCounter() {
+            return vm.imageCounter++;
         }
 
         function updateDateDiff() {
@@ -4344,11 +4543,11 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
 
         //Discount
-        function removeDiscount(discount_index) {
-            console.log(discount_index);
+        function removeDiscount(discount) {
+            //console.log(discount_index);
             angular.forEach(vm.form.discounts, function(val, index) {
-                if (index == discount_index) {
-                    console.log('test')
+                if (val.uid == discount.uid) {
+                    //console.log('test')
                     vm.form.discounts.splice(index, 1);
                 }
             });
@@ -4406,14 +4605,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
 
-            console.log(vm.form);
+            //console.log(vm.form);
             //return false;
 
             DealService.add(vm.form).then(function(resp) {
-                console.log(resp);
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Added new deal: " + vm.form.name + ' ' + resp;
+                // vm.response['msg'] = "Added new deal: " + vm.form.name + ' ' + resp;
+                vm.response['msg'] = "Added new deal.";
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -4424,7 +4623,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             }).catch(function(err) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to add " + err;
+                vm.response['msg'] = "Failed to add deal.";
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -4550,10 +4749,38 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     angular.module('app.deals')
         .controller('DealEditController', DealEditController);
 
-    DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService', 'prepSelHighlights', 'prepSelTemplates', 'prepTemplateNames', 'prepTemplateTypes', 'prepStandardD', 'prepEarlyBirdD'];
+    DealEditController.$inject = ['DealService',
+        '$stateParams',
+        '$scope',
+        'prepSelDeal',
+        'HelperService',
+        '$state',
+        'brandPrepService',
+        'prepSelHighlights',
+        'prepSelTemplates',
+        'prepTemplateNames',
+        'prepTemplateTypes',
+        'prepStandardD',
+        'prepEarlyBirdD',
+        'prepDealImages'
+    ];
 
     /* @ngInject */
-    function DealEditController(DealService, $stateParams, $scope, prepSelDeal, HelperService, $state, brandPrepService, prepSelHighlights, prepSelTemplates, prepTemplateNames, prepTemplateTypes, prepStandardD, prepEarlyBirdD) {
+    function DealEditController(DealService,
+        $stateParams,
+        $scope,
+        prepSelDeal,
+        HelperService,
+        $state,
+        brandPrepService,
+        prepSelHighlights,
+        prepSelTemplates,
+        prepTemplateNames,
+        prepTemplateTypes,
+        prepStandardD,
+        prepEarlyBirdD,
+        prepDealImages) {
+
         var vm = this;
 
         vm.mode = "Edit";
@@ -4563,6 +4790,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.form = vm.selectedDeal;
         vm.form.highlights = [];
         vm.form.templates = [];
+        vm.form.discounts = [];
         //vm.form.highlights = vm.selectedDeal.highlights;
         vm.highlights = prepSelHighlights;
         vm.isDone = true;
@@ -4598,6 +4826,19 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.standardDiscounts = prepStandardD;
         vm.earlyBirdDiscounts = prepEarlyBirdD;
 
+        //images
+        vm.form.file = [];
+        vm.images = prepDealImages;
+        vm.removeImage = removeImage;
+        vm.removedImageObj = [];
+        vm.imageCounter = 0;
+        vm.getImageCounter = getImageCounter;
+        vm.insertNewImageObj = insertNewImageObj;
+        vm.latestImgIndex = latestImgIndex;
+        vm.blankFn = blankFn;
+        vm.openEditImageModal = openEditImageModal;
+        vm.removeAddedImage = removeAddedImage;
+
         vm.updateDateDiff = updateDateDiff;
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
@@ -4607,6 +4848,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         ///////////////////
 
         function activate() {
+            insertNewImageObj();
             // angular.element('.start-date').datepicker({
             //     orientation: "left",
             //     autoclose: true
@@ -4620,7 +4862,56 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //temporary workaround
             $(document).ready(function() {
                 ComponentsDateTimePickers.init();
+                $('[data-toggle="tooltip"]').tooltip();
             });
+        }
+
+        function removeAddedImage(image) {
+            angular.forEach(vm.form.file, function(img, index) {
+                if (img === image) {
+                    vm.form.file.splice(index, 1);
+                }
+            });
+        }
+
+        function openEditImageModal(elem) {
+            $(elem).parents('.image-view-container').find('.image-modal').modal('show');
+        }
+
+        function blankFn() {
+            return false;
+        }
+
+        function latestImgIndex() {
+            return vm.form.file.length - 1;
+        }
+
+        function insertNewImageObj() {
+            var obj = {
+                file: "",
+                description: ""
+            };
+            vm.form.file.push(obj);
+        }
+
+        function getFormImage() {
+            //var index = getImageCounter();
+
+            vm.form.file[vm.imageCounter] = {
+                file: "",
+                description: ""
+            };
+
+            return vm.form.file[vm.imageCounter++];
+        }
+
+        function getImageCounter() {
+            return vm.imageCounter++;
+        }
+
+        function removeImage(elem, image) {
+            vm.removedImageObj.push(image);
+            $(elem).parents('.image-view-container').remove();
         }
 
         function updateDateDiff() {
@@ -4641,14 +4932,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
 
         //Discount
-        function removeDiscount(discount_index) {
-            console.log(discount_index);
+        function removeDiscount(discount) {
+            //console.log(discount_index);
             angular.forEach(vm.form.discounts, function(val, index) {
-                if (index == discount_index) {
+                if (val.uid == discount.uid) {
                     vm.form.discounts.splice(index, 1);
                 }
             });
-            vm.removedDiscountObjs.push(template);
+            vm.removedDiscountObjs.push(discount);
         }
 
         function setSelDiscountObj(dobj) {
@@ -4725,11 +5016,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 templates: vm.templates,
                 removedTemplates: vm.removedTemplateObjs,
                 discounts: vm.discounts,
-                removedDiscounts: vm.removedDiscountObjs
+                removedDiscounts: vm.removedDiscountObjs,
+                images: vm.images,
+                removedImages: vm.removedImageObj
             };
 
-            // console.log(data);
-            // return false;
+            //console.log(data);
+            //return false;
 
             DealService.edit(vm.dealId, data).then(function() {
                 vm.response['success'] = "alert-success";
@@ -4862,6 +5155,184 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular
+        .module('app.deals.image', [])
+        .directive('addImage', addImage);
+
+    addImage.$inject = ['$compile', '$document'];
+    /* @ngInject */
+    function addImage($compile, $document) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: 'app/deals/image/image.html',
+            replace: true,
+            scope: {
+                formImage: '=',
+                formMode: '=',
+                insertImg: '=',
+                removeImage: '='
+            },
+            link: function(scope, element, attrs) {
+                scope.openModalForm = openModalForm;
+
+                /////////////
+
+                function openModalForm() {
+                    angular.element(element).find('.image-modal').modal('show');
+                    //$('#image-modal').modal('show');
+                }
+            }
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals.image')
+        .directive('imageDisplay', imageDisplay);
+
+    imageDisplay.$inject = ['$compile', '$document'];
+    /* @ngInject */
+    function imageDisplay($compile, $document) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: 'app/deals/image/imagedisplay.html',
+            replace: true,
+            scope: {
+                selFormImage: '&',
+                formMode: '=',
+                removeImage: '=',
+                insertImg: '=',
+            },
+            link: function(scope, element, attrs) {
+
+                scope.remove = remove;
+                scope.formImage = scope.selFormImage();
+
+                scope.insertImg();
+                /////////////
+
+                function remove(elem, image) {
+                    angular.element(elem).parents('.image-field-container').remove();
+                    scope.removeImage(image);
+                }
+            }
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals.image')
+        .directive('imageForm', imageForm);
+
+    imageForm.$inject = ['$compile', '$document'];
+    /* @ngInject */
+    function imageForm($compile, $document) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: 'app/deals/image/imageform.html',
+            replace: true,
+            scope: {
+                formImage: '=',
+                formMode: '=',
+                insertImg: '=',
+                removeImage: '=',
+                noBtn: '@'
+            },
+            link: function(scope, element, attrs) {
+                scope.addNewImageObj = addNewImageObj;
+                scope.selFormImage = scope.formImage;
+                scope.clearFile = clearFile;
+                scope.fileIsBlank = fileIsBlank;
+
+                scope.$watch('formImage', function() {
+                    scope.selFormImage = scope.formImage;
+                });
+
+                ///////////
+
+                function fileIsBlank() {
+                    if (scope.formMode == 'Edit') {
+                        return !angular.isObject(scope.formImage.file);
+                    } else {
+                        return false;
+                    }
+                }
+
+                function clearFile() {
+                    scope.formImage.file = null;
+                    scope.formImage.file = "";
+                    scope.formImage.description = "";
+                }
+
+                function addNewImageObj() {
+                    if (angular.isObject(scope.formImage.file)) {
+                        var html = '<image-display sel-form-image="selFormImage" form-mode="formMode" remove-image="removeImage" insert-img="insertImg" ></image-display>';
+                        var input = angular.element(html);
+                        var compile = $compile(input)(scope);
+                        //console.log(scope.selFormImage);
+                        $('#image-display-container').append(compile);
+
+                        $('.fileinput').fileinput('clear')
+                            //scope.insertImg();
+                        $('.image-modal').modal('hide');
+                    }
+                }
+            }
+        };
+
+        return directive;
+    }
+
+})();
+// (function() {
+//     'use strict';
+
+//     angular.module('app.deals')
+//         .controller('HighlightController', HighlightController);
+
+//     HighlightController.$inject = ['$scope', '$compile'];
+
+//     /* @ngInject */
+//     function HighlightController($scope, $compile) {
+//         var hl = this;
+
+//         //hl.remove = remove;
+//         hl.counter = 0;
+//         hl.increCounter = increCounter;
+//         hl.modelo = {};
+//         hl.we = 'test';
+//         //hl.form = $scope.$parent.$parent.vm.form;
+
+//         //////////////
+
+//         // function remove(target, highlight) {
+//         //     var parent = $(target).parent();
+//         //     console.log($scope);
+//         //     //$parent.$parent.vm.removeHighlight(highlight);
+//         //     parent.remove();
+//         // }
+
+//         function increCounter() {
+//             hl.counter++;
+//         }
+//     }
+// })();
+(function() {
+    'use strict';
+
+    angular
         .module('app.deals.highlightadd', [])
         .directive('addHighlight', addHighlight);
 
@@ -4932,7 +5403,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 $('[data-toggle="tooltip"]').tooltip();
                 scope.fieldModel = scope.$parent.fieldModel;
                 scope.counter = scope.$parent.counter;
-                console.log(scope.formMode);
+                //console.log(scope.formMode);
                 //scope.formMode = scope.$parent.formMode ? scope.$parent.formMode : 'Edit';
 
                 scope.remove = remove;
@@ -4997,29 +5468,32 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 //     'use strict';
 
 //     angular.module('app.deals')
-//         .controller('HighlightController', HighlightController);
+//         .controller('TemplateController', TemplateController);
 
-//     HighlightController.$inject = ['$scope', '$compile'];
+//     TemplateController.$inject = ['$scope', '$compile', '$document'];
 
 //     /* @ngInject */
-//     function HighlightController($scope, $compile) {
+//     function TemplateController($scope, $compile, $document) {
 //         var hl = this;
 
-//         //hl.remove = remove;
 //         hl.counter = 0;
 //         hl.increCounter = increCounter;
-//         hl.modelo = {};
-//         hl.we = 'test';
-//         //hl.form = $scope.$parent.$parent.vm.form;
+//         hl.openModal = openModal;
+//         hl.currModel = {};
+//         //hl.addTemplate = addTemplate;
+//         //hl.modalContainer = $('#template-modal');
 
 //         //////////////
 
-//         // function remove(target, highlight) {
-//         //     var parent = $(target).parent();
-//         //     console.log($scope);
-//         //     //$parent.$parent.vm.removeHighlight(highlight);
-//         //     parent.remove();
-//         // }
+//         function openModal() {
+//             $('#template-modal').modal('show');
+
+//             $("#template-modal").on("hidden.bs.modal", function() {
+//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+//             });
+//         }
+
+
 
 //         function increCounter() {
 //             hl.counter++;
@@ -5029,8 +5503,49 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
-    angular.module('app.deals')
+    angular
+        .module('app.deals.templateadd', [])
+        .directive('addTemplate', addTemplate)
         .controller('TemplateController', TemplateController);
+
+    addTemplate.$inject = ['$compile', '$document'];
+    /* @ngInject */
+    function addTemplate($compile, $document) {
+
+        var directive = {
+            restrict: 'E',
+            templateUrl: 'app/deals/template/template.html',
+            replace: true,
+            scope: {
+                fieldModel: '=',
+                formMode: '=',
+                templatesData: '='
+            },
+            transclude: true,
+            link: function(scope, element, attrs) {
+                element.find('button#add-template-btn').bind('click', function() {
+                    // var html = '<template-field field-model="hl.fieldModel" ></template-field>';
+
+                    // var input = angular.element(html);
+
+                    // var compile = $compile(input)(scope);
+
+                    // element.find('#template-container').append(input);
+
+                    scope.hl.openModal();
+                    scope.hl.increCounter();
+                    //scope.$parent.vm.increTemplateCounter();
+                });
+
+            },
+            controller: 'TemplateController',
+            controllerAs: 'hl',
+            bindToController: true
+        };
+
+        return directive;
+    }
+
 
     TemplateController.$inject = ['$scope', '$compile', '$document'];
 
@@ -5066,53 +5581,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular
-        .module('app.deals')
-        .directive('addTemplate', addTemplate);
-
-    addTemplate.$inject = ['$compile', '$document'];
-    /* @ngInject */
-    function addTemplate($compile, $document) {
-
-        var directive = {
-            restrict: 'E',
-            templateUrl: '/app/deals/template/template.html',
-            replace: true,
-            scope: {
-                fieldModel: '=',
-                formMode: '=',
-                templatesData: '='
-            },
-            transclude: true,
-            link: function(scope, element, attrs) {
-                element.find('button#add-template-btn').bind('click', function() {
-                    // var html = '<template-field field-model="hl.fieldModel" ></template-field>';
-
-                    // var input = angular.element(html);
-
-                    // var compile = $compile(input)(scope);
-
-                    // element.find('#template-container').append(input);
-
-                    scope.hl.openModal();
-                    scope.hl.increCounter();
-                    //scope.$parent.vm.increTemplateCounter();
-                });
-
-            },
-            controller: 'TemplateController',
-            controllerAs: 'hl',
-            bindToController: true
-        };
-
-        return directive;
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
+        .module('app.deals.templateedit', [])
         .directive('templateEdit', templateEdit);
 
     templateEdit.$inject = ['$compile'];
@@ -5121,7 +5590,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/template/template-edit-field.html',
+            templateUrl: 'app/deals/template/template-edit-field.html',
             replace: true,
             scope: {
                 templateCounter: '=',
@@ -5166,7 +5635,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular
-        .module('app.deals')
+        .module('app.deals.templatefield', [])
         .directive('templateField', templateField);
 
     templateField.$inject = ['$compile'];
@@ -5175,14 +5644,18 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/template/template-field.html',
+            templateUrl: 'app/deals/template/template-field.html',
             replace: true,
             scope: {
-                templateCounter: '='
+                templateCounter: '=',
+                //fieldModel: '='
             },
             link: function(scope, element, attrs) {
                 $('[data-toggle="tooltip"]').tooltip();
-                scope.fieldModel = scope.$parent.$parent.vm.form.templates[scope.templateCounter];
+                //console.log(scope);
+                //if (angular.isDefined(scope.$parent.$parent.vm)) {
+                scope.fieldModel = scope.$parent.$parent.vm ? scope.$parent.$parent.vm.form.templates[scope.templateCounter] : {};
+                //}
 
                 scope.openModal = openModal;
                 scope.remove = remove;
@@ -5218,8 +5691,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular
-        .module('app.deals')
-        .directive('templateModal', templateModal);
+        .module('app.deals.templatemodal', [])
+        .directive('templateModal', templateModal)
+        .controller('TemplateController', TemplateController);
 
     templateModal.$inject = ['$compile', '$document'];
     /* @ngInject */
@@ -5227,7 +5701,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/template/template-modal.html',
+            templateUrl: 'app/deals/template/template-modal.html',
             replace: true,
             scope: {
                 fieldModel: '=',
@@ -5294,7 +5768,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                     statusChange();
 
-                    var html = '<template-field template-counter="' + scope.$parent.vm.selTemplateIndex + '" ></template-field>';
+                    var html = '<template-field template-counter="' + scope.$parent.vm.selTemplateIndex + '" field-model="scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex]" ></template-field>';
                     var input = angular.element(html);
                     var compile = $compile(input)(scope);
 
@@ -5318,12 +5792,42 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         return directive;
     }
 
+    TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+    /* @ngInject */
+    function TemplateController($scope, $compile, $document) {
+        var hl = this;
+
+        hl.counter = 0;
+        hl.increCounter = increCounter;
+        hl.openModal = openModal;
+        hl.currModel = {};
+        //hl.addTemplate = addTemplate;
+        //hl.modalContainer = $('#template-modal');
+
+        //////////////
+
+        function openModal() {
+            $('#template-modal').modal('show');
+
+            $("#template-modal").on("hidden.bs.modal", function() {
+                $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+            });
+        }
+
+
+
+        function increCounter() {
+            hl.counter++;
+        }
+    }
+
 })();
 (function() {
     'use strict';
 
     angular
-        .module('app.deals')
+        .module('app.deals.templatemodaledit', [])
         .directive('templateModalEdit', templateModalEdit);
 
     templateModalEdit.$inject = ['$compile', '$document'];
@@ -5476,7 +5980,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 function remove(target) {
                     var parent = $(target).parent();
                     parent.remove();
-                    scope.$parent.$parent.vm.removeDiscount(scope.discountCounter);
+                    scope.$parent.$parent.vm.removeDiscount(scope.fieldModel);
                 }
             }
         };
@@ -5512,17 +6016,82 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 scope.closeModal = closeModal;
 
                 scope.$parent.vm.setSelDiscountIndex(scope.$parent.vm.discountCounter);
+                scope.statusChange = statusChange;
+                scope.checkActiveDiscount = checkActiveDiscount;
                 //scope.statusChange = statusChange;
 
                 //////////////////////////
 
+                function checkActiveDiscount() {
+                    var tobj = scope.$parent.vm.selDiscountObj;
+                    //console.log(selDiscount);
+                    var activeStandard = countActiveStandard();
+
+                    if (tobj.status == 'active' && activeStandard > 0) {
+                        bootbox.confirm({
+                            title: "Confirm Active Standard",
+                            message: "You have an active standard discount running at the moment. Do you want to create a new active standard discount?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Yes',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'No',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function(result) {
+                                // if (result) {
+                                //     t.status = 'suspended';
+                                // } else {
+                                //     console.log(scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status);
+                                //     scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status = 'suspended';
+                                // }
+                            }
+                        });
+                    }
+
+
+                }
+
+                function countActiveStandard() {
+                    var tobj = scope.$parent.vm.selDiscountObj;
+                    var countStandard = 0;
+
+                    angular.forEach(scope.$parent.vm.form.discounts, function(t, index) {
+                        if (t.discount_type == 'standard' && angular.isDefined(t.value) && t.value.trim() != "" && t.value.trim() != "null") {
+                            if (t.status == 'active') {
+                                countStandard++;
+                            }
+                        }
+
+                    });
+
+                    angular.forEach(scope.$parent.vm.discounts, function(t, index) {
+                        if (tobj.uid != t.uid && t.discount_type == 'standard') {
+                            if (t.status == 'active') {
+                                countStandard++;
+                            }
+
+                        }
+                    });
+                    return countStandard;
+                }
+
                 function statusChange() {
                     var tobj = scope.$parent.vm.selDiscountObj;
+                    var countStandard = 0;
+                    var activeStandard = countActiveStandard();
 
                     if (tobj.discount_type == 'standard' && tobj.status == 'active') {
                         angular.forEach(scope.$parent.vm.form.discounts, function(t, index) {
-                            if (t.uid != tobj.uid && t.discount_type == 'standard') {
+                            console.log(scope.$parent.vm.discountCounter);
+                            if (t !== tobj && t.discount_type == 'standard') {
+                                countStandard++;
+                                //console.log(t);
                                 if (t.status == 'active') {
+
                                     t.status = 'suspended';
                                 }
                             }
@@ -5530,19 +6099,29 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         });
 
                         angular.forEach(scope.$parent.vm.discounts, function(t, index) {
-                            if (scope.$parent.vm.discountCounter != index && t.discount_type == 'standard') {
+                            if (tobj.uid != t.uid && t.discount_type == 'standard') {
+                                countStandard++;
                                 if (t.status == 'active') {
                                     t.status = 'suspended';
                                 }
 
                             }
                         });
+
+                        if (countStandard == 0 && tobj.discount_type == 'standard') {
+
+                            scope.$parent.vm.selDiscountObj.status = 'active';
+                        }
+                    } else if (tobj.discount_type == 'standard' && activeStandard == 0) {
+
+                        scope.$parent.vm.selDiscountObj.status = 'active';
                     }
+
                 }
 
-                $("#discount-modal-edit").on("hidden.bs.modal", function() {
-                    statusChange();
-                });
+                // $("#discount-modal-edit").on("hidden.bs.modal", function() {
+                //     statusChange();
+                // });
 
                 function closeModal() {
                     $('#discount-modal-edit').modal('hide');
@@ -5561,9 +6140,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         .module('app.deals')
         .directive('discountModal', discountModal);
 
-    discountModal.$inject = ['$compile', '$document'];
+    discountModal.$inject = ['$compile', '$document', '$q'];
     /* @ngInject */
-    function discountModal($compile, $document) {
+    function discountModal($compile, $document, $q) {
 
         var directive = {
             restrict: 'E',
@@ -5580,17 +6159,84 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                 scope.$parent.vm.setSelDiscountIndex(scope.$parent.vm.discountCounter);
                 scope.addDiscount = addDiscount;
+                scope.checkActiveDiscount = checkActiveDiscount;
                 //scope.disableAdd = true;
                 //scope.statusChange = statusChange;
 
                 /////////////
 
-                function statusChange() {
-                    var status = scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status;
+                function checkActiveDiscount() {
+                    var d = $q.defer();
 
+                    var selDiscount = scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex];
+                    var status = selDiscount.status;
+                    var countStandard = 0;
+                    //console.log(selDiscount);
+                    var activeStandard = countActiveStandard();
+
+                    if (status == 'active' && activeStandard > 0) {
+                        bootbox.confirm({
+                            title: "Confirm Active Standard",
+                            message: "You have an active standard discount running at the moment. Do you want to create a new active standard discount?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Yes',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'No',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function(result) {
+                                if (result) {
+                                    d.resolve(result);
+                                } else {
+                                    d.reject(false);
+                                }
+                            }
+                        });
+                    } else {
+                        d.resolve(null);
+                    }
+
+                    return d.promise;
+                }
+
+                function countActiveStandard() {
+                    var tobj = scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex];
+                    var countStandard = 0;
+                    angular.forEach(scope.$parent.vm.form.discounts, function(t, index) {
+                        if (t.discount_type == 'standard' && angular.isDefined(t.value) && t.value.trim() != "" && t.value.trim() != "null") {
+                            if (t.status == 'active') {
+                                countStandard++;
+                            }
+                        }
+
+                    });
+
+                    angular.forEach(scope.$parent.vm.discounts, function(t, index) {
+                        if (tobj.uid != t.uid && t.discount_type == 'standard') {
+                            if (t.status == 'active') {
+                                countStandard++;
+                            }
+
+                        }
+                    });
+                    return countStandard;
+                }
+
+                function statusChange() {
+                    var selDiscount = scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex];
+                    var status = selDiscount.status;
+                    var countStandard = 0;
+                    //console.log(selDiscount);
+                    var activeStandard = countActiveStandard();
                     if (status == 'active') {
+
                         angular.forEach(scope.$parent.vm.form.discounts, function(t, index) {
                             if (scope.$parent.vm.discountCounter != index && t.discount_type == 'standard') {
+                                countStandard++;
                                 if (t.status == 'active') {
                                     t.status = 'suspended';
                                 }
@@ -5598,8 +6244,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                         });
 
-                        if (scope.formMode == 'Edit') {
+                        if (scope.formMode == 'Edit' && selDiscount.discount_type == 'standard') {
                             angular.forEach(scope.$parent.vm.discounts, function(t, index) {
+                                countStandard++;
                                 if (t.discount_type == 'standard') {
                                     if (t.status == 'active') {
                                         t.status = 'suspended';
@@ -5608,8 +6255,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                                 }
                             });
                         }
-
+                        if (countStandard == 0 && selDiscount.discount_type == 'standard') {
+                            scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status = 'active';
+                        }
+                    } else if (selDiscount.discount_type == 'standard' && activeStandard == 0) {
+                        scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status = 'active';
                     }
+
+
                 }
 
                 // scope.$watch('$parent.vm.form.discounts[$parent.vm.selDiscountIndex].name', function(newValue, oldValue) {
@@ -5626,22 +6279,27 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 // });
 
                 function addDiscount() {
-                    statusChange();
+                    checkActiveDiscount().then(function() {
+                        statusChange();
 
-                    var html = '<discount-field discount-counter="' + scope.$parent.vm.selDiscountIndex + '" ></discount-field>';
-                    var input = angular.element(html);
-                    var compile = $compile(input)(scope);
+                        var html = '<discount-field discount-counter="' + scope.$parent.vm.selDiscountIndex + '" ></discount-field>';
+                        var input = angular.element(html);
+                        var compile = $compile(input)(scope);
 
-                    $document.find('#discount-container').append(input);
-                    $('#discount-modal').modal('hide');
-                    scope.$parent.vm.increDiscountCounter();
-                    scope.$parent.vm.setSelDiscountIndex(scope.$parent.vm.discountCounter);
+                        $document.find('#discount-container').append(input);
+                        $('#discount-modal').modal('hide');
+                        scope.$parent.vm.increDiscountCounter();
+                        scope.$parent.vm.setSelDiscountIndex(scope.$parent.vm.discountCounter);
 
-                    scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex] = {};
+                        scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex] = {};
 
-                    scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].value_type = 'percentage';
-                    scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].discount_type = 'standard';
-                    scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status = 'active';
+                        scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].value_type = 'percentage';
+                        scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].discount_type = 'standard';
+                        scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status = 'active';
+                    }).catch(function(err) {
+                        //Nothing to do here
+                    });
+
                 }
             }
         };
@@ -5894,6 +6552,74 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
+    angular
+        .module('app.users')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isSuperAdmin', isSuperAdmin);
+
+    function isSuperAdmin() {
+        return function(user) {
+            if (user) {
+                if (user.email == 'admin@example.com') {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isRole', isRole);
+
+    function isRole() {
+        return function(user) {
+            if (user) {
+                if (user.is_admin) {
+                    return 'Admin';
+                }
+                if (user.is_vendor) {
+                    return 'Vendor';
+                }
+                if (user.is_customer) {
+                    return 'Customer';
+                }
+            }
+
+            return 'No Role';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
     angular.module('app.users')
         .controller('UserController', UserController);
 
@@ -6091,72 +6817,4 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             });
         }
     }
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isYesNo', isYesNo);
-
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
-
-            return 'No';
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isSuperAdmin', isSuperAdmin);
-
-    function isSuperAdmin() {
-        return function(user) {
-            if (user) {
-                if (user.email == 'admin@example.com') {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isRole', isRole);
-
-    function isRole() {
-        return function(user) {
-            if (user) {
-                if (user.is_admin) {
-                    return 'Admin';
-                }
-                if (user.is_vendor) {
-                    return 'Vendor';
-                }
-                if (user.is_customer) {
-                    return 'Customer';
-                }
-            }
-
-            return 'No Role';
-        }
-
-    }
-
 })();

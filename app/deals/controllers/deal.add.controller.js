@@ -20,6 +20,7 @@
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
         vm.removeHighlight = removeHighlight;
+
         //template
         vm.templateCounter = 0;
         vm.increTemplateCounter = increTemplateCounter;
@@ -31,6 +32,7 @@
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
         vm.priceFormat = priceFormat;
+
         //discount
         vm.discountCounter = 0;
         vm.increDiscountCounter = increDiscountCounter;
@@ -39,6 +41,15 @@
         vm.selDiscountObj = {};
         vm.setSelDiscountObj = setSelDiscountObj;
         vm.removeDiscount = removeDiscount;
+
+        //image
+        vm.form.file = [];
+        vm.imageCounter = 0;
+        vm.getImageCounter = getImageCounter;
+        vm.removeAddedImage = removeAddedImage;
+        vm.insertNewImageObj = insertNewImageObj;
+        vm.latestImgIndex = latestImgIndex;
+        vm.blankFn = blankFn;
 
         vm.updateDateDiff = updateDateDiff;
         vm.prevState = HelperService.getPrevState();
@@ -56,6 +67,7 @@
             //     autoclose: true
             // });
             //ComponentsDateTimePickers.init();
+            insertNewImageObj();
             $(document).ready(function() {
                 ComponentsDateTimePickers.init();
             });
@@ -63,6 +75,34 @@
             //     console.log(newVal);
             //     return newVal.toFixed(2);
             // });
+        }
+
+        function blankFn() {
+            return false;
+        }
+
+        function latestImgIndex() {
+            return vm.form.file.length - 1;
+        }
+
+        function insertNewImageObj() {
+            var obj = {
+                file: "",
+                description: ""
+            };
+            vm.form.file.push(obj);
+        }
+
+        function removeAddedImage(image) {
+            angular.forEach(vm.form.file, function(img, index) {
+                if (img === image) {
+                    vm.form.file.splice(index, 1);
+                }
+            });
+        }
+
+        function getImageCounter() {
+            return vm.imageCounter++;
         }
 
         function updateDateDiff() {
@@ -83,11 +123,11 @@
         }
 
         //Discount
-        function removeDiscount(discount_index) {
-            console.log(discount_index);
+        function removeDiscount(discount) {
+            //console.log(discount_index);
             angular.forEach(vm.form.discounts, function(val, index) {
-                if (index == discount_index) {
-                    console.log('test')
+                if (val.uid == discount.uid) {
+                    //console.log('test')
                     vm.form.discounts.splice(index, 1);
                 }
             });
@@ -145,14 +185,14 @@
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
 
-            console.log(vm.form);
+            //console.log(vm.form);
             //return false;
 
             DealService.add(vm.form).then(function(resp) {
-                console.log(resp);
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Added new deal: " + vm.form.name + ' ' + resp;
+                // vm.response['msg'] = "Added new deal: " + vm.form.name + ' ' + resp;
+                vm.response['msg'] = "Added new deal.";
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -163,7 +203,7 @@
             }).catch(function(err) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to add " + err;
+                vm.response['msg'] = "Failed to add deal.";
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;

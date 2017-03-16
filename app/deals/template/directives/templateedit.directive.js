@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.deals')
+        .module('app.deals.templateedit', [])
         .directive('templateEdit', templateEdit);
 
     templateEdit.$inject = ['$compile'];
@@ -11,7 +11,7 @@
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/template/template-edit-field.html',
+            templateUrl: 'app/deals/template/template-edit-field.html',
             replace: true,
             scope: {
                 templateCounter: '=',

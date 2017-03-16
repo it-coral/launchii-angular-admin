@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.deals')
+        .module('app.deals.templatefield', [])
         .directive('templateField', templateField);
 
     templateField.$inject = ['$compile'];
@@ -11,14 +11,18 @@
 
         var directive = {
             restrict: 'E',
-            templateUrl: '/app/deals/template/template-field.html',
+            templateUrl: 'app/deals/template/template-field.html',
             replace: true,
             scope: {
-                templateCounter: '='
+                templateCounter: '=',
+                //fieldModel: '='
             },
             link: function(scope, element, attrs) {
                 $('[data-toggle="tooltip"]').tooltip();
-                scope.fieldModel = scope.$parent.$parent.vm.form.templates[scope.templateCounter];
+                //console.log(scope);
+                //if (angular.isDefined(scope.$parent.$parent.vm)) {
+                scope.fieldModel = scope.$parent.$parent.vm ? scope.$parent.$parent.vm.form.templates[scope.templateCounter] : {};
+                //}
 
                 scope.openModal = openModal;
                 scope.remove = remove;

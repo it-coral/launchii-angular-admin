@@ -1,7 +1,17 @@
 (function() {
     'use strict';
 
-    angular.module('app.deals', ['app.deals.highlightadd', 'app.deals.highlightedit', 'app.deals.highlightfield'])
+    angular.module('app.deals', [
+            'app.deals.highlightadd',
+            'app.deals.highlightedit',
+            'app.deals.highlightfield',
+            'app.deals.templateadd',
+            'app.deals.templateedit',
+            'app.deals.templatefield',
+            'app.deals.templatemodal',
+            'app.deals.templatemodaledit',
+            'app.deals.image'
+        ])
         .factory('DealService', DealService);
 
     DealService.$inject = ['$http', 'CONST', '$q', 'HelperService', 'BrandService'];
@@ -37,12 +47,42 @@
             getTemplateNames: getTemplateNames,
             getTemplateTypes: getTemplateTypes,
             getStandardDiscounts: getStandardDiscounts,
-            getEarlyBirdDiscounts: getEarlyBirdDiscounts
+            getEarlyBirdDiscounts: getEarlyBirdDiscounts,
+            dealImagesList: [],
+            getDealImages: getDealImages
         }
 
         return service;
 
         //////// SERIVCE METHODS ////////
+
+        function getDealImages(dealId) {
+            var d = $q.defer();
+
+            // if (service.dealImagesList.length > 0) {
+            //     d.resolve(service.dealImagesList);
+            // } else {
+            //     var url = api + '/' + dealId + '/images';
+            //     $http.get(url).then(function(resp) {
+            //         service.dealImagesList = resp.data.images;
+            //         d.resolve(resp.data.images);
+            //     }).catch(function(err) {
+            //         console.log(err);
+            //         d.reject(err);
+            //     });
+            // }
+
+            var url = api + '/' + dealId + '/images';
+            $http.get(url).then(function(resp) {
+                service.dealImagesList = resp.data.images;
+                d.resolve(resp.data.images);
+            }).catch(function(err) {
+                console.log(err);
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
 
         function getEarlyBirdDiscounts(dealId) {
             var d = $q.defer();
@@ -77,7 +117,7 @@
             var url = api + '/' + dealId + '/discounts/standard';
 
             $http.get(url).then(function(resp) {
-                console.log(resp);
+                //console.log(resp);
                 var discounts = resp.data.discounts;
                 angular.forEach(discounts, function(discount, index) {
                     if (discount.is_active) {
@@ -325,12 +365,13 @@
                     // }).catch(function(err) {
                     //     d.reject(err);
                     // });
-                    d.resolve(resp);
+                    // d.resolve(resp);
+                    d.resolve('');
                 }).catch(function(error) {
                     console.log(error);
                     service.errors = error;
                     //d.reject(error);
-                    d.resolve('but failed to add highlight')
+                    d.resolve('Failed to add highlight. ')
                 });
 
             // async.parallel(tasks, function(error, results) {
@@ -468,13 +509,14 @@
 
                         $http.post(url, template).then(function(resp) {
                             //d.resolve(resp);
-                            cb(null, resp);
+                            // cb(null, resp);
+                            cb(null, '');
                         }).catch(function(err) {
                             console.log(err);
                             // service.errors = error;
                             // d.reject(error);
                             //cb(err);
-                            cb(null, 'but failed to add template.');
+                            cb(null, 'Failed to add template. ');
                         });
 
                     });
@@ -509,7 +551,7 @@
                 if (angular.isDefined(discount.value) && discount.value.trim() != '') {
                     tasks.push(function(cb) {
                         var formData = new FormData();
-                        discount.coupons_file_expire_at = HelperService.combineDateTime(discount.coupons_file_expire_at, '00:00:00');
+                        //discount.codes_expire_at = HelperService.combineDateTime(discount.codes_expire_at, '00:00:00');
                         // var coupons_txt = discount.coupons_txt;
 
                         // delete discount.coupons_txt;
@@ -541,14 +583,15 @@
                             headers: { 'Content-Type': undefined }
                         }).then(function(resp) {
                             //d.resolve(resp);
-                            cb(null, resp);
+                            // cb(null, resp);
+                            cb(null, '');
                         }).catch(function(err) {
                             console.log(err);
                             // service.errors = error;
                             // d.reject(error);
                             //cb(err);
                             var errors = HelperService.setErrorStr(err);
-                            cb(null, 'but failed to add discount. Reason: ' + errors);
+                            cb(null, 'Failed to add discount. Reason: ' + errors + '. ');
                         });
 
                         // Upload.upload({
@@ -592,6 +635,30 @@
             return d.promise;
         }
 
+        function addFileImage(dealId, file) {
+            var d = $q.defer();
+            var url = api + '/' + dealId + '/images';
+
+            var filebase64 = 'data:' + file.file.filetype + ';base64,' + file.file.base64;
+
+            var data = {
+
+                image: {
+                    file: filebase64,
+                    description: file.description
+                }
+
+            };
+            //console.log(data);
+            $http.post(url, data).then(function(resp) {
+                d.resolve(resp);
+            }).catch(function(err) {
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
+
         function add(data) {
             var url = api;
             var d = $q.defer();
@@ -603,6 +670,24 @@
                     var dealId = resp.data.deal.uid;
 
                     var tasks = [];
+
+                    if (data.file.length > 0) {
+                        angular.forEach(data.file, function(img, index) {
+
+                            if (angular.isObject(img.file)) {
+                                tasks.push(function(cb) {
+                                    addFileImage(dealId, img).then(function(resp) {
+                                        cb(null, resp);
+                                    }).catch(function(err) {
+                                        console.log(err);
+                                        cb(err);
+                                    });
+                                });
+                            }
+
+                        });
+
+                    }
 
                     if (data.highlights.length > 0) {
                         //console.log(data.highlights);
@@ -616,7 +701,7 @@
                         });
                     }
 
-                    if (angular.isDefined(data.templates[0]) && angular.isDefined(data.templates[0].name) && data.templates[0].name.trim() != '') {
+                    if (angular.isDefined(data.templates[0]) && angular.isDefined(data.templates[0].name) && data.templates[0].name.trim() != '' && data.templates[0].name.trim() != 'null') {
                         tasks.push(function(cb) {
                             addTemplates(dealId, data.templates).then(function(resp) {
                                 cb(null, resp);
@@ -627,7 +712,7 @@
                         });
                     }
 
-                    if (angular.isDefined(data.discounts[0]) && angular.isDefined(data.discounts[0].value) && data.discounts[0].value.trim() != '') {
+                    if (angular.isDefined(data.discounts[0]) && angular.isDefined(data.discounts[0].value) && data.discounts[0].value.trim() != '' && data.discounts[0].value.trim() != 'null') {
                         tasks.push(function(cb) {
                             addDiscounts(dealId, data.discounts).then(function(resp) {
                                 cb(null, resp);
@@ -683,17 +768,14 @@
             var tasks = [];
             var tasksSeries = [];
 
-            //TEMPLATE ADD
-            if (angular.isDefined(data.form.templates) && data.form.templates.length > 0) {
-                var url_ah = api + '/' + id + '/templates';
+            //IMAGE ADD
+            if (angular.isDefined(data.form.file)) {
 
-                angular.forEach(data.form.templates, function(template, index) {
-                    //console.log(angular.isDefined(template.name));
-                    //console.log(template.name);
-                    if (angular.isDefined(template.name) && template.name.trim() != '') {
+                angular.forEach(data.form.file, function(img, index) {
+                    if (angular.isObject(img.file) && angular.isDefined(img.file.filetype)) {
+
                         tasks.push(function(cb) {
-                            template['templatable_id'] = id;
-                            $http.post(url_ah, template)
+                            addFileImage(id, img)
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
@@ -706,10 +788,78 @@
                 });
             }
 
-            //HIGHLIGHT
+            //IMAGE DELETE
+            if (angular.isDefined(data.removedImages)) {
+                angular.forEach(data.removedImages, function(image, index) {
+                    tasks.push(function(cb) {
+                        $http.delete(api + '/' + id + '/images/' + image.uid)
+                            .then(function(resp) {
+                                cb(null, resp);
+                            }).catch(function(err) {
+                                cb(err);
+                            });
+                    });
+                });
+
+            }
+
+            //IMAGE EDIT
+            if (angular.isDefined(data.images)) {
+
+                angular.forEach(data.images, function(img, index) {
+                    if (angular.isObject(img.file) && angular.isDefined(img.file.filetype)) {
+                        var filebase64 = 'data:' + img.file.filetype + ';base64,' + img.file.base64;
+
+                        var data = {
+
+                            image: {
+                                file: filebase64,
+                                description: img.description
+                            }
+
+                        }
+
+                        tasks.push(function(cb) {
+                            $http.patch(api + '/' + id + '/images/' + img.uid, data)
+                                .then(function(resp) {
+                                    cb(null, resp);
+                                }).catch(function(err) {
+                                    console.log(err);
+                                    cb(err);
+                                });
+                        });
+                    }
+
+                });
+            }
+
+            //TEMPLATE ADD
+            if (angular.isDefined(data.form.templates) && data.form.templates.length > 0) {
+                //var url_ah = api + '/' + id + '/templates';
+
+                angular.forEach(data.form.templates, function(template, index) {
+                    //console.log(angular.isDefined(template.name));
+                    //console.log(template.name);
+                    if (angular.isDefined(template.name) && template.name.trim() != '') {
+                        tasks.push(function(cb) {
+                            template['templatable_id'] = id;
+                            $http.post(api + '/' + id + '/templates', template)
+                                .then(function(resp) {
+                                    cb(null, resp);
+                                }).catch(function(err) {
+                                    console.log(err);
+                                    cb(err);
+                                });
+                        });
+                    }
+
+                });
+            }
+
+            //HIGHLIGHT UPDATE
             if (angular.isDefined(data.highlights) && data.highlights.length > 0) {
                 angular.forEach(data.highlights, function(val, index) {
-                    var url_h = url + '/highlights/' + val.uid;
+                    //var url_h = url + '/highlights/' + val.uid;
                     var data_h = {
                         highlight: {
                             title: val.title
@@ -717,7 +867,7 @@
                     };
 
                     tasks.push(function(cb) {
-                        $http.patch(url_h, data_h).then(function(resp) {
+                        $http.patch(url + '/highlights/' + val.uid, data_h).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -726,13 +876,13 @@
                     });
                 });
             }
-            //HIGHLIGHT
+            //HIGHLIGHT DELETE
             if (angular.isDefined(data.removedHighlights) && data.removedHighlights.length > 0) {
                 angular.forEach(data.removedHighlights, function(val, index) {
-                    var url_h = url + '/highlights/' + val.uid;
+                    //var url_h = url + '/highlights/' + val.uid;
 
                     tasks.push(function(cb) {
-                        $http.delete(url_h).then(function(resp) {
+                        $http.delete(url + '/highlights/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -744,11 +894,11 @@
             //TEMPLATE UPDATE
             if (angular.isDefined(data.templates) && data.templates.length > 0) {
                 angular.forEach(data.templates, function(template, index) {
-                    var url_h = url + '/templates/' + template.uid;
+                    //var url_h = url + '/templates/' + template.uid;
 
                     tasks.push(function(cb) {
                         template['templatable_id'] = id;
-                        $http.patch(url_h, template).then(function(resp) {
+                        $http.patch(url + '/templates/' + template.uid, template).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -760,10 +910,10 @@
             //TEMPLATE DELETE
             if (angular.isDefined(data.removedTemplates) && data.removedTemplates.length > 0) {
                 angular.forEach(data.removedTemplates, function(val, index) {
-                    var url_h = url + '/templates/' + val.uid;
+                    //var url_h = url + '/templates/' + val.uid;
 
                     tasks.push(function(cb) {
-                        $http.delete(url_h).then(function(resp) {
+                        $http.delete(url + '/templates/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -789,10 +939,10 @@
                     }
                 };
 
-                var url_ah = api + '/' + id + '/highlights/collection';
+                //var url_ah = api + '/' + id + '/highlights/collection';
                 console.log(data_h);
                 tasks.push(function(cb) {
-                    $http.post(url_ah, data_h)
+                    $http.post(api + '/' + id + '/highlights/collection', data_h)
                         .then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
@@ -841,10 +991,10 @@
             //DISCOUNT DELETE
             if (angular.isDefined(data.removedDiscounts) && data.removedDiscounts.length > 0) {
                 angular.forEach(data.removedDiscounts, function(val, index) {
-                    var url_h = url + '/discounts/' + val.uid;
+                    //var url_h = url + '/discounts/' + val.uid;
 
                     tasksSeries.push(function(cb) {
-                        $http.delete(url_h).then(function(resp) {
+                        $http.delete(url + '/discounts/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -857,11 +1007,11 @@
             //DISCOUNT UPDATE
             if (angular.isDefined(data.discounts) && data.discounts.length > 0) {
                 angular.forEach(data.discounts, function(discount, index) {
-                    var url_h = url + '/discounts/' + discount.uid;
+                    //var url_h = url + '/discounts/' + discount.uid;
 
                     tasksSeries.push(function(cb) {
 
-                        $http.patch(url_h, discount).then(function(resp) {
+                        $http.patch(url + '/discounts/' + discount.uid, discount).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
@@ -870,16 +1020,18 @@
                     });
                 });
             }
-
+            //console.log(data.form);
             //DISCOUNT ADD
             if (angular.isDefined(data.form.discounts) && data.form.discounts.length > 0) {
-                var url_ah = url + '/discounts';
+                //var url_ah = url + '/discounts';
 
                 angular.forEach(data.form.discounts, function(discount, index) {
-                    if (angular.isDefined(discount.value) && discount.value.trim() != '') {
+                    if (angular.isDefined(discount.value) && discount.value.trim() != '' && discount.value.trim() !== 'null') {
+                        //discount.codes_expire_at = HelperService.combineDateTime(discount.codes_expire_at, '00:00:00');
+                        //console.log(discount);
                         tasksSeries.push(function(cb) {
 
-                            $http.post(url_ah, discount)
+                            $http.post(url + '/discounts', discount)
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {

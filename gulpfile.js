@@ -57,6 +57,10 @@ gulp.task('scripts', function() {
             './app/deals/*.js',
             './app/deals/*/*.js',
 
+            //Image Module
+            './app/deals/image/*.js',
+            './app/deals/image/*/*.js',
+
             //Highlight Module
             './app/deals/highlight/*.js',
             './app/deals/highlight/*/*.js',

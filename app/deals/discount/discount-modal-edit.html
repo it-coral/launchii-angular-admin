@@ -56,7 +56,7 @@
 
                         <div class="form-group">
                             <label for="name">Status</label>
-                            <select name="" id="" class="form-control" ng-model="$parent.vm.selDiscountObj.status">
+                            <select name="" id="" class="form-control" ng-change="checkActiveDiscount()" ng-model="$parent.vm.selDiscountObj.status">
                                 <option value="active">Active</option>
                                 <option value="suspended">Suspended</option>
                             </select>
@@ -65,7 +65,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Close</button>
+                <button type="button" data-dismiss="modal" class="btn dark btn-outline" ng-click="statusChange()">Close</button>
             </div>
         </div>
     </div>
