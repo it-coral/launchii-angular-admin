@@ -8,7 +8,7 @@
         <span class="input-group-addon" style="cursor: pointer" data-original-title="Remove" data-toggle="tooltip" title="Edit" ng-click="openModal()">
             <i class="fa fa-edit font-blue" ></i>
         </span>
-        <span class="input-group-addon" style="cursor: pointer" data-original-title="Remove" data-toggle="tooltip" title="Remove" ng-click="remove($event.currentTarget)">
+        <span class="input-group-addon" style="cursor: pointer" data-original-title="Remove" ng-if="!(fieldModel | isActiveStandard)" data-toggle="tooltip" title="Remove" ng-click="remove($event.currentTarget)">
             <i class="fa fa-close font-red" ></i>
         </span>
     </div>
