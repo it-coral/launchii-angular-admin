@@ -1406,10 +1406,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         $http.defaults.headers.common = headers;
     }
 
-    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window'];
+    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window', '$templateCache'];
     /* @ngInject */
-    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window) {
+    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window, $templateCache) {
         //bootstrap3ElementModifier.enableValidationStateIcons(true);
+
+        //$templateCache.get('app/login/login.html');
+
         //Force redirect to https protocol
         var forceSSL = function(event) {
             if ($location.protocol() !== 'https') {
@@ -1419,62 +1422,55 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             }
         };
 
-
+        //console.log(!$rootScope.authenticated);
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {
-            //console.log('test');
+
+            event.preventDefault();
             $rootScope.loginError = "Your session has expired. Please login again.";
             AuthService.removeUserStorage();
             //AuthService.destroyAuthUser().then(function() {
             //if (toState.name !== "auth") {
-            event.preventDefault();
             $state.go('auth');
             ngProgressLite.done();
+            return false;
             //}
             //});
         });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
+            //event.preventDefault();
             forceSSL(event);
             BreadCrumbService.set(toState.name);
             $rootScope.crumbs = BreadCrumbService.getCrumbs();
 
             ngProgressLite.start();
 
-
-            //$rootScope.breadcrumbs = curr_state_name.split(".");
-
             if (localStorage.getItem('user') != 'undefined') {
                 var user = JSON.parse(localStorage.getItem('user'));
                 if (user && $auth.isAuthenticated()) {
-                    //AuthService.setHeaders();
-                    //if (user && $auth.validateUser()) {
                     $rootScope.authenticated = true;
                     $rootScope.currentUser = user;
 
                     if (toState.name === "auth") {
                         event.preventDefault();
                         $state.go('dashboard');
+                        ngProgressLite.done();
                     }
                 } else {
-                    ngProgressLite.done();
-                    //AuthService.destroyAuthUser().then(function() {
+                    localStorage.removeItem('user');
+                    $rootScope.authenticated = false;
+                    $rootScope.currentUser = null;
+
                     if (toState.name !== "auth") {
                         event.preventDefault();
                         $state.go('auth');
+                        ngProgressLite.done();
                     }
-                    //});
-                    // localStorage.removeItem('user');
-                    // $rootScope.authenticated = false;
-                    // $rootScope.currentUser = null;
-
-                    // if (toState.name !== "auth") {
-                    //     event.preventDefault();
-                    //     $state.go('auth');
-                    // }
                 }
             }
+            //AuthService.redirectIfUnauthorized(event, toState, ngProgressLite);
 
         });
 
@@ -1499,13 +1495,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     function config($stateProvider, $urlRouterProvider) {
 
         // For any unmatched url, redirect to /login 
-        $urlRouterProvider.otherwise("/auth");
+        $urlRouterProvider.otherwise("/");
 
         //////STATES//////
 
         var auth = {
             name: "auth",
-            url: "/auth",
+            url: "/",
             views: {
                 "login": {
                     templateUrl: "app/login/login.html",
@@ -1536,7 +1532,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         //Dashboard routes
         var dashboard = {
             name: "dashboard",
-            url: "/",
+            url: "/dashboard",
             views: {
                 "main": {
                     templateUrl: "app/dashboard/dashboard.html",
@@ -1544,7 +1540,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     controllerAs: "vm",
                     resolve: {
                         styleSheets: dashboardStyleSheets,
-                        //userPrepService: userPrepService
+                        userPrepService: userPrepService
                     }
                 },
                 //"nav": nav
@@ -1555,7 +1551,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         //Brand routes
         var brand = {
             name: "dashboard.brand",
-            url: "brand",
+            url: "/brand",
             parent: dashboard,
             views: {
                 "main_body": {
@@ -1619,7 +1615,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         //Deal routes
         var deal = {
             name: "dashboard.deal",
-            url: "deal",
+            url: "/deal",
             parent: dashboard,
             views: {
                 "main_body": {
@@ -1700,7 +1696,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         //User routes
         var user = {
             name: "dashboard.user",
-            url: "user",
+            url: "/user",
             parent: dashboard,
             views: {
                 "main_body": {
@@ -2660,7 +2656,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             getAuthUser: getAuthUser,
             logout: logout,
             setHeaders: setHeaders,
-            removeUserStorage: removeUserStorage
+            removeUserStorage: removeUserStorage,
+            redirectIfUnauthorized: redirectIfUnauthorized
         }
 
         return service;
@@ -2747,17 +2744,18 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
 
         function isAuthenticated() {
-            var d = $q.defer();
-            var $state = $injector.get('$state');
-            if ($auth.isAuthenticated()) {
-                //if ($auth.validateUser()) {
-                d.resolve();
-            } else {
-                d.reject();
-                $state.go('auth');
-            }
+            // var d = $q.defer();
+            // //var $state = $injector.get('$state');
+            // if ($auth.isAuthenticated()) {
+            //     //if ($auth.validateUser()) {
+            //     d.resolve();
+            // } else {
+            //     d.reject();
+            //     //$state.go('auth');
+            // }
 
-            return d.promise;
+            // return d.promise;
+            return $auth.isAuthenticated();
         }
 
         function createAuthUser() {
@@ -2833,6 +2831,35 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
             $http.defaults.headers.common = headers;
         }
+
+        function redirectIfUnauthorized(event, toState, ngProgressLite) {
+
+            //if (localStorage.getItem('user') != 'undefined') {
+            //var user = JSON.parse(localStorage.getItem('user'));
+            if ($auth.isAuthenticated() && toState.name === "auth") {
+                event.preventDefault();
+                console.log('11111111');
+                $state.go('dashboard');
+                return false;
+            } else if (!$auth.isAuthenticated() && toState.name === "auth") {
+                ngProgressLite.done();
+                event.preventDefault();
+                console.log('22222222');
+                $state.go('auth');
+                return false;
+            } else if (!$auth.isAuthenticated() && toState.name !== "auth") {
+                event.preventDefault();
+                console.log(toState.name);
+                console.log('00000000');
+                $state.go('auth');
+                return false;
+            }
+            //}
+            event.preventDefault();
+            console.log('test');
+            $state.go(toState.name);
+            return true;
+        }
     }
 
 })();
@@ -2854,7 +2881,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.login = login;
         vm.loggingIn = false;
 
+        activate();
+
         ///////////
+
+        function activate() {
+            $rootScope.authenticated = AuthService.isAuthenticated();
+        }
 
         function login() {
             vm.loggingIn = true;
@@ -2865,7 +2898,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     $state.go('dashboard');
                 }
 
-            }, function(error) {
+            }).catch(function(error) {
                 vm.loggingIn = false;
                 vm.loginError = true;
                 vm.loginErrorText = error.data.errors[0];
@@ -4433,95 +4466,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
-    angular
-        .module('app.deals')
-        .filter('toCurrencyFormat', toCurrencyFormat);
-
-    function toCurrencyFormat() {
-        return function(input) {
-            if (input) {
-                var num = parseFloat(input);
-                var currency = '$ ' + num.toFixed(2);
-
-                return currency;
-            }
-
-            return input;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('isActiveStandard', isActiveStandard);
-
-    function isActiveStandard() {
-        return function(discount) {
-            if (discount.discount_type == 'standard' && discount.status == 'active') {
-                return true;
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('roundPrice', roundPrice);
-
-    function roundPrice() {
-        return function(price) {
-            if (price) {
-                var num = parseFloat(price);
-                var currency = num.toFixed(2);
-
-                return currency;
-            }
-
-            return null;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular.module('app.deals')
-        .factory('TemplateService', TemplateService);
-
-    TemplateService.$inject = ['$scope'];
-
-    /* @ngInject */
-    function TemplateService($scope) {
-
-        var service = {
-            lists: [],
-            setList: setList
-        }
-
-        return service;
-
-        //////// SERIVCE METHODS ////////
-
-        function setList(list) {
-            service.lists = list;
-        }
-    }
-
-})();
-(function() {
-    'use strict';
-
     angular.module('app.deals')
         .controller('DealAddController', DealAddController);
 
@@ -5186,6 +5130,95 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular
+        .module('app.deals')
+        .filter('toCurrencyFormat', toCurrencyFormat);
+
+    function toCurrencyFormat() {
+        return function(input) {
+            if (input) {
+                var num = parseFloat(input);
+                var currency = '$ ' + num.toFixed(2);
+
+                return currency;
+            }
+
+            return input;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('isActiveStandard', isActiveStandard);
+
+    function isActiveStandard() {
+        return function(discount) {
+            if (discount.discount_type == 'standard' && discount.status == 'active') {
+                return true;
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('roundPrice', roundPrice);
+
+    function roundPrice() {
+        return function(price) {
+            if (price) {
+                var num = parseFloat(price);
+                var currency = num.toFixed(2);
+
+                return currency;
+            }
+
+            return null;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.deals')
+        .factory('TemplateService', TemplateService);
+
+    TemplateService.$inject = ['$scope'];
+
+    /* @ngInject */
+    function TemplateService($scope) {
+
+        var service = {
+            lists: [],
+            setList: setList
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function setList(list) {
+            service.lists = list;
+        }
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
         .module('app.deals.image', [])
         .directive('addImage', addImage);
 
@@ -5495,42 +5528,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-// (function() {
-//     'use strict';
-
-//     angular.module('app.deals')
-//         .controller('TemplateController', TemplateController);
-
-//     TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-//     /* @ngInject */
-//     function TemplateController($scope, $compile, $document) {
-//         var hl = this;
-
-//         hl.counter = 0;
-//         hl.increCounter = increCounter;
-//         hl.openModal = openModal;
-//         hl.currModel = {};
-//         //hl.addTemplate = addTemplate;
-//         //hl.modalContainer = $('#template-modal');
-
-//         //////////////
-
-//         function openModal() {
-//             $('#template-modal').modal('show');
-
-//             $("#template-modal").on("hidden.bs.modal", function() {
-//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-//             });
-//         }
-
-
-
-//         function increCounter() {
-//             hl.counter++;
-//         }
-//     }
-// })();
 (function() {
     'use strict';
 
@@ -5922,6 +5919,42 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+// (function() {
+//     'use strict';
+
+//     angular.module('app.deals')
+//         .controller('TemplateController', TemplateController);
+
+//     TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+//     /* @ngInject */
+//     function TemplateController($scope, $compile, $document) {
+//         var hl = this;
+
+//         hl.counter = 0;
+//         hl.increCounter = increCounter;
+//         hl.openModal = openModal;
+//         hl.currModel = {};
+//         //hl.addTemplate = addTemplate;
+//         //hl.modalContainer = $('#template-modal');
+
+//         //////////////
+
+//         function openModal() {
+//             $('#template-modal').modal('show');
+
+//             $("#template-modal").on("hidden.bs.modal", function() {
+//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+//             });
+//         }
+
+
+
+//         function increCounter() {
+//             hl.counter++;
+//         }
+//     }
+// })();
 (function() {
     'use strict';
 

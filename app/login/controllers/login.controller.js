@@ -16,7 +16,13 @@
         vm.login = login;
         vm.loggingIn = false;
 
+        activate();
+
         ///////////
+
+        function activate() {
+            $rootScope.authenticated = AuthService.isAuthenticated();
+        }
 
         function login() {
             vm.loggingIn = true;
@@ -27,7 +33,7 @@
                     $state.go('dashboard');
                 }
 
-            }, function(error) {
+            }).catch(function(error) {
                 vm.loggingIn = false;
                 vm.loginError = true;
                 vm.loginErrorText = error.data.errors[0];

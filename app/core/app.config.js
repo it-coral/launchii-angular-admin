@@ -54,10 +54,13 @@
         $http.defaults.headers.common = headers;
     }
 
-    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window'];
+    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window', '$templateCache'];
     /* @ngInject */
-    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window) {
+    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window, $templateCache) {
         //bootstrap3ElementModifier.enableValidationStateIcons(true);
+
+        //$templateCache.get('app/login/login.html');
+
         //Force redirect to https protocol
         var forceSSL = function(event) {
             if ($location.protocol() !== 'https') {
@@ -67,62 +70,55 @@
             }
         };
 
-
+        //console.log(!$rootScope.authenticated);
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {
-            //console.log('test');
+
+            event.preventDefault();
             $rootScope.loginError = "Your session has expired. Please login again.";
             AuthService.removeUserStorage();
             //AuthService.destroyAuthUser().then(function() {
             //if (toState.name !== "auth") {
-            event.preventDefault();
             $state.go('auth');
             ngProgressLite.done();
+            return false;
             //}
             //});
         });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
+            //event.preventDefault();
             forceSSL(event);
             BreadCrumbService.set(toState.name);
             $rootScope.crumbs = BreadCrumbService.getCrumbs();
 
             ngProgressLite.start();
 
-
-            //$rootScope.breadcrumbs = curr_state_name.split(".");
-
             if (localStorage.getItem('user') != 'undefined') {
                 var user = JSON.parse(localStorage.getItem('user'));
                 if (user && $auth.isAuthenticated()) {
-                    //AuthService.setHeaders();
-                    //if (user && $auth.validateUser()) {
                     $rootScope.authenticated = true;
                     $rootScope.currentUser = user;
 
                     if (toState.name === "auth") {
                         event.preventDefault();
                         $state.go('dashboard');
+                        ngProgressLite.done();
                     }
                 } else {
-                    ngProgressLite.done();
-                    //AuthService.destroyAuthUser().then(function() {
+                    localStorage.removeItem('user');
+                    $rootScope.authenticated = false;
+                    $rootScope.currentUser = null;
+
                     if (toState.name !== "auth") {
                         event.preventDefault();
                         $state.go('auth');
+                        ngProgressLite.done();
                     }
-                    //});
-                    // localStorage.removeItem('user');
-                    // $rootScope.authenticated = false;
-                    // $rootScope.currentUser = null;
-
-                    // if (toState.name !== "auth") {
-                    //     event.preventDefault();
-                    //     $state.go('auth');
-                    // }
                 }
             }
+            //AuthService.redirectIfUnauthorized(event, toState, ngProgressLite);
 
         });
 

@@ -10,13 +10,13 @@
     function config($stateProvider, $urlRouterProvider) {
 
         // For any unmatched url, redirect to /login 
-        $urlRouterProvider.otherwise("/auth");
+        $urlRouterProvider.otherwise("/");
 
         //////STATES//////
 
         var auth = {
             name: "auth",
-            url: "/auth",
+            url: "/",
             views: {
                 "login": {
                     templateUrl: "app/login/login.html",
@@ -47,7 +47,7 @@
         //Dashboard routes
         var dashboard = {
             name: "dashboard",
-            url: "/",
+            url: "/dashboard",
             views: {
                 "main": {
                     templateUrl: "app/dashboard/dashboard.html",
@@ -55,7 +55,7 @@
                     controllerAs: "vm",
                     resolve: {
                         styleSheets: dashboardStyleSheets,
-                        //userPrepService: userPrepService
+                        userPrepService: userPrepService
                     }
                 },
                 //"nav": nav
@@ -66,7 +66,7 @@
         //Brand routes
         var brand = {
             name: "dashboard.brand",
-            url: "brand",
+            url: "/brand",
             parent: dashboard,
             views: {
                 "main_body": {
@@ -130,7 +130,7 @@
         //Deal routes
         var deal = {
             name: "dashboard.deal",
-            url: "deal",
+            url: "/deal",
             parent: dashboard,
             views: {
                 "main_body": {
@@ -211,7 +211,7 @@
         //User routes
         var user = {
             name: "dashboard.user",
-            url: "user",
+            url: "/user",
             parent: dashboard,
             views: {
                 "main_body": {

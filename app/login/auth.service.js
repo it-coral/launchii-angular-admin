@@ -19,7 +19,8 @@
             getAuthUser: getAuthUser,
             logout: logout,
             setHeaders: setHeaders,
-            removeUserStorage: removeUserStorage
+            removeUserStorage: removeUserStorage,
+            redirectIfUnauthorized: redirectIfUnauthorized
         }
 
         return service;
@@ -106,17 +107,18 @@
         }
 
         function isAuthenticated() {
-            var d = $q.defer();
-            var $state = $injector.get('$state');
-            if ($auth.isAuthenticated()) {
-                //if ($auth.validateUser()) {
-                d.resolve();
-            } else {
-                d.reject();
-                $state.go('auth');
-            }
+            // var d = $q.defer();
+            // //var $state = $injector.get('$state');
+            // if ($auth.isAuthenticated()) {
+            //     //if ($auth.validateUser()) {
+            //     d.resolve();
+            // } else {
+            //     d.reject();
+            //     //$state.go('auth');
+            // }
 
-            return d.promise;
+            // return d.promise;
+            return $auth.isAuthenticated();
         }
 
         function createAuthUser() {
@@ -191,6 +193,35 @@
             }
 
             $http.defaults.headers.common = headers;
+        }
+
+        function redirectIfUnauthorized(event, toState, ngProgressLite) {
+
+            //if (localStorage.getItem('user') != 'undefined') {
+            //var user = JSON.parse(localStorage.getItem('user'));
+            if ($auth.isAuthenticated() && toState.name === "auth") {
+                event.preventDefault();
+                console.log('11111111');
+                $state.go('dashboard');
+                return false;
+            } else if (!$auth.isAuthenticated() && toState.name === "auth") {
+                ngProgressLite.done();
+                event.preventDefault();
+                console.log('22222222');
+                $state.go('auth');
+                return false;
+            } else if (!$auth.isAuthenticated() && toState.name !== "auth") {
+                event.preventDefault();
+                console.log(toState.name);
+                console.log('00000000');
+                $state.go('auth');
+                return false;
+            }
+            //}
+            event.preventDefault();
+            console.log('test');
+            $state.go(toState.name);
+            return true;
         }
     }
 
