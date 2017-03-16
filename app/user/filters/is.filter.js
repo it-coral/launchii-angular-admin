@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app')
+        .module('app.users')
         .filter('isYesNo', isYesNo);
 
     function isYesNo() {

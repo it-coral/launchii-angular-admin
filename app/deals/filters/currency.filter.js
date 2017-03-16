@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app')
+        .module('app.deals')
         .filter('toCurrencyFormat', toCurrencyFormat);
 
     function toCurrencyFormat() {

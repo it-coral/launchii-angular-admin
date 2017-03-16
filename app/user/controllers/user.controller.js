@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.users')
         .controller('UserController', UserController);
 
     UserController.$inject = ['UserService', 'userPrepService'];
@@ -23,6 +23,7 @@
         vm.isLoading = false;
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
+        vm.isUserEmpty = UserService.isEmpty();
 
         //activate();
 

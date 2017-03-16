@@ -35,7 +35,7 @@
                     <div class="alert {{vm.response.success}}" ng-if="vm.response.msg">
                         <strong>{{vm.response.alert}}</strong> {{vm.response.msg}}
                     </div>
-                    <div class="table-scrollable" ng-if="vm.users">
+                    <div class="table-scrollable" ng-if="!vm.isUserEmpty">
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
@@ -80,7 +80,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="text-center" ng-if="!vm.users">
+                    <div class="text-center" ng-if="vm.isUserEmpty">
                         <h3>No users</h3>
                         <a ui-sref="dashboard.user.add">
                             <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add User</button>

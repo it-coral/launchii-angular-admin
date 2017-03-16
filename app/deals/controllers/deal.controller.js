@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.deals')
         .controller('DealController', DealController);
 
     DealController.$inject = ['DealService', 'dealPrepService'];
@@ -23,6 +23,7 @@
         vm.isLoading = false;
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
+        vm.isDealEmpty = DealService.isEmpty();
 
         //activate();
 

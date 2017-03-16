@@ -8,6 +8,8 @@
 
     /* @ngInject */
     function authInterceptor($q, $rootScope, $injector, CONST) {
+        var canceller = $q.defer();
+
         var interceptor = {
             request: request,
             responseError: responseError
@@ -32,6 +34,7 @@
             //console.log(localStorage.getItem("content-type"));
             //console.log(config.headers["content-type"]);
             //config.headers = headers;
+            config.timeout = canceller.promise;
 
             return config;
             /*
@@ -58,16 +61,17 @@
         function responseError(rejection) {
 
             if (rejection.config.headers['access-token'] == 'undefined') {
-                console.log('test');
+                //console.log('test');
                 return $q.reject(rejection);
             } else
             if (rejection.status === 401) {
                 $rootScope.$broadcast('unauthorized');
-                return rejection;
-            } else {
-                return rejection;
+
+                canceller.resolve('Unauthorized');
+                //return rejection;
             }
 
+            return $q.reject(rejection);
         }
     }
 

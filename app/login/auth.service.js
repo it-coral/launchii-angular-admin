@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.auth', [])
         .factory('AuthService', AuthService);
 
     AuthService.$inject = ['$auth', '$rootScope', '$http', '$q', '$injector', '$state', 'CONST'];

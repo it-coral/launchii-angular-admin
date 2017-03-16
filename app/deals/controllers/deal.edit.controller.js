@@ -1,13 +1,41 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.deals')
         .controller('DealEditController', DealEditController);
 
-    DealEditController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', '$state', 'brandPrepService', 'prepSelHighlights', 'prepSelTemplates', 'prepTemplateNames', 'prepTemplateTypes'];
+    DealEditController.$inject = ['DealService',
+        '$stateParams',
+        '$scope',
+        'prepSelDeal',
+        'HelperService',
+        '$state',
+        'brandPrepService',
+        'prepSelHighlights',
+        'prepSelTemplates',
+        'prepTemplateNames',
+        'prepTemplateTypes',
+        'prepStandardD',
+        'prepEarlyBirdD',
+        'prepDealImages'
+    ];
 
     /* @ngInject */
-    function DealEditController(DealService, $stateParams, $scope, prepSelDeal, HelperService, $state, brandPrepService, prepSelHighlights, prepSelTemplates, prepTemplateNames, prepTemplateTypes) {
+    function DealEditController(DealService,
+        $stateParams,
+        $scope,
+        prepSelDeal,
+        HelperService,
+        $state,
+        brandPrepService,
+        prepSelHighlights,
+        prepSelTemplates,
+        prepTemplateNames,
+        prepTemplateTypes,
+        prepStandardD,
+        prepEarlyBirdD,
+        prepDealImages) {
+
         var vm = this;
 
         vm.mode = "Edit";
@@ -17,16 +45,18 @@
         vm.form = vm.selectedDeal;
         vm.form.highlights = [];
         vm.form.templates = [];
+        vm.form.discounts = [];
         //vm.form.highlights = vm.selectedDeal.highlights;
         vm.highlights = prepSelHighlights;
-        vm.templates = prepSelTemplates;
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
         vm.removeHighlight = removeHighlight;
         vm.removedHighlightObjs = [];
-        vm.removedTemplateObjs = [];
 
+        //template
+        vm.templates = prepSelTemplates;
+        vm.removedTemplateObjs = [];
         vm.templateCounter = 0;
         vm.increTemplateCounter = increTemplateCounter;
         vm.selTemplateIndex = 0;
@@ -36,9 +66,35 @@
         vm.templateNames = prepTemplateNames;
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
-
         vm.priceFormat = priceFormat;
 
+        //discount
+        vm.discounts = prepStandardD.concat(prepEarlyBirdD);
+        vm.removedDiscountObjs = [];
+        vm.discountCounter = 0;
+        vm.increDiscountCounter = increDiscountCounter;
+        vm.selDiscountIndex = 0;
+        vm.setSelDiscountIndex = setSelDiscountIndex;
+        vm.selDiscountObj = {};
+        vm.setSelDiscountObj = setSelDiscountObj;
+        vm.removeDiscount = removeDiscount;
+        vm.standardDiscounts = prepStandardD;
+        vm.earlyBirdDiscounts = prepEarlyBirdD;
+
+        //images
+        vm.form.file = [];
+        vm.images = prepDealImages;
+        vm.removeImage = removeImage;
+        vm.removedImageObj = [];
+        vm.imageCounter = 0;
+        vm.getImageCounter = getImageCounter;
+        vm.insertNewImageObj = insertNewImageObj;
+        vm.latestImgIndex = latestImgIndex;
+        vm.blankFn = blankFn;
+        vm.openEditImageModal = openEditImageModal;
+        vm.removeAddedImage = removeAddedImage;
+
+        vm.updateDateDiff = updateDateDiff;
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
 
@@ -47,16 +103,112 @@
         ///////////////////
 
         function activate() {
+            insertNewImageObj();
+            // angular.element('.start-date').datepicker({
+            //     orientation: "left",
+            //     autoclose: true
+            // });
+            //console.log(vm.discounts);
             priceFormat();
             // DealService.find(vm.dealId).then(function(data) {
             //     vm.selectedDeal = data;
             //     vm.form = vm.selectedDeal;
             // });
             //temporary workaround
-            jQuery(document).ready(function() {
+            $(document).ready(function() {
                 ComponentsDateTimePickers.init();
+                $('[data-toggle="tooltip"]').tooltip();
             });
         }
+
+        function removeAddedImage(image) {
+            angular.forEach(vm.form.file, function(img, index) {
+                if (img === image) {
+                    vm.form.file.splice(index, 1);
+                }
+            });
+        }
+
+        function openEditImageModal(elem) {
+            $(elem).parents('.image-view-container').find('.image-modal').modal('show');
+        }
+
+        function blankFn() {
+            return false;
+        }
+
+        function latestImgIndex() {
+            return vm.form.file.length - 1;
+        }
+
+        function insertNewImageObj() {
+            var obj = {
+                file: "",
+                description: ""
+            };
+            vm.form.file.push(obj);
+        }
+
+        function getFormImage() {
+            //var index = getImageCounter();
+
+            vm.form.file[vm.imageCounter] = {
+                file: "",
+                description: ""
+            };
+
+            return vm.form.file[vm.imageCounter++];
+        }
+
+        function getImageCounter() {
+            return vm.imageCounter++;
+        }
+
+        function removeImage(elem, image) {
+            vm.removedImageObj.push(image);
+            $(elem).parents('.image-view-container').remove();
+        }
+
+        function updateDateDiff() {
+            vm.form.date_ends = '';
+
+            var dateNow = new Date();
+            var dateComp = new Date(vm.form.date_starts);
+
+            var timeDiff = Math.abs(dateComp.getTime() - dateNow.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+            $('#ending_date').datepicker({
+                autoclose: true
+            });
+
+            $('#ending_date').datepicker('setStartDate', '+' + diffDays + 'd');
+
+        }
+
+        //Discount
+        function removeDiscount(discount) {
+            //console.log(discount_index);
+            angular.forEach(vm.form.discounts, function(val, index) {
+                if (val.uid == discount.uid) {
+                    vm.form.discounts.splice(index, 1);
+                }
+            });
+            vm.removedDiscountObjs.push(discount);
+        }
+
+        function setSelDiscountObj(dobj) {
+            vm.selDiscountObj = dobj;
+        }
+
+        function setSelDiscountIndex(index) {
+            vm.selDiscountIndex = index;
+        }
+
+        function increDiscountCounter() {
+            vm.discountCounter++;
+        }
+        //End Discount
 
         function priceFormat() {
             var price = vm.form.price;
@@ -117,11 +269,15 @@
                 highlights: vm.highlights,
                 removedHighlights: vm.removedHighlightObjs,
                 templates: vm.templates,
-                removedTemplates: vm.removedTemplateObjs
+                removedTemplates: vm.removedTemplateObjs,
+                discounts: vm.discounts,
+                removedDiscounts: vm.removedDiscountObjs,
+                images: vm.images,
+                removedImages: vm.removedImageObj
             };
 
-            // console.log(data);
-            // return false;
+            //console.log(data);
+            //return false;
 
             DealService.edit(vm.dealId, data).then(function() {
                 vm.response['success'] = "alert-success";
@@ -143,6 +299,7 @@
 
                 $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
+
             });
         }
     }

@@ -20,6 +20,11 @@ gulp.task('scripts', function() {
             './node_modules/ladda/js/ladda.js',
             './node_modules/angular-ladda/dist/angular-ladda.min.js',
             // './node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js',
+            './node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js',
+            './node_modules/ng-file-upload/dist/ng-file-upload.min.js',
+            './node_modules/angular-scroll/angular-scroll.min.js',
+            './bower_components/angular-file-model/angular-file-model.js',
+            './node_modules/angular-base64-upload/dist/angular-base64-upload.min.js',
 
             //Cores
             './app/core/app.module.js',
@@ -39,6 +44,7 @@ gulp.task('scripts', function() {
 
             //Auth Module
             './app/login/*.js',
+            './app/login/*/*.js',
 
             //Dashboard Module
             './app/dashboard/*.js',
@@ -51,6 +57,10 @@ gulp.task('scripts', function() {
             './app/deals/*.js',
             './app/deals/*/*.js',
 
+            //Image Module
+            './app/deals/image/*.js',
+            './app/deals/image/*/*.js',
+
             //Highlight Module
             './app/deals/highlight/*.js',
             './app/deals/highlight/*/*.js',
@@ -59,9 +69,14 @@ gulp.task('scripts', function() {
             './app/deals/template/*.js',
             './app/deals/template/*/*.js',
 
+            //Discount Module
+            './app/deals/discount/*.js',
+            './app/deals/discount/*/*.js',
+
             //User Module
-            './app/user/*/*.js',
             './app/user/*.js',
+            './app/user/*/*.js',
+
         ])
         .pipe(concat('all.js'))
         .pipe(gulp.dest('./dist/js/'));

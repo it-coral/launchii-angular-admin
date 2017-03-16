@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.users', [])
         .factory('UserService', UserService);
 
     UserService.$inject = ['$http', 'CONST', '$q', '$rootScope'];
@@ -64,7 +64,7 @@
                 return true;
             }
 
-            return service.lists.users.length == 0;
+            return service.lists.total == 0;
         }
 
         function findInList(id) {

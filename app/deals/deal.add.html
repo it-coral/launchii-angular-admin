@@ -16,28 +16,31 @@
                 </div>
             </div>
             <div class="portlet-body form">
-                <div class="alert {{vm.response.success}}" id="msg-info" ng-if="vm.response.msg">
+                <div class="alert {{vm.response.success}}" id="msg-info" ng-show="vm.response.msg">
                     <strong>{{vm.response.alert}}</strong> {{vm.response.msg}}
                 </div>
                 <form role="form" id="deal-form" ng-submit="vm.submitAction()" novalidate="novalidate">
-                    <div class="form-body">
+                    <div class="form-body pb-0">
                         <div class="row">
                             <div class="col-md-5">
                                 <div class="form-group">
                                     <label>Select a Brand</label>
-                                    <a ui-sref="dashboard.brand.add" ng-if="!vm.brands">
-                                        <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add Brand</button>
-                                    </a>
-                                    <select name="" id="" class="form-control" ng-if="vm.brands" ng-model="vm.form.brand_id" ng-init="vm.form.brand_id = vm.default.uid" ng-options="brand.uid as brand.name for brand in vm.brands" required>
+                                    <div ng-if="vm.isBrandEmpty">
+                                        <label for="">No existing brand. Add a brand first.</label>
+                                        <a ui-sref="dashboard.brand.add">
+                                            <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add Brand</button>
+                                        </a>
+                                    </div>
+                                    <select name="" id="" class="form-control" ng-if="!vm.isBrandEmpty" ng-model="vm.form.brand_id" ng-init="vm.form.brand_id = vm.default.uid" ng-options="brand.uid as brand.name for brand in vm.brands" required>
                             </select>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="form-body pt-0" ng-if="!vm.isBrandEmpty">
                         <div class="form-group">
-                            <div class="input-group">
-                                <label>Name</label>
-                                <input type="text" class="form-control" placeholder="Enter name" ng-model="vm.form.name" required />
-                            </div>
+                            <label>Name</label>
+                            <input type="text" class="form-control" placeholder="Enter name" ng-model="vm.form.name" required />
                         </div>
                         <div class="form-group">
                             <label>Link</label>
@@ -61,7 +64,7 @@
                                     <label>Starting date</label>
                                     <div class="input-icon">
                                         <i class="fa fa-calendar"></i>
-                                        <input type="text" class="form-control input-medium date-picker" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" size="16" ng-model="vm.form.date_starts" required />
+                                        <input type="text" class="form-control input-medium date date-picker" data-date-format="yyyy-mm-dd" ng-change="vm.updateDateDiff()" data-date-start-date="+0d" size="16" ng-model="vm.form.date_starts" required />
                                     </div>
                                 </div>
                             </div>
@@ -83,7 +86,7 @@
                                     <label>Ending date</label>
                                     <div class="input-icon">
                                         <i class="fa fa-calendar"></i>
-                                        <input type="text" class="form-control input-medium date date-picker" size="16" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" ng-model="vm.form.date_ends" required />
+                                        <input type="text" class="form-control input-medium" id="ending_date" size="16" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" ng-model="vm.form.date_ends" required />
                                     </div>
                                 </div>
                             </div>
@@ -99,10 +102,51 @@
                                 </div>
                             </div>
                         </div>
+                        <!--Image-->
+                        <div ng-if="vm.mode == 'Edit'">
+                            <hr />
+                            <h4>Uploaded Images</h4>
+                            <div class="mt-element-overlay">
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 image-view-container" ng-repeat="image in vm.images">
+
+                                        <div class="mt-overlay-1 mt-scroll-up">
+                                            <img ng-src="{{image.standard_url}}" alt="{{image.description}}" />
+                                            <div class="mt-overlay">
+                                                <ul class="mt-info">
+                                                    <li>
+                                                        <a class="btn default btn-outline" href="javascript:;" data-toggle="tooltip" title="Edit" ng-click="vm.openEditImageModal($event.currentTarget)">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="btn default btn-outline" href="javascript:;" data-toggle="tooltip" title="Remove" ng-click="vm.removeImage($event.currentTarget, image)">
+                                                            <i class="fa fa-remove font-red"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <image-form form-image="image" insert-img="vm.blankFn" form-mode="vm.mode" no-btn="true"></image-form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <h4>Images</h4>
+                        <div class="row">
+                            <div class="col-md-5" id="image-display-container">
+
+                            </div>
+                        </div>
+                        <add-image form-image="vm.form.file[vm.latestImgIndex()]" insert-img="vm.insertNewImageObj" form-mode="vm.mode" remove-image="vm.removeAddedImage"></add-image>
+
                         <!--Highlights-->
                         <hr />
+
                         <h4>Highlights</h4>
-                        <add-highlight field-model="vm.form.highlights" form-mode="vm.mode" highlights-data="vm.highlights">
+                        <add-highlight field-model="vm.form.highlights" form-mode="vm.mode" highlights-data="vm.highlights" counter="0">
                         </add-highlight>
 
                         <!--Templates-->
@@ -110,8 +154,19 @@
                         <h4>Templates</h4>
                         <add-template field-model="vm.form.templates" form-mode="vm.mode" templates-data="vm.templates">
                         </add-template>
+                        <template-modal field-model="vm.form.templates" form-mode="vm.mode"></template-modal>
+                        <template-modal-edit field-model="vm.form.templates" form-mode="vm.mode"></template-modal-edit>
+
+                        <!--Discounts-->
+                        <hr />
+                        <h4>Discounts</h4>
+                        <add-discount field-model="vm.form.discounts" form-mode="vm.mode" discounts-data="vm.discounts">
+                        </add-discount>
+                        <discount-modal field-model="vm.form.discounts" form-mode="vm.mode"></discount-modal>
+                        <discount-modal-edit field-model="vm.form.discounts" form-mode="vm.mode"></discount-modal-edit>
+
                     </div>
-                    <div class="form-actions">
+                    <div class="form-actions" ng-if="!vm.isBrandEmpty">
                         <div class="row">
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-default" ladda="!vm.isDone" data-spinner-color="#000000">{{ vm.mode }}</button>
@@ -129,5 +184,3 @@
     <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
-<template-modal field-model="vm.form.highlights" form-mode="vm.mode"></template-modal>
-<template-modal-edit field-model="vm.form.highlights" form-mode="vm.mode"></template-modal-edit>

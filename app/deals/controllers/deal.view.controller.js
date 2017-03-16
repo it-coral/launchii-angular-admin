@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app')
+    angular.module('app.deals')
         .controller('DealViewController', DealViewController);
 
     DealViewController.$inject = ['DealService', '$stateParams', '$scope', 'prepSelDeal', 'HelperService', 'prepSelHighlights', 'prepSelTemplates'];
