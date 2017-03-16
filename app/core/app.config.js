@@ -27,6 +27,7 @@
         laddaProvider.setOption({
             style: 'expand-right'
         });
+
     }
 
     // csrf.$inject = ['$http', '$cookies'];
@@ -53,10 +54,20 @@
         $http.defaults.headers.common = headers;
     }
 
-    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService'];
+    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window'];
     /* @ngInject */
-    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService) {
+    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window) {
         //bootstrap3ElementModifier.enableValidationStateIcons(true);
+        //Force redirect to https protocol
+        var forceSSL = function(event) {
+            if ($location.protocol() !== 'https') {
+                event.preventDefault();
+                $window.location.href = $location.absUrl().replace('http', 'https');
+                return false;
+            }
+        };
+
+
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {
@@ -73,6 +84,7 @@
         });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
+            forceSSL(event);
             BreadCrumbService.set(toState.name);
             $rootScope.crumbs = BreadCrumbService.getCrumbs();
 
