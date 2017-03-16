@@ -22,6 +22,7 @@
 
         function activate() {
             $rootScope.authenticated = AuthService.isAuthenticated();
+            $rootScope.hasLoginView = true;
         }
 
         function login() {

@@ -73,11 +73,11 @@ License: You must have a valid license purchased only from themeforest(the above
     <!-- BEGIN LOGO -->
     <div class="logo" ng-if="!$root.authenticated">
         <!--<img src="/templates/assets/pages/img/logo-big.png" alt="" /> </a>-->
-        <h2 class="font-white">Launchii</h2>
+        <h2 class="font-white"><span ng-if="!$root.hasLoginView">Loading </span>Launchii<span ng-if="!$root.hasLoginView">...</span></h2>
     </div>
     <!-- END LOGO -->
 
-    <div class="content" ng-if="!$root.authenticated" ui-view="login"></div>
+    <div class="content" style="display: none" ng-class="{'show': $root.hasLoginView}" ng-if="!$root.authenticated" ui-view="login"></div>
 
     <div class="page-wrapper auth-dash" ng-class="{'show': $root.authenticated}" style="display: none" ng-if="$root.authenticated">
         <ng-include src="'/tpl/header.html'"></ng-include>
