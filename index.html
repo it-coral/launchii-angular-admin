@@ -79,7 +79,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <div class="content" ng-if="!$root.authenticated" ui-view="login"></div>
 
-    <div class="page-wrapper" ng-if="$root.authenticated">
+    <div class="page-wrapper auth-dash" ng-class="{'show': $root.authenticated}" style="display: none" ng-if="$root.authenticated">
         <ng-include src="'/tpl/header.html'"></ng-include>
         <div class="page-container">
             <sidebar-section></sidebar-section>

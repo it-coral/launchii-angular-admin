@@ -88,7 +88,11 @@
         });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
-            //event.preventDefault();
+            // if (toState.name != 'auth') {
+            //     event.preventDefault();
+            // }
+
+            //console.log(toState.name);
             forceSSL(event);
             BreadCrumbService.set(toState.name);
             $rootScope.crumbs = BreadCrumbService.getCrumbs();
@@ -100,7 +104,7 @@
                 if (user && $auth.isAuthenticated()) {
                     $rootScope.authenticated = true;
                     $rootScope.currentUser = user;
-
+                    $('.auth-dash').attr('style', 'display: block !important');
                     if (toState.name === "auth") {
                         event.preventDefault();
                         $state.go('dashboard');
@@ -117,6 +121,8 @@
                         ngProgressLite.done();
                     }
                 }
+            } else {
+                $state.go(toState.name);
             }
             //AuthService.redirectIfUnauthorized(event, toState, ngProgressLite);
 

@@ -1440,7 +1440,11 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
-            //event.preventDefault();
+            // if (toState.name != 'auth') {
+            //     event.preventDefault();
+            // }
+
+            //console.log(toState.name);
             forceSSL(event);
             BreadCrumbService.set(toState.name);
             $rootScope.crumbs = BreadCrumbService.getCrumbs();
@@ -1452,7 +1456,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 if (user && $auth.isAuthenticated()) {
                     $rootScope.authenticated = true;
                     $rootScope.currentUser = user;
-
+                    $('.auth-dash').attr('style', 'display: block !important');
                     if (toState.name === "auth") {
                         event.preventDefault();
                         $state.go('dashboard');
@@ -1469,6 +1473,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         ngProgressLite.done();
                     }
                 }
+            } else {
+                $state.go(toState.name);
             }
             //AuthService.redirectIfUnauthorized(event, toState, ngProgressLite);
 
@@ -5528,6 +5534,42 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+// (function() {
+//     'use strict';
+
+//     angular.module('app.deals')
+//         .controller('TemplateController', TemplateController);
+
+//     TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+//     /* @ngInject */
+//     function TemplateController($scope, $compile, $document) {
+//         var hl = this;
+
+//         hl.counter = 0;
+//         hl.increCounter = increCounter;
+//         hl.openModal = openModal;
+//         hl.currModel = {};
+//         //hl.addTemplate = addTemplate;
+//         //hl.modalContainer = $('#template-modal');
+
+//         //////////////
+
+//         function openModal() {
+//             $('#template-modal').modal('show');
+
+//             $("#template-modal").on("hidden.bs.modal", function() {
+//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+//             });
+//         }
+
+
+
+//         function increCounter() {
+//             hl.counter++;
+//         }
+//     }
+// })();
 (function() {
     'use strict';
 
@@ -5919,42 +5961,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-// (function() {
-//     'use strict';
-
-//     angular.module('app.deals')
-//         .controller('TemplateController', TemplateController);
-
-//     TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-//     /* @ngInject */
-//     function TemplateController($scope, $compile, $document) {
-//         var hl = this;
-
-//         hl.counter = 0;
-//         hl.increCounter = increCounter;
-//         hl.openModal = openModal;
-//         hl.currModel = {};
-//         //hl.addTemplate = addTemplate;
-//         //hl.modalContainer = $('#template-modal');
-
-//         //////////////
-
-//         function openModal() {
-//             $('#template-modal').modal('show');
-
-//             $("#template-modal").on("hidden.bs.modal", function() {
-//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-//             });
-//         }
-
-
-
-//         function increCounter() {
-//             hl.counter++;
-//         }
-//     }
-// })();
 (function() {
     'use strict';
 
