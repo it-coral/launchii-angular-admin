@@ -1510,7 +1510,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             url: "/",
             views: {
                 "login": {
-                    templateUrl: "app/login/login.html",
+                    templateUrl: "./app/login/login.html",
                     controller: "LoginController",
                     controllerAs: "vm",
                     resolve: {
