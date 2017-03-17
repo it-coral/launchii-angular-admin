@@ -7,10 +7,8 @@
             </div>
             <div class="modal-body">
                 <form role="form" novalidate>
-                    <div ng-if="formMode == 'Edit'" class="font-red">
-                        * Actual image will update when deal form edit is done.
-                    </div>
                     <div class="form-body">
+                        <div class="form-group form-image-preview"></div>
                         <div class="form-group">
                             <div class="fileinput fileinput-new" data-provides="fileinput">
                                 <label for="">Image</label>
@@ -22,8 +20,8 @@
                                     <span class="input-group-addon btn default btn-file">
                                                                     <span class="fileinput-new"> Select file </span>
                                     <span class="fileinput-exists"> Change </span>
-                                    <input type="file" id="image-file-input" base-sixty-four-input ng-model="formImage.file" accept="image/*" maxsize="10000"> </span>
-                                    <a href="javascript:;" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput" ng-click="clearFile()"> Remove </a>
+                                    <input type="file" id="image-file-input" base-sixty-four-input ng-model="formImage.file" ng-change="previewImage(formImage.file)" accept="image/*" maxsize="10000"> </span>
+                                    <a href="javascript:;" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput" clear-image-input sel-model="formImage" elem-container=".form-image-preview" ng-click="clearFile()"> Remove </a>
                                     <!--<label for=""></label>
                                     <input type="file" id="name" class="form-control" base-sixty-four-input ng-model="vm.form.file.file" multiple accept="image/*" />
                                     <p class="help-block">Upload deal image</p>-->
@@ -38,7 +36,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Close</button>
+                <button type="button" data-dismiss="modal" class="btn dark btn-outline" ng-click="closeForm()">Close</button>
                 <button type="button" class="btn green" ng-click="addNewImageObj()" ng-if="!noBtn" ng-disabled="fileIsBlank()">Add</button>
             </div>
         </div>

@@ -5,9 +5,9 @@
         .module('app.deals.image')
         .directive('imageForm', imageForm);
 
-    imageForm.$inject = ['$compile', '$document'];
+    imageForm.$inject = ['$compile', '$document', '$filter'];
     /* @ngInject */
-    function imageForm($compile, $document) {
+    function imageForm($compile, $document, $filter) {
 
         var directive = {
             restrict: 'E',
@@ -22,15 +22,28 @@
             },
             link: function(scope, element, attrs) {
                 scope.addNewImageObj = addNewImageObj;
-                scope.selFormImage = scope.formImage;
+                //scope.selFormImage = scope.formImage;
                 scope.clearFile = clearFile;
                 scope.fileIsBlank = fileIsBlank;
-
-                scope.$watch('formImage', function() {
-                    scope.selFormImage = scope.formImage;
-                });
+                scope.previewImage = previewImage;
+                scope.closeForm = closeForm;
 
                 ///////////
+
+                function closeForm() {
+                    if (scope.formMode == 'Edit') {
+                        var filename64 = $filter('base64filename')(scope.formImage.file);
+                        angular.element('#' + scope.formImage.uid).attr('src', filename64);
+                    }
+                }
+
+                function previewImage(imgModel) {
+                    var filename64 = $filter('base64filename')(imgModel);
+                    var html = '<label>Preview:</label><div><img src="' + filename64 + '" style="border: 1px solid #f0f0f0;" /></div>';
+                    var input = angular.element(html);
+                    var compile = $compile(input)(scope);
+                    angular.element(element).find('.form-image-preview').html(compile);
+                }
 
                 function fileIsBlank() {
                     if (scope.formMode == 'Edit') {
@@ -48,14 +61,14 @@
 
                 function addNewImageObj() {
                     if (angular.isObject(scope.formImage.file)) {
-                        var html = '<image-display sel-form-image="selFormImage" form-mode="formMode" remove-image="removeImage" insert-img="insertImg" ></image-display>';
+                        var html = '<image-display sel-form-image="formImage" form-mode="formMode" remove-image="removeImage" insert-img="insertImg" ></image-display>';
                         var input = angular.element(html);
                         var compile = $compile(input)(scope);
                         //console.log(scope.selFormImage);
                         $('#image-display-container').append(compile);
 
-                        $('.fileinput').fileinput('clear')
-                            //scope.insertImg();
+                        angular.element(element).find('.form-image-preview').html('');
+                        $('.fileinput').fileinput('clear');
                         $('.image-modal').modal('hide');
                     }
                 }

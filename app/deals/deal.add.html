@@ -111,7 +111,7 @@
                                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 image-view-container" ng-repeat="image in vm.images">
 
                                         <div class="mt-overlay-1 mt-scroll-up">
-                                            <img ng-src="{{image.standard_url}}" alt="{{image.description}}" />
+                                            <img ng-src="{{image.standard_url}}" alt="{{image.description}}" id="{{image.uid}}" />
                                             <div class="mt-overlay">
                                                 <ul class="mt-info">
                                                     <li>
@@ -136,9 +136,7 @@
                         <hr />
                         <h4>Images</h4>
                         <div class="row">
-                            <div class="col-md-5" id="image-display-container">
-
-                            </div>
+                            <div class="col-md-5" id="image-display-container"></div>
                         </div>
                         <add-image form-image="vm.form.file[vm.latestImgIndex()]" insert-img="vm.insertNewImageObj" form-mode="vm.mode" remove-image="vm.removeAddedImage"></add-image>
 

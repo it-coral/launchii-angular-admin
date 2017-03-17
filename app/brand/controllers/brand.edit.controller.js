@@ -17,18 +17,41 @@
         vm.form = vm.selectedBrand;
         vm.isDone = true;
 
+        //Logo
+        //vm.form.logo.description = vm.form.logo_image
+        vm.clearImage = clearImage;
+        vm.previewImage = previewImage;
+
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editPost;
 
-        //activate();
+        activate();
 
         ///////////////////
 
         function activate() {
-            BrandService.find(vm.brandId).then(function(data) {
-                vm.selectedBrand = data;
-                vm.form = vm.selectedBrand;
-            });
+            console.log(vm.form);
+            // BrandService.find(vm.brandId).then(function(data) {
+            //     vm.selectedBrand = data;
+            //     vm.form = vm.selectedBrand;
+            // });
+
+            // vm.$watch('form.logo', function() {
+            //     console.log(vm.form.logo);
+            // });
+        }
+
+        function previewImage(logo, elem, img) {
+            var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;
+
+            angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
+        }
+
+        function clearImage(imgModel, container) {
+            imgModel.file = null;
+            imgModel.file = "";
+            imgModel.description = "";
+            angular.element(container).html('');
         }
 
         function editPost() {

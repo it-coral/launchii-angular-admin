@@ -136,12 +136,45 @@
             return d.promise;
         }
 
+        function setLogoImage(img) {
+            var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
+
+            var data = {
+                logo_image: {
+                    file: filebase64,
+                    description: img.description
+                }
+            };
+
+            return data;
+        }
+
+        function setCoverImage(img) {
+            var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
+
+            var data = {
+                cover_image: {
+                    file: filebase64,
+                    description: img.description
+                }
+            };
+
+            return data;
+        }
+
         function add(data) {
             var url = api;
             var d = $q.defer();
 
+            data.logo_image = setLogoImage(data.logo);
+            data.cover_image = setCoverImage(data.cover);
+
+            // console.log(data);
+            // return false;
+
             $http.post(url, data)
                 .then(function(resp) {
+                    //console.log(resp);
                     d.resolve(resp);
                 }).catch(function(error) {
                     console.log(error);

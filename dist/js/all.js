@@ -2278,6 +2278,44 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
     angular
         .module('app')
+        .directive('clearImageInput', clearImageInput);
+
+    clearImageInput.$inject = ['$state', '$stateParams', 'BreadCrumbService'];
+    /* @ngInject */
+    function clearImageInput($state, $stateParams, BreadCrumbService) {
+
+        var directive = {
+            restrict: 'A',
+            scope: {
+                selModel: '=',
+                elemContainer: '@'
+            },
+            link: function(scope, element, attrs) {
+
+                clearEvent();
+
+                /////////////
+
+                function clearEvent() {
+                    element.bind('click', function() {
+                        scope.selModel.file = null;
+                        scope.selModel.file = "";
+                        angular.element(scope.elemContainer).html('');
+                    });
+                }
+
+            }
+        };
+
+        return directive;
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
         .directive('dateDiff', dateDiff);
 
     function dateDiff() {
@@ -2479,6 +2517,27 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 });
             }
         };
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('base64filename', base64filename);
+
+    function base64filename() {
+        return function(img) {
+            if (img) {
+                var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
+
+                return filebase64;
+            }
+
+            return img;
+        }
+
     }
 
 })();
@@ -3087,12 +3146,45 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             return d.promise;
         }
 
+        function setLogoImage(img) {
+            var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
+
+            var data = {
+                logo_image: {
+                    file: filebase64,
+                    description: img.description
+                }
+            };
+
+            return data;
+        }
+
+        function setCoverImage(img) {
+            var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
+
+            var data = {
+                cover_image: {
+                    file: filebase64,
+                    description: img.description
+                }
+            };
+
+            return data;
+        }
+
         function add(data) {
             var url = api;
             var d = $q.defer();
 
+            data.logo_image = setLogoImage(data.logo);
+            data.cover_image = setCoverImage(data.cover);
+
+            // console.log(data);
+            // return false;
+
             $http.post(url, data)
                 .then(function(resp) {
+                    //console.log(resp);
                     d.resolve(resp);
                 }).catch(function(error) {
                     console.log(error);
@@ -3157,15 +3249,32 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.response = {};
         vm.isDone = true;
 
+        //Logo
+        vm.clearImage = clearImage;
+        vm.previewImage = previewImage;
+
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addBrand;
 
         ///////////////////
 
+        function previewImage(logo, elem, img) {
+            var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;
+
+            angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
+        }
+
+        function clearImage(imgModel, container) {
+            imgModel.file = null;
+            imgModel.file = "";
+            imgModel.description = "";
+            angular.element(container).html('');
+        }
+
         function addBrand() {
             vm.isDone = false;
-            vm.form.logo_image = "default.png"; //temporary
-            vm.form.brand_image = "default.png"; //temporary
+            //vm.form.logo_image = "default.png"; //temporary
+            //vm.form.brand_image = "default.png"; //temporary
 
             BrandService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
@@ -3317,18 +3426,41 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.form = vm.selectedBrand;
         vm.isDone = true;
 
+        //Logo
+        //vm.form.logo.description = vm.form.logo_image
+        vm.clearImage = clearImage;
+        vm.previewImage = previewImage;
+
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editPost;
 
-        //activate();
+        activate();
 
         ///////////////////
 
         function activate() {
-            BrandService.find(vm.brandId).then(function(data) {
-                vm.selectedBrand = data;
-                vm.form = vm.selectedBrand;
-            });
+            console.log(vm.form);
+            // BrandService.find(vm.brandId).then(function(data) {
+            //     vm.selectedBrand = data;
+            //     vm.form = vm.selectedBrand;
+            // });
+
+            // vm.$watch('form.logo', function() {
+            //     console.log(vm.form.logo);
+            // });
+        }
+
+        function previewImage(logo, elem, img) {
+            var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;
+
+            angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
+        }
+
+        function clearImage(imgModel, container) {
+            imgModel.file = null;
+            imgModel.file = "";
+            imgModel.description = "";
+            angular.element(container).html('');
         }
 
         function editPost() {
@@ -4473,95 +4605,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
-    angular
-        .module('app.deals')
-        .filter('toCurrencyFormat', toCurrencyFormat);
-
-    function toCurrencyFormat() {
-        return function(input) {
-            if (input) {
-                var num = parseFloat(input);
-                var currency = '$ ' + num.toFixed(2);
-
-                return currency;
-            }
-
-            return input;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('isActiveStandard', isActiveStandard);
-
-    function isActiveStandard() {
-        return function(discount) {
-            if (discount.discount_type == 'standard' && discount.status == 'active') {
-                return true;
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('roundPrice', roundPrice);
-
-    function roundPrice() {
-        return function(price) {
-            if (price) {
-                var num = parseFloat(price);
-                var currency = num.toFixed(2);
-
-                return currency;
-            }
-
-            return null;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular.module('app.deals')
-        .factory('TemplateService', TemplateService);
-
-    TemplateService.$inject = ['$scope'];
-
-    /* @ngInject */
-    function TemplateService($scope) {
-
-        var service = {
-            lists: [],
-            setList: setList
-        }
-
-        return service;
-
-        //////// SERIVCE METHODS ////////
-
-        function setList(list) {
-            service.lists = list;
-        }
-    }
-
-})();
-(function() {
-    'use strict';
-
     angular.module('app.deals')
         .controller('DealAddController', DealAddController);
 
@@ -5226,6 +5269,95 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular
+        .module('app.deals')
+        .filter('toCurrencyFormat', toCurrencyFormat);
+
+    function toCurrencyFormat() {
+        return function(input) {
+            if (input) {
+                var num = parseFloat(input);
+                var currency = '$ ' + num.toFixed(2);
+
+                return currency;
+            }
+
+            return input;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('isActiveStandard', isActiveStandard);
+
+    function isActiveStandard() {
+        return function(discount) {
+            if (discount.discount_type == 'standard' && discount.status == 'active') {
+                return true;
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('roundPrice', roundPrice);
+
+    function roundPrice() {
+        return function(price) {
+            if (price) {
+                var num = parseFloat(price);
+                var currency = num.toFixed(2);
+
+                return currency;
+            }
+
+            return null;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.deals')
+        .factory('TemplateService', TemplateService);
+
+    TemplateService.$inject = ['$scope'];
+
+    /* @ngInject */
+    function TemplateService($scope) {
+
+        var service = {
+            lists: [],
+            setList: setList
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function setList(list) {
+            service.lists = list;
+        }
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
         .module('app.deals.image', [])
         .directive('addImage', addImage);
 
@@ -5266,16 +5398,16 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         .module('app.deals.image')
         .directive('imageDisplay', imageDisplay);
 
-    imageDisplay.$inject = ['$compile', '$document'];
+    imageDisplay.$inject = ['$compile', '$filter'];
     /* @ngInject */
-    function imageDisplay($compile, $document) {
+    function imageDisplay($compile, $filter) {
 
         var directive = {
             restrict: 'E',
             templateUrl: 'app/deals/image/imagedisplay.html',
             replace: true,
             scope: {
-                selFormImage: '&',
+                selFormImage: '=',
                 formMode: '=',
                 removeImage: '=',
                 insertImg: '=',
@@ -5283,10 +5415,19 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             link: function(scope, element, attrs) {
 
                 scope.remove = remove;
-                scope.formImage = scope.selFormImage();
-
+                scope.formImage = scope.selFormImage
+                previewImage(scope.formImage.file);
                 scope.insertImg();
+
                 /////////////
+
+                function previewImage(imgModel) {
+                    var filename64 = $filter('base64filename')(imgModel);
+                    var html = '<label>Preview:</label><div><img src="' + filename64 + '" style="border: 1px solid #f0f0f0;" /></div>';
+                    var input = angular.element(html);
+                    var compile = $compile(input)(scope);
+                    angular.element(element).find('.image-preview').html(compile);
+                }
 
                 function remove(elem, image) {
                     angular.element(elem).parents('.image-field-container').remove();
@@ -5306,9 +5447,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         .module('app.deals.image')
         .directive('imageForm', imageForm);
 
-    imageForm.$inject = ['$compile', '$document'];
+    imageForm.$inject = ['$compile', '$document', '$filter'];
     /* @ngInject */
-    function imageForm($compile, $document) {
+    function imageForm($compile, $document, $filter) {
 
         var directive = {
             restrict: 'E',
@@ -5323,15 +5464,28 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             },
             link: function(scope, element, attrs) {
                 scope.addNewImageObj = addNewImageObj;
-                scope.selFormImage = scope.formImage;
+                //scope.selFormImage = scope.formImage;
                 scope.clearFile = clearFile;
                 scope.fileIsBlank = fileIsBlank;
-
-                scope.$watch('formImage', function() {
-                    scope.selFormImage = scope.formImage;
-                });
+                scope.previewImage = previewImage;
+                scope.closeForm = closeForm;
 
                 ///////////
+
+                function closeForm() {
+                    if (scope.formMode == 'Edit') {
+                        var filename64 = $filter('base64filename')(scope.formImage.file);
+                        angular.element('#' + scope.formImage.uid).attr('src', filename64);
+                    }
+                }
+
+                function previewImage(imgModel) {
+                    var filename64 = $filter('base64filename')(imgModel);
+                    var html = '<label>Preview:</label><div><img src="' + filename64 + '" style="border: 1px solid #f0f0f0;" /></div>';
+                    var input = angular.element(html);
+                    var compile = $compile(input)(scope);
+                    angular.element(element).find('.form-image-preview').html(compile);
+                }
 
                 function fileIsBlank() {
                     if (scope.formMode == 'Edit') {
@@ -5349,14 +5503,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                 function addNewImageObj() {
                     if (angular.isObject(scope.formImage.file)) {
-                        var html = '<image-display sel-form-image="selFormImage" form-mode="formMode" remove-image="removeImage" insert-img="insertImg" ></image-display>';
+                        var html = '<image-display sel-form-image="formImage" form-mode="formMode" remove-image="removeImage" insert-img="insertImg" ></image-display>';
                         var input = angular.element(html);
                         var compile = $compile(input)(scope);
                         //console.log(scope.selFormImage);
                         $('#image-display-container').append(compile);
 
-                        $('.fileinput').fileinput('clear')
-                            //scope.insertImg();
+                        angular.element(element).find('.form-image-preview').html('');
+                        $('.fileinput').fileinput('clear');
                         $('.image-modal').modal('hide');
                     }
                 }
@@ -6623,74 +6777,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
-    angular
-        .module('app.users')
-        .filter('isYesNo', isYesNo);
-
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
-
-            return 'No';
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isSuperAdmin', isSuperAdmin);
-
-    function isSuperAdmin() {
-        return function(user) {
-            if (user) {
-                if (user.email == 'admin@example.com') {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isRole', isRole);
-
-    function isRole() {
-        return function(user) {
-            if (user) {
-                if (user.is_admin) {
-                    return 'Admin';
-                }
-                if (user.is_vendor) {
-                    return 'Vendor';
-                }
-                if (user.is_customer) {
-                    return 'Customer';
-                }
-            }
-
-            return 'No Role';
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
     angular.module('app.users')
         .controller('UserController', UserController);
 
@@ -6888,4 +6974,72 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             });
         }
     }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isSuperAdmin', isSuperAdmin);
+
+    function isSuperAdmin() {
+        return function(user) {
+            if (user) {
+                if (user.email == 'admin@example.com') {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isRole', isRole);
+
+    function isRole() {
+        return function(user) {
+            if (user) {
+                if (user.is_admin) {
+                    return 'Admin';
+                }
+                if (user.is_vendor) {
+                    return 'Vendor';
+                }
+                if (user.is_customer) {
+                    return 'Customer';
+                }
+            }
+
+            return 'No Role';
+        }
+
+    }
+
 })();
