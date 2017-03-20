@@ -68,7 +68,7 @@
             //         service.dealImagesList = resp.data.images;
             //         d.resolve(resp.data.images);
             //     }).catch(function(err) {
-            //         console.log(err);
+            //         $log.debug(err);
             //         d.reject(err);
             //     });
             // }
@@ -78,7 +78,7 @@
                 service.dealImagesList = resp.data.images;
                 d.resolve(resp.data.images);
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 d.reject(err);
             });
 
@@ -106,7 +106,7 @@
                 });
                 d.resolve(discounts);
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 d.reject(err);
             });
 
@@ -118,7 +118,7 @@
             var url = api + '/' + dealId + '/discounts/standard';
 
             $http.get(url).then(function(resp) {
-                //console.log(resp);
+                //$log.debug(resp);
                 var discounts = resp.data.discounts;
                 angular.forEach(discounts, function(discount, index) {
                     if (discount.is_active) {
@@ -135,7 +135,7 @@
                 });
                 d.resolve(discounts);
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 d.reject(err);
             });
 
@@ -153,7 +153,7 @@
                     service.templateTypes = resp.data.template_types;
                     d.resolve(resp.data.template_types);
                 }).catch(function(err) {
-                    console.log(err);
+                    $log.debug(err);
                     d.reject(err);
                 });
             }
@@ -172,7 +172,7 @@
                     service.templateNames = resp.data.template_names;
                     d.resolve(resp.data.template_names);
                 }).catch(function(err) {
-                    console.log(err);
+                    $log.debug(err);
                     d.reject(err);
                 });
             }
@@ -191,7 +191,7 @@
                         //d.resolve(resp);
                         cb(null, resp);
                     }).catch(function(err) {
-                        console.log(error);
+                        $log.debug(error);
                         // service.errors = error;
                         // d.reject(error);
                         cb(err);
@@ -201,7 +201,7 @@
 
             async.parallel(tasks, function(error, results) {
                 if (error) {
-                    console.log(error);
+                    $log.debug(error);
                     d.reject(error);
                 } else {
                     d.resolve(results);
@@ -227,7 +227,7 @@
                         //d.resolve(resp);
                         cb(null, resp);
                     }).catch(function(err) {
-                        console.log(error);
+                        $log.debug(error);
                         // service.errors = error;
                         // d.reject(error);
                         cb(err);
@@ -237,7 +237,7 @@
 
             async.parallel(tasks, function(error, results) {
                 if (error) {
-                    console.log(error);
+                    $log.debug(error);
                     d.reject(error);
                 } else {
                     d.resolve(results);
@@ -271,7 +271,7 @@
 
                 d.resolve(service.templates);
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 service.errors.push(err);
                 d.reject(err);
             });
@@ -287,7 +287,7 @@
                 service.highlights = resp.data.highlights;
                 d.resolve(service.highlights);
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 service.errors.push(err);
                 d.reject(err);
             });
@@ -317,7 +317,7 @@
                         service.searchedList = resp.data;
                         d.resolve(resp.data.deals);
                     }).catch(function(err) {
-                        console.log(err);
+                        $log.debug(err);
                         d.reject(err);
                     });
                 }
@@ -344,7 +344,7 @@
                 //         //d.resolve(resp);
                 //         cb(null, resp);
                 //     }).catch(function(err) {
-                //         // console.log(error);
+                //         // $log.debug(error);
                 //         // service.errors = error;
                 //         // d.reject(error);
                 //         cb(err);
@@ -369,7 +369,7 @@
                     // d.resolve(resp);
                     d.resolve('');
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     //d.reject(error);
                     d.resolve('Failed to add highlight. ')
@@ -445,7 +445,7 @@
                     d.resolve(data.data);
                 })
                 .catch(function(error) {
-                    console.log(error.data);
+                    $log.debug(error.data);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -472,8 +472,8 @@
                     var dateEnd = HelperService.convertToDateTime(deal.ends_at);
                     deal['date_start'] = dateStart;
                     deal['date_end'] = dateEnd;
-                    //console.log(dateStart);
-                    //console.log(dateStart.date);
+                    //$log.debug(dateStart);
+                    //$log.debug(dateStart.date);
                     deal['date_starts'] = dateStart.date;
                     deal['time_starts'] = dateStart.time;
 
@@ -488,7 +488,7 @@
                     //d.resolve(deal);
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -513,7 +513,7 @@
                             // cb(null, resp);
                             cb(null, '');
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             // service.errors = error;
                             // d.reject(error);
                             //cb(err);
@@ -527,7 +527,7 @@
 
             async.parallel(tasks, function(error, results) {
                 if (error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject('template');
                 } else {
@@ -545,16 +545,16 @@
             var url = api + '/' + deal_id + '/discounts';
 
             var tasks = [];
-            // console.log(discounts);
+            // $log.debug(discounts);
             angular.forEach(discounts, function(discount, index) {
                 if (angular.isDefined(discount.value) && discount.value.trim() != '') {
                     tasks.push(function(cb) {
-                        console.log(discount);
+                        $log.debug(discount);
                         $http.post(url, discount)
                             .then(function(resp) {
                                 cb(null, resp);
                             }).catch(function(err) {
-                                console.log(err);
+                                $log.debug(err);
                                 var errors = HelperService.setErrorStr(err);
                                 cb(null, err.data.errors);
                             });
@@ -566,15 +566,15 @@
 
             // for (var attr in discounts) {
             //     var discount = discounts[attr];
-            //     console.log(discount);
+            //     $log.debug(discount);
             //     if (discount != null) {
             //         tasks.push(function(cb) {
-            //             console.log(discount);
+            //             $log.debug(discount);
             //             $http.post(url, discount)
             //                 .then(function(resp) {
             //                     cb(null, resp);
             //                 }).catch(function(err) {
-            //                     console.log(err);
+            //                     $log.debug(err);
             //                     var errors = HelperService.setErrorStr(err);
             //                     cb(null, 'Failed to add discount. Reason: ' + errors + '. ');
             //                 });
@@ -584,19 +584,19 @@
             // }
             // var _obj = ["waaaa", "weee"];
             // angular.forEach(_obj, function(discount, index) {
-            //     console.log(discount);
+            //     $log.debug(discount);
             // });
             // angular.forEach(discounts, function(discount, index) {
-            //     console.log(discount);
+            //     $log.debug(discount);
             // });
-            //console.log(tasks);
+            //$log.debug(tasks);
             async.parallel(tasks, function(error, results) {
                 if (error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject('discount');
                 } else {
-                    console.log(results);
+                    $log.debug(results);
                     d.resolve(results);
                 }
 
@@ -619,7 +619,7 @@
                 }
 
             };
-            //console.log(data);
+            //$log.debug(data);
             $http.post(url, data).then(function(resp) {
                 d.resolve(resp);
             }).catch(function(err) {
@@ -635,7 +635,7 @@
 
             $http.post(url, data)
                 .then(function(resp) {
-                    //console.log(resp);
+                    //$log.debug(resp);
                     //return false;
                     var dealId = resp.data.deal.uid;
 
@@ -649,7 +649,7 @@
                                     addFileImage(dealId, img).then(function(resp) {
                                         cb(null, resp);
                                     }).catch(function(err) {
-                                        console.log(err);
+                                        $log.debug(err);
                                         cb(err);
                                     });
                                 });
@@ -660,12 +660,12 @@
                     }
 
                     if (data.highlights.length > 0) {
-                        //console.log(data.highlights);
+                        //$log.debug(data.highlights);
                         tasks.push(function(cb) {
                             addHighlights(dealId, data.highlights).then(function(resp) {
                                 cb(null, resp);
                             }).catch(function(err) {
-                                console.log(err);
+                                $log.debug(err);
                                 cb(err);
                             });
                         });
@@ -676,19 +676,19 @@
                             addTemplates(dealId, data.templates).then(function(resp) {
                                 cb(null, resp);
                             }).catch(function(err) {
-                                console.log(err);
+                                $log.debug(err);
                                 cb(err);
                             });
                         });
                     }
-                    console.log(angular.isDefined(data.discounts['d0']));
+                    $log.debug(angular.isDefined(data.discounts['d0']));
                     //if (angular.isDefined(data.discounts[0]) && angular.isDefined(data.discounts[0].value) && data.discounts[0].value.trim() != '' && data.discounts[0].value.trim() != 'null') {
                     if (HelperService.countModelLength(data.discounts) > 0) {
                         tasks.push(function(cb) {
                             addDiscounts(dealId, data.discounts).then(function(resp) {
                                 cb(null, resp);
                             }).catch(function(err) {
-                                console.log(err);
+                                $log.debug(err);
                                 cb(err);
                             });
                         });
@@ -697,7 +697,7 @@
                     if (tasks.length > 0) {
                         async.parallel(tasks, function(error, results) {
                             if (error) {
-                                console.log(error);
+                                $log.debug(error);
                                 service.errors = error;
                                 d.reject(error);
                             } else {
@@ -711,7 +711,7 @@
 
 
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject('deal');
                 });
@@ -750,7 +750,7 @@
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
-                                    console.log(err);
+                                    $log.debug(err);
                                     cb(err);
                                 });
                         });
@@ -795,7 +795,7 @@
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
-                                    console.log(err);
+                                    $log.debug(err);
                                     cb(err);
                                 });
                         });
@@ -809,8 +809,8 @@
                 //var url_ah = api + '/' + id + '/templates';
 
                 angular.forEach(data.form.templates, function(template, index) {
-                    //console.log(angular.isDefined(template.name));
-                    //console.log(template.name);
+                    //$log.debug(angular.isDefined(template.name));
+                    //$log.debug(template.name);
                     if (angular.isDefined(template.name) && template.name.trim() != '') {
                         tasks.push(function(cb) {
                             template['templatable_id'] = id;
@@ -818,7 +818,7 @@
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
-                                    console.log(err);
+                                    $log.debug(err);
                                     cb(err);
                                 });
                         });
@@ -841,7 +841,7 @@
                         $http.patch(url + '/highlights/' + val.uid, data_h).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err);
                         });
                     });
@@ -856,7 +856,7 @@
                         $http.delete(url + '/highlights/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err);
                         });
                     });
@@ -872,7 +872,7 @@
                         $http.patch(url + '/templates/' + template.uid, template).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err);
                         });
                     });
@@ -887,7 +887,7 @@
                         $http.delete(url + '/templates/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err);
                         });
                     });
@@ -911,13 +911,13 @@
                 };
 
                 //var url_ah = api + '/' + id + '/highlights/collection';
-                console.log(data_h);
+                $log.debug(data_h);
                 tasks.push(function(cb) {
                     $http.post(api + '/' + id + '/highlights/collection', data_h)
                         .then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err);
                         });
                 });
@@ -929,7 +929,7 @@
                     .then(function(resp) {
                         cb(null, resp);
                     }).catch(function(err) {
-                        console.log(err);
+                        $log.debug(err);
                         cb(err);
                     });
             });
@@ -937,7 +937,7 @@
             tasksSeries.push(function(cb) {
                 async.parallel(tasks, function(err, results) {
                     if (err) {
-                        // console.log(err);
+                        // $log.debug(err);
                         // service.errors = err;
                         // d.reject(err);
                         cb(err);
@@ -950,7 +950,7 @@
             });
             // async.parallel(tasks, function(err, results) {
             //     if (err) {
-            //         console.log(err);
+            //         $log.debug(err);
             //         service.errors = err;
             //         d.reject(err);
             //     } else {
@@ -968,7 +968,7 @@
                         $http.delete(url + '/discounts/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err.data.errors);
                         });
                     });
@@ -981,17 +981,17 @@
                     //var url_h = url + '/discounts/' + discount.uid;
 
                     tasksSeries.push(function(cb) {
-                        console.log(discount);
+                        $log.debug(discount);
                         $http.patch(url + '/discounts/' + discount.uid, discount).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err.data.errors);
                         });
                     });
                 });
             }
-            //console.log(data.form);
+            //$log.debug(data.form);
             //DISCOUNT ADD
             if (angular.isDefined(data.form.discounts) && HelperService.countModelLength(data.form.discounts) > 0) {
                 //var url_ah = url + '/discounts';
@@ -999,14 +999,14 @@
                 angular.forEach(data.form.discounts, function(discount, index) {
                     if (angular.isDefined(discount.value) && discount.value.trim() != '' && discount.value.trim() !== 'null') {
                         //discount.codes_expire_at = HelperService.combineDateTime(discount.codes_expire_at, '00:00:00');
-                        //console.log(discount);
+                        //$log.debug(discount);
                         tasksSeries.push(function(cb) {
 
                             $http.post(url + '/discounts', discount)
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
-                                    console.log(err);
+                                    $log.debug(err);
                                     cb(err.data.errors);
                                 });
                         });
@@ -1018,7 +1018,7 @@
             //DISCOUNT only
             async.series(tasksSeries, function(err, results) {
                 if (err) {
-                    console.log(err);
+                    $log.debug(err);
                     service.errors = err;
                     d.reject(err);
                 } else {
@@ -1038,7 +1038,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -1070,7 +1070,7 @@
                         },
                         callback: function(result) {
                             if (result) {
-                                //console.log('test');
+                                //$log.debug('test');
                                 reverseStatus(type, discountsData, newDiscounts);
                                 $rootScope.$digest();
                             }

@@ -50,7 +50,7 @@
                         service.searchedList = resp.data;
                         d.resolve(resp.data.brands);
                     }).catch(function(err) {
-                        console.log(err);
+                        $log.debug(err);
                         d.reject(err);
                     });
                 }
@@ -105,7 +105,7 @@
                     d.resolve(data.data);
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -169,15 +169,15 @@
             data.logo_image = setLogoImage(data.logo);
             data.cover_image = setCoverImage(data.cover);
 
-            console.log(data);
+            $log.debug(data);
             // return false;
 
             $http.post(url, data)
                 .then(function(resp) {
-                    //console.log(resp);
+                    //$log.debug(resp);
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error.data.errors);
                 });
@@ -193,7 +193,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -209,7 +209,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });

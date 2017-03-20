@@ -1327,12 +1327,20 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     angular.module('app')
         .constant('CONST', {
             //api_domain: "http://api.launchii.com/" //api domain
-            api_domain: "https://stageapi.launchii.com/v1"
+            //api_domain: "https://stageapi.launchii.com/v1"
+            api_domain: __env.apiUrl
         });
 
 })();
 (function() {
     'use strict';
+
+    var env = {};
+
+    // Import variables if present (from env.js)
+    if (window) {
+        Object.assign(env, window.__env);
+    }
 
     angular.module('app.core', [
         'ngResource',
@@ -1358,11 +1366,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         .run(run)
         .run(customHeaders);
 
-    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider'];
+    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider', '$logProvider'];
 
     /* @ngInject */
-    function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider) {
-        Layout.init();
+    function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider, $logProvider) {
+        //Layout.init();
+        $logProvider.debugEnabled(__env.enableDebug);
         $authProvider.loginUrl = CONST.api_domain + '/auth/sign_in';
         $authProvider.tokenHeader = 'access-token';
         $authProvider.tokenType = '';
@@ -1422,7 +1431,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             }
         };
 
-        //console.log(!$rootScope.authenticated);
+        //$log.debug(!$rootScope.authenticated);
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {
@@ -1444,7 +1453,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //     event.preventDefault();
             // }
 
-            //console.log(toState.name);
+            //$log.debug(toState.name);
             forceSSL(event);
             BreadCrumbService.set(toState.name);
             $rootScope.crumbs = BreadCrumbService.getCrumbs();
@@ -2270,6 +2279,143 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
     angular
         .module('app')
+        .filter('base64filename', base64filename);
+
+    function base64filename() {
+        return function(img) {
+            if (img) {
+                var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
+
+                return filebase64;
+            }
+
+            return img;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isEmpty', isEmpty);
+
+    function isEmpty() {
+        return function(container) {
+
+            if (angular.isObject(container)) {
+
+                angular.forEach(container, function(item, index) {
+                    return false;
+                });
+
+            } else if (angular.isArray(container)) {
+                return container.length == 0;
+            }
+
+            return true;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isLoading', isLoading);
+
+    function isLoading() {
+        return function(target) {
+            $log.debug(target);
+            if (target) {
+                var scope = angular.element(target).scope();
+
+                if (angular.isDefined(scope.isLoading) && scope.isLoading) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('toDecimal', toDecimal);
+
+    function toDecimal() {
+        return function(num, dec) {
+            if (num) {
+                num = parseFloat(num);
+                num = num.toFixed(dec);
+
+                return '' + num;
+            }
+
+            return num;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('ucFirst', ucFirst);
+
+    function ucFirst() {
+        return function(string) {
+            if (string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            return string;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('whereAttr', whereAttr);
+
+    function whereAttr() {
+        return function(box, attr, value) {
+            var obj = [];
+            angular.forEach(box, function(item, index) {
+                if (angular.isDefined(item[attr]) && item[attr] == value) {
+                    obj.push(item);
+                }
+            });
+
+            return obj;
+
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
         .directive('breadCrumbs', breadCrumbs);
 
     breadCrumbs.$inject = ['$state', '$stateParams', 'BreadCrumbService'];
@@ -2295,7 +2441,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //         };
 
             //         $scope.$watch(BreadCrumbService.getCrumbs(), function() {
-            //             console.log('crumb test');
+            //             $log.debug('crumb test');
             //         });
             //     }
             // }
@@ -2355,7 +2501,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             require: 'ngModel',
             restrict: 'A',
             link: function(scope, element, attrs, ngModel) {
-                console.log(ngModel);
+                $log.debug(ngModel);
             }
         };
     }
@@ -2555,143 +2701,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
-    angular
-        .module('app')
-        .filter('base64filename', base64filename);
-
-    function base64filename() {
-        return function(img) {
-            if (img) {
-                var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
-
-                return filebase64;
-            }
-
-            return img;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('isEmpty', isEmpty);
-
-    function isEmpty() {
-        return function(container) {
-
-            if (angular.isObject(container)) {
-
-                angular.forEach(container, function(item, index) {
-                    return false;
-                });
-
-            } else if (angular.isArray(container)) {
-                return container.length == 0;
-            }
-
-            return true;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('isLoading', isLoading);
-
-    function isLoading() {
-        return function(target) {
-            console.log(target);
-            if (target) {
-                var scope = angular.element(target).scope();
-
-                if (angular.isDefined(scope.isLoading) && scope.isLoading) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('toDecimal', toDecimal);
-
-    function toDecimal() {
-        return function(num, dec) {
-            if (num) {
-                num = parseFloat(num);
-                num = num.toFixed(dec);
-
-                return '' + num;
-            }
-
-            return num;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('ucFirst', ucFirst);
-
-    function ucFirst() {
-        return function(string) {
-            if (string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
-            }
-
-            return string;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('whereAttr', whereAttr);
-
-    function whereAttr() {
-        return function(box, attr, value) {
-            var obj = [];
-            angular.forEach(box, function(item, index) {
-                if (angular.isDefined(item[attr]) && item[attr] == value) {
-                    obj.push(item);
-                }
-            });
-
-            return obj;
-
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
     angular.module('app')
         .factory('BreadCrumbService', BreadCrumbService);
 
@@ -2852,7 +2861,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             // }
 
             // $auth.submitLogin(credentials).then(function(response) {
-            //     console.log(response);
+            //     $log.debug(response);
             //     if (typeof response === 'undefined' || response === false) {
             //         d.reject();
             //     } else {
@@ -2865,7 +2874,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //         d.resolve(response);
             //     }
             // }).catch(function(err) {
-            //     console.log(err);
+            //     $log.debug(err);
             //     service.errors = err.errors;
             //     d.reject(service.errors);
             //     //throw (service.errors);
@@ -2903,9 +2912,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             });
 
             // $auth.login(credentials).then(function(r) {
-            //     console.log(r);
+            //     $log.debug(r);
             // }).catch(function(e) {
-            //     console.log(e)
+            //     $log.debug(e)
             // });
 
             return d.promise;
@@ -2956,7 +2965,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         d.resolve(true);
 
                     }).catch(function(error) {
-                        console.log(error);
+                        $log.debug(error);
                         d.reject(false);
                     });
             }
@@ -3006,25 +3015,25 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //var user = JSON.parse(localStorage.getItem('user'));
             if ($auth.isAuthenticated() && toState.name === "auth") {
                 event.preventDefault();
-                console.log('11111111');
+                $log.debug('11111111');
                 $state.go('dashboard');
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name === "auth") {
                 ngProgressLite.done();
                 event.preventDefault();
-                console.log('22222222');
+                $log.debug('22222222');
                 $state.go('auth');
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name !== "auth") {
                 event.preventDefault();
-                console.log(toState.name);
-                console.log('00000000');
+                $log.debug(toState.name);
+                $log.debug('00000000');
                 $state.go('auth');
                 return false;
             }
             //}
             event.preventDefault();
-            console.log('test');
+            $log.debug('test');
             $state.go(toState.name);
             return true;
         }
@@ -3163,7 +3172,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         service.searchedList = resp.data;
                         d.resolve(resp.data.brands);
                     }).catch(function(err) {
-                        console.log(err);
+                        $log.debug(err);
                         d.reject(err);
                     });
                 }
@@ -3218,7 +3227,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     d.resolve(data.data);
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -3282,15 +3291,15 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             data.logo_image = setLogoImage(data.logo);
             data.cover_image = setCoverImage(data.cover);
 
-            console.log(data);
+            $log.debug(data);
             // return false;
 
             $http.post(url, data)
                 .then(function(resp) {
-                    //console.log(resp);
+                    //$log.debug(resp);
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error.data.errors);
                 });
@@ -3306,7 +3315,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -3322,7 +3331,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -3455,7 +3464,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.brands = resp;
                 vm.isLoading = false;
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
             });
         }
 
@@ -3542,14 +3551,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         ///////////////////
 
         function activate() {
-            console.log(vm.form);
+            $log.debug(vm.form);
             // BrandService.find(vm.brandId).then(function(data) {
             //     vm.selectedBrand = data;
             //     vm.form = vm.selectedBrand;
             // });
 
             // vm.$watch('form.logo', function() {
-            //     console.log(vm.form.logo);
+            //     $log.debug(vm.form.logo);
             // });
         }
 
@@ -3583,7 +3592,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 $state.go(vm.prevState);
 
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update Brand.";
@@ -3703,7 +3712,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //         service.dealImagesList = resp.data.images;
             //         d.resolve(resp.data.images);
             //     }).catch(function(err) {
-            //         console.log(err);
+            //         $log.debug(err);
             //         d.reject(err);
             //     });
             // }
@@ -3713,7 +3722,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 service.dealImagesList = resp.data.images;
                 d.resolve(resp.data.images);
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 d.reject(err);
             });
 
@@ -3741,7 +3750,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 });
                 d.resolve(discounts);
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 d.reject(err);
             });
 
@@ -3753,7 +3762,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var url = api + '/' + dealId + '/discounts/standard';
 
             $http.get(url).then(function(resp) {
-                //console.log(resp);
+                //$log.debug(resp);
                 var discounts = resp.data.discounts;
                 angular.forEach(discounts, function(discount, index) {
                     if (discount.is_active) {
@@ -3770,7 +3779,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 });
                 d.resolve(discounts);
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 d.reject(err);
             });
 
@@ -3788,7 +3797,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     service.templateTypes = resp.data.template_types;
                     d.resolve(resp.data.template_types);
                 }).catch(function(err) {
-                    console.log(err);
+                    $log.debug(err);
                     d.reject(err);
                 });
             }
@@ -3807,7 +3816,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     service.templateNames = resp.data.template_names;
                     d.resolve(resp.data.template_names);
                 }).catch(function(err) {
-                    console.log(err);
+                    $log.debug(err);
                     d.reject(err);
                 });
             }
@@ -3826,7 +3835,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         //d.resolve(resp);
                         cb(null, resp);
                     }).catch(function(err) {
-                        console.log(error);
+                        $log.debug(error);
                         // service.errors = error;
                         // d.reject(error);
                         cb(err);
@@ -3836,7 +3845,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
             async.parallel(tasks, function(error, results) {
                 if (error) {
-                    console.log(error);
+                    $log.debug(error);
                     d.reject(error);
                 } else {
                     d.resolve(results);
@@ -3862,7 +3871,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         //d.resolve(resp);
                         cb(null, resp);
                     }).catch(function(err) {
-                        console.log(error);
+                        $log.debug(error);
                         // service.errors = error;
                         // d.reject(error);
                         cb(err);
@@ -3872,7 +3881,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
             async.parallel(tasks, function(error, results) {
                 if (error) {
-                    console.log(error);
+                    $log.debug(error);
                     d.reject(error);
                 } else {
                     d.resolve(results);
@@ -3906,7 +3915,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                 d.resolve(service.templates);
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 service.errors.push(err);
                 d.reject(err);
             });
@@ -3922,7 +3931,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 service.highlights = resp.data.highlights;
                 d.resolve(service.highlights);
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 service.errors.push(err);
                 d.reject(err);
             });
@@ -3952,7 +3961,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         service.searchedList = resp.data;
                         d.resolve(resp.data.deals);
                     }).catch(function(err) {
-                        console.log(err);
+                        $log.debug(err);
                         d.reject(err);
                     });
                 }
@@ -3979,7 +3988,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 //         //d.resolve(resp);
                 //         cb(null, resp);
                 //     }).catch(function(err) {
-                //         // console.log(error);
+                //         // $log.debug(error);
                 //         // service.errors = error;
                 //         // d.reject(error);
                 //         cb(err);
@@ -4004,7 +4013,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     // d.resolve(resp);
                     d.resolve('');
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     //d.reject(error);
                     d.resolve('Failed to add highlight. ')
@@ -4080,7 +4089,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     d.resolve(data.data);
                 })
                 .catch(function(error) {
-                    console.log(error.data);
+                    $log.debug(error.data);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -4107,8 +4116,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     var dateEnd = HelperService.convertToDateTime(deal.ends_at);
                     deal['date_start'] = dateStart;
                     deal['date_end'] = dateEnd;
-                    //console.log(dateStart);
-                    //console.log(dateStart.date);
+                    //$log.debug(dateStart);
+                    //$log.debug(dateStart.date);
                     deal['date_starts'] = dateStart.date;
                     deal['time_starts'] = dateStart.time;
 
@@ -4123,7 +4132,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     //d.resolve(deal);
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -4148,7 +4157,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                             // cb(null, resp);
                             cb(null, '');
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             // service.errors = error;
                             // d.reject(error);
                             //cb(err);
@@ -4162,7 +4171,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
             async.parallel(tasks, function(error, results) {
                 if (error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject('template');
                 } else {
@@ -4180,16 +4189,16 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var url = api + '/' + deal_id + '/discounts';
 
             var tasks = [];
-            // console.log(discounts);
+            // $log.debug(discounts);
             angular.forEach(discounts, function(discount, index) {
                 if (angular.isDefined(discount.value) && discount.value.trim() != '') {
                     tasks.push(function(cb) {
-                        console.log(discount);
+                        $log.debug(discount);
                         $http.post(url, discount)
                             .then(function(resp) {
                                 cb(null, resp);
                             }).catch(function(err) {
-                                console.log(err);
+                                $log.debug(err);
                                 var errors = HelperService.setErrorStr(err);
                                 cb(null, err.data.errors);
                             });
@@ -4201,15 +4210,15 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
             // for (var attr in discounts) {
             //     var discount = discounts[attr];
-            //     console.log(discount);
+            //     $log.debug(discount);
             //     if (discount != null) {
             //         tasks.push(function(cb) {
-            //             console.log(discount);
+            //             $log.debug(discount);
             //             $http.post(url, discount)
             //                 .then(function(resp) {
             //                     cb(null, resp);
             //                 }).catch(function(err) {
-            //                     console.log(err);
+            //                     $log.debug(err);
             //                     var errors = HelperService.setErrorStr(err);
             //                     cb(null, 'Failed to add discount. Reason: ' + errors + '. ');
             //                 });
@@ -4219,19 +4228,19 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             // }
             // var _obj = ["waaaa", "weee"];
             // angular.forEach(_obj, function(discount, index) {
-            //     console.log(discount);
+            //     $log.debug(discount);
             // });
             // angular.forEach(discounts, function(discount, index) {
-            //     console.log(discount);
+            //     $log.debug(discount);
             // });
-            //console.log(tasks);
+            //$log.debug(tasks);
             async.parallel(tasks, function(error, results) {
                 if (error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject('discount');
                 } else {
-                    console.log(results);
+                    $log.debug(results);
                     d.resolve(results);
                 }
 
@@ -4254,7 +4263,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 }
 
             };
-            //console.log(data);
+            //$log.debug(data);
             $http.post(url, data).then(function(resp) {
                 d.resolve(resp);
             }).catch(function(err) {
@@ -4270,7 +4279,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
             $http.post(url, data)
                 .then(function(resp) {
-                    //console.log(resp);
+                    //$log.debug(resp);
                     //return false;
                     var dealId = resp.data.deal.uid;
 
@@ -4284,7 +4293,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                                     addFileImage(dealId, img).then(function(resp) {
                                         cb(null, resp);
                                     }).catch(function(err) {
-                                        console.log(err);
+                                        $log.debug(err);
                                         cb(err);
                                     });
                                 });
@@ -4295,12 +4304,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     }
 
                     if (data.highlights.length > 0) {
-                        //console.log(data.highlights);
+                        //$log.debug(data.highlights);
                         tasks.push(function(cb) {
                             addHighlights(dealId, data.highlights).then(function(resp) {
                                 cb(null, resp);
                             }).catch(function(err) {
-                                console.log(err);
+                                $log.debug(err);
                                 cb(err);
                             });
                         });
@@ -4311,19 +4320,19 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                             addTemplates(dealId, data.templates).then(function(resp) {
                                 cb(null, resp);
                             }).catch(function(err) {
-                                console.log(err);
+                                $log.debug(err);
                                 cb(err);
                             });
                         });
                     }
-                    console.log(angular.isDefined(data.discounts['d0']));
+                    $log.debug(angular.isDefined(data.discounts['d0']));
                     //if (angular.isDefined(data.discounts[0]) && angular.isDefined(data.discounts[0].value) && data.discounts[0].value.trim() != '' && data.discounts[0].value.trim() != 'null') {
                     if (HelperService.countModelLength(data.discounts) > 0) {
                         tasks.push(function(cb) {
                             addDiscounts(dealId, data.discounts).then(function(resp) {
                                 cb(null, resp);
                             }).catch(function(err) {
-                                console.log(err);
+                                $log.debug(err);
                                 cb(err);
                             });
                         });
@@ -4332,7 +4341,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     if (tasks.length > 0) {
                         async.parallel(tasks, function(error, results) {
                             if (error) {
-                                console.log(error);
+                                $log.debug(error);
                                 service.errors = error;
                                 d.reject(error);
                             } else {
@@ -4346,7 +4355,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
 
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject('deal');
                 });
@@ -4385,7 +4394,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
-                                    console.log(err);
+                                    $log.debug(err);
                                     cb(err);
                                 });
                         });
@@ -4430,7 +4439,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
-                                    console.log(err);
+                                    $log.debug(err);
                                     cb(err);
                                 });
                         });
@@ -4444,8 +4453,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 //var url_ah = api + '/' + id + '/templates';
 
                 angular.forEach(data.form.templates, function(template, index) {
-                    //console.log(angular.isDefined(template.name));
-                    //console.log(template.name);
+                    //$log.debug(angular.isDefined(template.name));
+                    //$log.debug(template.name);
                     if (angular.isDefined(template.name) && template.name.trim() != '') {
                         tasks.push(function(cb) {
                             template['templatable_id'] = id;
@@ -4453,7 +4462,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
-                                    console.log(err);
+                                    $log.debug(err);
                                     cb(err);
                                 });
                         });
@@ -4476,7 +4485,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         $http.patch(url + '/highlights/' + val.uid, data_h).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err);
                         });
                     });
@@ -4491,7 +4500,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         $http.delete(url + '/highlights/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err);
                         });
                     });
@@ -4507,7 +4516,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         $http.patch(url + '/templates/' + template.uid, template).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err);
                         });
                     });
@@ -4522,7 +4531,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         $http.delete(url + '/templates/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err);
                         });
                     });
@@ -4546,13 +4555,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 };
 
                 //var url_ah = api + '/' + id + '/highlights/collection';
-                console.log(data_h);
+                $log.debug(data_h);
                 tasks.push(function(cb) {
                     $http.post(api + '/' + id + '/highlights/collection', data_h)
                         .then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err);
                         });
                 });
@@ -4564,7 +4573,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     .then(function(resp) {
                         cb(null, resp);
                     }).catch(function(err) {
-                        console.log(err);
+                        $log.debug(err);
                         cb(err);
                     });
             });
@@ -4572,7 +4581,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             tasksSeries.push(function(cb) {
                 async.parallel(tasks, function(err, results) {
                     if (err) {
-                        // console.log(err);
+                        // $log.debug(err);
                         // service.errors = err;
                         // d.reject(err);
                         cb(err);
@@ -4585,7 +4594,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             });
             // async.parallel(tasks, function(err, results) {
             //     if (err) {
-            //         console.log(err);
+            //         $log.debug(err);
             //         service.errors = err;
             //         d.reject(err);
             //     } else {
@@ -4603,7 +4612,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         $http.delete(url + '/discounts/' + val.uid).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err.data.errors);
                         });
                     });
@@ -4616,17 +4625,17 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     //var url_h = url + '/discounts/' + discount.uid;
 
                     tasksSeries.push(function(cb) {
-                        console.log(discount);
+                        $log.debug(discount);
                         $http.patch(url + '/discounts/' + discount.uid, discount).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
-                            console.log(err);
+                            $log.debug(err);
                             cb(err.data.errors);
                         });
                     });
                 });
             }
-            //console.log(data.form);
+            //$log.debug(data.form);
             //DISCOUNT ADD
             if (angular.isDefined(data.form.discounts) && HelperService.countModelLength(data.form.discounts) > 0) {
                 //var url_ah = url + '/discounts';
@@ -4634,14 +4643,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 angular.forEach(data.form.discounts, function(discount, index) {
                     if (angular.isDefined(discount.value) && discount.value.trim() != '' && discount.value.trim() !== 'null') {
                         //discount.codes_expire_at = HelperService.combineDateTime(discount.codes_expire_at, '00:00:00');
-                        //console.log(discount);
+                        //$log.debug(discount);
                         tasksSeries.push(function(cb) {
 
                             $http.post(url + '/discounts', discount)
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
-                                    console.log(err);
+                                    $log.debug(err);
                                     cb(err.data.errors);
                                 });
                         });
@@ -4653,7 +4662,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //DISCOUNT only
             async.series(tasksSeries, function(err, results) {
                 if (err) {
-                    console.log(err);
+                    $log.debug(err);
                     service.errors = err;
                     d.reject(err);
                 } else {
@@ -4673,7 +4682,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -4705,7 +4714,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         },
                         callback: function(result) {
                             if (result) {
-                                //console.log('test');
+                                //$log.debug('test');
                                 reverseStatus(type, discountsData, newDiscounts);
                                 $rootScope.$digest();
                             }
@@ -4756,6 +4765,1103 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.deals')
+        .controller('DealAddController', DealAddController);
+
+    DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes'];
+
+    /* @ngInject */
+    function DealAddController(DealService, $scope, HelperService, $state, brandPrepService, prepTemplateNames, prepTemplateTypes) {
+        var vm = this;
+
+        vm.mode = "Add";
+        vm.form = {};
+        vm.form.highlights = [];
+        vm.form.templates = [];
+        vm.form.discounts = {};
+        vm.response = {};
+        vm.isDone = true;
+        vm.brands = brandPrepService.brands;
+        vm.default = vm.brands[0];
+        vm.removeHighlight = removeHighlight;
+
+        //template
+        vm.templateCounter = 0;
+        vm.increTemplateCounter = increTemplateCounter;
+        vm.selTemplateIndex = 0;
+        vm.setSelTemplateIndex = setSelTemplateIndex;
+        vm.selTemplateObj = {};
+        vm.setSelTemplateObj = setSelTemplateObj;
+        vm.templateNames = prepTemplateNames;
+        vm.templateTypes = prepTemplateTypes;
+        vm.removeTemplate = removeTemplate;
+        vm.priceFormat = priceFormat;
+
+        //discount
+        vm.discountCounter = 0;
+        vm.increDiscountCounter = increDiscountCounter;
+        vm.selDiscountIndex = 0;
+        vm.setSelDiscountIndex = setSelDiscountIndex;
+        vm.selDiscountObj = {};
+        vm.setSelDiscountObj = setSelDiscountObj;
+        vm.removeDiscount = removeDiscount;
+        vm.standardDiscounts = [];
+        vm.earlyBirdDiscounts = [];
+        vm.hasStandardDiscounts = hasStandardDiscounts;
+        vm.hasEarlybirdDiscounts = hasEarlybirdDiscounts;
+        vm.openDiscountModal = openDiscountModal;
+        vm.removeSelDiscount = removeSelDiscount;
+        vm.removedDiscountObjs = [];
+        vm.setActive = setActive;
+        vm.discounts = [];
+
+        //image
+        vm.form.file = [];
+        vm.imageCounter = 0;
+        vm.getImageCounter = getImageCounter;
+        vm.removeAddedImage = removeAddedImage;
+        vm.insertNewImageObj = insertNewImageObj;
+        vm.latestImgIndex = latestImgIndex;
+        vm.blankFn = blankFn;
+
+        vm.updateDateDiff = updateDateDiff;
+        vm.prevState = HelperService.getPrevState();
+        vm.submitAction = addDeal;
+        vm.isDealEmpty = DealService.isEmpty();
+        vm.isBrandEmpty = brandPrepService.total == 0;
+
+        activate();
+
+        ///////////////////
+
+        function activate() {
+            // angular.element('.start-date').datepicker({
+            //     orientation: "left",
+            //     autoclose: true
+            // });
+            //ComponentsDateTimePickers.init();
+            insertNewImageObj();
+            $(document).ready(function() {
+                ComponentsDateTimePickers.init();
+            });
+            // vm.$watch('vm.form.price', function(newVal, oldVal) {
+            //     $log.debug(newVal);
+            //     return newVal.toFixed(2);
+            // });
+        }
+
+        function blankFn() {
+            return false;
+        }
+
+        function latestImgIndex() {
+            return vm.form.file.length - 1;
+        }
+
+        function insertNewImageObj() {
+            var obj = {
+                file: "",
+                description: ""
+            };
+            vm.form.file.push(obj);
+        }
+
+        function removeAddedImage(image) {
+            angular.forEach(vm.form.file, function(img, index) {
+                if (img === image) {
+                    vm.form.file.splice(index, 1);
+                }
+            });
+        }
+
+        function getImageCounter() {
+            return vm.imageCounter++;
+        }
+
+        function updateDateDiff() {
+            vm.form.date_ends = '';
+
+            var dateNow = new Date();
+            var dateComp = new Date(vm.form.date_starts);
+
+            var timeDiff = Math.abs(dateComp.getTime() - dateNow.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+            $('#ending_date').datepicker({
+                autoclose: true
+            });
+
+            $('#ending_date').datepicker('setStartDate', '+' + diffDays + 'd');
+
+        }
+
+        //Discount
+        function removeSelDiscount(target, discountModel) {
+            angular.element(target).parents('.discount-row').remove();
+            vm.removeDiscount(discountModel);
+        }
+
+        function openDiscountModal(discountModel) {
+            $('#discount-modal-edit').modal('show');
+            vm.setSelDiscountObj(discountModel);
+        }
+
+        function hasStandardDiscounts() {
+            var formDiscountCount = 0;
+            //$log.debug(vm.form.discounts);
+            // for (var key in vm.form.discounts) {
+            //     //$log.debug(vm.form.discounts[key].discount_type);
+            //     if (vm.form.discounts[key] != null && vm.form.discounts[key].discount_type == 'standard') {
+            //         formDiscountCount++;
+            //     }
+            // }
+
+            angular.forEach(vm.form.discounts, function(discount, index) {
+                if (discount != null && discount.discount_type == 'standard') {
+                    formDiscountCount++;
+                }
+            });
+
+            return formDiscountCount > 0;
+        }
+
+        function hasEarlybirdDiscounts() {
+            var formDiscountCount = 0;
+
+            for (var key in vm.form.discounts) {
+                //$log.debug(vm.form.discounts[key].discount_type);
+                if (vm.form.discounts[key] != null && vm.form.discounts[key].discount_type == 'early_bird') {
+                    formDiscountCount++;
+                }
+            }
+
+            return formDiscountCount > 0;
+            // angular.forEach(vm.form.discounts, function(discount, index) {
+            //     if (discount.value != 'null' &&
+            //         discount.value != '' &&
+            //         discount.weighting != null &&
+            //         discount.weighting != 'null' &&
+            //         discount.weighting != '' &&
+            //         discount.coupon_count != null &&
+            //         discount.coupon_count != 'null' &&
+            //         discount.coupon_count != '' &&
+            //         discount.coupon_limit != null &&
+            //         discount.coupon_limit != 'null' &&
+            //         discount.coupon_limit != '' &&
+            //         discount.discount_type == 'early_bird') {
+            //         formDiscountCount++;
+            //     }
+            // });
+
+            // angular.forEach(vm.removedDiscountObjs, function(discount, index) {
+            //     if (discount.value != 'null' && discount.value != '' && discount.discount_type == 'early_bird') {
+            //         removedDiscountCount++;
+            //     }
+            // });
+
+            // var discountCount = vm.earlyBirdDiscounts.length + formDiscountCount;
+            // var rows = angular.element('.early-bird').find('.discount-row');
+
+            // // if (discountCount == removedDiscountCount) {
+            // if (removedDiscountCount == 0 && (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0)) {
+            //     return true;
+            // }
+
+            // if (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length == 0 && formDiscountCount > 0) {
+            //     return true;
+            // }
+
+            // // if (formDiscountCount == 0 && rows.length == 0) {
+            // //     return false;
+            // // }
+
+            // if (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length == 0 && formDiscountCount == 0) {
+            //     return false;
+            // }
+
+            // return (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0);
+
+        }
+
+        function removeDiscount(discount) {
+            // angular.forEach(vm.form.discounts, function(val, attr) {
+            //     $log.debug(discount == val);
+            //     if (discount == val) {
+            //         //$log.debug('test')
+            //         //vm.form.discounts.splice(index, 1);
+            //         delete vm.form.discounts[attr];
+            //     }
+            // });
+            for (var attr in vm.form.discounts) {
+                $log.debug(discount == vm.form.discounts[attr]);
+                if (discount == vm.form.discounts[attr]) {
+                    vm.form.discounts[attr] = null;
+                }
+            }
+        }
+
+        function setSelDiscountObj(dobj) {
+            vm.selDiscountObj = dobj;
+        }
+
+        function setSelDiscountIndex(index) {
+            vm.selDiscountIndex = index;
+        }
+
+        function increDiscountCounter() {
+            vm.discountCounter++;
+        }
+        //End Discount
+
+        //Template
+        function priceFormat() {
+            var price = vm.form.price;
+
+            vm.form.price = parseFloat(price).toFixed(2) + '';
+        }
+
+        function removeTemplate(template_index) {
+            angular.forEach(vm.form.templates, function(val, index) {
+                if (index == template_index) {
+                    $log.debug('test')
+                    vm.form.templates.splice(index, 1);
+                }
+            });
+        }
+
+        function setSelTemplateObj(tobj) {
+            vm.selTemplateObj = tobj;
+        }
+
+        function setSelTemplateIndex(index) {
+            vm.selTemplateIndex = index;
+        }
+
+        function increTemplateCounter() {
+            vm.templateCounter++;
+        }
+        //END Template
+
+
+        function addDeal() {
+            vm.isDone = false;
+            //temporary
+            //vm.form.brand_id = '3228eb88-6810-4b28-ae52-88a62e4655c3';
+
+            vm.isDone = false;
+            vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
+            vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
+
+            //$log.debug(vm.form);
+            //return false;
+            if (!checkHasActiveStandardDiscount()) {
+                bootbox.alert({
+                    title: "No active standard discount!",
+                    message: "Please add a single active standard discount to add new deal."
+                });
+                vm.isDone = true;
+                return false;
+            }
+
+            DealService.add(vm.form).then(function(resp) {
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                // vm.response['msg'] = "Added new deal: " + vm.form.name + ' ' + resp;
+                vm.response['msg'] = "Added new deal.";
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
+                $scope.$parent.vm.getDeals();
+                $state.go(vm.prevState);
+
+            }).catch(function(err) {
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to add deal.";
+                vm.response['error_arr'] = err;
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                HelperService.goToAnchor('msg-info');
+            });
+        }
+
+        function checkHasActiveStandardDiscount() {
+            var discounts = vm.form.discounts;
+            var hasActive = false;
+            for (var key in discounts) {
+                if (discounts[key].discount_type == 'standard' && discounts[key].status == 'active') {
+                    hasActive = true;
+                }
+            }
+
+            return hasActive;
+        }
+
+        function setActive(selFieldModel, newDiscounts, discountsData, type, mode) {
+            DealService.setActive(selFieldModel, newDiscounts, discountsData, type, mode);
+        }
+
+        function removeHighlight(highlightId) {
+
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.deals')
+        .controller('DealController', DealController);
+
+    DealController.$inject = ['DealService', 'dealPrepService'];
+
+    /* @ngInject */
+    function DealController(DealService, dealPrepService) {
+        var vm = this;
+
+        vm.prepDeals = dealPrepService;
+        vm.deals = vm.prepDeals.deals;
+        vm.getDeals = getDeals;
+        vm.hasDeleted = false;
+        vm.response = {};
+        vm.deleteDeal = deleteDeal;
+        vm.response = {};
+        vm.isDone = false;
+        vm.search = search;
+        vm.searchItem = '';
+        vm.isLoading = false;
+        vm.isSearch = false;
+        vm.clearSearch = clearSearch;
+        vm.isDealEmpty = DealService.isEmpty();
+
+        //activate();
+
+        ////////////////
+
+        function activate() {
+            return getDeals();
+        }
+
+        function clearSearch() {
+            vm.searchItem = '';
+            search();
+        }
+
+        function search() {
+            vm.isLoading = true;
+
+            if (vm.searchItem.trim().length > 0) {
+                vm.isSearch = true;
+            } else {
+                vm.isSearch = false;
+            }
+
+            DealService.search(vm.searchItem).then(function(resp) {
+                vm.deals = resp;
+                vm.isLoading = false;
+            }).catch(function(err) {
+                $log.debug(err);
+            });
+        }
+
+        function getDeals() {
+            return DealService.getAll().then(function(data) {
+                vm.prepDeals = data;
+                vm.deals = vm.prepDeals.deals;
+                return vm.deals;
+            });
+        }
+
+        function deleteDeal(element, deal) {
+            bootbox.confirm({
+                title: "Confirm Delete",
+                message: "Are you sure you want to delete deal: <b>" + deal.name + "</b>?",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function(result) {
+                    if (result) {
+                        Ladda.create(element).start();
+                        doDelete(deal);
+                    }
+                }
+            });
+        }
+
+        function doDelete(deal) {
+            DealService.delete(deal.uid).then(function(resp) {
+                vm.hasDeleted = true;
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Deleted deal: " + deal.name;
+                getDeals();
+                vm.hasAdded = true;
+                vm.isDone = true;
+            }).catch(function() {
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to delete deal: " + deal.name;
+                vm.hasAdded = true;
+                vm.isDone = true;
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.deals')
+        .controller('DealEditController', DealEditController);
+
+    DealEditController.$inject = ['DealService',
+        '$stateParams',
+        '$scope',
+        'prepSelDeal',
+        'HelperService',
+        '$state',
+        'brandPrepService',
+        'prepSelHighlights',
+        'prepSelTemplates',
+        'prepTemplateNames',
+        'prepTemplateTypes',
+        'prepStandardD',
+        'prepEarlyBirdD',
+        'prepDealImages',
+        '$filter'
+    ];
+
+    /* @ngInject */
+    function DealEditController(DealService,
+        $stateParams,
+        $scope,
+        prepSelDeal,
+        HelperService,
+        $state,
+        brandPrepService,
+        prepSelHighlights,
+        prepSelTemplates,
+        prepTemplateNames,
+        prepTemplateTypes,
+        prepStandardD,
+        prepEarlyBirdD,
+        prepDealImages,
+        $filter) {
+
+        var vm = this;
+
+        vm.mode = "Edit";
+        vm.response = {};
+        vm.dealId = $stateParams.id;
+        vm.selectedDeal = prepSelDeal;
+        vm.form = vm.selectedDeal;
+        vm.form.highlights = [];
+        vm.form.templates = [];
+        vm.form.discounts = {};
+        //vm.form.highlights = vm.selectedDeal.highlights;
+        vm.highlights = prepSelHighlights;
+        vm.isDone = true;
+        vm.brands = brandPrepService.brands;
+        vm.default = vm.brands[0];
+        vm.removeHighlight = removeHighlight;
+        vm.removedHighlightObjs = [];
+
+        //template
+        vm.templates = prepSelTemplates;
+        vm.removedTemplateObjs = [];
+        vm.templateCounter = 0;
+        vm.increTemplateCounter = increTemplateCounter;
+        vm.selTemplateIndex = 0;
+        vm.setSelTemplateIndex = setSelTemplateIndex;
+        vm.selTemplateObj = {};
+        vm.setSelTemplateObj = setSelTemplateObj;
+        vm.templateNames = prepTemplateNames;
+        vm.templateTypes = prepTemplateTypes;
+        vm.removeTemplate = removeTemplate;
+        vm.priceFormat = priceFormat;
+
+        //discount
+        vm.discounts = prepStandardD.concat(prepEarlyBirdD);
+        vm.removedDiscountObjs = [];
+        vm.discountCounter = 0;
+        vm.increDiscountCounter = increDiscountCounter;
+        vm.selDiscountIndex = 0;
+        vm.setSelDiscountIndex = setSelDiscountIndex;
+        vm.selDiscountObj = {};
+        vm.setSelDiscountObj = setSelDiscountObj;
+        vm.removeDiscount = removeDiscount;
+        vm.standardDiscounts = prepStandardD;
+        vm.earlyBirdDiscounts = prepEarlyBirdD;
+        vm.hasStandardDiscounts = hasStandardDiscounts;
+        vm.hasEarlybirdDiscounts = hasEarlybirdDiscounts;
+        vm.openDiscountModal = openDiscountModal;
+        vm.removeSelDiscount = removeSelDiscount;
+        vm.setActive = setActive;
+
+        //images
+        vm.form.file = [];
+        vm.images = prepDealImages;
+        vm.removeImage = removeImage;
+        vm.removedImageObj = [];
+        vm.imageCounter = 0;
+        vm.getImageCounter = getImageCounter;
+        vm.insertNewImageObj = insertNewImageObj;
+        vm.latestImgIndex = latestImgIndex;
+        vm.blankFn = blankFn;
+        vm.openEditImageModal = openEditImageModal;
+        vm.removeAddedImage = removeAddedImage;
+
+        vm.updateDateDiff = updateDateDiff;
+        vm.prevState = HelperService.getPrevState();
+        vm.submitAction = editDeal;
+
+        activate();
+
+        ///////////////////
+
+        function activate() {
+            //$log.debug(vm.discounts);
+            insertNewImageObj();
+            // angular.element('.start-date').datepicker({
+            //     orientation: "left",
+            //     autoclose: true
+            // });
+            //$log.debug(vm.discounts);
+            priceFormat();
+            // DealService.find(vm.dealId).then(function(data) {
+            //     vm.selectedDeal = data;
+            //     vm.form = vm.selectedDeal;
+            // });
+            //temporary workaround
+            $(document).ready(function() {
+                ComponentsDateTimePickers.init();
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        }
+
+        function removeSelDiscount(target, discountModel) {
+            if (discountModel.discount_type == 'standard' && discountModel.status == 'active') {
+                bootbox.alert("You can't remove an active standard discount!");
+            } else {
+                angular.element(target).parents('.discount-row').remove();
+                vm.removeDiscount(discountModel);
+            }
+
+        }
+
+        function openDiscountModal(discountModel) {
+            $('#discount-modal-edit').modal('show');
+            vm.setSelDiscountObj(discountModel);
+        }
+
+        function hasStandardDiscounts() {
+            var formDiscountCount = 0;
+            var removedDiscountCount = 0;
+
+            angular.forEach(vm.form.discounts, function(discount, index) {
+                // if (discount.value != 'null' && discount.value != '' && discount.discount_type == 'standard') {
+                //     formDiscountCount++;
+                // }
+                if (discount != 'null' && discount.discount_type == 'standard') {
+                    formDiscountCount++;
+                }
+            });
+
+            angular.forEach(vm.removedDiscountObjs, function(discount, index) {
+                if (discount != 'null' && discount.discount_type == 'standard') {
+                    removedDiscountCount++;
+                }
+            });
+
+            var discountCount = vm.standardDiscounts.length + formDiscountCount;
+
+            if (discountCount == removedDiscountCount) {
+                return false;
+            }
+
+            return angular.isDefined(vm.standardDiscounts) && vm.standardDiscounts.length > 0;
+        }
+
+        function hasEarlybirdDiscounts() {
+            var formDiscountCount = 0;
+            var removedDiscountCount = 0;
+
+            angular.forEach(vm.form.discounts, function(discount, index) {
+                if (discount != null && discount.discount_type == 'early_bird') {
+                    formDiscountCount++;
+                }
+            });
+
+            angular.forEach(vm.removedDiscountObjs, function(discount, index) {
+                if (discount.value != 'null' && discount.value != '' && discount.discount_type == 'early_bird') {
+                    removedDiscountCount++;
+                }
+            });
+
+            var discountCount = vm.earlyBirdDiscounts.length + formDiscountCount;
+            var rows = angular.element('.early-bird').find('.discount-row');
+
+            // if (discountCount == removedDiscountCount) {
+            if (removedDiscountCount == 0 && (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0)) {
+                return true;
+            }
+
+            if (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length == 0 && formDiscountCount > 0) {
+                return true;
+            }
+
+            // if (formDiscountCount == 0 && rows.length == 0) {
+            //     return false;
+            // }
+
+            if (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length == 0 && formDiscountCount == 0) {
+                return false;
+            }
+
+            return (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0);
+
+        }
+
+        function removeAddedImage(image) {
+            angular.forEach(vm.form.file, function(img, index) {
+                if (img === image) {
+                    vm.form.file.splice(index, 1);
+                }
+            });
+        }
+
+        function openEditImageModal(elem) {
+            $(elem).parents('.image-view-container').find('.image-modal').modal('show');
+        }
+
+        function blankFn() {
+            return false;
+        }
+
+        function latestImgIndex() {
+            return vm.form.file.length - 1;
+        }
+
+        function insertNewImageObj() {
+            var obj = {
+                file: "",
+                description: ""
+            };
+            vm.form.file.push(obj);
+        }
+
+        function getFormImage() {
+            //var index = getImageCounter();
+
+            vm.form.file[vm.imageCounter] = {
+                file: "",
+                description: ""
+            };
+
+            return vm.form.file[vm.imageCounter++];
+        }
+
+        function getImageCounter() {
+            return vm.imageCounter++;
+        }
+
+        function removeImage(elem, image) {
+            vm.removedImageObj.push(image);
+            $(elem).parents('.image-view-container').remove();
+        }
+
+        function updateDateDiff() {
+            vm.form.date_ends = '';
+
+            var dateNow = new Date();
+            var dateComp = new Date(vm.form.date_starts);
+
+            var timeDiff = Math.abs(dateComp.getTime() - dateNow.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+            $('#ending_date').datepicker({
+                autoclose: true
+            });
+
+            $('#ending_date').datepicker('setStartDate', '+' + diffDays + 'd');
+
+        }
+
+        //Discount
+        function removeDiscount(discount) {
+            //$log.debug(vm.form.discounts);
+            angular.forEach(vm.form.discounts, function(val, attr) {
+                if (val == discount) {
+                    //$log.debug(attr);
+                    //delete vm.form.discounts[attr];
+                    vm.form.discounts[attr] = null;
+                }
+            });
+
+            angular.forEach(vm.standardDiscounts, function(val, index) {
+                if (val.uid == discount.uid) {
+                    vm.standardDiscounts.splice(index, 1);
+                }
+            });
+
+            angular.forEach(vm.earlyBirdDiscounts, function(val, index) {
+                if (val.uid == discount.uid) {
+                    vm.earlyBirdDiscounts.splice(index, 1);
+                }
+            });
+
+            $log.debug(vm.form.discounts);
+            vm.removedDiscountObjs.push(discount);
+        }
+
+        function setSelDiscountObj(dobj) {
+            vm.selDiscountObj = dobj;
+        }
+
+        function setSelDiscountIndex(index) {
+            vm.selDiscountIndex = index;
+        }
+
+        function increDiscountCounter() {
+            vm.discountCounter++;
+        }
+        //End Discount
+
+        function priceFormat() {
+            var price = vm.form.price;
+
+            vm.form.price = parseFloat(price).toFixed(2) + '';
+        }
+
+        function setSelTemplateObj(tobj) {
+            vm.selTemplateObj = tobj;
+        }
+
+        function setSelTemplateIndex(index) {
+            vm.selTemplateIndex = index;
+        }
+
+        function increTemplateCounter() {
+            vm.templateCounter++;
+        }
+
+        function removeTemplate(template) {
+            angular.forEach(vm.templates, function(val, index) {
+                if (val.uid == template.uid) {
+                    vm.templates.splice(index, 1);
+                }
+            });
+            vm.removedTemplateObjs.push(template);
+        }
+
+        function removeHighlight(highlight) {
+            angular.forEach(vm.highlights, function(val, index) {
+                if (val.uid == highlight.uid) {
+                    vm.highlights.splice(index, 1);
+                }
+            });
+            vm.removedHighlightObjs.push(highlight);
+        }
+
+        function deleteHighligts() {
+
+        }
+
+        function editDeal() {
+            vm.isDone = false;
+            //temporary
+            //vm.form.brand_id = '3228eb88-6810-4b28-ae52-88a62e4655c3';
+
+            vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
+            vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
+            // $log.debug(vm.form);
+            // $log.debug(vm.highlights);
+            // $log.debug(vm.removedHighlightObjs);
+            // return false;
+            vm.form.templates.splice(vm.form.templates.length - 1, 1);
+            //vm.form.highlights.splice(vm.form.highlights.length - 1, 1);
+            //$log.debug(vm.form);
+            var data = {
+                form: vm.form,
+                highlights: vm.highlights,
+                removedHighlights: vm.removedHighlightObjs,
+                templates: vm.templates,
+                removedTemplates: vm.removedTemplateObjs,
+                discounts: vm.discounts,
+                removedDiscounts: vm.removedDiscountObjs,
+                images: vm.images,
+                removedImages: vm.removedImageObj
+            };
+
+            //$log.debug(data);
+            //return false;
+
+            DealService.edit(vm.dealId, data).then(function() {
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Updated deal: " + vm.form.name;
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
+                $scope.$parent.vm.getDeals();
+                $state.go(vm.prevState);
+
+            }).catch(function(err) {
+                $log.debug(err);
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to update deal.";
+                vm.response['error_arr'] = err;
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                HelperService.goToAnchor('msg-info');
+
+            });
+        }
+
+        function countActiveStandard(selFieldModel) {
+            var dobj = selFieldModel;
+            var countStandard = 0;
+            // $log.debug('---------');
+            // $log.debug(scope.fieldModel);
+            angular.forEach(vm.form.discounts, function(discount, index) {
+                if (discount != null && discount.discount_type == 'standard') {
+                    if (discount.status == 'active') {
+                        countStandard++;
+                    }
+                }
+            });
+            //$log.debug(scope.discountsData);
+            angular.forEach(vm.discounts, function(discount, index) {
+                if (discount != null && discount.discount_type == 'standard' && dobj != discount) {
+                    if (discount.status == 'active') {
+                        countStandard++;
+                    }
+                }
+            });
+
+            // $log.debug(countStandard);
+            // $log.debug('---------');
+
+            return countStandard;
+        }
+
+        function setActive(selFieldModel, newDiscounts, discountsData, type, mode) {
+            DealService.setActive(selFieldModel, newDiscounts, discountsData, type, mode);
+        }
+
+        function _setActive(selFieldModel, discountsData, type, mode) {
+            if (type == 'standard') {
+                var existingCount = HelperService.countModelLength($filter('getActiveStandard')(vm.discounts));
+                var newCount = HelperService.countModelLength($filter('getActiveStandard')(vm.form.discounts));
+
+                if (selFieldModel.status == 'active') { //Set to suspended
+                    bootbox.alert('There must be one active standard discount.');
+                } else { //set to active
+
+                    bootbox.confirm({
+                        title: "Confirm Active Standard",
+                        message: "You have set this standard discount as \"Active\". You have an active standard discount running at the moment.<br ><br >Press \"Yes\" to proceed and the current active standard discount will be suspended.<br ><br >Press \"No\" and the new standard discount will be set to \"Suspended\".",
+                        buttons: {
+                            confirm: {
+                                label: 'Yes',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'No',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function(result) {
+                            if (result) {
+                                //$log.debug('test');
+                                reverseStatus(type);
+                                $scope.$digest();
+                            }
+                        }
+                    });
+
+                }
+            } else {
+                //Existing discounts
+                angular.forEach($filter('whereAttr')(vm.discounts, 'discount_type', type), function(discount, index) {
+                    if (discount == selFieldModel) {
+                        discount.status = $filter('reverseStatus')(discount);
+                    }
+                });
+                //New discounts
+                angular.forEach($filter('whereAttr')(vm.form.discounts, 'discount_type', type), function(discount, index) {
+                    if (discount == selFieldModel) {
+                        discount.status = $filter('reverseStatus')(discount);
+                    }
+                });
+            }
+        }
+
+        function reverseStatus(type) {
+            //Existing discounts
+            angular.forEach($filter('whereAttr')(vm.discounts, 'discount_type', type), function(discount, index) {
+                discount.status = $filter('reverseStatus')(discount);
+            });
+            //New discounts
+            angular.forEach($filter('whereAttr')(vm.form.discounts, 'discount_type', type), function(discount, index) {
+                discount.status = $filter('reverseStatus')(discount);
+            });
+        }
+
+        function statusChange(selFieldModel) {
+            if (selFieldModel.status == 'active') {
+                selFieldModel.status = 'suspended';
+            } else {
+                selFieldModel.status = 'active';
+            }
+
+            var selDiscount = selFieldModel;
+            var status = selDiscount.status;
+            var countStandard = 0;
+            //$log.debug(selDiscount);
+            var activeStandard = countActiveStandard(selFieldModel);
+            //$log.debug(activeStandard);
+            if (status == 'active') {
+
+                angular.forEach(vm.form.discounts, function(discount, index) {
+                    if (discount != null && discount != selDiscount && discount.discount_type == 'standard') {
+                        countStandard++;
+                        if (discount.status == 'active') {
+                            discount.status = 'suspended';
+                        }
+                    } else if (discount != null && discount.discount_type == 'early_bird') {
+                        if (discount.status == 'active') {
+                            discount.status = 'suspended';
+                        } else {
+                            discount.status = 'active'
+                        }
+                    }
+                });
+
+                if (vm.mode == 'Edit' && selDiscount.discount_type == 'standard') {
+
+                    angular.forEach(vm.discounts, function(discount, index) {
+                        countStandard++;
+                        if (discount != null && discount.discount_type == 'standard') {
+                            if (discount.status == 'active') {
+                                discount.status = 'suspended';
+                            }
+
+                        } else if (discount != null && discount.discount_type == 'early_bird') {
+                            if (discount.status == 'active') {
+                                discount.status = 'suspended';
+                            } else {
+                                discount.status = 'active'
+                            }
+                        }
+                    });
+                }
+                if (countStandard == 0 && selDiscount.discount_type == 'standard') {
+                    selFieldModel.status = 'active';
+                }
+            } else if (selDiscount.discount_type == 'standard' && activeStandard == 0) {
+                bootbox.alert('There must be one active standard discount.');
+                selFieldModel.status = 'active';
+            }
+
+
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.deals')
+        .controller('DealViewController', DealViewController);
+
+    DealViewController.$inject = [
+        'DealService',
+        '$stateParams',
+        '$scope',
+        'prepSelDeal',
+        'HelperService',
+        'prepSelHighlights',
+        'prepSelTemplates',
+        'prepStandardD',
+        'prepEarlyBirdD',
+        'prepDealImages'
+    ];
+
+    /* @ngInject */
+    function DealViewController(
+        DealService,
+        $stateParams,
+        $scope,
+        prepSelDeal,
+        HelperService,
+        prepSelHighlights,
+        prepSelTemplates,
+        prepStandardD,
+        prepEarlyBirdD,
+        prepDealImages
+    ) {
+        var vm = this;
+
+        vm.mode = "View";
+        vm.response = {};
+        vm.dealId = $stateParams.id;
+        vm.deal = prepSelDeal;
+        vm.isDone = false;
+
+        //Highlights
+        vm.highlights = prepSelHighlights;
+
+        //Templates
+        vm.templates = prepSelTemplates;
+
+        //Discounts
+        vm.standardDiscounts = prepStandardD;
+        vm.earlyBirdDiscounts = prepEarlyBirdD;
+        vm.hasStandardDiscounts = hasStandardDiscounts;
+        vm.hasEarlybirdDiscounts = hasEarlybirdDiscounts;
+
+        //Images
+        vm.images = prepDealImages;
+        vm.openEditImageModal = openEditImageModal;
+
+        vm.prevState = HelperService.getPrevState();
+
+        //activate();
+
+        ///////////////////
+
+        function activate() {
+            DealService.find(vm.dealId).then(function(data) {
+                vm.deal = data;
+            });
+        }
+
+        function openEditImageModal(elem) {
+            $(elem).parents('.image-view-container').find('.image-modal').modal('show');
+        }
+
+        function hasStandardDiscounts() {
+            return angular.isDefined(vm.standardDiscounts) && vm.standardDiscounts.length > 0;
+        }
+
+        function hasEarlybirdDiscounts() {
+            return angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0;
+        }
+    }
 })();
 (function() {
     'use strict';
@@ -4974,1103 +6080,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 
-})();
-(function() {
-    'use strict';
-
-    angular.module('app.deals')
-        .controller('DealAddController', DealAddController);
-
-    DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes'];
-
-    /* @ngInject */
-    function DealAddController(DealService, $scope, HelperService, $state, brandPrepService, prepTemplateNames, prepTemplateTypes) {
-        var vm = this;
-
-        vm.mode = "Add";
-        vm.form = {};
-        vm.form.highlights = [];
-        vm.form.templates = [];
-        vm.form.discounts = {};
-        vm.response = {};
-        vm.isDone = true;
-        vm.brands = brandPrepService.brands;
-        vm.default = vm.brands[0];
-        vm.removeHighlight = removeHighlight;
-
-        //template
-        vm.templateCounter = 0;
-        vm.increTemplateCounter = increTemplateCounter;
-        vm.selTemplateIndex = 0;
-        vm.setSelTemplateIndex = setSelTemplateIndex;
-        vm.selTemplateObj = {};
-        vm.setSelTemplateObj = setSelTemplateObj;
-        vm.templateNames = prepTemplateNames;
-        vm.templateTypes = prepTemplateTypes;
-        vm.removeTemplate = removeTemplate;
-        vm.priceFormat = priceFormat;
-
-        //discount
-        vm.discountCounter = 0;
-        vm.increDiscountCounter = increDiscountCounter;
-        vm.selDiscountIndex = 0;
-        vm.setSelDiscountIndex = setSelDiscountIndex;
-        vm.selDiscountObj = {};
-        vm.setSelDiscountObj = setSelDiscountObj;
-        vm.removeDiscount = removeDiscount;
-        vm.standardDiscounts = [];
-        vm.earlyBirdDiscounts = [];
-        vm.hasStandardDiscounts = hasStandardDiscounts;
-        vm.hasEarlybirdDiscounts = hasEarlybirdDiscounts;
-        vm.openDiscountModal = openDiscountModal;
-        vm.removeSelDiscount = removeSelDiscount;
-        vm.removedDiscountObjs = [];
-        vm.setActive = setActive;
-        vm.discounts = [];
-
-        //image
-        vm.form.file = [];
-        vm.imageCounter = 0;
-        vm.getImageCounter = getImageCounter;
-        vm.removeAddedImage = removeAddedImage;
-        vm.insertNewImageObj = insertNewImageObj;
-        vm.latestImgIndex = latestImgIndex;
-        vm.blankFn = blankFn;
-
-        vm.updateDateDiff = updateDateDiff;
-        vm.prevState = HelperService.getPrevState();
-        vm.submitAction = addDeal;
-        vm.isDealEmpty = DealService.isEmpty();
-        vm.isBrandEmpty = brandPrepService.total == 0;
-
-        activate();
-
-        ///////////////////
-
-        function activate() {
-            // angular.element('.start-date').datepicker({
-            //     orientation: "left",
-            //     autoclose: true
-            // });
-            //ComponentsDateTimePickers.init();
-            insertNewImageObj();
-            $(document).ready(function() {
-                ComponentsDateTimePickers.init();
-            });
-            // vm.$watch('vm.form.price', function(newVal, oldVal) {
-            //     console.log(newVal);
-            //     return newVal.toFixed(2);
-            // });
-        }
-
-        function blankFn() {
-            return false;
-        }
-
-        function latestImgIndex() {
-            return vm.form.file.length - 1;
-        }
-
-        function insertNewImageObj() {
-            var obj = {
-                file: "",
-                description: ""
-            };
-            vm.form.file.push(obj);
-        }
-
-        function removeAddedImage(image) {
-            angular.forEach(vm.form.file, function(img, index) {
-                if (img === image) {
-                    vm.form.file.splice(index, 1);
-                }
-            });
-        }
-
-        function getImageCounter() {
-            return vm.imageCounter++;
-        }
-
-        function updateDateDiff() {
-            vm.form.date_ends = '';
-
-            var dateNow = new Date();
-            var dateComp = new Date(vm.form.date_starts);
-
-            var timeDiff = Math.abs(dateComp.getTime() - dateNow.getTime());
-            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-            $('#ending_date').datepicker({
-                autoclose: true
-            });
-
-            $('#ending_date').datepicker('setStartDate', '+' + diffDays + 'd');
-
-        }
-
-        //Discount
-        function removeSelDiscount(target, discountModel) {
-            angular.element(target).parents('.discount-row').remove();
-            vm.removeDiscount(discountModel);
-        }
-
-        function openDiscountModal(discountModel) {
-            $('#discount-modal-edit').modal('show');
-            vm.setSelDiscountObj(discountModel);
-        }
-
-        function hasStandardDiscounts() {
-            var formDiscountCount = 0;
-            //console.log(vm.form.discounts);
-            // for (var key in vm.form.discounts) {
-            //     //console.log(vm.form.discounts[key].discount_type);
-            //     if (vm.form.discounts[key] != null && vm.form.discounts[key].discount_type == 'standard') {
-            //         formDiscountCount++;
-            //     }
-            // }
-
-            angular.forEach(vm.form.discounts, function(discount, index) {
-                if (discount != null && discount.discount_type == 'standard') {
-                    formDiscountCount++;
-                }
-            });
-
-            return formDiscountCount > 0;
-        }
-
-        function hasEarlybirdDiscounts() {
-            var formDiscountCount = 0;
-
-            for (var key in vm.form.discounts) {
-                //console.log(vm.form.discounts[key].discount_type);
-                if (vm.form.discounts[key] != null && vm.form.discounts[key].discount_type == 'early_bird') {
-                    formDiscountCount++;
-                }
-            }
-
-            return formDiscountCount > 0;
-            // angular.forEach(vm.form.discounts, function(discount, index) {
-            //     if (discount.value != 'null' &&
-            //         discount.value != '' &&
-            //         discount.weighting != null &&
-            //         discount.weighting != 'null' &&
-            //         discount.weighting != '' &&
-            //         discount.coupon_count != null &&
-            //         discount.coupon_count != 'null' &&
-            //         discount.coupon_count != '' &&
-            //         discount.coupon_limit != null &&
-            //         discount.coupon_limit != 'null' &&
-            //         discount.coupon_limit != '' &&
-            //         discount.discount_type == 'early_bird') {
-            //         formDiscountCount++;
-            //     }
-            // });
-
-            // angular.forEach(vm.removedDiscountObjs, function(discount, index) {
-            //     if (discount.value != 'null' && discount.value != '' && discount.discount_type == 'early_bird') {
-            //         removedDiscountCount++;
-            //     }
-            // });
-
-            // var discountCount = vm.earlyBirdDiscounts.length + formDiscountCount;
-            // var rows = angular.element('.early-bird').find('.discount-row');
-
-            // // if (discountCount == removedDiscountCount) {
-            // if (removedDiscountCount == 0 && (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0)) {
-            //     return true;
-            // }
-
-            // if (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length == 0 && formDiscountCount > 0) {
-            //     return true;
-            // }
-
-            // // if (formDiscountCount == 0 && rows.length == 0) {
-            // //     return false;
-            // // }
-
-            // if (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length == 0 && formDiscountCount == 0) {
-            //     return false;
-            // }
-
-            // return (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0);
-
-        }
-
-        function removeDiscount(discount) {
-            // angular.forEach(vm.form.discounts, function(val, attr) {
-            //     console.log(discount == val);
-            //     if (discount == val) {
-            //         //console.log('test')
-            //         //vm.form.discounts.splice(index, 1);
-            //         delete vm.form.discounts[attr];
-            //     }
-            // });
-            for (var attr in vm.form.discounts) {
-                console.log(discount == vm.form.discounts[attr]);
-                if (discount == vm.form.discounts[attr]) {
-                    vm.form.discounts[attr] = null;
-                }
-            }
-        }
-
-        function setSelDiscountObj(dobj) {
-            vm.selDiscountObj = dobj;
-        }
-
-        function setSelDiscountIndex(index) {
-            vm.selDiscountIndex = index;
-        }
-
-        function increDiscountCounter() {
-            vm.discountCounter++;
-        }
-        //End Discount
-
-        //Template
-        function priceFormat() {
-            var price = vm.form.price;
-
-            vm.form.price = parseFloat(price).toFixed(2) + '';
-        }
-
-        function removeTemplate(template_index) {
-            angular.forEach(vm.form.templates, function(val, index) {
-                if (index == template_index) {
-                    console.log('test')
-                    vm.form.templates.splice(index, 1);
-                }
-            });
-        }
-
-        function setSelTemplateObj(tobj) {
-            vm.selTemplateObj = tobj;
-        }
-
-        function setSelTemplateIndex(index) {
-            vm.selTemplateIndex = index;
-        }
-
-        function increTemplateCounter() {
-            vm.templateCounter++;
-        }
-        //END Template
-
-
-        function addDeal() {
-            vm.isDone = false;
-            //temporary
-            //vm.form.brand_id = '3228eb88-6810-4b28-ae52-88a62e4655c3';
-
-            vm.isDone = false;
-            vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
-            vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
-
-            //console.log(vm.form);
-            //return false;
-            if (!checkHasActiveStandardDiscount()) {
-                bootbox.alert({
-                    title: "No active standard discount!",
-                    message: "Please add a single active standard discount to add new deal."
-                });
-                vm.isDone = true;
-                return false;
-            }
-
-            DealService.add(vm.form).then(function(resp) {
-                vm.response['success'] = "alert-success";
-                vm.response['alert'] = "Success!";
-                // vm.response['msg'] = "Added new deal: " + vm.form.name + ' ' + resp;
-                vm.response['msg'] = "Added new deal.";
-                vm.isDone = true;
-
-                $scope.$parent.vm.isDone = true;
-                $scope.$parent.vm.response = vm.response;
-                $scope.$parent.vm.getDeals();
-                $state.go(vm.prevState);
-
-            }).catch(function(err) {
-                vm.response['success'] = "alert-danger";
-                vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to add deal.";
-                vm.response['error_arr'] = err;
-                vm.isDone = true;
-
-                $scope.$parent.vm.isDone = true;
-                HelperService.goToAnchor('msg-info');
-            });
-        }
-
-        function checkHasActiveStandardDiscount() {
-            var discounts = vm.form.discounts;
-            var hasActive = false;
-            for (var key in discounts) {
-                if (discounts[key].discount_type == 'standard' && discounts[key].status == 'active') {
-                    hasActive = true;
-                }
-            }
-
-            return hasActive;
-        }
-
-        function setActive(selFieldModel, newDiscounts, discountsData, type, mode) {
-            DealService.setActive(selFieldModel, newDiscounts, discountsData, type, mode);
-        }
-
-        function removeHighlight(highlightId) {
-
-        }
-    }
-})();
-(function() {
-    'use strict';
-
-    angular.module('app.deals')
-        .controller('DealController', DealController);
-
-    DealController.$inject = ['DealService', 'dealPrepService'];
-
-    /* @ngInject */
-    function DealController(DealService, dealPrepService) {
-        var vm = this;
-
-        vm.prepDeals = dealPrepService;
-        vm.deals = vm.prepDeals.deals;
-        vm.getDeals = getDeals;
-        vm.hasDeleted = false;
-        vm.response = {};
-        vm.deleteDeal = deleteDeal;
-        vm.response = {};
-        vm.isDone = false;
-        vm.search = search;
-        vm.searchItem = '';
-        vm.isLoading = false;
-        vm.isSearch = false;
-        vm.clearSearch = clearSearch;
-        vm.isDealEmpty = DealService.isEmpty();
-
-        //activate();
-
-        ////////////////
-
-        function activate() {
-            return getDeals();
-        }
-
-        function clearSearch() {
-            vm.searchItem = '';
-            search();
-        }
-
-        function search() {
-            vm.isLoading = true;
-
-            if (vm.searchItem.trim().length > 0) {
-                vm.isSearch = true;
-            } else {
-                vm.isSearch = false;
-            }
-
-            DealService.search(vm.searchItem).then(function(resp) {
-                vm.deals = resp;
-                vm.isLoading = false;
-            }).catch(function(err) {
-                console.log(err);
-            });
-        }
-
-        function getDeals() {
-            return DealService.getAll().then(function(data) {
-                vm.prepDeals = data;
-                vm.deals = vm.prepDeals.deals;
-                return vm.deals;
-            });
-        }
-
-        function deleteDeal(element, deal) {
-            bootbox.confirm({
-                title: "Confirm Delete",
-                message: "Are you sure you want to delete deal: <b>" + deal.name + "</b>?",
-                buttons: {
-                    confirm: {
-                        label: 'Yes',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: 'No',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function(result) {
-                    if (result) {
-                        Ladda.create(element).start();
-                        doDelete(deal);
-                    }
-                }
-            });
-        }
-
-        function doDelete(deal) {
-            DealService.delete(deal.uid).then(function(resp) {
-                vm.hasDeleted = true;
-                vm.response['success'] = "alert-success";
-                vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Deleted deal: " + deal.name;
-                getDeals();
-                vm.hasAdded = true;
-                vm.isDone = true;
-            }).catch(function() {
-                vm.response['success'] = "alert-danger";
-                vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to delete deal: " + deal.name;
-                vm.hasAdded = true;
-                vm.isDone = true;
-            });
-        }
-    }
-})();
-(function() {
-    'use strict';
-
-    angular.module('app.deals')
-        .controller('DealEditController', DealEditController);
-
-    DealEditController.$inject = ['DealService',
-        '$stateParams',
-        '$scope',
-        'prepSelDeal',
-        'HelperService',
-        '$state',
-        'brandPrepService',
-        'prepSelHighlights',
-        'prepSelTemplates',
-        'prepTemplateNames',
-        'prepTemplateTypes',
-        'prepStandardD',
-        'prepEarlyBirdD',
-        'prepDealImages',
-        '$filter'
-    ];
-
-    /* @ngInject */
-    function DealEditController(DealService,
-        $stateParams,
-        $scope,
-        prepSelDeal,
-        HelperService,
-        $state,
-        brandPrepService,
-        prepSelHighlights,
-        prepSelTemplates,
-        prepTemplateNames,
-        prepTemplateTypes,
-        prepStandardD,
-        prepEarlyBirdD,
-        prepDealImages,
-        $filter) {
-
-        var vm = this;
-
-        vm.mode = "Edit";
-        vm.response = {};
-        vm.dealId = $stateParams.id;
-        vm.selectedDeal = prepSelDeal;
-        vm.form = vm.selectedDeal;
-        vm.form.highlights = [];
-        vm.form.templates = [];
-        vm.form.discounts = {};
-        //vm.form.highlights = vm.selectedDeal.highlights;
-        vm.highlights = prepSelHighlights;
-        vm.isDone = true;
-        vm.brands = brandPrepService.brands;
-        vm.default = vm.brands[0];
-        vm.removeHighlight = removeHighlight;
-        vm.removedHighlightObjs = [];
-
-        //template
-        vm.templates = prepSelTemplates;
-        vm.removedTemplateObjs = [];
-        vm.templateCounter = 0;
-        vm.increTemplateCounter = increTemplateCounter;
-        vm.selTemplateIndex = 0;
-        vm.setSelTemplateIndex = setSelTemplateIndex;
-        vm.selTemplateObj = {};
-        vm.setSelTemplateObj = setSelTemplateObj;
-        vm.templateNames = prepTemplateNames;
-        vm.templateTypes = prepTemplateTypes;
-        vm.removeTemplate = removeTemplate;
-        vm.priceFormat = priceFormat;
-
-        //discount
-        vm.discounts = prepStandardD.concat(prepEarlyBirdD);
-        vm.removedDiscountObjs = [];
-        vm.discountCounter = 0;
-        vm.increDiscountCounter = increDiscountCounter;
-        vm.selDiscountIndex = 0;
-        vm.setSelDiscountIndex = setSelDiscountIndex;
-        vm.selDiscountObj = {};
-        vm.setSelDiscountObj = setSelDiscountObj;
-        vm.removeDiscount = removeDiscount;
-        vm.standardDiscounts = prepStandardD;
-        vm.earlyBirdDiscounts = prepEarlyBirdD;
-        vm.hasStandardDiscounts = hasStandardDiscounts;
-        vm.hasEarlybirdDiscounts = hasEarlybirdDiscounts;
-        vm.openDiscountModal = openDiscountModal;
-        vm.removeSelDiscount = removeSelDiscount;
-        vm.setActive = setActive;
-
-        //images
-        vm.form.file = [];
-        vm.images = prepDealImages;
-        vm.removeImage = removeImage;
-        vm.removedImageObj = [];
-        vm.imageCounter = 0;
-        vm.getImageCounter = getImageCounter;
-        vm.insertNewImageObj = insertNewImageObj;
-        vm.latestImgIndex = latestImgIndex;
-        vm.blankFn = blankFn;
-        vm.openEditImageModal = openEditImageModal;
-        vm.removeAddedImage = removeAddedImage;
-
-        vm.updateDateDiff = updateDateDiff;
-        vm.prevState = HelperService.getPrevState();
-        vm.submitAction = editDeal;
-
-        activate();
-
-        ///////////////////
-
-        function activate() {
-            //console.log(vm.discounts);
-            insertNewImageObj();
-            // angular.element('.start-date').datepicker({
-            //     orientation: "left",
-            //     autoclose: true
-            // });
-            //console.log(vm.discounts);
-            priceFormat();
-            // DealService.find(vm.dealId).then(function(data) {
-            //     vm.selectedDeal = data;
-            //     vm.form = vm.selectedDeal;
-            // });
-            //temporary workaround
-            $(document).ready(function() {
-                ComponentsDateTimePickers.init();
-                $('[data-toggle="tooltip"]').tooltip();
-            });
-        }
-
-        function removeSelDiscount(target, discountModel) {
-            if (discountModel.discount_type == 'standard' && discountModel.status == 'active') {
-                bootbox.alert("You can't remove an active standard discount!");
-            } else {
-                angular.element(target).parents('.discount-row').remove();
-                vm.removeDiscount(discountModel);
-            }
-
-        }
-
-        function openDiscountModal(discountModel) {
-            $('#discount-modal-edit').modal('show');
-            vm.setSelDiscountObj(discountModel);
-        }
-
-        function hasStandardDiscounts() {
-            var formDiscountCount = 0;
-            var removedDiscountCount = 0;
-
-            angular.forEach(vm.form.discounts, function(discount, index) {
-                // if (discount.value != 'null' && discount.value != '' && discount.discount_type == 'standard') {
-                //     formDiscountCount++;
-                // }
-                if (discount != 'null' && discount.discount_type == 'standard') {
-                    formDiscountCount++;
-                }
-            });
-
-            angular.forEach(vm.removedDiscountObjs, function(discount, index) {
-                if (discount != 'null' && discount.discount_type == 'standard') {
-                    removedDiscountCount++;
-                }
-            });
-
-            var discountCount = vm.standardDiscounts.length + formDiscountCount;
-
-            if (discountCount == removedDiscountCount) {
-                return false;
-            }
-
-            return angular.isDefined(vm.standardDiscounts) && vm.standardDiscounts.length > 0;
-        }
-
-        function hasEarlybirdDiscounts() {
-            var formDiscountCount = 0;
-            var removedDiscountCount = 0;
-
-            angular.forEach(vm.form.discounts, function(discount, index) {
-                if (discount != null && discount.discount_type == 'early_bird') {
-                    formDiscountCount++;
-                }
-            });
-
-            angular.forEach(vm.removedDiscountObjs, function(discount, index) {
-                if (discount.value != 'null' && discount.value != '' && discount.discount_type == 'early_bird') {
-                    removedDiscountCount++;
-                }
-            });
-
-            var discountCount = vm.earlyBirdDiscounts.length + formDiscountCount;
-            var rows = angular.element('.early-bird').find('.discount-row');
-
-            // if (discountCount == removedDiscountCount) {
-            if (removedDiscountCount == 0 && (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0)) {
-                return true;
-            }
-
-            if (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length == 0 && formDiscountCount > 0) {
-                return true;
-            }
-
-            // if (formDiscountCount == 0 && rows.length == 0) {
-            //     return false;
-            // }
-
-            if (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length == 0 && formDiscountCount == 0) {
-                return false;
-            }
-
-            return (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0);
-
-        }
-
-        function removeAddedImage(image) {
-            angular.forEach(vm.form.file, function(img, index) {
-                if (img === image) {
-                    vm.form.file.splice(index, 1);
-                }
-            });
-        }
-
-        function openEditImageModal(elem) {
-            $(elem).parents('.image-view-container').find('.image-modal').modal('show');
-        }
-
-        function blankFn() {
-            return false;
-        }
-
-        function latestImgIndex() {
-            return vm.form.file.length - 1;
-        }
-
-        function insertNewImageObj() {
-            var obj = {
-                file: "",
-                description: ""
-            };
-            vm.form.file.push(obj);
-        }
-
-        function getFormImage() {
-            //var index = getImageCounter();
-
-            vm.form.file[vm.imageCounter] = {
-                file: "",
-                description: ""
-            };
-
-            return vm.form.file[vm.imageCounter++];
-        }
-
-        function getImageCounter() {
-            return vm.imageCounter++;
-        }
-
-        function removeImage(elem, image) {
-            vm.removedImageObj.push(image);
-            $(elem).parents('.image-view-container').remove();
-        }
-
-        function updateDateDiff() {
-            vm.form.date_ends = '';
-
-            var dateNow = new Date();
-            var dateComp = new Date(vm.form.date_starts);
-
-            var timeDiff = Math.abs(dateComp.getTime() - dateNow.getTime());
-            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-            $('#ending_date').datepicker({
-                autoclose: true
-            });
-
-            $('#ending_date').datepicker('setStartDate', '+' + diffDays + 'd');
-
-        }
-
-        //Discount
-        function removeDiscount(discount) {
-            //console.log(vm.form.discounts);
-            angular.forEach(vm.form.discounts, function(val, attr) {
-                if (val == discount) {
-                    //console.log(attr);
-                    //delete vm.form.discounts[attr];
-                    vm.form.discounts[attr] = null;
-                }
-            });
-
-            angular.forEach(vm.standardDiscounts, function(val, index) {
-                if (val.uid == discount.uid) {
-                    vm.standardDiscounts.splice(index, 1);
-                }
-            });
-
-            angular.forEach(vm.earlyBirdDiscounts, function(val, index) {
-                if (val.uid == discount.uid) {
-                    vm.earlyBirdDiscounts.splice(index, 1);
-                }
-            });
-
-            console.log(vm.form.discounts);
-            vm.removedDiscountObjs.push(discount);
-        }
-
-        function setSelDiscountObj(dobj) {
-            vm.selDiscountObj = dobj;
-        }
-
-        function setSelDiscountIndex(index) {
-            vm.selDiscountIndex = index;
-        }
-
-        function increDiscountCounter() {
-            vm.discountCounter++;
-        }
-        //End Discount
-
-        function priceFormat() {
-            var price = vm.form.price;
-
-            vm.form.price = parseFloat(price).toFixed(2) + '';
-        }
-
-        function setSelTemplateObj(tobj) {
-            vm.selTemplateObj = tobj;
-        }
-
-        function setSelTemplateIndex(index) {
-            vm.selTemplateIndex = index;
-        }
-
-        function increTemplateCounter() {
-            vm.templateCounter++;
-        }
-
-        function removeTemplate(template) {
-            angular.forEach(vm.templates, function(val, index) {
-                if (val.uid == template.uid) {
-                    vm.templates.splice(index, 1);
-                }
-            });
-            vm.removedTemplateObjs.push(template);
-        }
-
-        function removeHighlight(highlight) {
-            angular.forEach(vm.highlights, function(val, index) {
-                if (val.uid == highlight.uid) {
-                    vm.highlights.splice(index, 1);
-                }
-            });
-            vm.removedHighlightObjs.push(highlight);
-        }
-
-        function deleteHighligts() {
-
-        }
-
-        function editDeal() {
-            vm.isDone = false;
-            //temporary
-            //vm.form.brand_id = '3228eb88-6810-4b28-ae52-88a62e4655c3';
-
-            vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
-            vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
-            // console.log(vm.form);
-            // console.log(vm.highlights);
-            // console.log(vm.removedHighlightObjs);
-            // return false;
-            vm.form.templates.splice(vm.form.templates.length - 1, 1);
-            //vm.form.highlights.splice(vm.form.highlights.length - 1, 1);
-            //console.log(vm.form);
-            var data = {
-                form: vm.form,
-                highlights: vm.highlights,
-                removedHighlights: vm.removedHighlightObjs,
-                templates: vm.templates,
-                removedTemplates: vm.removedTemplateObjs,
-                discounts: vm.discounts,
-                removedDiscounts: vm.removedDiscountObjs,
-                images: vm.images,
-                removedImages: vm.removedImageObj
-            };
-
-            //console.log(data);
-            //return false;
-
-            DealService.edit(vm.dealId, data).then(function() {
-                vm.response['success'] = "alert-success";
-                vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Updated deal: " + vm.form.name;
-                vm.isDone = true;
-
-                $scope.$parent.vm.isDone = true;
-                $scope.$parent.vm.response = vm.response;
-                $scope.$parent.vm.getDeals();
-                $state.go(vm.prevState);
-
-            }).catch(function(err) {
-                console.log(err);
-                vm.response['success'] = "alert-danger";
-                vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to update deal.";
-                vm.response['error_arr'] = err;
-                vm.isDone = true;
-
-                $scope.$parent.vm.isDone = true;
-                HelperService.goToAnchor('msg-info');
-
-            });
-        }
-
-        function countActiveStandard(selFieldModel) {
-            var dobj = selFieldModel;
-            var countStandard = 0;
-            // console.log('---------');
-            // console.log(scope.fieldModel);
-            angular.forEach(vm.form.discounts, function(discount, index) {
-                if (discount != null && discount.discount_type == 'standard') {
-                    if (discount.status == 'active') {
-                        countStandard++;
-                    }
-                }
-            });
-            //console.log(scope.discountsData);
-            angular.forEach(vm.discounts, function(discount, index) {
-                if (discount != null && discount.discount_type == 'standard' && dobj != discount) {
-                    if (discount.status == 'active') {
-                        countStandard++;
-                    }
-                }
-            });
-
-            // console.log(countStandard);
-            // console.log('---------');
-
-            return countStandard;
-        }
-
-        function setActive(selFieldModel, newDiscounts, discountsData, type, mode) {
-            DealService.setActive(selFieldModel, newDiscounts, discountsData, type, mode);
-        }
-
-        function _setActive(selFieldModel, discountsData, type, mode) {
-            if (type == 'standard') {
-                var existingCount = HelperService.countModelLength($filter('getActiveStandard')(vm.discounts));
-                var newCount = HelperService.countModelLength($filter('getActiveStandard')(vm.form.discounts));
-
-                if (selFieldModel.status == 'active') { //Set to suspended
-                    bootbox.alert('There must be one active standard discount.');
-                } else { //set to active
-
-                    bootbox.confirm({
-                        title: "Confirm Active Standard",
-                        message: "You have set this standard discount as \"Active\". You have an active standard discount running at the moment.<br ><br >Press \"Yes\" to proceed and the current active standard discount will be suspended.<br ><br >Press \"No\" and the new standard discount will be set to \"Suspended\".",
-                        buttons: {
-                            confirm: {
-                                label: 'Yes',
-                                className: 'btn-success'
-                            },
-                            cancel: {
-                                label: 'No',
-                                className: 'btn-danger'
-                            }
-                        },
-                        callback: function(result) {
-                            if (result) {
-                                //console.log('test');
-                                reverseStatus(type);
-                                $scope.$digest();
-                            }
-                        }
-                    });
-
-                }
-            } else {
-                //Existing discounts
-                angular.forEach($filter('whereAttr')(vm.discounts, 'discount_type', type), function(discount, index) {
-                    if (discount == selFieldModel) {
-                        discount.status = $filter('reverseStatus')(discount);
-                    }
-                });
-                //New discounts
-                angular.forEach($filter('whereAttr')(vm.form.discounts, 'discount_type', type), function(discount, index) {
-                    if (discount == selFieldModel) {
-                        discount.status = $filter('reverseStatus')(discount);
-                    }
-                });
-            }
-        }
-
-        function reverseStatus(type) {
-            //Existing discounts
-            angular.forEach($filter('whereAttr')(vm.discounts, 'discount_type', type), function(discount, index) {
-                discount.status = $filter('reverseStatus')(discount);
-            });
-            //New discounts
-            angular.forEach($filter('whereAttr')(vm.form.discounts, 'discount_type', type), function(discount, index) {
-                discount.status = $filter('reverseStatus')(discount);
-            });
-        }
-
-        function statusChange(selFieldModel) {
-            if (selFieldModel.status == 'active') {
-                selFieldModel.status = 'suspended';
-            } else {
-                selFieldModel.status = 'active';
-            }
-
-            var selDiscount = selFieldModel;
-            var status = selDiscount.status;
-            var countStandard = 0;
-            //console.log(selDiscount);
-            var activeStandard = countActiveStandard(selFieldModel);
-            //console.log(activeStandard);
-            if (status == 'active') {
-
-                angular.forEach(vm.form.discounts, function(discount, index) {
-                    if (discount != null && discount != selDiscount && discount.discount_type == 'standard') {
-                        countStandard++;
-                        if (discount.status == 'active') {
-                            discount.status = 'suspended';
-                        }
-                    } else if (discount != null && discount.discount_type == 'early_bird') {
-                        if (discount.status == 'active') {
-                            discount.status = 'suspended';
-                        } else {
-                            discount.status = 'active'
-                        }
-                    }
-                });
-
-                if (vm.mode == 'Edit' && selDiscount.discount_type == 'standard') {
-
-                    angular.forEach(vm.discounts, function(discount, index) {
-                        countStandard++;
-                        if (discount != null && discount.discount_type == 'standard') {
-                            if (discount.status == 'active') {
-                                discount.status = 'suspended';
-                            }
-
-                        } else if (discount != null && discount.discount_type == 'early_bird') {
-                            if (discount.status == 'active') {
-                                discount.status = 'suspended';
-                            } else {
-                                discount.status = 'active'
-                            }
-                        }
-                    });
-                }
-                if (countStandard == 0 && selDiscount.discount_type == 'standard') {
-                    selFieldModel.status = 'active';
-                }
-            } else if (selDiscount.discount_type == 'standard' && activeStandard == 0) {
-                bootbox.alert('There must be one active standard discount.');
-                selFieldModel.status = 'active';
-            }
-
-
-        }
-    }
-})();
-(function() {
-    'use strict';
-
-    angular.module('app.deals')
-        .controller('DealViewController', DealViewController);
-
-    DealViewController.$inject = [
-        'DealService',
-        '$stateParams',
-        '$scope',
-        'prepSelDeal',
-        'HelperService',
-        'prepSelHighlights',
-        'prepSelTemplates',
-        'prepStandardD',
-        'prepEarlyBirdD',
-        'prepDealImages'
-    ];
-
-    /* @ngInject */
-    function DealViewController(
-        DealService,
-        $stateParams,
-        $scope,
-        prepSelDeal,
-        HelperService,
-        prepSelHighlights,
-        prepSelTemplates,
-        prepStandardD,
-        prepEarlyBirdD,
-        prepDealImages
-    ) {
-        var vm = this;
-
-        vm.mode = "View";
-        vm.response = {};
-        vm.dealId = $stateParams.id;
-        vm.deal = prepSelDeal;
-        vm.isDone = false;
-
-        //Highlights
-        vm.highlights = prepSelHighlights;
-
-        //Templates
-        vm.templates = prepSelTemplates;
-
-        //Discounts
-        vm.standardDiscounts = prepStandardD;
-        vm.earlyBirdDiscounts = prepEarlyBirdD;
-        vm.hasStandardDiscounts = hasStandardDiscounts;
-        vm.hasEarlybirdDiscounts = hasEarlybirdDiscounts;
-
-        //Images
-        vm.images = prepDealImages;
-        vm.openEditImageModal = openEditImageModal;
-
-        vm.prevState = HelperService.getPrevState();
-
-        //activate();
-
-        ///////////////////
-
-        function activate() {
-            DealService.find(vm.dealId).then(function(data) {
-                vm.deal = data;
-            });
-        }
-
-        function openEditImageModal(elem) {
-            $(elem).parents('.image-view-container').find('.image-modal').modal('show');
-        }
-
-        function hasStandardDiscounts() {
-            return angular.isDefined(vm.standardDiscounts) && vm.standardDiscounts.length > 0;
-        }
-
-        function hasEarlybirdDiscounts() {
-            return angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0;
-        }
-    }
 })();
 (function() {
     'use strict';
@@ -6407,42 +6416,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-// (function() {
-//     'use strict';
-
-//     angular.module('app.deals')
-//         .controller('TemplateController', TemplateController);
-
-//     TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-//     /* @ngInject */
-//     function TemplateController($scope, $compile, $document) {
-//         var hl = this;
-
-//         hl.counter = 0;
-//         hl.increCounter = increCounter;
-//         hl.openModal = openModal;
-//         hl.currModel = {};
-//         //hl.addTemplate = addTemplate;
-//         //hl.modalContainer = $('#template-modal');
-
-//         //////////////
-
-//         function openModal() {
-//             $('#template-modal').modal('show');
-
-//             $("#template-modal").on("hidden.bs.modal", function() {
-//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-//             });
-//         }
-
-
-
-//         function increCounter() {
-//             hl.counter++;
-//         }
-//     }
-// })();
 (function() {
     'use strict';
 
@@ -6834,6 +6807,42 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+// (function() {
+//     'use strict';
+
+//     angular.module('app.deals')
+//         .controller('TemplateController', TemplateController);
+
+//     TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+//     /* @ngInject */
+//     function TemplateController($scope, $compile, $document) {
+//         var hl = this;
+
+//         hl.counter = 0;
+//         hl.increCounter = increCounter;
+//         hl.openModal = openModal;
+//         hl.currModel = {};
+//         //hl.addTemplate = addTemplate;
+//         //hl.modalContainer = $('#template-modal');
+
+//         //////////////
+
+//         function openModal() {
+//             $('#template-modal').modal('show');
+
+//             $("#template-modal").on("hidden.bs.modal", function() {
+//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+//             });
+//         }
+
+
+
+//         function increCounter() {
+//             hl.counter++;
+//         }
+//     }
+// })();
 (function() {
     'use strict';
 
@@ -6914,8 +6923,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 $('[data-toggle="tooltip"]').tooltip();
                 //scope.fieldModel = scope.$parent.$parent.scope.selFieldModel[scope.discountCounter];
                 scope.index = scope.fieldModelIndex;
-                //console.log(scope.selFieldModel[scope.index]);
-                //console.log(scope.fieldModelIndex)
+                //$log.debug(scope.selFieldModel[scope.index]);
+                //$log.debug(scope.fieldModelIndex)
                 scope.openModal = openModal;
                 scope.remove = remove;
                 scope.setActive = setActive;
@@ -6935,8 +6944,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     if (type == 'standard' && scope.formMode == 'Edit') {
                         var existingCount = HelperService.countModelLength($filter('getActiveStandard')(scope.discountsData));
                         var newCount = HelperService.countModelLength($filter('getActiveStandard')(scope.selFieldModel));
-                        //console.log(scope.discountsData);
-                        //console.log($filter('getActiveStandard')(scope.selFieldModel));
+                        //$log.debug(scope.discountsData);
+                        //$log.debug($filter('getActiveStandard')(scope.selFieldModel));
                         if (selFieldModel.status == 'active') { //Set to suspended
                             bootbox.alert('There must be one active standard discount.');
                         } else { //set to active
@@ -6956,7 +6965,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                                 },
                                 callback: function(result) {
                                     if (result) {
-                                        //console.log('test');
+                                        //$log.debug('test');
                                         reverseStatus(type);
                                         $rootScope.$digest();
                                     }
@@ -6999,8 +7008,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 function countActiveStandard() {
                     var dobj = scope.selFieldModel[scope.index];
                     var countStandard = 0;
-                    console.log('---------');
-                    console.log(scope.fieldModel);
+                    $log.debug('---------');
+                    $log.debug(scope.fieldModel);
                     angular.forEach(scope.fieldModel, function(discount, index) {
                         if (discount != null && discount.discount_type == 'standard') {
                             if (discount.status == 'active') {
@@ -7008,7 +7017,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                             }
                         }
                     });
-                    console.log(scope.discountsData);
+                    $log.debug(scope.discountsData);
                     angular.forEach(scope.discountsData, function(discount, index) {
                         if (discount != null && discount.discount_type == 'standard' && dobj != discount) {
                             if (discount.status == 'active') {
@@ -7017,8 +7026,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         }
                     });
 
-                    console.log(countStandard);
-                    console.log('---------');
+                    $log.debug(countStandard);
+                    $log.debug('---------');
 
                     return countStandard;
                 }
@@ -7033,9 +7042,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     var selDiscount = scope.selFieldModel[scope.index];
                     var status = selDiscount.status;
                     var countStandard = 0;
-                    //console.log(selDiscount);
+                    //$log.debug(selDiscount);
                     var activeStandard = countActiveStandard();
-                    //console.log(activeStandard);
+                    //$log.debug(activeStandard);
                     if (status == 'active') {
                         for (var attr in scope.fieldModel) {
                             if (scope.fieldModel[attr] != null && scope.fieldModel[attr] != selDiscount && scope.fieldModel[attr].discount_type == 'standard') {
@@ -7124,7 +7133,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                 function checkActiveDiscount() {
                     var tobj = scope.$parent.vm.selDiscountObj;
-                    //console.log(selDiscount);
+                    //$log.debug(selDiscount);
                     var activeStandard = countActiveStandard();
 
                     if (tobj.status == 'active' && activeStandard > 0) {
@@ -7145,7 +7154,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                                 // if (result) {
                                 //     t.status = 'suspended';
                                 // } else {
-                                //     console.log(scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status);
+                                //     $log.debug(scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status);
                                 //     scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status = 'suspended';
                                 // }
                             }
@@ -7186,10 +7195,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                     if (tobj.discount_type == 'standard' && tobj.status == 'active') {
                         angular.forEach(scope.$parent.vm.form.discounts, function(t, index) {
-                            console.log(scope.$parent.vm.discountCounter);
+                            $log.debug(scope.$parent.vm.discountCounter);
                             if (t !== tobj && t.discount_type == 'standard') {
                                 countStandard++;
-                                //console.log(t);
+                                //$log.debug(t);
                                 if (t.status == 'active') {
 
                                     t.status = 'suspended';
@@ -7566,7 +7575,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         service.searchedList = resp.data;
                         d.resolve(resp.data.users);
                     }).catch(function(err) {
-                        console.log(err);
+                        $log.debug(err);
                         d.reject(err);
                     });
                 }
@@ -7637,7 +7646,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     d.resolve(list);
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -7676,7 +7685,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error.data.errors);
                 });
@@ -7692,7 +7701,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -7708,13 +7717,81 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
 
             return d.promise;
         }
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isSuperAdmin', isSuperAdmin);
+
+    function isSuperAdmin() {
+        return function(user) {
+            if (user) {
+                if (user.email == 'admin@example.com') {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isRole', isRole);
+
+    function isRole() {
+        return function(user) {
+            if (user) {
+                if (user.is_admin) {
+                    return 'Admin';
+                }
+                if (user.is_vendor) {
+                    return 'Vendor';
+                }
+                if (user.is_customer) {
+                    return 'Customer';
+                }
+            }
+
+            return 'No Role';
+        }
+
     }
 
 })();
@@ -7753,7 +7830,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         function addPost() {
             vm.isDone = false;
-            // console.log(vm.form);
+            // $log.debug(vm.form);
             // return false;
             UserService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
@@ -7767,7 +7844,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 $state.go(vm.prevState);
 
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update User.";
@@ -7924,7 +8001,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         function editPost() {
             vm.isDone = false;
-            // console.log(vm.form);
+            // $log.debug(vm.form);
             // return false;
             UserService.edit(vm.userId, vm.form).then(function() {
                 vm.response['success'] = "alert-success";
@@ -7938,7 +8015,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 $state.go(vm.prevState);
 
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update User.";
@@ -7979,72 +8056,4 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             });
         }
     }
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isYesNo', isYesNo);
-
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
-
-            return 'No';
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isSuperAdmin', isSuperAdmin);
-
-    function isSuperAdmin() {
-        return function(user) {
-            if (user) {
-                if (user.email == 'admin@example.com') {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isRole', isRole);
-
-    function isRole() {
-        return function(user) {
-            if (user) {
-                if (user.is_admin) {
-                    return 'Admin';
-                }
-                if (user.is_vendor) {
-                    return 'Vendor';
-                }
-                if (user.is_customer) {
-                    return 'Customer';
-                }
-            }
-
-            return 'No Role';
-        }
-
-    }
-
 })();

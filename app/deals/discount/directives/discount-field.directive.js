@@ -24,8 +24,8 @@
                 $('[data-toggle="tooltip"]').tooltip();
                 //scope.fieldModel = scope.$parent.$parent.scope.selFieldModel[scope.discountCounter];
                 scope.index = scope.fieldModelIndex;
-                //console.log(scope.selFieldModel[scope.index]);
-                //console.log(scope.fieldModelIndex)
+                //$log.debug(scope.selFieldModel[scope.index]);
+                //$log.debug(scope.fieldModelIndex)
                 scope.openModal = openModal;
                 scope.remove = remove;
                 scope.setActive = setActive;
@@ -45,8 +45,8 @@
                     if (type == 'standard' && scope.formMode == 'Edit') {
                         var existingCount = HelperService.countModelLength($filter('getActiveStandard')(scope.discountsData));
                         var newCount = HelperService.countModelLength($filter('getActiveStandard')(scope.selFieldModel));
-                        //console.log(scope.discountsData);
-                        //console.log($filter('getActiveStandard')(scope.selFieldModel));
+                        //$log.debug(scope.discountsData);
+                        //$log.debug($filter('getActiveStandard')(scope.selFieldModel));
                         if (selFieldModel.status == 'active') { //Set to suspended
                             bootbox.alert('There must be one active standard discount.');
                         } else { //set to active
@@ -66,7 +66,7 @@
                                 },
                                 callback: function(result) {
                                     if (result) {
-                                        //console.log('test');
+                                        //$log.debug('test');
                                         reverseStatus(type);
                                         $rootScope.$digest();
                                     }
@@ -109,8 +109,8 @@
                 function countActiveStandard() {
                     var dobj = scope.selFieldModel[scope.index];
                     var countStandard = 0;
-                    console.log('---------');
-                    console.log(scope.fieldModel);
+                    $log.debug('---------');
+                    $log.debug(scope.fieldModel);
                     angular.forEach(scope.fieldModel, function(discount, index) {
                         if (discount != null && discount.discount_type == 'standard') {
                             if (discount.status == 'active') {
@@ -118,7 +118,7 @@
                             }
                         }
                     });
-                    console.log(scope.discountsData);
+                    $log.debug(scope.discountsData);
                     angular.forEach(scope.discountsData, function(discount, index) {
                         if (discount != null && discount.discount_type == 'standard' && dobj != discount) {
                             if (discount.status == 'active') {
@@ -127,8 +127,8 @@
                         }
                     });
 
-                    console.log(countStandard);
-                    console.log('---------');
+                    $log.debug(countStandard);
+                    $log.debug('---------');
 
                     return countStandard;
                 }
@@ -143,9 +143,9 @@
                     var selDiscount = scope.selFieldModel[scope.index];
                     var status = selDiscount.status;
                     var countStandard = 0;
-                    //console.log(selDiscount);
+                    //$log.debug(selDiscount);
                     var activeStandard = countActiveStandard();
-                    //console.log(activeStandard);
+                    //$log.debug(activeStandard);
                     if (status == 'active') {
                         for (var attr in scope.fieldModel) {
                             if (scope.fieldModel[attr] != null && scope.fieldModel[attr] != selDiscount && scope.fieldModel[attr].discount_type == 'standard') {

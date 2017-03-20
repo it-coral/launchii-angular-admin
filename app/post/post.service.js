@@ -31,12 +31,12 @@
 
             $http.get(api)
                 .then(function(data) {
-                    //console.log(data);
+                    //$log.debug(data);
                     //service.posts = data.data;
                     d.resolve(data.data);
                 })
                 .catch(function(error) {
-                    //console.log(error.data);
+                    //$log.debug(error.data);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -48,9 +48,9 @@
             var d = $q.defer();
 
             $http({
-                method: 'GET',
-                url: api+id,
-                //params: {id: id}
+                    method: 'GET',
+                    url: api + id,
+                    //params: {id: id}
                 })
                 .then(function(data) {
                     d.resolve(data.data);
@@ -66,12 +66,12 @@
         function addPost(data) {
             var url = api + "add/";
             var d = $q.defer();
-            console.log(data);
+            $log.debug(data);
             $http.post(url, data)
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error.data);
+                    $log.debug(error.data);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -82,12 +82,12 @@
         function editPost(data) {
             var url = api + "edit/";
             var d = $q.defer();
-            
+
             $http.post(url, data)
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error.data);
+                    $log.debug(error.data);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -106,7 +106,7 @@
                     getPosts();
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error.data);
+                    $log.debug(error.data);
                     service.errors = error;
                     d.reject(error);
                 });

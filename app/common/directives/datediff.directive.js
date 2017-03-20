@@ -10,7 +10,7 @@
             require: 'ngModel',
             restrict: 'A',
             link: function(scope, element, attrs, ngModel) {
-                console.log(ngModel);
+                $log.debug(ngModel);
             }
         };
     }

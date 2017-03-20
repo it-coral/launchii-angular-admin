@@ -28,7 +28,7 @@
             //         };
 
             //         $scope.$watch(BreadCrumbService.getCrumbs(), function() {
-            //             console.log('crumb test');
+            //             $log.debug('crumb test');
             //         });
             //     }
             // }

@@ -110,13 +110,13 @@
         ///////////////////
 
         function activate() {
-            //console.log(vm.discounts);
+            //$log.debug(vm.discounts);
             insertNewImageObj();
             // angular.element('.start-date').datepicker({
             //     orientation: "left",
             //     autoclose: true
             // });
-            //console.log(vm.discounts);
+            //$log.debug(vm.discounts);
             priceFormat();
             // DealService.find(vm.dealId).then(function(data) {
             //     vm.selectedDeal = data;
@@ -279,10 +279,10 @@
 
         //Discount
         function removeDiscount(discount) {
-            //console.log(vm.form.discounts);
+            //$log.debug(vm.form.discounts);
             angular.forEach(vm.form.discounts, function(val, attr) {
                 if (val == discount) {
-                    //console.log(attr);
+                    //$log.debug(attr);
                     //delete vm.form.discounts[attr];
                     vm.form.discounts[attr] = null;
                 }
@@ -300,7 +300,7 @@
                 }
             });
 
-            console.log(vm.form.discounts);
+            $log.debug(vm.form.discounts);
             vm.removedDiscountObjs.push(discount);
         }
 
@@ -364,13 +364,13 @@
 
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
-            // console.log(vm.form);
-            // console.log(vm.highlights);
-            // console.log(vm.removedHighlightObjs);
+            // $log.debug(vm.form);
+            // $log.debug(vm.highlights);
+            // $log.debug(vm.removedHighlightObjs);
             // return false;
             vm.form.templates.splice(vm.form.templates.length - 1, 1);
             //vm.form.highlights.splice(vm.form.highlights.length - 1, 1);
-            //console.log(vm.form);
+            //$log.debug(vm.form);
             var data = {
                 form: vm.form,
                 highlights: vm.highlights,
@@ -383,7 +383,7 @@
                 removedImages: vm.removedImageObj
             };
 
-            //console.log(data);
+            //$log.debug(data);
             //return false;
 
             DealService.edit(vm.dealId, data).then(function() {
@@ -398,7 +398,7 @@
                 $state.go(vm.prevState);
 
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update deal.";
@@ -414,8 +414,8 @@
         function countActiveStandard(selFieldModel) {
             var dobj = selFieldModel;
             var countStandard = 0;
-            // console.log('---------');
-            // console.log(scope.fieldModel);
+            // $log.debug('---------');
+            // $log.debug(scope.fieldModel);
             angular.forEach(vm.form.discounts, function(discount, index) {
                 if (discount != null && discount.discount_type == 'standard') {
                     if (discount.status == 'active') {
@@ -423,7 +423,7 @@
                     }
                 }
             });
-            //console.log(scope.discountsData);
+            //$log.debug(scope.discountsData);
             angular.forEach(vm.discounts, function(discount, index) {
                 if (discount != null && discount.discount_type == 'standard' && dobj != discount) {
                     if (discount.status == 'active') {
@@ -432,8 +432,8 @@
                 }
             });
 
-            // console.log(countStandard);
-            // console.log('---------');
+            // $log.debug(countStandard);
+            // $log.debug('---------');
 
             return countStandard;
         }
@@ -466,7 +466,7 @@
                         },
                         callback: function(result) {
                             if (result) {
-                                //console.log('test');
+                                //$log.debug('test');
                                 reverseStatus(type);
                                 $scope.$digest();
                             }
@@ -511,9 +511,9 @@
             var selDiscount = selFieldModel;
             var status = selDiscount.status;
             var countStandard = 0;
-            //console.log(selDiscount);
+            //$log.debug(selDiscount);
             var activeStandard = countActiveStandard(selFieldModel);
-            //console.log(activeStandard);
+            //$log.debug(activeStandard);
             if (status == 'active') {
 
                 angular.forEach(vm.form.discounts, function(discount, index) {

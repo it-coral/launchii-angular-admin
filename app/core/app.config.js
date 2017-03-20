@@ -6,11 +6,12 @@
         .run(run)
         .run(customHeaders);
 
-    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider'];
+    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider', '$logProvider'];
 
     /* @ngInject */
-    function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider) {
-        Layout.init();
+    function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider, $logProvider) {
+        //Layout.init();
+        $logProvider.debugEnabled(__env.enableDebug);
         $authProvider.loginUrl = CONST.api_domain + '/auth/sign_in';
         $authProvider.tokenHeader = 'access-token';
         $authProvider.tokenType = '';
@@ -70,7 +71,7 @@
             }
         };
 
-        //console.log(!$rootScope.authenticated);
+        //$log.debug(!$rootScope.authenticated);
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {
@@ -92,7 +93,7 @@
             //     event.preventDefault();
             // }
 
-            //console.log(toState.name);
+            //$log.debug(toState.name);
             forceSSL(event);
             BreadCrumbService.set(toState.name);
             $rootScope.crumbs = BreadCrumbService.getCrumbs();

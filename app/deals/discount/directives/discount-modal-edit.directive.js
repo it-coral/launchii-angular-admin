@@ -33,7 +33,7 @@
 
                 function checkActiveDiscount() {
                     var tobj = scope.$parent.vm.selDiscountObj;
-                    //console.log(selDiscount);
+                    //$log.debug(selDiscount);
                     var activeStandard = countActiveStandard();
 
                     if (tobj.status == 'active' && activeStandard > 0) {
@@ -54,7 +54,7 @@
                                 // if (result) {
                                 //     t.status = 'suspended';
                                 // } else {
-                                //     console.log(scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status);
+                                //     $log.debug(scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status);
                                 //     scope.$parent.vm.form.discounts[scope.$parent.vm.selDiscountIndex].status = 'suspended';
                                 // }
                             }
@@ -95,10 +95,10 @@
 
                     if (tobj.discount_type == 'standard' && tobj.status == 'active') {
                         angular.forEach(scope.$parent.vm.form.discounts, function(t, index) {
-                            console.log(scope.$parent.vm.discountCounter);
+                            $log.debug(scope.$parent.vm.discountCounter);
                             if (t !== tobj && t.discount_type == 'standard') {
                                 countStandard++;
-                                //console.log(t);
+                                //$log.debug(t);
                                 if (t.status == 'active') {
 
                                     t.status = 'suspended';

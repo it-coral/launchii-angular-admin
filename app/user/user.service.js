@@ -50,7 +50,7 @@
                         service.searchedList = resp.data;
                         d.resolve(resp.data.users);
                     }).catch(function(err) {
-                        console.log(err);
+                        $log.debug(err);
                         d.reject(err);
                     });
                 }
@@ -121,7 +121,7 @@
                     d.resolve(list);
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -160,7 +160,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error.data.errors);
                 });
@@ -176,7 +176,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -192,7 +192,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    console.log(error);
+                    $log.debug(error);
                     service.errors = error;
                     d.reject(error);
                 });

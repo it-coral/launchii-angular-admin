@@ -33,7 +33,7 @@
 
         function addPost() {
             vm.isDone = false;
-            // console.log(vm.form);
+            // $log.debug(vm.form);
             // return false;
             UserService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
@@ -47,7 +47,7 @@
                 $state.go(vm.prevState);
 
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update User.";

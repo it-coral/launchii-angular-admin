@@ -30,14 +30,14 @@
         ///////////////////
 
         function activate() {
-            console.log(vm.form);
+            $log.debug(vm.form);
             // BrandService.find(vm.brandId).then(function(data) {
             //     vm.selectedBrand = data;
             //     vm.form = vm.selectedBrand;
             // });
 
             // vm.$watch('form.logo', function() {
-            //     console.log(vm.form.logo);
+            //     $log.debug(vm.form.logo);
             // });
         }
 
@@ -71,7 +71,7 @@
                 $state.go(vm.prevState);
 
             }).catch(function(err) {
-                console.log(err);
+                $log.debug(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update Brand.";
