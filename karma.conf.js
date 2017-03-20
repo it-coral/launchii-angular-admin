@@ -16,6 +16,7 @@ module.exports = function(config) {
         // list of files / patterns to load in the browser
         files: [
             //Libraries
+            'env.js',
             'templates/assets/global/plugins/jquery.min.js',
             'templates/assets/global/plugins/bootstrap/js/bootstrap.min.js',
             'node_modules/angular/angular.min.js',
