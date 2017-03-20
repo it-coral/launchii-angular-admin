@@ -56,8 +56,8 @@
 
         function editPost() {
             vm.isDone = false;
-            vm.form.logo_image = "default.png"; //temporary
-            vm.form.brand_image = "default.png"; //temporary
+            //vm.form.logo_image = "default.png"; //temporary
+            //vm.form.brand_image = "default.png"; //temporary
 
             BrandService.edit(vm.brandId, vm.form).then(function() {
                 vm.response['success'] = "alert-success";
