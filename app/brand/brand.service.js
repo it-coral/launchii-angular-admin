@@ -169,7 +169,7 @@
             data.logo_image = setLogoImage(data.logo);
             data.cover_image = setCoverImage(data.cover);
 
-            // console.log(data);
+            console.log(data);
             // return false;
 
             $http.post(url, data)

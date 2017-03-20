@@ -152,6 +152,10 @@
             var url = api;
             var d = $q.defer();
 
+            // var data = {
+            //     user: data
+            // }
+
             $http.post(url, data)
                 .then(function(resp) {
                     d.resolve(resp);

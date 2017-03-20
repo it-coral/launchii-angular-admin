@@ -2,25 +2,23 @@
     'use strict';
 
     angular.module('app.users')
-        .controller('UserEditController', UserEditController);
+        .controller('UserAddController', UserAddController);
 
-    UserEditController.$inject = ['UserService', '$stateParams', '$scope', 'prepSelUser', 'HelperService', '$state'];
+    UserAddController.$inject = ['UserService', '$scope', 'HelperService', '$state'];
 
     /* @ngInject */
-    function UserEditController(UserService, $stateParams, $scope, prepSelUser, HelperService, $state) {
+    function UserAddController(UserService, $scope, HelperService, $state) {
         var vm = this;
 
-        vm.mode = "Edit";
+        vm.mode = "Add";
         vm.response = {};
-        vm.userId = $stateParams.id;
-        vm.selectedUser = prepSelUser;
-        vm.form = vm.selectedUser;
-        vm.defaultRole = vm.selectedUser.role;
-        vm.defaultStatus = vm.selectedUser.is_active ? 'active' : 'inactive';
+        vm.form = {};
+        vm.defaultRole = 'admin';
+        vm.defaultStatus = 'active';
         vm.isDone = true;
 
         vm.prevState = HelperService.getPrevState();
-        vm.submitAction = editPost;
+        vm.submitAction = addPost;
 
         //activate();
 
@@ -33,11 +31,11 @@
             });
         }
 
-        function editPost() {
+        function addPost() {
             vm.isDone = false;
             // console.log(vm.form);
             // return false;
-            UserService.edit(vm.userId, vm.form).then(function() {
+            UserService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
                 vm.response['msg'] = "Updated user: " + vm.form.name;

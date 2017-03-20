@@ -229,6 +229,22 @@
             }
         };
 
+        var userAdd = {
+            name: "dashboard.user.add",
+            url: "/add",
+            parent: user,
+            views: {
+                "page_body": {
+                    templateUrl: "app/user/user.add.html",
+                    controller: "UserAddController",
+                    controllerAs: "vm",
+                    resolve: {
+                        //prepSelUser: prepSelUser
+                    }
+                }
+            }
+        };
+
         var userEdit = {
             name: "dashboard.user.edit",
             url: "/edit/:id",
@@ -276,6 +292,7 @@
             .state(brandEdit)
             .state(brandView)
             .state(user)
+            .state(userAdd)
             .state(userEdit)
             .state(userView);
 
