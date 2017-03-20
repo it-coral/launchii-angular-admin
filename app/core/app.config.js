@@ -6,10 +6,10 @@
         .run(run)
         .run(customHeaders);
 
-    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider', '$logProvider'];
+    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider', '$logProvider', '__env'];
 
     /* @ngInject */
-    function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider, $logProvider) {
+    function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider, $logProvider, __env) {
         //Layout.init();
         $logProvider.debugEnabled(__env.enableDebug);
         $authProvider.loginUrl = CONST.api_domain + '/auth/sign_in';

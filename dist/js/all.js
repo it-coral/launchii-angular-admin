@@ -1325,12 +1325,18 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular.module('app')
-        .constant('CONST', {
+        .constant('CONST', CONST);
+
+    CONST.$inject = ['$window'];
+    /* @ngInject */
+    function CONST($window) {
+        return {
             //api_domain: "http://api.launchii.com/" //api domain
             //api_domain: "https://stageapi.launchii.com/v1"
-            api_domain: __env.apiUrl
-        });
-
+            api_domain: $window.__env.apiUrl,
+            __env: $window.__env
+        }
+    }
 })();
 (function() {
     'use strict';
@@ -1369,10 +1375,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         .run(run)
         .run(customHeaders);
 
-    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider', '$logProvider'];
+    config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider', '$logProvider', '__env'];
 
     /* @ngInject */
-    function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider, $logProvider) {
+    function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider, $logProvider, __env) {
         //Layout.init();
         $logProvider.debugEnabled(__env.enableDebug);
         $authProvider.loginUrl = CONST.api_domain + '/auth/sign_in';
@@ -4773,198 +4779,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
-    angular
-        .module('app.deals')
-        .filter('toCurrencyFormat', toCurrencyFormat);
-
-    function toCurrencyFormat() {
-        return function(input) {
-            if (input) {
-                var num = parseFloat(input);
-                var currency = '$ ' + num.toFixed(2);
-
-                return currency;
-            }
-
-            return input;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('discountStatus', discountStatus);
-
-    discountStatus.$inject = ['$filter'];
-    /* @ngInject */
-    function discountStatus($filter) {
-        return function(discount, isReverse) {
-            var status = null;
-
-            if (angular.isDefined(discount) && discount != null) {
-                if (angular.isDefined(discount.status)) {
-                    status = $filter('ucFirst')(discount.status);
-                    if (isReverse && status == 'Active') {
-                        status = 'Suspended';
-                    } else
-                    if (isReverse && status == 'Suspended') {
-                        status = 'Active';
-                    }
-                } else {
-                    if (discount.is_active || discount.status == 'active') {
-                        status = 'Active';
-                        if (isReverse) {
-                            status = 'Suspended';
-                        }
-                    } else if (discount.is_suspended || discount.status == 'suspended') {
-                        status = 'Suspended';
-                        if (isReverse) {
-                            status = 'Active';
-                        }
-                    }
-                }
-            }
-
-            return status;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('discountType', discountType);
-
-    function discountType() {
-        return function(discount) {
-            if (angular.isDefined(discount) && discount != null) {
-                if (discount.is_unit || discount.value_type == 'unit') {
-                    return '$';
-                } else if (discount.is_percentage || discount.value_type == 'percentage') {
-                    return '%';
-                }
-            }
-
-            return null;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('getActiveStandard', getActiveStandard);
-
-    function getActiveStandard() {
-        return function(discounts) {
-            var obj = [];
-
-            angular.forEach(discounts, function(discount, index) {
-                if (discount != null) {
-                    if (angular.isDefined(discount.status) && discount.discount_type == 'standard' && discount.status == 'active') {
-                        obj.push(discount);
-                    } else if (discount.discount_type == 'standard' && discount.is_active) {
-                        obj.push(discount);
-                    }
-                }
-
-            });
-
-            return obj;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('isActiveStandard', isActiveStandard);
-
-    function isActiveStandard() {
-        return function(discount) {
-            if (discount != null && discount.discount_type == 'standard' && discount.status == 'active') {
-                return true;
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('reverseStatus', reverseStatus);
-
-    function reverseStatus() {
-        return function(discount) {
-            var status = null;
-
-            if (angular.isDefined(discount) && discount != null) {
-                if (angular.isDefined(discount.status)) {
-                    if (discount.status == 'active') {
-                        status = 'suspended';
-                    } else
-                    if (discount.status == 'suspended') {
-                        status = 'active';
-                    }
-                } else {
-                    if (discount.is_active) {
-                        status = 'suspended';
-                    } else if (discount.is_suspended) {
-                        status = 'active';
-                    }
-                }
-            }
-            //console.log(discount);
-            //console.log(status);
-            return status;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('roundPrice', roundPrice);
-
-    function roundPrice() {
-        return function(price) {
-            if (price) {
-                var num = parseFloat(price);
-                var currency = num.toFixed(2);
-
-                return currency;
-            }
-
-            return null;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
     angular.module('app.deals')
         .factory('TemplateService', TemplateService);
 
@@ -6088,6 +5902,198 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             return angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0;
         }
     }
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('toCurrencyFormat', toCurrencyFormat);
+
+    function toCurrencyFormat() {
+        return function(input) {
+            if (input) {
+                var num = parseFloat(input);
+                var currency = '$ ' + num.toFixed(2);
+
+                return currency;
+            }
+
+            return input;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('discountStatus', discountStatus);
+
+    discountStatus.$inject = ['$filter'];
+    /* @ngInject */
+    function discountStatus($filter) {
+        return function(discount, isReverse) {
+            var status = null;
+
+            if (angular.isDefined(discount) && discount != null) {
+                if (angular.isDefined(discount.status)) {
+                    status = $filter('ucFirst')(discount.status);
+                    if (isReverse && status == 'Active') {
+                        status = 'Suspended';
+                    } else
+                    if (isReverse && status == 'Suspended') {
+                        status = 'Active';
+                    }
+                } else {
+                    if (discount.is_active || discount.status == 'active') {
+                        status = 'Active';
+                        if (isReverse) {
+                            status = 'Suspended';
+                        }
+                    } else if (discount.is_suspended || discount.status == 'suspended') {
+                        status = 'Suspended';
+                        if (isReverse) {
+                            status = 'Active';
+                        }
+                    }
+                }
+            }
+
+            return status;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('discountType', discountType);
+
+    function discountType() {
+        return function(discount) {
+            if (angular.isDefined(discount) && discount != null) {
+                if (discount.is_unit || discount.value_type == 'unit') {
+                    return '$';
+                } else if (discount.is_percentage || discount.value_type == 'percentage') {
+                    return '%';
+                }
+            }
+
+            return null;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('getActiveStandard', getActiveStandard);
+
+    function getActiveStandard() {
+        return function(discounts) {
+            var obj = [];
+
+            angular.forEach(discounts, function(discount, index) {
+                if (discount != null) {
+                    if (angular.isDefined(discount.status) && discount.discount_type == 'standard' && discount.status == 'active') {
+                        obj.push(discount);
+                    } else if (discount.discount_type == 'standard' && discount.is_active) {
+                        obj.push(discount);
+                    }
+                }
+
+            });
+
+            return obj;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('isActiveStandard', isActiveStandard);
+
+    function isActiveStandard() {
+        return function(discount) {
+            if (discount != null && discount.discount_type == 'standard' && discount.status == 'active') {
+                return true;
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('reverseStatus', reverseStatus);
+
+    function reverseStatus() {
+        return function(discount) {
+            var status = null;
+
+            if (angular.isDefined(discount) && discount != null) {
+                if (angular.isDefined(discount.status)) {
+                    if (discount.status == 'active') {
+                        status = 'suspended';
+                    } else
+                    if (discount.status == 'suspended') {
+                        status = 'active';
+                    }
+                } else {
+                    if (discount.is_active) {
+                        status = 'suspended';
+                    } else if (discount.is_suspended) {
+                        status = 'active';
+                    }
+                }
+            }
+            //console.log(discount);
+            //console.log(status);
+            return status;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('roundPrice', roundPrice);
+
+    function roundPrice() {
+        return function(price) {
+            if (price) {
+                var num = parseFloat(price);
+                var currency = num.toFixed(2);
+
+                return currency;
+            }
+
+            return null;
+        }
+
+    }
+
 })();
 (function() {
     'use strict';
