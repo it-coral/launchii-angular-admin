@@ -64,7 +64,7 @@
                         <hr />
                         <div class="form-group">
                             <div id="preview-logo">
-                                <img ng-src="vm.form.logo_image.standard_url" ng-if="vm.mode == 'Edit'" />
+                                <img ng-src="{{vm.form.logo_image.standard_url}}" ng-if="vm.mode == 'Edit'" />
                             </div>
                             <div class="fileinput fileinput-new" data-provides="fileinput">
                                 <label for="">Logo</label>
@@ -95,7 +95,7 @@
                         <hr />
                         <div class="form-group">
                             <div id="preview-cover">
-                                <img ng-src="vm.form.cover_image.standard_url" ng-if="vm.mode == 'Edit'" />
+                                <img ng-src="{{vm.form.cover_image.standard_url}}" ng-if="vm.mode == 'Edit'" />
                             </div>
                             <div class="fileinput fileinput-new" data-provides="fileinput">
                                 <label for="">Cover Image</label>

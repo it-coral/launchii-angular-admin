@@ -203,7 +203,8 @@
                         prepSelHighlights: prepSelHighlights,
                         prepSelTemplates: prepSelTemplates,
                         prepStandardD: prepStandardD,
-                        prepEarlyBirdD: prepEarlyBirdD
+                        prepEarlyBirdD: prepEarlyBirdD,
+                        prepDealImages: prepDealImages
                     }
                 }
             }

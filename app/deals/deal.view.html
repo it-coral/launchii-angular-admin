@@ -115,7 +115,30 @@
     <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
+<hr>
+<h4>Uploaded Images</h4>
+<div class="mt-element-overlay mb-3">
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 image-view-container" ng-repeat="image in vm.images">
 
+            <div class="mt-overlay-1 mt-scroll-up">
+                <img ng-src="{{image.standard_url}}" alt="{{image.description}}" id="{{image.uid}}" />
+                <div class="mt-overlay">
+                    <ul class="mt-info">
+                        <li>
+                            <a class="btn default btn-outline" href="javascript:;" data-toggle="tooltip" title="Show Description" ng-click="vm.openEditImageModal($event.currentTarget)">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <image-form form-image="image" insert-img="vm.blankFn" form-mode="View" no-btn="true"></image-form>
+
+        </div>
+    </div>
+</div>
+<hr>
 <div class="row">
     <div class="col-lg-8">
         <div class="portlet box green">

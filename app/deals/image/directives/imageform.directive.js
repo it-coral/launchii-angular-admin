@@ -15,7 +15,7 @@
             replace: true,
             scope: {
                 formImage: '=',
-                formMode: '=',
+                formMode: '@',
                 insertImg: '=',
                 removeImage: '=',
                 noBtn: '@'

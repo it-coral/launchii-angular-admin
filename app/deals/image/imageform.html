@@ -9,7 +9,7 @@
                 <form role="form" novalidate>
                     <div class="form-body">
                         <div class="form-group form-image-preview"></div>
-                        <div class="form-group">
+                        <div class="form-group" ng-if="formMode != 'View'">
                             <div class="fileinput fileinput-new" data-provides="fileinput">
                                 <label for="">Image</label>
                                 <div class="input-group input-large">
@@ -28,9 +28,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" ng-if="formMode != 'View'">
                             <label for="">Description</label>
                             <textarea class="form-control" ng-model="formImage.description"></textarea>
+                        </div>
+                        <div class="form-group" ng-if="formMode == 'View'">
+                            <h4>Description</h4>
+                            <div>{{ formImage.description }}</div>
                         </div>
                     </div>
                 </form>

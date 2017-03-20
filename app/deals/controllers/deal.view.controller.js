@@ -13,11 +13,23 @@
         'prepSelHighlights',
         'prepSelTemplates',
         'prepStandardD',
-        'prepEarlyBirdD'
+        'prepEarlyBirdD',
+        'prepDealImages'
     ];
 
     /* @ngInject */
-    function DealViewController(DealService, $stateParams, $scope, prepSelDeal, HelperService, prepSelHighlights, prepSelTemplates, prepStandardD, prepEarlyBirdD) {
+    function DealViewController(
+        DealService,
+        $stateParams,
+        $scope,
+        prepSelDeal,
+        HelperService,
+        prepSelHighlights,
+        prepSelTemplates,
+        prepStandardD,
+        prepEarlyBirdD,
+        prepDealImages
+    ) {
         var vm = this;
 
         vm.mode = "View";
@@ -38,6 +50,10 @@
         vm.hasStandardDiscounts = hasStandardDiscounts;
         vm.hasEarlybirdDiscounts = hasEarlybirdDiscounts;
 
+        //Images
+        vm.images = prepDealImages;
+        vm.openEditImageModal = openEditImageModal;
+
         vm.prevState = HelperService.getPrevState();
 
         //activate();
@@ -48,6 +64,10 @@
             DealService.find(vm.dealId).then(function(data) {
                 vm.deal = data;
             });
+        }
+
+        function openEditImageModal(elem) {
+            $(elem).parents('.image-view-container').find('.image-modal').modal('show');
         }
 
         function hasStandardDiscounts() {
