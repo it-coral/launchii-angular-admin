@@ -7,7 +7,7 @@
 
     function isActiveStandard() {
         return function(discount) {
-            if (discount.discount_type == 'standard' && discount.status == 'active') {
+            if (discount != null && discount.discount_type == 'standard' && discount.status == 'active') {
                 return true;
             }
 

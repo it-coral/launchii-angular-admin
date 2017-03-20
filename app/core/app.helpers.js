@@ -21,12 +21,24 @@
             getDateNow: getDateNow,
             combineDateTime: combineDateTime,
             convertToDateTime: convertToDateTime,
-            setErrorStr: setErrorStr
+            setErrorStr: setErrorStr,
+            countModelLength: countModelLength
         }
 
         return service;
 
         ////////////////   
+
+        function countModelLength(model) {
+            var count = 0;
+
+            for (var attr in model) {
+                if (model[attr] != null)
+                    count++;
+            }
+
+            return count;
+        }
 
         function setErrorStr(err) {
             var errorStr = '';

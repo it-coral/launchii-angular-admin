@@ -20,7 +20,7 @@
             },
             transclude: true,
             link: function(scope, element, attrs) {
-
+                //console.log(scope.fieldModel);
                 element.find('button#add-discount-btn').bind('click', function() {
                     openModal();
                 });

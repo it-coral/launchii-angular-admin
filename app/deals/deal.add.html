@@ -17,7 +17,12 @@
             </div>
             <div class="portlet-body form">
                 <div class="alert {{vm.response.success}}" id="msg-info" ng-show="vm.response.msg">
-                    <strong>{{vm.response.alert}}</strong> {{vm.response.msg}}
+                    <div><strong>{{vm.response.alert}}</strong> {{vm.response.msg}}</div>
+                    <div ng-if="vm.response['error_arr']">
+                        <ul class="pl-5 mt-1">
+                            <li ng-repeat="error in vm.response['error_arr']">{{ error }}</li>
+                        </ul>
+                    </div>
                 </div>
                 <form role="form" id="deal-form" ng-submit="vm.submitAction()" novalidate="novalidate">
                     <div class="form-body pb-0">
@@ -158,10 +163,152 @@
                         <!--Discounts-->
                         <hr />
                         <h4>Discounts</h4>
+                        <!--Standard Discount-->
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="portlet box green">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="fa fa-ticket"></i>Standard Discounts
+                                        </div>
+                                        <div class="tools">
+                                            <span>$ = Unit</span><span class="ml-4">% = Percentage</span>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body flip-scroll">
+                                        <table class="table table-bordered table-striped table-condensed flip-content">
+                                            <thead class="flip-content">
+                                                <tr>
+                                                    <th class="text-center" width="20%"> Value </th>
+                                                    <th class="text-center"> Type </th>
+                                                    <th class="numeric text-center"> Weighting </th>
+                                                    <th class="numeric text-center"> Coupon Limit </th>
+                                                    <th class="numeric text-center"> Status </th>
+                                                    <th> </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="standard-discount-body" ng-show="vm.hasStandardDiscounts()">
+                                                <tr class="discount-row" ng-repeat="discount in vm.discounts | whereAttr:'discount_type':'standard'" ng-if="vm.mode == 'Edit'">
+                                                    <td class="text-center align-middle" ng-bind="discount.value"></td>
+                                                    <td class="text-center align-middle" ng-bind="discount | discountType"></td>
+                                                    <td class="text-center align-middle" ng-bind="discount.weighting"></td>
+                                                    <td class="text-center align-middle" ng-bind="discount.coupon_limit"></td>
+                                                    <td class="text-center align-middle" ng-bind="discount | discountStatus"></td>
+                                                    <td>
+                                                        <!--<button type="button" class="btn btn-icon-only blue" data-toggle="tooltip" title="Edit">
+                                                            <i class="fa fa-edit"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-icon-only red" data-toggle="tooltip" title="Remove">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>-->
+                                                        <div class="btn-group">
+                                                            <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> Action
+                                                                        <i class="fa fa-angle-down"></i>
+                                                                    </button>
+                                                            <ul class="dropdown-menu" role="menu">
+                                                                <li>
+                                                                    <a href="javascript:;" ng-click="vm.setActive(discount, vm.form.discounts, vm.discounts, 'standard', vm.mode)"> Set as {{discount | discountStatus:true}} </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:;" ng-click="vm.openDiscountModal(discount)"> Edit </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:;" ng-click="vm.removeSelDiscount($event.currentTarget, discount)"> Remove </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <tbody ng-show="!vm.hasStandardDiscounts()">
+                                                <tr>
+                                                    <td colspan="6">
+                                                        <h4 class="text-center align-middle">No Standard Discounts</h4>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /.panel-body -->
+                                </div>
+                                <!-- /.panel -->
+                            </div>
+                            <!-- /.col-lg-12 -->
+                        </div>
+                        <!-- /.row -->
+
+                        <!--Early Bird Discount-->
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="portlet box green">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="fa fa-ticket"></i>Early Bird Discounts
+                                        </div>
+                                        <div class="tools">
+                                            <span>$ = Unit</span><span class="ml-4">% = Percentage</span>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body flip-scroll">
+                                        <table class="table table-bordered table-striped table-condensed flip-content early-bird">
+                                            <thead class="flip-content">
+                                                <tr>
+                                                    <th class="text-center" width="20%"> Value </th>
+                                                    <th class="text-center"> Type </th>
+                                                    <th class="numeric text-center"> Weighting </th>
+                                                    <th class="numeric text-center"> Coupon Limit </th>
+                                                    <th class="numeric text-center"> Status </th>
+                                                    <th> </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="early-discount-body" ng-show="vm.hasEarlybirdDiscounts()">
+                                                <tr class="discount-row" ng-repeat="discount in vm.discounts | whereAttr:'discount_type':'early_bird'" ng-if="vm.mode == 'Edit'">
+                                                    <td class="text-center align-middle" ng-bind="discount.value"></td>
+                                                    <td class="text-center align-middle" ng-bind="discount | discountType"></td>
+                                                    <td class="text-center align-middle" ng-bind="discount.weighting"></td>
+                                                    <td class="text-center align-middle" ng-bind="discount.coupon_limit"></td>
+                                                    <td class="text-center align-middle" ng-bind="discount | discountStatus"></td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> Action
+                                                                        <i class="fa fa-angle-down"></i>
+                                                                    </button>
+                                                            <ul class="dropdown-menu" role="menu">
+                                                                <li>
+                                                                    <a href="javascript:;" ng-click="vm.setActive(discount, vm.form.discounts, vm.discounts, 'early_bird', vm.mode)"> Set as {{discount | discountStatus:true}} </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:;" ng-click="vm.openDiscountModal(discount)"> Edit </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:;" ng-click="vm.removeSelDiscount($event.currentTarget, discount)"> Remove </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <tbody ng-show="!vm.hasEarlybirdDiscounts()">
+                                                <tr>
+                                                    <td colspan="6">
+                                                        <h4 class="text-center align-middle">No Early Bird Discounts</h4>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /.panel-body -->
+                                </div>
+                                <!-- /.panel -->
+                            </div>
+                            <!-- /.col-lg-12 -->
+                        </div>
+                        <!-- /.row -->
+
                         <add-discount field-model="vm.form.discounts" form-mode="vm.mode" discounts-data="vm.discounts">
                         </add-discount>
-                        <discount-modal field-model="vm.form.discounts" form-mode="vm.mode"></discount-modal>
-                        <discount-modal-edit field-model="vm.form.discounts" form-mode="vm.mode"></discount-modal-edit>
+                        <discount-modal field-model="vm.form.discounts" form-mode="vm.mode" discounts-data="vm.discounts"></discount-modal>
+                        <discount-modal-edit field-model="vm.form.discounts" form-mode="vm.mode" discounts-data="vm.discounts"></discount-modal-edit>
 
                     </div>
                     <div class="form-actions" ng-if="!vm.isBrandEmpty">

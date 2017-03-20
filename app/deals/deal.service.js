@@ -14,10 +14,10 @@
         ])
         .factory('DealService', DealService);
 
-    DealService.$inject = ['$http', 'CONST', '$q', 'HelperService', 'BrandService'];
+    DealService.$inject = ['$http', 'CONST', '$q', 'HelperService', 'BrandService', '$rootScope', '$filter'];
 
     /* @ngInject */
-    function DealService($http, CONST, $q, HelperService, BrandService) {
+    function DealService($http, CONST, $q, HelperService, BrandService, $rootScope, $filter) {
         var api = CONST.api_domain + '/admin/deals';
 
         var service = {
@@ -49,7 +49,8 @@
             getStandardDiscounts: getStandardDiscounts,
             getEarlyBirdDiscounts: getEarlyBirdDiscounts,
             dealImagesList: [],
-            getDealImages: getDealImages
+            getDealImages: getDealImages,
+            setActive: setActive
         }
 
         return service;
@@ -544,82 +545,51 @@
             var url = api + '/' + deal_id + '/discounts';
 
             var tasks = [];
-
+            // console.log(discounts);
             angular.forEach(discounts, function(discount, index) {
-                // console.log(discount);
-                // return false;
                 if (angular.isDefined(discount.value) && discount.value.trim() != '') {
                     tasks.push(function(cb) {
-                        var formData = new FormData();
-                        //discount.codes_expire_at = HelperService.combineDateTime(discount.codes_expire_at, '00:00:00');
-                        // var coupons_txt = discount.coupons_txt;
-
-                        // delete discount.coupons_txt;
-                        //formData.append('coupons_txt', discount.coupons_txt);
-                        //discount.coupons_txt = "JELLANQD";
-                        //var f_data = new FormData(discount);
-                        // var formData = new FormData();
-
-                        // angular.forEach(discount, function(item, attr) {
-                        //     formData.append(attr, item);
-                        // });
-
-                        //formData.append("coupons_txt", data.coupons_txt);
                         console.log(discount);
-                        $http.post(url, discount, {
-                            //transformRequest: angular.identity,
-                            // transformRequest: function(data) {
-                            //     console.log(data);
-                            //     var formData = new FormData();
-
-                            //     angular.forEach(data, function(item, attr) {
-                            //         formData.append(attr, item);
-                            //     });
-
-                            //     //formData.append("coupons_txt", data.coupons_txt);
-                            //     console.log(formData.get("coupons_txt"));
-                            //     return formData;
-                            // },
-                            headers: { 'Content-Type': undefined }
-                        }).then(function(resp) {
-                            //d.resolve(resp);
-                            // cb(null, resp);
-                            cb(null, '');
-                        }).catch(function(err) {
-                            console.log(err);
-                            // service.errors = error;
-                            // d.reject(error);
-                            //cb(err);
-                            var errors = HelperService.setErrorStr(err);
-                            cb(null, 'Failed to add discount. Reason: ' + errors + '. ');
-                        });
-
-                        // Upload.upload({
-                        //     url: url,
-                        //     method: "POST",
-                        //     data: discount,
-                        //     file: coupons_txt,
-                        //     fileFormDataName: "discounts[coupons_txt]",
-                        //     formDataAppender: function(fd, key, val) {
-                        //         if (angular.isArray(val)) {
-                        //             angular.forEach(val, function(v) {
-                        //                 fd.append('discounts[' + key + ']', v);
-                        //             });
-                        //         } else {
-                        //             fd.append('discounts[' + key + ']', val);
-                        //         }
-                        //     }
-                        // }).then(function(resp) {
-                        //     cb(null, resp);
-                        // }).catch(function(err) {
-                        //     cb(err);
-                        // });
+                        $http.post(url, discount)
+                            .then(function(resp) {
+                                cb(null, resp);
+                            }).catch(function(err) {
+                                console.log(err);
+                                var errors = HelperService.setErrorStr(err);
+                                cb(null, err.data.errors);
+                            });
 
                     });
                 }
 
             });
 
+            // for (var attr in discounts) {
+            //     var discount = discounts[attr];
+            //     console.log(discount);
+            //     if (discount != null) {
+            //         tasks.push(function(cb) {
+            //             console.log(discount);
+            //             $http.post(url, discount)
+            //                 .then(function(resp) {
+            //                     cb(null, resp);
+            //                 }).catch(function(err) {
+            //                     console.log(err);
+            //                     var errors = HelperService.setErrorStr(err);
+            //                     cb(null, 'Failed to add discount. Reason: ' + errors + '. ');
+            //                 });
+
+            //         });
+            //     }
+            // }
+            // var _obj = ["waaaa", "weee"];
+            // angular.forEach(_obj, function(discount, index) {
+            //     console.log(discount);
+            // });
+            // angular.forEach(discounts, function(discount, index) {
+            //     console.log(discount);
+            // });
+            //console.log(tasks);
             async.parallel(tasks, function(error, results) {
                 if (error) {
                     console.log(error);
@@ -711,8 +681,9 @@
                             });
                         });
                     }
-
-                    if (angular.isDefined(data.discounts[0]) && angular.isDefined(data.discounts[0].value) && data.discounts[0].value.trim() != '' && data.discounts[0].value.trim() != 'null') {
+                    console.log(angular.isDefined(data.discounts['d0']));
+                    //if (angular.isDefined(data.discounts[0]) && angular.isDefined(data.discounts[0].value) && data.discounts[0].value.trim() != '' && data.discounts[0].value.trim() != 'null') {
+                    if (HelperService.countModelLength(data.discounts) > 0) {
                         tasks.push(function(cb) {
                             addDiscounts(dealId, data.discounts).then(function(resp) {
                                 cb(null, resp);
@@ -998,7 +969,7 @@
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
-                            cb(err);
+                            cb(err.data.errors);
                         });
                     });
                 });
@@ -1015,14 +986,14 @@
                             cb(null, resp);
                         }).catch(function(err) {
                             console.log(err);
-                            cb(err);
+                            cb(err.data.errors);
                         });
                     });
                 });
             }
             //console.log(data.form);
             //DISCOUNT ADD
-            if (angular.isDefined(data.form.discounts) && data.form.discounts.length > 0) {
+            if (angular.isDefined(data.form.discounts) && HelperService.countModelLength(data.form.discounts) > 0) {
                 //var url_ah = url + '/discounts';
 
                 angular.forEach(data.form.discounts, function(discount, index) {
@@ -1036,7 +1007,7 @@
                                     cb(null, resp);
                                 }).catch(function(err) {
                                     console.log(err);
-                                    cb(err);
+                                    cb(err.data.errors);
                                 });
                         });
                     }
@@ -1073,6 +1044,80 @@
                 });
 
             return d.promise;
+        }
+
+        function setActive(selFieldModel, newDiscounts, discountsData, type, mode) {
+            var existingCount = HelperService.countModelLength($filter('getActiveStandard')(discountsData));
+            var newCount = HelperService.countModelLength($filter('getActiveStandard')(newDiscounts));
+
+            if (type == 'standard' && mode == 'Edit') {
+                if (selFieldModel.status == 'active') { //Set to suspended
+                    bootbox.alert('There must be one active standard discount.');
+                } else { //set to active
+
+                    bootbox.confirm({
+                        title: "Confirm Active Standard",
+                        message: "You have set this standard discount as \"Active\". You have an active standard discount running at the moment.<br ><br >Press \"Yes\" to proceed and the current active standard discount will be suspended.<br ><br >Press \"No\" and the new standard discount will be set to \"Suspended\".",
+                        buttons: {
+                            confirm: {
+                                label: 'Yes',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'No',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function(result) {
+                            if (result) {
+                                //console.log('test');
+                                reverseStatus(type, discountsData, newDiscounts);
+                                $rootScope.$digest();
+                            }
+                        }
+                    });
+
+                }
+            } else {
+                if (type == 'standard' && mode == 'Add') {
+                    // if (existingCount + newCount == 1) {
+                    //     angular.forEach($filter('whereAttr')(newDiscounts, 'discount_type', type), function(discount, index) {
+                    //         if (discount == selFieldModel) {
+                    //             discount.status = 'active';
+                    //         }
+                    //     });
+                    // }
+                    // else {
+                    reverseStatus(type, discountsData, newDiscounts);
+                    // }
+
+                } else {
+                    //Existing discounts
+                    angular.forEach($filter('whereAttr')(discountsData, 'discount_type', type), function(discount, index) {
+                        if (discount == selFieldModel) {
+                            discount.status = $filter('reverseStatus')(discount);
+                        }
+                    });
+                    //New discounts
+                    angular.forEach($filter('whereAttr')(newDiscounts, 'discount_type', type), function(discount, index) {
+                        if (discount == selFieldModel) {
+                            discount.status = $filter('reverseStatus')(discount);
+                        }
+                    });
+                }
+
+            }
+        }
+
+        function reverseStatus(type, discountsData, newDiscounts) {
+            //Existing discounts
+            angular.forEach($filter('whereAttr')(discountsData, 'discount_type', type), function(discount, index) {
+                discount.status = $filter('reverseStatus')(discount);
+            });
+            //New discounts
+            angular.forEach($filter('whereAttr')(newDiscounts, 'discount_type', type), function(discount, index) {
+                discount.status = $filter('reverseStatus')(discount);
+            });
         }
     }
 

@@ -201,7 +201,9 @@
                     resolve: {
                         prepSelDeal: prepSelDeal,
                         prepSelHighlights: prepSelHighlights,
-                        prepSelTemplates: prepSelTemplates
+                        prepSelTemplates: prepSelTemplates,
+                        prepStandardD: prepStandardD,
+                        prepEarlyBirdD: prepEarlyBirdD
                     }
                 }
             }

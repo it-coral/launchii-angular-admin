@@ -17,7 +17,8 @@
         'prepTemplateTypes',
         'prepStandardD',
         'prepEarlyBirdD',
-        'prepDealImages'
+        'prepDealImages',
+        '$filter'
     ];
 
     /* @ngInject */
@@ -34,7 +35,8 @@
         prepTemplateTypes,
         prepStandardD,
         prepEarlyBirdD,
-        prepDealImages) {
+        prepDealImages,
+        $filter) {
 
         var vm = this;
 
@@ -45,7 +47,7 @@
         vm.form = vm.selectedDeal;
         vm.form.highlights = [];
         vm.form.templates = [];
-        vm.form.discounts = [];
+        vm.form.discounts = {};
         //vm.form.highlights = vm.selectedDeal.highlights;
         vm.highlights = prepSelHighlights;
         vm.isDone = true;
@@ -80,6 +82,11 @@
         vm.removeDiscount = removeDiscount;
         vm.standardDiscounts = prepStandardD;
         vm.earlyBirdDiscounts = prepEarlyBirdD;
+        vm.hasStandardDiscounts = hasStandardDiscounts;
+        vm.hasEarlybirdDiscounts = hasEarlybirdDiscounts;
+        vm.openDiscountModal = openDiscountModal;
+        vm.removeSelDiscount = removeSelDiscount;
+        vm.setActive = setActive;
 
         //images
         vm.form.file = [];
@@ -103,6 +110,7 @@
         ///////////////////
 
         function activate() {
+            //console.log(vm.discounts);
             insertNewImageObj();
             // angular.element('.start-date').datepicker({
             //     orientation: "left",
@@ -119,6 +127,89 @@
                 ComponentsDateTimePickers.init();
                 $('[data-toggle="tooltip"]').tooltip();
             });
+        }
+
+        function removeSelDiscount(target, discountModel) {
+            if (discountModel.discount_type == 'standard' && discountModel.status == 'active') {
+                bootbox.alert("You can't remove an active standard discount!");
+            } else {
+                angular.element(target).parents('.discount-row').remove();
+                vm.removeDiscount(discountModel);
+            }
+
+        }
+
+        function openDiscountModal(discountModel) {
+            $('#discount-modal-edit').modal('show');
+            vm.setSelDiscountObj(discountModel);
+        }
+
+        function hasStandardDiscounts() {
+            var formDiscountCount = 0;
+            var removedDiscountCount = 0;
+
+            angular.forEach(vm.form.discounts, function(discount, index) {
+                // if (discount.value != 'null' && discount.value != '' && discount.discount_type == 'standard') {
+                //     formDiscountCount++;
+                // }
+                if (discount != 'null' && discount.discount_type == 'standard') {
+                    formDiscountCount++;
+                }
+            });
+
+            angular.forEach(vm.removedDiscountObjs, function(discount, index) {
+                if (discount != 'null' && discount.discount_type == 'standard') {
+                    removedDiscountCount++;
+                }
+            });
+
+            var discountCount = vm.standardDiscounts.length + formDiscountCount;
+
+            if (discountCount == removedDiscountCount) {
+                return false;
+            }
+
+            return angular.isDefined(vm.standardDiscounts) && vm.standardDiscounts.length > 0;
+        }
+
+        function hasEarlybirdDiscounts() {
+            var formDiscountCount = 0;
+            var removedDiscountCount = 0;
+
+            angular.forEach(vm.form.discounts, function(discount, index) {
+                if (discount != null && discount.discount_type == 'early_bird') {
+                    formDiscountCount++;
+                }
+            });
+
+            angular.forEach(vm.removedDiscountObjs, function(discount, index) {
+                if (discount.value != 'null' && discount.value != '' && discount.discount_type == 'early_bird') {
+                    removedDiscountCount++;
+                }
+            });
+
+            var discountCount = vm.earlyBirdDiscounts.length + formDiscountCount;
+            var rows = angular.element('.early-bird').find('.discount-row');
+
+            // if (discountCount == removedDiscountCount) {
+            if (removedDiscountCount == 0 && (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0)) {
+                return true;
+            }
+
+            if (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length == 0 && formDiscountCount > 0) {
+                return true;
+            }
+
+            // if (formDiscountCount == 0 && rows.length == 0) {
+            //     return false;
+            // }
+
+            if (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length == 0 && formDiscountCount == 0) {
+                return false;
+            }
+
+            return (angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0);
+
         }
 
         function removeAddedImage(image) {
@@ -188,12 +279,28 @@
 
         //Discount
         function removeDiscount(discount) {
-            //console.log(discount_index);
-            angular.forEach(vm.form.discounts, function(val, index) {
-                if (val.uid == discount.uid) {
-                    vm.form.discounts.splice(index, 1);
+            //console.log(vm.form.discounts);
+            angular.forEach(vm.form.discounts, function(val, attr) {
+                if (val == discount) {
+                    //console.log(attr);
+                    //delete vm.form.discounts[attr];
+                    vm.form.discounts[attr] = null;
                 }
             });
+
+            angular.forEach(vm.standardDiscounts, function(val, index) {
+                if (val.uid == discount.uid) {
+                    vm.standardDiscounts.splice(index, 1);
+                }
+            });
+
+            angular.forEach(vm.earlyBirdDiscounts, function(val, index) {
+                if (val.uid == discount.uid) {
+                    vm.earlyBirdDiscounts.splice(index, 1);
+                }
+            });
+
+            console.log(vm.form.discounts);
             vm.removedDiscountObjs.push(discount);
         }
 
@@ -295,12 +402,162 @@
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update deal.";
+                vm.response['error_arr'] = err;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
                 HelperService.goToAnchor('msg-info');
 
             });
+        }
+
+        function countActiveStandard(selFieldModel) {
+            var dobj = selFieldModel;
+            var countStandard = 0;
+            // console.log('---------');
+            // console.log(scope.fieldModel);
+            angular.forEach(vm.form.discounts, function(discount, index) {
+                if (discount != null && discount.discount_type == 'standard') {
+                    if (discount.status == 'active') {
+                        countStandard++;
+                    }
+                }
+            });
+            //console.log(scope.discountsData);
+            angular.forEach(vm.discounts, function(discount, index) {
+                if (discount != null && discount.discount_type == 'standard' && dobj != discount) {
+                    if (discount.status == 'active') {
+                        countStandard++;
+                    }
+                }
+            });
+
+            // console.log(countStandard);
+            // console.log('---------');
+
+            return countStandard;
+        }
+
+        function setActive(selFieldModel, newDiscounts, discountsData, type, mode) {
+            DealService.setActive(selFieldModel, newDiscounts, discountsData, type, mode);
+        }
+
+        function _setActive(selFieldModel, discountsData, type, mode) {
+            if (type == 'standard') {
+                var existingCount = HelperService.countModelLength($filter('getActiveStandard')(vm.discounts));
+                var newCount = HelperService.countModelLength($filter('getActiveStandard')(vm.form.discounts));
+
+                if (selFieldModel.status == 'active') { //Set to suspended
+                    bootbox.alert('There must be one active standard discount.');
+                } else { //set to active
+
+                    bootbox.confirm({
+                        title: "Confirm Active Standard",
+                        message: "You have set this standard discount as \"Active\". You have an active standard discount running at the moment.<br ><br >Press \"Yes\" to proceed and the current active standard discount will be suspended.<br ><br >Press \"No\" and the new standard discount will be set to \"Suspended\".",
+                        buttons: {
+                            confirm: {
+                                label: 'Yes',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'No',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function(result) {
+                            if (result) {
+                                //console.log('test');
+                                reverseStatus(type);
+                                $scope.$digest();
+                            }
+                        }
+                    });
+
+                }
+            } else {
+                //Existing discounts
+                angular.forEach($filter('whereAttr')(vm.discounts, 'discount_type', type), function(discount, index) {
+                    if (discount == selFieldModel) {
+                        discount.status = $filter('reverseStatus')(discount);
+                    }
+                });
+                //New discounts
+                angular.forEach($filter('whereAttr')(vm.form.discounts, 'discount_type', type), function(discount, index) {
+                    if (discount == selFieldModel) {
+                        discount.status = $filter('reverseStatus')(discount);
+                    }
+                });
+            }
+        }
+
+        function reverseStatus(type) {
+            //Existing discounts
+            angular.forEach($filter('whereAttr')(vm.discounts, 'discount_type', type), function(discount, index) {
+                discount.status = $filter('reverseStatus')(discount);
+            });
+            //New discounts
+            angular.forEach($filter('whereAttr')(vm.form.discounts, 'discount_type', type), function(discount, index) {
+                discount.status = $filter('reverseStatus')(discount);
+            });
+        }
+
+        function statusChange(selFieldModel) {
+            if (selFieldModel.status == 'active') {
+                selFieldModel.status = 'suspended';
+            } else {
+                selFieldModel.status = 'active';
+            }
+
+            var selDiscount = selFieldModel;
+            var status = selDiscount.status;
+            var countStandard = 0;
+            //console.log(selDiscount);
+            var activeStandard = countActiveStandard(selFieldModel);
+            //console.log(activeStandard);
+            if (status == 'active') {
+
+                angular.forEach(vm.form.discounts, function(discount, index) {
+                    if (discount != null && discount != selDiscount && discount.discount_type == 'standard') {
+                        countStandard++;
+                        if (discount.status == 'active') {
+                            discount.status = 'suspended';
+                        }
+                    } else if (discount != null && discount.discount_type == 'early_bird') {
+                        if (discount.status == 'active') {
+                            discount.status = 'suspended';
+                        } else {
+                            discount.status = 'active'
+                        }
+                    }
+                });
+
+                if (vm.mode == 'Edit' && selDiscount.discount_type == 'standard') {
+
+                    angular.forEach(vm.discounts, function(discount, index) {
+                        countStandard++;
+                        if (discount != null && discount.discount_type == 'standard') {
+                            if (discount.status == 'active') {
+                                discount.status = 'suspended';
+                            }
+
+                        } else if (discount != null && discount.discount_type == 'early_bird') {
+                            if (discount.status == 'active') {
+                                discount.status = 'suspended';
+                            } else {
+                                discount.status = 'active'
+                            }
+                        }
+                    });
+                }
+                if (countStandard == 0 && selDiscount.discount_type == 'standard') {
+                    selFieldModel.status = 'active';
+                }
+            } else if (selDiscount.discount_type == 'standard' && activeStandard == 0) {
+                bootbox.alert('There must be one active standard discount.');
+                selFieldModel.status = 'active';
+            }
+
+
         }
     }
 })();
