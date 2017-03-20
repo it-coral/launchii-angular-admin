@@ -981,7 +981,7 @@
                     //var url_h = url + '/discounts/' + discount.uid;
 
                     tasksSeries.push(function(cb) {
-
+                        console.log(discount);
                         $http.patch(url + '/discounts/' + discount.uid, discount).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
