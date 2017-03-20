@@ -81,7 +81,7 @@
                 ComponentsDateTimePickers.init();
             });
             // vm.$watch('vm.form.price', function(newVal, oldVal) {
-            //     $log.debug(newVal);
+            //     $log.log(newVal);
             //     return newVal.toFixed(2);
             // });
         }
@@ -144,9 +144,9 @@
 
         function hasStandardDiscounts() {
             var formDiscountCount = 0;
-            //$log.debug(vm.form.discounts);
+            //$log.log(vm.form.discounts);
             // for (var key in vm.form.discounts) {
-            //     //$log.debug(vm.form.discounts[key].discount_type);
+            //     //$log.log(vm.form.discounts[key].discount_type);
             //     if (vm.form.discounts[key] != null && vm.form.discounts[key].discount_type == 'standard') {
             //         formDiscountCount++;
             //     }
@@ -165,7 +165,7 @@
             var formDiscountCount = 0;
 
             for (var key in vm.form.discounts) {
-                //$log.debug(vm.form.discounts[key].discount_type);
+                //$log.log(vm.form.discounts[key].discount_type);
                 if (vm.form.discounts[key] != null && vm.form.discounts[key].discount_type == 'early_bird') {
                     formDiscountCount++;
                 }
@@ -221,15 +221,15 @@
 
         function removeDiscount(discount) {
             // angular.forEach(vm.form.discounts, function(val, attr) {
-            //     $log.debug(discount == val);
+            //     $log.log(discount == val);
             //     if (discount == val) {
-            //         //$log.debug('test')
+            //         //$log.log('test')
             //         //vm.form.discounts.splice(index, 1);
             //         delete vm.form.discounts[attr];
             //     }
             // });
             for (var attr in vm.form.discounts) {
-                $log.debug(discount == vm.form.discounts[attr]);
+                $log.log(discount == vm.form.discounts[attr]);
                 if (discount == vm.form.discounts[attr]) {
                     vm.form.discounts[attr] = null;
                 }
@@ -259,7 +259,7 @@
         function removeTemplate(template_index) {
             angular.forEach(vm.form.templates, function(val, index) {
                 if (index == template_index) {
-                    $log.debug('test')
+                    $log.log('test')
                     vm.form.templates.splice(index, 1);
                 }
             });
@@ -288,7 +288,7 @@
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
 
-            //$log.debug(vm.form);
+            //$log.log(vm.form);
             //return false;
             if (!checkHasActiveStandardDiscount()) {
                 bootbox.alert({

@@ -35,7 +35,7 @@
 
         function editPost() {
             vm.isDone = false;
-            // $log.debug(vm.form);
+            // $log.log(vm.form);
             // return false;
             UserService.edit(vm.userId, vm.form).then(function() {
                 vm.response['success'] = "alert-success";
@@ -49,7 +49,7 @@
                 $state.go(vm.prevState);
 
             }).catch(function(err) {
-                $log.debug(err);
+                $log.log(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update User.";

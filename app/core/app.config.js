@@ -71,7 +71,7 @@
             }
         };
 
-        //$log.debug(!$rootScope.authenticated);
+        //$log.log(!$rootScope.authenticated);
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {
@@ -93,7 +93,7 @@
             //     event.preventDefault();
             // }
 
-            //$log.debug(toState.name);
+            //$log.log(toState.name);
             forceSSL(event);
             BreadCrumbService.set(toState.name);
             $rootScope.crumbs = BreadCrumbService.getCrumbs();

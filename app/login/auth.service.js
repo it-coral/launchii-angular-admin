@@ -47,7 +47,7 @@
             // }
 
             // $auth.submitLogin(credentials).then(function(response) {
-            //     $log.debug(response);
+            //     $log.log(response);
             //     if (typeof response === 'undefined' || response === false) {
             //         d.reject();
             //     } else {
@@ -60,7 +60,7 @@
             //         d.resolve(response);
             //     }
             // }).catch(function(err) {
-            //     $log.debug(err);
+            //     $log.log(err);
             //     service.errors = err.errors;
             //     d.reject(service.errors);
             //     //throw (service.errors);
@@ -98,9 +98,9 @@
             });
 
             // $auth.login(credentials).then(function(r) {
-            //     $log.debug(r);
+            //     $log.log(r);
             // }).catch(function(e) {
-            //     $log.debug(e)
+            //     $log.log(e)
             // });
 
             return d.promise;
@@ -151,7 +151,7 @@
                         d.resolve(true);
 
                     }).catch(function(error) {
-                        $log.debug(error);
+                        $log.log(error);
                         d.reject(false);
                     });
             }
@@ -201,25 +201,25 @@
             //var user = JSON.parse(localStorage.getItem('user'));
             if ($auth.isAuthenticated() && toState.name === "auth") {
                 event.preventDefault();
-                $log.debug('11111111');
+                $log.log('11111111');
                 $state.go('dashboard');
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name === "auth") {
                 ngProgressLite.done();
                 event.preventDefault();
-                $log.debug('22222222');
+                $log.log('22222222');
                 $state.go('auth');
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name !== "auth") {
                 event.preventDefault();
-                $log.debug(toState.name);
-                $log.debug('00000000');
+                $log.log(toState.name);
+                $log.log('00000000');
                 $state.go('auth');
                 return false;
             }
             //}
             event.preventDefault();
-            $log.debug('test');
+            $log.log('test');
             $state.go(toState.name);
             return true;
         }

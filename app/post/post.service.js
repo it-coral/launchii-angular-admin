@@ -31,12 +31,12 @@
 
             $http.get(api)
                 .then(function(data) {
-                    //$log.debug(data);
+                    //$log.log(data);
                     //service.posts = data.data;
                     d.resolve(data.data);
                 })
                 .catch(function(error) {
-                    //$log.debug(error.data);
+                    //$log.log(error.data);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -66,12 +66,12 @@
         function addPost(data) {
             var url = api + "add/";
             var d = $q.defer();
-            $log.debug(data);
+            $log.log(data);
             $http.post(url, data)
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    $log.debug(error.data);
+                    $log.log(error.data);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -87,7 +87,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    $log.debug(error.data);
+                    $log.log(error.data);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -106,7 +106,7 @@
                     getPosts();
                     d.resolve(resp);
                 }).catch(function(error) {
-                    $log.debug(error.data);
+                    $log.log(error.data);
                     service.errors = error;
                     d.reject(error);
                 });

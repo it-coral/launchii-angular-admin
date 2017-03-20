@@ -4,10 +4,10 @@
     angular.module('app.brands')
         .controller('BrandViewController', BrandViewController);
 
-    BrandViewController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService'];
+    BrandViewController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService', '$log'];
 
     /* @ngInject */
-    function BrandViewController(BrandService, $stateParams, $scope, prepSelBrand, HelperService) {
+    function BrandViewController(BrandService, $stateParams, $scope, prepSelBrand, HelperService, $log) {
         var vm = this;
 
         vm.mode = "View";

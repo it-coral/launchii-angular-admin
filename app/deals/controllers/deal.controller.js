@@ -51,7 +51,7 @@
                 vm.deals = resp;
                 vm.isLoading = false;
             }).catch(function(err) {
-                $log.debug(err);
+                $log.log(err);
             });
         }
 

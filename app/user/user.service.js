@@ -4,10 +4,10 @@
     angular.module('app.users', [])
         .factory('UserService', UserService);
 
-    UserService.$inject = ['$http', 'CONST', '$q', '$rootScope'];
+    UserService.$inject = ['$http', 'CONST', '$q', '$rootScope', '$log'];
 
     /* @ngInject */
-    function UserService($http, CONST, $q, $rootScope) {
+    function UserService($http, CONST, $q, $rootScope, $log) {
         var api = CONST.api_domain + '/admin/users';
 
         var service = {
@@ -50,7 +50,7 @@
                         service.searchedList = resp.data;
                         d.resolve(resp.data.users);
                     }).catch(function(err) {
-                        $log.debug(err);
+                        $log.log(err);
                         d.reject(err);
                     });
                 }
@@ -121,7 +121,7 @@
                     d.resolve(list);
                 })
                 .catch(function(error) {
-                    $log.debug(error);
+                    $log.log(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -160,7 +160,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    $log.debug(error);
+                    $log.log(error);
                     service.errors = error;
                     d.reject(error.data.errors);
                 });
@@ -176,7 +176,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    $log.debug(error);
+                    $log.log(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -192,7 +192,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    $log.debug(error);
+                    $log.log(error);
                     service.errors = error;
                     d.reject(error);
                 });

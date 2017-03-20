@@ -4,10 +4,10 @@
     angular.module('app.brands')
         .controller('BrandEditController', BrandEditController);
 
-    BrandEditController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService', '$state'];
+    BrandEditController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService', '$state', '$log'];
 
     /* @ngInject */
-    function BrandEditController(BrandService, $stateParams, $scope, prepSelBrand, HelperService, $state) {
+    function BrandEditController(BrandService, $stateParams, $scope, prepSelBrand, HelperService, $state, $log) {
         var vm = this;
 
         vm.mode = "Edit";
@@ -30,14 +30,15 @@
         ///////////////////
 
         function activate() {
-            $log.debug(vm.form);
+            $log.log(vm.form);
+            //console.log('hey');
             // BrandService.find(vm.brandId).then(function(data) {
             //     vm.selectedBrand = data;
             //     vm.form = vm.selectedBrand;
             // });
 
             // vm.$watch('form.logo', function() {
-            //     $log.debug(vm.form.logo);
+            //     $log.log(vm.form.logo);
             // });
         }
 
@@ -71,7 +72,7 @@
                 $state.go(vm.prevState);
 
             }).catch(function(err) {
-                $log.debug(err);
+                $log.log(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update Brand.";

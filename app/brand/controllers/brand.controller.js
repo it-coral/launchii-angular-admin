@@ -4,10 +4,10 @@
     angular.module('app.brands')
         .controller('BrandController', BrandController);
 
-    BrandController.$inject = ['BrandService', 'brandPrepService'];
+    BrandController.$inject = ['BrandService', 'brandPrepService', '$log'];
 
     /* @ngInject */
-    function BrandController(BrandService, brandPrepService) {
+    function BrandController(BrandService, brandPrepService, $log) {
         var vm = this;
 
         vm.prepBrands = brandPrepService;
@@ -51,7 +51,7 @@
                 vm.brands = resp;
                 vm.isLoading = false;
             }).catch(function(err) {
-                $log.debug(err);
+                $log.log(err);
             });
         }
 

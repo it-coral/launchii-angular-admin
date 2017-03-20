@@ -4,10 +4,10 @@
     angular.module('app.brands')
         .controller('BrandAddController', BrandAddController);
 
-    BrandAddController.$inject = ['BrandService', '$scope', 'HelperService', '$state'];
+    BrandAddController.$inject = ['BrandService', '$scope', 'HelperService', '$state', '$log'];
 
     /* @ngInject */
-    function BrandAddController(BrandService, $scope, HelperService, $state) {
+    function BrandAddController(BrandService, $scope, HelperService, $state, $log) {
         var vm = this;
 
         vm.mode = "Add";

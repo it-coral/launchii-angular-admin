@@ -7,7 +7,7 @@
 
     function isLoading() {
         return function(target) {
-            $log.debug(target);
+            $log.log(target);
             if (target) {
                 var scope = angular.element(target).scope();
 

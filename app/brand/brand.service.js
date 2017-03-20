@@ -4,10 +4,10 @@
     angular.module('app.brands', [])
         .factory('BrandService', BrandService);
 
-    BrandService.$inject = ['$http', 'CONST', '$q', '$rootScope'];
+    BrandService.$inject = ['$http', 'CONST', '$q', '$rootScope', '$log'];
 
     /* @ngInject */
-    function BrandService($http, CONST, $q, $rootScope) {
+    function BrandService($http, CONST, $q, $rootScope, $log) {
         var api = CONST.api_domain + '/admin/brands';
 
         var service = {
@@ -50,7 +50,7 @@
                         service.searchedList = resp.data;
                         d.resolve(resp.data.brands);
                     }).catch(function(err) {
-                        $log.debug(err);
+                        $log.log(err);
                         d.reject(err);
                     });
                 }
@@ -105,7 +105,7 @@
                     d.resolve(data.data);
                 })
                 .catch(function(error) {
-                    $log.debug(error);
+                    $log.log(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -169,15 +169,15 @@
             data.logo_image = setLogoImage(data.logo);
             data.cover_image = setCoverImage(data.cover);
 
-            $log.debug(data);
+            $log.log(data);
             // return false;
 
             $http.post(url, data)
                 .then(function(resp) {
-                    //$log.debug(resp);
+                    //$log.log(resp);
                     d.resolve(resp);
                 }).catch(function(error) {
-                    $log.debug(error);
+                    $log.log(error);
                     service.errors = error;
                     d.reject(error.data.errors);
                 });
@@ -193,7 +193,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    $log.debug(error);
+                    $log.log(error);
                     service.errors = error;
                     d.reject(error);
                 });
@@ -209,7 +209,7 @@
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
-                    $log.debug(error);
+                    $log.log(error);
                     service.errors = error;
                     d.reject(error);
                 });
