@@ -117,7 +117,7 @@
 <!-- /.row -->
 <hr>
 <h4>Uploaded Images</h4>
-<div class="mt-element-overlay mb-3">
+<div class="mt-element-overlay mb-3" ng-if="!(vm.images | isEmpty)">
     <div class="row">
         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 image-view-container" ng-repeat="image in vm.images">
 
@@ -137,6 +137,9 @@
 
         </div>
     </div>
+</div>
+<div ng-if="vm.images | isEmpty">
+    <h4>No Uploaded images</h4>
 </div>
 <hr>
 <div class="row">

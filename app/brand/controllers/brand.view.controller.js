@@ -16,6 +16,9 @@
         vm.brand = prepSelBrand;
         vm.isDone = false;
 
+        //Images
+        vm.openEditImageModal = openEditImageModal;
+
         vm.prevState = HelperService.getPrevState();
 
         //activate();
@@ -26,6 +29,10 @@
             BrandService.find(vm.brandId).then(function(data) {
                 vm.brand = data;
             });
+        }
+
+        function openEditImageModal(elem) {
+            $(elem).parents('.image-view-container').find('.image-modal').modal('show');
         }
     }
 })();

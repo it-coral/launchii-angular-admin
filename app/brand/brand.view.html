@@ -75,3 +75,57 @@
     <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
+
+<hr>
+<h4>Logo</h4>
+<div class="mt-element-overlay mb-3" ng-if="vm.brand.logo_image">
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 image-view-container">
+
+            <div class="mt-overlay-1 mt-scroll-up">
+                <img ng-src="{{vm.brand.logo_image.standard_url}}" alt="{{vm.brand.logo_image.description}}" />
+                <div class="mt-overlay">
+                    <ul class="mt-info">
+                        <li>
+                            <a class="btn default btn-outline" href="javascript:;" data-toggle="tooltip" title="Show Description" ng-click="vm.openEditImageModal($event.currentTarget)">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <image-form form-image="vm.brand.logo_image" insert-img="vm.blankFn" form-mode="View" no-btn="true"></image-form>
+
+        </div>
+    </div>
+</div>
+<div ng-if="!vm.brand.logo_image">
+    <h4>No Logo</h4>
+</div>
+
+<hr>
+<h4>Cover</h4>
+<div class="mt-element-overlay mb-3" ng-if="vm.brand.cover_image">
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 image-view-container">
+
+            <div class="mt-overlay-1 mt-scroll-up">
+                <img ng-src="{{vm.brand.cover_image.standard_url}}" alt="{{vm.brand.cover_image.description}}" />
+                <div class="mt-overlay">
+                    <ul class="mt-info">
+                        <li>
+                            <a class="btn default btn-outline" href="javascript:;" data-toggle="tooltip" title="Show Description" ng-click="vm.openEditImageModal($event.currentTarget)">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <image-form form-image="vm.brand.cover_image" insert-img="vm.blankFn" form-mode="View" no-btn="true"></image-form>
+
+        </div>
+    </div>
+</div>
+<div ng-if="!vm.brand.cover_image">
+    <h4>No Cover</h4>
+</div>
