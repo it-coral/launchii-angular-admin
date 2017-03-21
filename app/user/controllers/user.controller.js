@@ -4,10 +4,10 @@
     angular.module('app.users')
         .controller('UserController', UserController);
 
-    UserController.$inject = ['UserService', 'userPrepService'];
+    UserController.$inject = ['UserService', 'userPrepService', '$timeout'];
 
     /* @ngInject */
-    function UserController(UserService, userPrepService) {
+    function UserController(UserService, userPrepService, $timeout) {
         var vm = this;
 
         vm.prepBrands = userPrepService;
@@ -21,6 +21,7 @@
         vm.search = search;
         vm.searchItem = '';
         vm.isLoading = false;
+        vm.isRetrieving = false;
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
         vm.isUserEmpty = UserService.isEmpty();
@@ -56,9 +57,14 @@
         }
 
         function getUsers() {
+            vm.isRetrieving = true;
             return UserService.getAll().then(function(data) {
                 vm.prepBrands = data;
                 vm.users = vm.prepBrands.users;
+                vm.isRetrieving = false;
+                $timeout(function() {
+                    vm.response.msg = false;
+                }, 3000);
                 return vm.users;
             });
         }

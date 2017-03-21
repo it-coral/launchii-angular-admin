@@ -3186,9 +3186,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
 
         function isEmpty() {
-            if (!angular.isDefined(service.lists.brands)) {
-                return true;
-            }
+            // if (!angular.isDefined(service.lists.brands)) {
+            //     return true;
+            // }
 
             return service.lists.total == 0;
         }
@@ -3421,10 +3421,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     angular.module('app.brands')
         .controller('BrandController', BrandController);
 
-    BrandController.$inject = ['BrandService', 'brandPrepService', '$log'];
+    BrandController.$inject = ['BrandService', 'brandPrepService', '$log', '$timeout'];
 
     /* @ngInject */
-    function BrandController(BrandService, brandPrepService, $log) {
+    function BrandController(BrandService, brandPrepService, $log, $timeout) {
         var vm = this;
 
         vm.prepBrands = brandPrepService;
@@ -3438,9 +3438,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.search = search;
         vm.searchItem = '';
         vm.isLoading = false;
+        vm.isRetrieving = false;
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
-        vm.isBrandEmpty = BrandService.isEmpty();
+        vm.isBrandEmpty = isBrandEmpty;
 
         //activate();
 
@@ -3448,6 +3449,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         function activate() {
             return getBrands();
+        }
+
+        function isBrandEmpty() {
+            return vm.prepBrands.total == 0;
         }
 
         function clearSearch() {
@@ -3473,9 +3478,16 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
 
         function getBrands() {
+            vm.isRetrieving = true;
             return BrandService.getAll().then(function(data) {
                 vm.prepBrands = data;
+                console.log(vm.prepBrands);
+                console.log(vm.prepBrands.total == 0);
                 vm.brands = vm.prepBrands.brands;
+                vm.isRetrieving = false;
+                $timeout(function() {
+                    vm.response.msg = false;
+                }, 3000);
                 return vm.brands;
             });
         }
@@ -5123,10 +5135,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     angular.module('app.deals')
         .controller('DealController', DealController);
 
-    DealController.$inject = ['DealService', 'dealPrepService'];
+    DealController.$inject = ['DealService', 'dealPrepService', '$timeout'];
 
     /* @ngInject */
-    function DealController(DealService, dealPrepService) {
+    function DealController(DealService, dealPrepService, $timeout) {
         var vm = this;
 
         vm.prepDeals = dealPrepService;
@@ -5140,6 +5152,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.search = search;
         vm.searchItem = '';
         vm.isLoading = false;
+        vm.isRetrieving = false;
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
         vm.isDealEmpty = DealService.isEmpty();
@@ -5175,9 +5188,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
 
         function getDeals() {
+            vm.isRetrieving = true;
             return DealService.getAll().then(function(data) {
                 vm.prepDeals = data;
                 vm.deals = vm.prepDeals.deals;
+                vm.isRetrieving = false;
+                $timeout(function() {
+                    vm.response.msg = false;
+                }, 3000);
                 return vm.deals;
             });
         }
@@ -6425,6 +6443,42 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+// (function() {
+//     'use strict';
+
+//     angular.module('app.deals')
+//         .controller('TemplateController', TemplateController);
+
+//     TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+//     /* @ngInject */
+//     function TemplateController($scope, $compile, $document) {
+//         var hl = this;
+
+//         hl.counter = 0;
+//         hl.increCounter = increCounter;
+//         hl.openModal = openModal;
+//         hl.currModel = {};
+//         //hl.addTemplate = addTemplate;
+//         //hl.modalContainer = $('#template-modal');
+
+//         //////////////
+
+//         function openModal() {
+//             $('#template-modal').modal('show');
+
+//             $("#template-modal").on("hidden.bs.modal", function() {
+//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+//             });
+//         }
+
+
+
+//         function increCounter() {
+//             hl.counter++;
+//         }
+//     }
+// })();
 (function() {
     'use strict';
 
@@ -6816,42 +6870,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-// (function() {
-//     'use strict';
-
-//     angular.module('app.deals')
-//         .controller('TemplateController', TemplateController);
-
-//     TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-//     /* @ngInject */
-//     function TemplateController($scope, $compile, $document) {
-//         var hl = this;
-
-//         hl.counter = 0;
-//         hl.increCounter = increCounter;
-//         hl.openModal = openModal;
-//         hl.currModel = {};
-//         //hl.addTemplate = addTemplate;
-//         //hl.modalContainer = $('#template-modal');
-
-//         //////////////
-
-//         function openModal() {
-//             $('#template-modal').modal('show');
-
-//             $("#template-modal").on("hidden.bs.modal", function() {
-//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-//             });
-//         }
-
-
-
-//         function increCounter() {
-//             hl.counter++;
-//         }
-//     }
-// })();
 (function() {
     'use strict';
 
@@ -7803,10 +7821,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     angular.module('app.users')
         .controller('UserController', UserController);
 
-    UserController.$inject = ['UserService', 'userPrepService'];
+    UserController.$inject = ['UserService', 'userPrepService', '$timeout'];
 
     /* @ngInject */
-    function UserController(UserService, userPrepService) {
+    function UserController(UserService, userPrepService, $timeout) {
         var vm = this;
 
         vm.prepBrands = userPrepService;
@@ -7820,6 +7838,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.search = search;
         vm.searchItem = '';
         vm.isLoading = false;
+        vm.isRetrieving = false;
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
         vm.isUserEmpty = UserService.isEmpty();
@@ -7855,9 +7874,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
 
         function getUsers() {
+            vm.isRetrieving = true;
             return UserService.getAll().then(function(data) {
                 vm.prepBrands = data;
                 vm.users = vm.prepBrands.users;
+                vm.isRetrieving = false;
+                $timeout(function() {
+                    vm.response.msg = false;
+                }, 3000);
                 return vm.users;
             });
         }
