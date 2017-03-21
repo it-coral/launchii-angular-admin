@@ -37,7 +37,12 @@
             }).catch(function(error) {
                 vm.loggingIn = false;
                 vm.loginError = true;
-                vm.loginErrorText = error.data.errors[0];
+                if (angular.isDefined(error) && error.data != null) {
+                    vm.loginErrorText = error.data.errors[0];
+                } else {
+                    vm.loginErrorText = "Login error";
+                }
+
             });
         }
     }
