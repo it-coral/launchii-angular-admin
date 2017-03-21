@@ -17,6 +17,7 @@
 }
 
 .fade.ng-leave {
+    display: none;
     opacity: 1;
 }
 
