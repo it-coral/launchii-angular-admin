@@ -1,6 +1,6 @@
 # Launchii
 
-[![Build Status](https://circleci.com/gh/launchii/angular-admin.svg?style=shield&circle-token=3876ee4795691fdae21450d22c99bd6a8c939e18)](https://circleci.com/gh/launchii/angular-admin)
+[![Build Status](https://circleci.com/gh/launchii/angular-admin.svg?style=shield&circle-token=63f9be8fce16169cf5fec4b8c9b2c40497c381d0)](https://circleci.com/gh/launchii/angular-admin)
 
 ## Getting started
 
