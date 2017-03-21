@@ -58,6 +58,7 @@
     run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window', '$templateCache'];
     /* @ngInject */
     function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window, $templateCache) {
+        $state.go('auth');
         //bootstrap3ElementModifier.enableValidationStateIcons(true);
 
         //$templateCache.get('app/login/login.html');
