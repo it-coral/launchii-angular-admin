@@ -63,7 +63,7 @@
         vm.updateDateDiff = updateDateDiff;
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addDeal;
-        vm.isDealEmpty = DealService.isEmpty();
+        vm.isDealEmpty = DealService.isEmpty;
         vm.isBrandEmpty = brandPrepService.total == 0;
 
         activate();
