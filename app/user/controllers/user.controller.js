@@ -10,8 +10,8 @@
     function UserController(UserService, userPrepService, $timeout) {
         var vm = this;
 
-        vm.prepBrands = userPrepService;
-        vm.users = vm.prepBrands.users;
+        vm.prepUsers = userPrepService;
+        vm.users = vm.prepUsers.users;
         vm.getUsers = getUsers;
         vm.hasDeleted = false;
         vm.response = {};
@@ -24,7 +24,7 @@
         vm.isRetrieving = false;
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
-        vm.isUserEmpty = UserService.isEmpty();
+        vm.isUserEmpty = isUserEmpty;
 
         //activate();
 
@@ -32,6 +32,10 @@
 
         function activate() {
             return getUsers();
+        }
+
+        function isUserEmpty() {
+            return vm.prepUsers.total == 0;
         }
 
         function clearSearch() {

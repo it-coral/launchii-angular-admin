@@ -24,7 +24,7 @@
         vm.isRetrieving = false;
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
-        vm.isDealEmpty = DealService.isEmpty();
+        vm.isDealEmpty = isDealEmpty;
 
         //activate();
 
@@ -32,6 +32,10 @@
 
         function activate() {
             return getDeals();
+        }
+
+        function isDealEmpty() {
+            return vm.prepDeals.total == 0;
         }
 
         function clearSearch() {
