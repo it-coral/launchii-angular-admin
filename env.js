@@ -14,13 +14,13 @@
     window.__env.enableDebug = true;
 
     function getApiUrl() {
-        var url = window.location.origin;
+        var url = window.location.href;
 
-        if (url.indexOf('launchii.dev')) { //Jellan's local
+        if (url.indexOf('admin.launchii.com') > -1) {
+            return 'https://api.launchii.com/v1';
+        } else {
             return 'https://stageapi.launchii.com/v1';
         }
-
-        return url + '/v1';
 
     }
 
