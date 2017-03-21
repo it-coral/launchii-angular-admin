@@ -24,4 +24,6 @@
 
     }
 
+    document.getElementsByTagName("head")[0].prepend('<!-- ' + window.__env.apiUrl + ' -->');
+
 })(this);

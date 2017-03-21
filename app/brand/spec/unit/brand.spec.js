@@ -26,6 +26,15 @@
             expect(BrandService).toBeDefined();
         });
 
+        it('should be working', inject(['BrandService',
+            function(BrandService) {
+                expect(BrandService.getAll).toBeDefined();
+                expect(BrandService.search).toBeDefined();
+            }
+        ]));
+
+
+
         describe('Brand dashboard controller', function() {
 
             var scope, controller, httpBackend;
