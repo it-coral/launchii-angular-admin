@@ -18,10 +18,14 @@
 
         if (url.indexOf('admin.launchii.com') > -1) {
             return 'https://api.launchii.com/v1';
-        } else {
+        } else if (url.indexOf('launchii-admin-staging.herokuapp.com') > -1) {
             return 'https://stageapi.launchii.com/v1';
+        } else {
+            return 'http://stageapi.launchii.dev/v1';
         }
 
     }
+
+    $('head').prepend('<!-- ApiUrl: ' + __env.apiUrl + ' -->')
 
 })(this);
