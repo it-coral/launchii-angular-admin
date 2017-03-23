@@ -27,7 +27,7 @@
 
         return service;
 
-        ////////////////   
+        ////////////////
 
         function countModelLength(model) {
             var count = 0;
@@ -93,7 +93,23 @@
         }
 
         function combineDateTime(date, time) {
-            return new Date(date + ' ' + time).toJSON().toString();
+          var dateTime = new Date(date);
+
+          var hours = Number(time.match(/^(\d+)/)[1]);
+          var minutes = Number(time.match(/:(\d+)/)[1]);
+          var seconds = Number(time.match(/:(\d+):(\d+)/)[2]);
+          var AMPM = time.match(/([AaPp][Mm])$/)[1];
+          if ('pm' === AMPM.toLowerCase()) {
+            hours += 12;
+          }
+
+          dateTime.setHours(hours);
+          dateTime.setMinutes(minutes);
+          dateTime.setSeconds(seconds);
+
+          console.log(dateTime);
+
+          return dateTime.toJSON().toString();
         }
 
         function getDateNow() {
