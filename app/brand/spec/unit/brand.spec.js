@@ -26,6 +26,22 @@
             expect(BrandService).toBeDefined();
         });
 
+        it('should have the required attributes', function() {
+            expect(BrandService.getAll).toBeDefined();
+            expect(BrandService.search).toBeDefined();
+            expect(BrandService.lists).toBeDefined();
+            expect(BrandService.add).toBeDefined();
+            expect(BrandService.edit).toBeDefined();
+            expect(BrandService.delete).toBeDefined();
+            expect(BrandService.find).toBeDefined();
+        });
+
+        it('should get all brands', function() {
+            BrandService.getAll().then(function(result) {
+                expect(result).toBeDefined();
+            });
+        });
+
         describe('Brand dashboard controller', function() {
 
             var scope, controller, httpBackend;

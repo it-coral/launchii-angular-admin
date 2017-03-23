@@ -4,10 +4,10 @@
     angular.module('app.brands')
         .controller('BrandController', BrandController);
 
-    BrandController.$inject = ['BrandService', 'brandPrepService', '$log'];
+    BrandController.$inject = ['BrandService', 'brandPrepService', '$log', '$timeout'];
 
     /* @ngInject */
-    function BrandController(BrandService, brandPrepService, $log) {
+    function BrandController(BrandService, brandPrepService, $log, $timeout) {
         var vm = this;
 
         vm.prepBrands = brandPrepService;
@@ -21,9 +21,10 @@
         vm.search = search;
         vm.searchItem = '';
         vm.isLoading = false;
+        vm.isRetrieving = false;
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
-        vm.isBrandEmpty = BrandService.isEmpty();
+        vm.isBrandEmpty = isBrandEmpty;
 
         //activate();
 
@@ -31,6 +32,10 @@
 
         function activate() {
             return getBrands();
+        }
+
+        function isBrandEmpty() {
+            return vm.prepBrands.total == 0;
         }
 
         function clearSearch() {
@@ -56,9 +61,16 @@
         }
 
         function getBrands() {
+            vm.isRetrieving = true;
             return BrandService.getAll().then(function(data) {
                 vm.prepBrands = data;
+                console.log(vm.prepBrands);
+                console.log(vm.prepBrands.total == 0);
                 vm.brands = vm.prepBrands.brands;
+                vm.isRetrieving = false;
+                $timeout(function() {
+                    vm.response.msg = false;
+                }, 3000);
                 return vm.brands;
             });
         }

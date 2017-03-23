@@ -1,4 +1,4 @@
-<div ui-view="page_body">
+<div ui-view="page_body" class="fade">
     <div class="row mb-2">
         <div class="col-md-12">
             <a ui-sref="dashboard.brand.add">
@@ -35,7 +35,7 @@
                     <div class="alert {{vm.response.success}}" ng-if="vm.response.msg">
                         <strong>{{vm.response.alert}}</strong> {{vm.response.msg}}
                     </div>
-                    <div class="table-scrollable" ng-if="!vm.isBrandEmpty">
+                    <div class="table-scrollable" ng-show="!vm.isBrandEmpty() && !vm.isRetrieving">
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
@@ -70,11 +70,14 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="text-center" ng-if="vm.isBrandEmpty">
+                    <div class="text-center" ng-show="vm.isBrandEmpty() && !vm.isRetrieving">
                         <h3>No brands</h3>
                         <a ui-sref="dashboard.brand.add">
-                            <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add Brand</button>
+                            <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> New Brand</button>
                         </a>
+                    </div>
+                    <div class="text-center" ng-show="vm.isRetrieving">
+                        <ng-include src="'/app/common/loading.html'"></ng-include>
                     </div>
                 </div>
             </div>

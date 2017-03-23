@@ -4,10 +4,10 @@
     angular.module('app.deals')
         .controller('DealController', DealController);
 
-    DealController.$inject = ['DealService', 'dealPrepService'];
+    DealController.$inject = ['DealService', 'dealPrepService', '$timeout'];
 
     /* @ngInject */
-    function DealController(DealService, dealPrepService) {
+    function DealController(DealService, dealPrepService, $timeout) {
         var vm = this;
 
         vm.prepDeals = dealPrepService;
@@ -16,14 +16,14 @@
         vm.hasDeleted = false;
         vm.response = {};
         vm.deleteDeal = deleteDeal;
-        vm.response = {};
         vm.isDone = false;
         vm.search = search;
         vm.searchItem = '';
         vm.isLoading = false;
+        vm.isRetrieving = false;
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
-        vm.isDealEmpty = DealService.isEmpty();
+        vm.isDealEmpty = isDealEmpty;
 
         //activate();
 
@@ -31,6 +31,10 @@
 
         function activate() {
             return getDeals();
+        }
+
+        function isDealEmpty() {
+            return vm.prepDeals.total == 0;
         }
 
         function clearSearch() {
@@ -56,9 +60,14 @@
         }
 
         function getDeals() {
+            vm.isRetrieving = true;
             return DealService.getAll().then(function(data) {
                 vm.prepDeals = data;
                 vm.deals = vm.prepDeals.deals;
+                vm.isRetrieving = false;
+                $timeout(function() {
+                    vm.response.msg = false;
+                }, 3000);
                 return vm.deals;
             });
         }

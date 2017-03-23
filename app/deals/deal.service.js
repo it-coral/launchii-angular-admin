@@ -14,10 +14,28 @@
         ])
         .factory('DealService', DealService);
 
-    DealService.$inject = ['$http', 'CONST', '$q', 'HelperService', 'BrandService', '$rootScope', '$filter', '$log'];
+    DealService.$inject = [
+        '$http',
+        'CONST',
+        '$q',
+        'HelperService',
+        'BrandService',
+        '$rootScope',
+        '$filter',
+        '$log'
+    ];
 
     /* @ngInject */
-    function DealService($http, CONST, $q, HelperService, BrandService, $rootScope, $filter, $log) {
+    function DealService(
+        $http,
+        CONST,
+        $q,
+        HelperService,
+        BrandService,
+        $rootScope,
+        $filter,
+        $log) {
+
         var api = CONST.api_domain + '/admin/deals';
 
         var service = {

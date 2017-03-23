@@ -58,6 +58,7 @@
     run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window', '$templateCache'];
     /* @ngInject */
     function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window, $templateCache) {
+        $state.go('auth');
         //bootstrap3ElementModifier.enableValidationStateIcons(true);
 
         //$templateCache.get('app/login/login.html');
@@ -66,6 +67,10 @@
         var forceSSL = function(event) {
             if ($location.protocol() !== 'https') {
                 event.preventDefault();
+                var pageUrl = $location.absUrl();
+                if (pageUrl.indexOf('localhost') > -1 ||
+                    pageUrl.indexOf('127.0.0.1') > -1)
+                    return true;
                 $window.location.href = $location.absUrl().replace('http', 'https');
                 return false;
             }
