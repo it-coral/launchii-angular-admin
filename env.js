@@ -26,7 +26,7 @@
 
     }
 
-
-    $('head').prepend('<!-- ApiUrl: ' + __env.apiUrl + ' -->')
+    var __head = document.getElementsByTagName("head")[0];
+    __head.insertBefore(document.createComment(' ApiUrl: ' + __env.apiUrl + ' '), __head.children[0]);
 
 })(this);
