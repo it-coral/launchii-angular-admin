@@ -3115,6 +3115,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+
 (function() {
     'use strict';
 
