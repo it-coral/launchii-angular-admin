@@ -26,7 +26,6 @@
 
     }
 
-
     $('head').prepend('<!-- ApiUrl: ' + __env.apiUrl + ' -->')
 
 })(this);
