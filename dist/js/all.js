@@ -1421,7 +1421,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window', '$templateCache'];
     /* @ngInject */
     function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window, $templateCache) {
-        $state.go('auth');
         //bootstrap3ElementModifier.enableValidationStateIcons(true);
 
         //$templateCache.get('app/login/login.html');
@@ -1430,10 +1429,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         var forceSSL = function(event) {
             if ($location.protocol() !== 'https') {
                 event.preventDefault();
-                var pageUrl = $location.absUrl();
-                if (pageUrl.indexOf('localhost') > -1 ||
-                    pageUrl.indexOf('127.0.0.1') > -1)
-                    return true;
                 $window.location.href = $location.absUrl().replace('http', 'https');
                 return false;
             }
@@ -1462,7 +1457,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             // }
 
             //$log.log(toState.name);
-            forceSSL(event);
+
+            // Do not run forceSSL() on local
+            var __page_url = $location.absUrl();
+            var __is_local = ((__page_url.indexOf('localhost') > -1) ||
+                                (__page_url.indexOf('127.0.0.1') > -1));
+            if (!__is_local)
+              forceSSL(event);
+
             BreadCrumbService.set(toState.name);
             $rootScope.crumbs = BreadCrumbService.getCrumbs();
 
@@ -2108,8 +2110,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
           dateTime.setHours(hours);
           dateTime.setMinutes(minutes);
           dateTime.setSeconds(seconds);
-
-          console.log(dateTime);
 
           return dateTime.toJSON().toString();
         }
@@ -4833,6 +4833,32 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular.module('app.deals')
+        .factory('TemplateService', TemplateService);
+
+    TemplateService.$inject = ['$scope'];
+
+    /* @ngInject */
+    function TemplateService($scope) {
+
+        var service = {
+            lists: [],
+            setList: setList
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function setList(list) {
+            service.lists = list;
+        }
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.deals')
         .controller('DealAddController', DealAddController);
 
     DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes'];
@@ -6128,32 +6154,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             return null;
         }
 
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular.module('app.deals')
-        .factory('TemplateService', TemplateService);
-
-    TemplateService.$inject = ['$scope'];
-
-    /* @ngInject */
-    function TemplateService($scope) {
-
-        var service = {
-            lists: [],
-            setList: setList
-        }
-
-        return service;
-
-        //////// SERIVCE METHODS ////////
-
-        function setList(list) {
-            service.lists = list;
-        }
     }
 
 })();
