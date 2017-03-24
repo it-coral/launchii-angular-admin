@@ -107,8 +107,6 @@
           dateTime.setMinutes(minutes);
           dateTime.setSeconds(seconds);
 
-          console.log(dateTime);
-
           return dateTime.toJSON().toString();
         }
 
