@@ -2026,7 +2026,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             combineDateTime: combineDateTime,
             convertToDateTime: convertToDateTime,
             setErrorStr: setErrorStr,
-            countModelLength: countModelLength
+            countModelLength: countModelLength,
+            capFirstLetter: capFirstLetter
         }
 
         return service;
@@ -2210,6 +2211,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             list.splice(0, list.length);
 
             return list;
+        }
+
+        function capFirstLetter(input) {
+            return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
         }
     }
 
@@ -4187,6 +4192,20 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     deal['date_ends'] = dateEnd.date;
                     deal['time_ends'] = dateEnd.time;
 
+                    if (deal.is_draft) {
+                      deal['status'] = 'draft';
+                    } else if (deal.is_published) {
+                      deal['status'] = 'published';
+                    } else if (deal.is_hidden) {
+                      deal['status'] = 'hidden';
+                    } else if (deal.is_deleted) {
+                      deal['status'] = 'deleted';
+                    } else if (deal.is_pending) {
+                      deal['status'] = 'pending';
+                    } else {
+                      deal['status'] = 'draft';
+                    }
+
                     //DISABLED
                     BrandService.findInList(deal.brand_id).then(function(brand) {
                         deal['brand'] = brand;
@@ -4829,32 +4848,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-(function() {
-    'use strict';
 
-    angular.module('app.deals')
-        .factory('TemplateService', TemplateService);
-
-    TemplateService.$inject = ['$scope'];
-
-    /* @ngInject */
-    function TemplateService($scope) {
-
-        var service = {
-            lists: [],
-            setList: setList
-        }
-
-        return service;
-
-        //////// SERIVCE METHODS ////////
-
-        function setList(list) {
-            service.lists = list;
-        }
-    }
-
-})();
 (function() {
     'use strict';
 
@@ -4869,6 +4863,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         vm.mode = "Add";
         vm.form = {};
+        vm.form.status = 'draft';
         vm.form.highlights = [];
         vm.form.templates = [];
         vm.form.discounts = {};
@@ -4922,6 +4917,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.submitAction = addDeal;
         vm.isDealEmpty = DealService.isEmpty;
         vm.isBrandEmpty = brandPrepService.total == 0;
+
+        vm.availableStats = ['draft', 'published', 'hidden', 'deleted', 'pending'];
+        vm.capFirstLetter = HelperService.capFirstLetter;
 
         activate();
 
@@ -5201,6 +5199,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+
 (function() {
     'use strict';
 
@@ -5427,6 +5426,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.updateDateDiff = updateDateDiff;
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
+
+        vm.availableStats = ['draft', 'published', 'hidden', 'deleted', 'pending'];
+        vm.capFirstLetter = HelperService.capFirstLetter;
 
         activate();
 
@@ -5884,6 +5886,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+
 (function() {
     'use strict';
 
@@ -6154,6 +6157,32 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             return null;
         }
 
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.deals')
+        .factory('TemplateService', TemplateService);
+
+    TemplateService.$inject = ['$scope'];
+
+    /* @ngInject */
+    function TemplateService($scope) {
+
+        var service = {
+            lists: [],
+            setList: setList
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function setList(list) {
+            service.lists = list;
+        }
     }
 
 })();
