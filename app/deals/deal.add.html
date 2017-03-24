@@ -49,7 +49,7 @@
                         </div>
                         <div class="form-group">
                             <label>Link</label>
-                            <input type="url" class="form-control" placeholder="Enter name" ng-model="vm.form.link" required />
+                            <input type="url" class="form-control" placeholder="Enter link" ng-model="vm.form.link" required />
                         </div>
                         <div class="form-group">
                             <label>Description</label>
@@ -57,7 +57,7 @@
                         </div>
                         <div class="form-group">
                             <label>Price</label>
-                            <input type="number" class="form-control input-small" placeholder="Enter price" string-to-number ng-model="vm.form.price" ng-change="vm.priceFormat()" required />
+                            <input type="number" class="form-control input-small" placeholder="Enter price" string-to-number ng-model="vm.form.price" ng-blur="vm.priceFormat()" required />
                         </div>
                         <div class="form-group">
                             <label>Amazon Rating</label>
