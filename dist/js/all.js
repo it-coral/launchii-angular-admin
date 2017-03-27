@@ -1443,14 +1443,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         $rootScope.$on('nonadminaccess', function(event) {
             event.preventDefault();
             $rootScope.loginError = "You are not authorized to access admin pages.";
-            AuthService.removeUserStorage();
-            //AuthService.destroyAuthUser().then(function() {
-            //if (toState.name !== "auth") {
+
+            AuthService.destroyAuthUser();
+
             $state.go('auth');
             ngProgressLite.done();
             return false;
-            //}
-            //});
         });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
@@ -1523,11 +1521,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
             if (angular.isDefined($rootScope.currentUser) && !$rootScope.currentUser.is_admin) {
                 event.preventDefault();
+                ngProgressLite.done();
                 $rootScope.loginError = "You are not authorized to access admin pages.";
+                AuthService.destroyAuthUser();
                 AuthService.removeUserStorage();
 
-                $state.go('auth');
-                ngProgressLite.done();
+                //$state.go('auth');
+
                 return false;
             }
         }
@@ -2373,6 +2373,143 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
     angular
         .module('app')
+        .filter('base64filename', base64filename);
+
+    function base64filename() {
+        return function(img) {
+            if (img) {
+                var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
+
+                return filebase64;
+            }
+
+            return img;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isEmpty', isEmpty);
+
+    function isEmpty() {
+        return function(container) {
+
+            if (angular.isObject(container)) {
+
+                angular.forEach(container, function(item, index) {
+                    return false;
+                });
+
+            } else if (angular.isArray(container)) {
+                return container.length == 0;
+            }
+
+            return true;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isLoading', isLoading);
+
+    function isLoading() {
+        return function(target) {
+            $log.log(target);
+            if (target) {
+                var scope = angular.element(target).scope();
+
+                if (angular.isDefined(scope.isLoading) && scope.isLoading) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('toDecimal', toDecimal);
+
+    function toDecimal() {
+        return function(num, dec) {
+            if (num) {
+                num = parseFloat(num);
+                num = num.toFixed(dec);
+
+                return '' + num;
+            }
+
+            return num;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('ucFirst', ucFirst);
+
+    function ucFirst() {
+        return function(string) {
+            if (string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            return string;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('whereAttr', whereAttr);
+
+    function whereAttr() {
+        return function(box, attr, value) {
+            var obj = [];
+            angular.forEach(box, function(item, index) {
+                if (angular.isDefined(item[attr]) && item[attr] == value) {
+                    obj.push(item);
+                }
+            });
+
+            return obj;
+
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
         .directive('breadCrumbs', breadCrumbs);
 
     breadCrumbs.$inject = ['$state', '$stateParams', 'BreadCrumbService'];
@@ -2652,143 +2789,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 });
             }
         };
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('base64filename', base64filename);
-
-    function base64filename() {
-        return function(img) {
-            if (img) {
-                var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
-
-                return filebase64;
-            }
-
-            return img;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('isEmpty', isEmpty);
-
-    function isEmpty() {
-        return function(container) {
-
-            if (angular.isObject(container)) {
-
-                angular.forEach(container, function(item, index) {
-                    return false;
-                });
-
-            } else if (angular.isArray(container)) {
-                return container.length == 0;
-            }
-
-            return true;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('isLoading', isLoading);
-
-    function isLoading() {
-        return function(target) {
-            $log.log(target);
-            if (target) {
-                var scope = angular.element(target).scope();
-
-                if (angular.isDefined(scope.isLoading) && scope.isLoading) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('toDecimal', toDecimal);
-
-    function toDecimal() {
-        return function(num, dec) {
-            if (num) {
-                num = parseFloat(num);
-                num = num.toFixed(dec);
-
-                return '' + num;
-            }
-
-            return num;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('ucFirst', ucFirst);
-
-    function ucFirst() {
-        return function(string) {
-            if (string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
-            }
-
-            return string;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('whereAttr', whereAttr);
-
-    function whereAttr() {
-        return function(box, attr, value) {
-            var obj = [];
-            angular.forEach(box, function(item, index) {
-                if (angular.isDefined(item[attr]) && item[attr] == value) {
-                    obj.push(item);
-                }
-            });
-
-            return obj;
-
-        }
-
     }
 
 })();
@@ -6416,39 +6416,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-// (function() {
-//     'use strict';
-
-//     angular.module('app.deals')
-//         .controller('HighlightController', HighlightController);
-
-//     HighlightController.$inject = ['$scope', '$compile'];
-
-//     /* @ngInject */
-//     function HighlightController($scope, $compile) {
-//         var hl = this;
-
-//         //hl.remove = remove;
-//         hl.counter = 0;
-//         hl.increCounter = increCounter;
-//         hl.modelo = {};
-//         hl.we = 'test';
-//         //hl.form = $scope.$parent.$parent.vm.form;
-
-//         //////////////
-
-//         // function remove(target, highlight) {
-//         //     var parent = $(target).parent();
-//         //     console.log($scope);
-//         //     //$parent.$parent.vm.removeHighlight(highlight);
-//         //     parent.remove();
-//         // }
-
-//         function increCounter() {
-//             hl.counter++;
-//         }
-//     }
-// })();
 (function() {
     'use strict';
 
@@ -6584,6 +6551,39 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+// (function() {
+//     'use strict';
+
+//     angular.module('app.deals')
+//         .controller('HighlightController', HighlightController);
+
+//     HighlightController.$inject = ['$scope', '$compile'];
+
+//     /* @ngInject */
+//     function HighlightController($scope, $compile) {
+//         var hl = this;
+
+//         //hl.remove = remove;
+//         hl.counter = 0;
+//         hl.increCounter = increCounter;
+//         hl.modelo = {};
+//         hl.we = 'test';
+//         //hl.form = $scope.$parent.$parent.vm.form;
+
+//         //////////////
+
+//         // function remove(target, highlight) {
+//         //     var parent = $(target).parent();
+//         //     console.log($scope);
+//         //     //$parent.$parent.vm.removeHighlight(highlight);
+//         //     parent.remove();
+//         // }
+
+//         function increCounter() {
+//             hl.counter++;
+//         }
+//     }
+// })();
 (function() {
     'use strict';
 

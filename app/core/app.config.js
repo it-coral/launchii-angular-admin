@@ -80,14 +80,12 @@
         $rootScope.$on('nonadminaccess', function(event) {
             event.preventDefault();
             $rootScope.loginError = "You are not authorized to access admin pages.";
-            AuthService.removeUserStorage();
-            //AuthService.destroyAuthUser().then(function() {
-            //if (toState.name !== "auth") {
+
+            AuthService.destroyAuthUser();
+
             $state.go('auth');
             ngProgressLite.done();
             return false;
-            //}
-            //});
         });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
@@ -160,11 +158,13 @@
 
             if (angular.isDefined($rootScope.currentUser) && !$rootScope.currentUser.is_admin) {
                 event.preventDefault();
+                ngProgressLite.done();
                 $rootScope.loginError = "You are not authorized to access admin pages.";
+                AuthService.destroyAuthUser();
                 AuthService.removeUserStorage();
 
-                $state.go('auth');
-                ngProgressLite.done();
+                //$state.go('auth');
+
                 return false;
             }
         }
