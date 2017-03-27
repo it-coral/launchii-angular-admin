@@ -151,7 +151,8 @@
                         d.resolve(true);
 
                     }).catch(function(error) {
-                        $log.log(error);
+                        console.log('test');
+                        $log.log(error.data.errors);
                         d.reject(false);
                     });
             }
@@ -212,14 +213,14 @@
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name !== "auth") {
                 event.preventDefault();
-                $log.log(toState.name);
+                //$log.log(toState.name);
                 //$log.log('00000000');
                 $state.go('auth');
                 return false;
             }
             //}
             event.preventDefault();
-            $log.log('test');
+            //$log.log('test');
             $state.go(toState.name);
             return true;
         }

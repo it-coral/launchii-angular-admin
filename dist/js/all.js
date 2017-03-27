@@ -1439,10 +1439,24 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //});
         });
 
+        //Listens for unpermitted access to admin pages.
+        $rootScope.$on('nonadminaccess', function(event) {
+            event.preventDefault();
+            $rootScope.loginError = "You are not authorized to access admin pages.";
+            AuthService.removeUserStorage();
+            //AuthService.destroyAuthUser().then(function() {
+            //if (toState.name !== "auth") {
+            $state.go('auth');
+            ngProgressLite.done();
+            return false;
+            //}
+            //});
+        });
+
         $rootScope.$on('$stateChangeStart', function(event, toState) {
 
             //Redirect user if not admin
-            forceLogoutIfNotAdmin(event);
+            //forceLogoutIfNotAdmin(event);
 
             // Do not run forceSSL() on local
             var __page_url = $location.absUrl();
@@ -1994,7 +2008,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
 
         function responseError(rejection) {
-
             if (rejection.status === -1) {
                 var config = rejection.config;
                 config.retryCount = config.retryCount || 0;
@@ -2033,6 +2046,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 $rootScope.$broadcast('unauthorized');
                 rejection.config.timeout = canceller.promise;
                 canceller.resolve('Unauthorized');
+                //return rejection;
+            } else
+            if (rejection.status === 422 && angular.isDefined($rootScope.currentUser) && !$rootScope.currentUser.is_admin) {
+                $rootScope.$broadcast('nonadminaccess');
+                rejection.config.timeout = canceller.promise;
+                canceller.resolve('No permission to access resource.');
                 //return rejection;
             }
 
@@ -3035,7 +3054,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         d.resolve(true);
 
                     }).catch(function(error) {
-                        $log.log(error);
+                        console.log('test');
+                        $log.log(error.data.errors);
                         d.reject(false);
                     });
             }
@@ -3096,14 +3116,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name !== "auth") {
                 event.preventDefault();
-                $log.log(toState.name);
+                //$log.log(toState.name);
                 //$log.log('00000000');
                 $state.go('auth');
                 return false;
             }
             //}
             event.preventDefault();
-            $log.log('test');
+            //$log.log('test');
             $state.go(toState.name);
             return true;
         }
@@ -4890,224 +4910,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
-    angular
-        .module('app.deals')
-        .filter('toCurrencyFormat', toCurrencyFormat);
-
-    function toCurrencyFormat() {
-        return function(input) {
-            if (input) {
-                var num = parseFloat(input);
-                var currency = '$ ' + num.toFixed(2);
-
-                return currency;
-            }
-
-            return input;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('discountStatus', discountStatus);
-
-    discountStatus.$inject = ['$filter'];
-    /* @ngInject */
-    function discountStatus($filter) {
-        return function(discount, isReverse) {
-            var status = null;
-
-            if (angular.isDefined(discount) && discount != null) {
-                if (angular.isDefined(discount.status)) {
-                    status = $filter('ucFirst')(discount.status);
-                    if (isReverse && status == 'Active') {
-                        status = 'Suspended';
-                    } else
-                    if (isReverse && status == 'Suspended') {
-                        status = 'Active';
-                    }
-                } else {
-                    if (discount.is_active || discount.status == 'active') {
-                        status = 'Active';
-                        if (isReverse) {
-                            status = 'Suspended';
-                        }
-                    } else if (discount.is_suspended || discount.status == 'suspended') {
-                        status = 'Suspended';
-                        if (isReverse) {
-                            status = 'Active';
-                        }
-                    }
-                }
-            }
-
-            return status;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('discountType', discountType);
-
-    function discountType() {
-        return function(discount) {
-            if (angular.isDefined(discount) && discount != null) {
-                if (discount.is_unit || discount.value_type == 'unit') {
-                    return '$';
-                } else if (discount.is_percentage || discount.value_type == 'percentage') {
-                    return '%';
-                }
-            }
-
-            return null;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('getActiveStandard', getActiveStandard);
-
-    function getActiveStandard() {
-        return function(discounts) {
-            var obj = [];
-
-            angular.forEach(discounts, function(discount, index) {
-                if (discount != null) {
-                    if (angular.isDefined(discount.status) && discount.discount_type == 'standard' && discount.status == 'active') {
-                        obj.push(discount);
-                    } else if (discount.discount_type == 'standard' && discount.is_active) {
-                        obj.push(discount);
-                    }
-                }
-
-            });
-
-            return obj;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('isActiveStandard', isActiveStandard);
-
-    function isActiveStandard() {
-        return function(discount) {
-            if (discount != null && discount.discount_type == 'standard' && discount.status == 'active') {
-                return true;
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('reverseStatus', reverseStatus);
-
-    function reverseStatus() {
-        return function(discount) {
-            var status = null;
-
-            if (angular.isDefined(discount) && discount != null) {
-                if (angular.isDefined(discount.status)) {
-                    if (discount.status == 'active') {
-                        status = 'suspended';
-                    } else
-                    if (discount.status == 'suspended') {
-                        status = 'active';
-                    }
-                } else {
-                    if (discount.is_active) {
-                        status = 'suspended';
-                    } else if (discount.is_suspended) {
-                        status = 'active';
-                    }
-                }
-            }
-            //console.log(discount);
-            //console.log(status);
-            return status;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.deals')
-        .filter('roundPrice', roundPrice);
-
-    function roundPrice() {
-        return function(price) {
-            if (price) {
-                var num = parseFloat(price);
-                var currency = num.toFixed(2);
-
-                return currency;
-            }
-
-            return null;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular.module('app.deals')
-        .factory('TemplateService', TemplateService);
-
-    TemplateService.$inject = ['$scope'];
-
-    /* @ngInject */
-    function TemplateService($scope) {
-
-        var service = {
-            lists: [],
-            setList: setList
-        }
-
-        return service;
-
-        //////// SERIVCE METHODS ////////
-
-        function setList(list) {
-            service.lists = list;
-        }
-    }
-
-})();
-(function() {
-    'use strict';
-
     angular.module('app.deals')
         .controller('DealAddController', DealAddController);
 
@@ -6228,6 +6030,224 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular
+        .module('app.deals')
+        .filter('toCurrencyFormat', toCurrencyFormat);
+
+    function toCurrencyFormat() {
+        return function(input) {
+            if (input) {
+                var num = parseFloat(input);
+                var currency = '$ ' + num.toFixed(2);
+
+                return currency;
+            }
+
+            return input;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('discountStatus', discountStatus);
+
+    discountStatus.$inject = ['$filter'];
+    /* @ngInject */
+    function discountStatus($filter) {
+        return function(discount, isReverse) {
+            var status = null;
+
+            if (angular.isDefined(discount) && discount != null) {
+                if (angular.isDefined(discount.status)) {
+                    status = $filter('ucFirst')(discount.status);
+                    if (isReverse && status == 'Active') {
+                        status = 'Suspended';
+                    } else
+                    if (isReverse && status == 'Suspended') {
+                        status = 'Active';
+                    }
+                } else {
+                    if (discount.is_active || discount.status == 'active') {
+                        status = 'Active';
+                        if (isReverse) {
+                            status = 'Suspended';
+                        }
+                    } else if (discount.is_suspended || discount.status == 'suspended') {
+                        status = 'Suspended';
+                        if (isReverse) {
+                            status = 'Active';
+                        }
+                    }
+                }
+            }
+
+            return status;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('discountType', discountType);
+
+    function discountType() {
+        return function(discount) {
+            if (angular.isDefined(discount) && discount != null) {
+                if (discount.is_unit || discount.value_type == 'unit') {
+                    return '$';
+                } else if (discount.is_percentage || discount.value_type == 'percentage') {
+                    return '%';
+                }
+            }
+
+            return null;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('getActiveStandard', getActiveStandard);
+
+    function getActiveStandard() {
+        return function(discounts) {
+            var obj = [];
+
+            angular.forEach(discounts, function(discount, index) {
+                if (discount != null) {
+                    if (angular.isDefined(discount.status) && discount.discount_type == 'standard' && discount.status == 'active') {
+                        obj.push(discount);
+                    } else if (discount.discount_type == 'standard' && discount.is_active) {
+                        obj.push(discount);
+                    }
+                }
+
+            });
+
+            return obj;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('isActiveStandard', isActiveStandard);
+
+    function isActiveStandard() {
+        return function(discount) {
+            if (discount != null && discount.discount_type == 'standard' && discount.status == 'active') {
+                return true;
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('reverseStatus', reverseStatus);
+
+    function reverseStatus() {
+        return function(discount) {
+            var status = null;
+
+            if (angular.isDefined(discount) && discount != null) {
+                if (angular.isDefined(discount.status)) {
+                    if (discount.status == 'active') {
+                        status = 'suspended';
+                    } else
+                    if (discount.status == 'suspended') {
+                        status = 'active';
+                    }
+                } else {
+                    if (discount.is_active) {
+                        status = 'suspended';
+                    } else if (discount.is_suspended) {
+                        status = 'active';
+                    }
+                }
+            }
+            //console.log(discount);
+            //console.log(status);
+            return status;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.deals')
+        .filter('roundPrice', roundPrice);
+
+    function roundPrice() {
+        return function(price) {
+            if (price) {
+                var num = parseFloat(price);
+                var currency = num.toFixed(2);
+
+                return currency;
+            }
+
+            return null;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.deals')
+        .factory('TemplateService', TemplateService);
+
+    TemplateService.$inject = ['$scope'];
+
+    /* @ngInject */
+    function TemplateService($scope) {
+
+        var service = {
+            lists: [],
+            setList: setList
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function setList(list) {
+            service.lists = list;
+        }
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
         .module('app.deals.image', [])
         .directive('addImage', addImage);
 
@@ -6559,6 +6579,42 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+// (function() {
+//     'use strict';
+
+//     angular.module('app.deals')
+//         .controller('TemplateController', TemplateController);
+
+//     TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+//     /* @ngInject */
+//     function TemplateController($scope, $compile, $document) {
+//         var hl = this;
+
+//         hl.counter = 0;
+//         hl.increCounter = increCounter;
+//         hl.openModal = openModal;
+//         hl.currModel = {};
+//         //hl.addTemplate = addTemplate;
+//         //hl.modalContainer = $('#template-modal');
+
+//         //////////////
+
+//         function openModal() {
+//             $('#template-modal').modal('show');
+
+//             $("#template-modal").on("hidden.bs.modal", function() {
+//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+//             });
+//         }
+
+
+
+//         function increCounter() {
+//             hl.counter++;
+//         }
+//     }
+// })();
 (function() {
     'use strict';
 
@@ -6950,42 +7006,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-// (function() {
-//     'use strict';
-
-//     angular.module('app.deals')
-//         .controller('TemplateController', TemplateController);
-
-//     TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-//     /* @ngInject */
-//     function TemplateController($scope, $compile, $document) {
-//         var hl = this;
-
-//         hl.counter = 0;
-//         hl.increCounter = increCounter;
-//         hl.openModal = openModal;
-//         hl.currModel = {};
-//         //hl.addTemplate = addTemplate;
-//         //hl.modalContainer = $('#template-modal');
-
-//         //////////////
-
-//         function openModal() {
-//             $('#template-modal').modal('show');
-
-//             $("#template-modal").on("hidden.bs.modal", function() {
-//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-//             });
-//         }
-
-
-
-//         function increCounter() {
-//             hl.counter++;
-//         }
-//     }
-// })();
 (function() {
     'use strict';
 
@@ -7873,6 +7893,74 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
+    angular
+        .module('app.users')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isSuperAdmin', isSuperAdmin);
+
+    function isSuperAdmin() {
+        return function(user) {
+            if (user) {
+                if (user.email == 'admin@example.com') {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isRole', isRole);
+
+    function isRole() {
+        return function(user) {
+            if (user) {
+                if (user.is_admin) {
+                    return 'Admin';
+                }
+                if (user.is_vendor) {
+                    return 'Vendor';
+                }
+                if (user.is_customer) {
+                    return 'Customer';
+                }
+            }
+
+            return 'No Role';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
     angular.module('app.users')
         .controller('UserAddController', UserAddController);
 
@@ -8141,72 +8229,4 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             });
         }
     }
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isYesNo', isYesNo);
-
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
-
-            return 'No';
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isSuperAdmin', isSuperAdmin);
-
-    function isSuperAdmin() {
-        return function(user) {
-            if (user) {
-                if (user.email == 'admin@example.com') {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isRole', isRole);
-
-    function isRole() {
-        return function(user) {
-            if (user) {
-                if (user.is_admin) {
-                    return 'Admin';
-                }
-                if (user.is_vendor) {
-                    return 'Vendor';
-                }
-                if (user.is_customer) {
-                    return 'Customer';
-                }
-            }
-
-            return 'No Role';
-        }
-
-    }
-
 })();

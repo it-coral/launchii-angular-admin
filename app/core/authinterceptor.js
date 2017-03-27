@@ -62,7 +62,6 @@
         }
 
         function responseError(rejection) {
-
             if (rejection.status === -1) {
                 var config = rejection.config;
                 config.retryCount = config.retryCount || 0;
@@ -101,6 +100,12 @@
                 $rootScope.$broadcast('unauthorized');
                 rejection.config.timeout = canceller.promise;
                 canceller.resolve('Unauthorized');
+                //return rejection;
+            } else
+            if (rejection.status === 422 && angular.isDefined($rootScope.currentUser) && !$rootScope.currentUser.is_admin) {
+                $rootScope.$broadcast('nonadminaccess');
+                rejection.config.timeout = canceller.promise;
+                canceller.resolve('No permission to access resource.');
                 //return rejection;
             }
 

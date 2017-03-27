@@ -76,10 +76,24 @@
             //});
         });
 
+        //Listens for unpermitted access to admin pages.
+        $rootScope.$on('nonadminaccess', function(event) {
+            event.preventDefault();
+            $rootScope.loginError = "You are not authorized to access admin pages.";
+            AuthService.removeUserStorage();
+            //AuthService.destroyAuthUser().then(function() {
+            //if (toState.name !== "auth") {
+            $state.go('auth');
+            ngProgressLite.done();
+            return false;
+            //}
+            //});
+        });
+
         $rootScope.$on('$stateChangeStart', function(event, toState) {
 
             //Redirect user if not admin
-            forceLogoutIfNotAdmin(event);
+            //forceLogoutIfNotAdmin(event);
 
             // Do not run forceSSL() on local
             var __page_url = $location.absUrl();
