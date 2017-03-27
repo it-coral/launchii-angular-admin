@@ -33,3 +33,17 @@
     cursor: pointer;
     border-bottom: 1px solid #fff;
 }
+
+#preview-logo,
+#preview-cover,
+.preview-image {
+    height: 258px;
+    width: 258px;
+}
+
+#preview-logo img,
+#preview-cover img,
+.preview-image img {
+    max-height: 100%;
+    max-width: 100%;
+}
