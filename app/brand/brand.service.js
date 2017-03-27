@@ -140,10 +140,7 @@
             var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
 
             var data = {
-                logo_image: {
-                    file: filebase64,
-                    description: img.description
-                }
+                file: filebase64
             };
 
             return data;
@@ -153,10 +150,7 @@
             var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
 
             var data = {
-                cover_image: {
-                    file: filebase64,
-                    description: img.description
-                }
+                    file: filebase64
             };
 
             return data;
@@ -166,13 +160,14 @@
             var url = api;
             var d = $q.defer();
 
-            data.logo_image = setLogoImage(data.logo);
-            data.cover_image = setCoverImage(data.cover);
+            data.logo_image_attributes = setLogoImage(data.logo);
+            data.cover_image_attributes = setCoverImage(data.cover);
 
-            $log.log(data);
-            // return false;
+            var brand = {
+              brand: data
+            };
 
-            $http.post(url, data)
+            $http.post(url, brand)
                 .then(function(resp) {
                     //$log.log(resp);
                     d.resolve(resp);
@@ -189,7 +184,18 @@
             var url = api + "/" + id;
             var d = $q.defer();
 
-            $http.patch(url, data)
+            if (data.logo)
+              data.logo_image_attributes = setLogoImage(data.logo);
+            if (data.cover)
+              data.cover_image_attributes = setCoverImage(data.cover);
+
+            console.log(data);
+
+            var brand = {
+              brand: data
+            };
+
+            $http.patch(url, brand)
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {

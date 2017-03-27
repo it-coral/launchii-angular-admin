@@ -19,7 +19,8 @@
         vm.isDone = true;
 
         //Logo
-        vm.clearImage = clearImage;
+        vm.clearLogoImage = clearImage;
+        vm.clearCoverImage = clearImage;
         vm.previewImage = previewImage;
 
         vm.prevState = HelperService.getPrevState();
@@ -29,14 +30,12 @@
 
         function previewImage(logo, elem, img) {
             var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;
-
-            angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
+            angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div><hr/>');
         }
 
         function clearImage(imgModel, container) {
             imgModel.file = null;
             imgModel.file = "";
-            imgModel.description = "";
             angular.element(container).html('');
         }
 

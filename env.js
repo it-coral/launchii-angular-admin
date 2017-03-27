@@ -21,7 +21,7 @@
           } else if (url.indexOf('launchii-admin-staging.herokuapp.com') > -1) {
               return 'https://stageapi.launchii.com/v1';
           } else {
-              return 'http://stageapi.launchii.dev/v1';
+              return 'https://stageapi.launchii.com/v1';
           }
 
     }
