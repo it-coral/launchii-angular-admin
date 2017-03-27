@@ -1421,24 +1421,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window', '$templateCache'];
     /* @ngInject */
     function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window, $templateCache) {
-        //bootstrap3ElementModifier.enableValidationStateIcons(true);
 
-        //$templateCache.get('app/login/login.html');
-
-        //Force redirect to https protocol
-        var forceSSL = function(event) {
-            if ($location.protocol() !== 'https') {
-                event.preventDefault();
-                $window.location.href = $location.absUrl().replace('http', 'https');
-                return false;
-            }
-        };
-
-        //$log.log(!$rootScope.authenticated);
+        var forceSSL = forceSSL;
+        var forceLogoutIfNotAdmin = forceLogoutIfNotAdmin;
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {
-
             event.preventDefault();
             $rootScope.loginError = "Your session has expired. Please login again.";
             AuthService.removeUserStorage();
@@ -1452,18 +1440,16 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
-            // if (toState.name != 'auth') {
-            //     event.preventDefault();
-            // }
 
-            //$log.log(toState.name);
+            //Redirect user if not admin
+            forceLogoutIfNotAdmin(event);
 
             // Do not run forceSSL() on local
             var __page_url = $location.absUrl();
             var __is_local = ((__page_url.indexOf('localhost') > -1) ||
-                                (__page_url.indexOf('127.0.0.1') > -1));
+                (__page_url.indexOf('127.0.0.1') > -1));
             if (!__is_local)
-              forceSSL(event);
+                forceSSL(event);
 
             BreadCrumbService.set(toState.name);
             $rootScope.crumbs = BreadCrumbService.getCrumbs();
@@ -1506,9 +1492,29 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         $rootScope.$on('$stateChangeError', function(event, toState) {
             ngProgressLite.done();
         });
+
+        /////////Methods Definitions///////////
+
+        //Force redirect to https protocol
+        function forceSSL(event) {
+            if ($location.protocol() !== 'https') {
+                event.preventDefault();
+                $window.location.href = $location.absUrl().replace('http', 'https');
+                return false;
+            }
+        };
+
+        //Forces user to logout if not admin
+        function forceLogoutIfNotAdmin(event) {
+            if (angular.isDefined($rootScope.currentUser) && !$rootScope.currentUser.is_admin) {
+                event.preventDefault();
+                $rootScope.loginError = "You are not authorized to access admin pages.";
+                $state.go('logout');
+            }
+        }
+
     }
 })();
-
 (function() {
     'use strict';
 
@@ -3046,19 +3052,19 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //var user = JSON.parse(localStorage.getItem('user'));
             if ($auth.isAuthenticated() && toState.name === "auth") {
                 event.preventDefault();
-                $log.log('11111111');
+                //$log.log('11111111');
                 $state.go('dashboard');
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name === "auth") {
                 ngProgressLite.done();
                 event.preventDefault();
-                $log.log('22222222');
+                //$log.log('22222222');
                 $state.go('auth');
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name !== "auth") {
                 event.preventDefault();
                 $log.log(toState.name);
-                $log.log('00000000');
+                //$log.log('00000000');
                 $state.go('auth');
                 return false;
             }
@@ -3120,7 +3126,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
-
 (function() {
     'use strict';
 
@@ -7872,7 +7877,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             UserService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Updated user: " + vm.form.name;
+                vm.response['msg'] = "Added new user: " + vm.form.name;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -7884,7 +7889,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 $log.log(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to update User.";
+                vm.response['msg'] = "Failed to add user.";
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;

@@ -201,19 +201,19 @@
             //var user = JSON.parse(localStorage.getItem('user'));
             if ($auth.isAuthenticated() && toState.name === "auth") {
                 event.preventDefault();
-                $log.log('11111111');
+                //$log.log('11111111');
                 $state.go('dashboard');
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name === "auth") {
                 ngProgressLite.done();
                 event.preventDefault();
-                $log.log('22222222');
+                //$log.log('22222222');
                 $state.go('auth');
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name !== "auth") {
                 event.preventDefault();
                 $log.log(toState.name);
-                $log.log('00000000');
+                //$log.log('00000000');
                 $state.go('auth');
                 return false;
             }
