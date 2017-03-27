@@ -93,7 +93,7 @@
         $rootScope.$on('$stateChangeStart', function(event, toState) {
 
             //Redirect user if not admin
-            //forceLogoutIfNotAdmin(event);
+            redirectIfNotAdmin(event);
 
             // Do not run forceSSL() on local
             var __page_url = $location.absUrl();
@@ -156,11 +156,16 @@
         };
 
         //Forces user to logout if not admin
-        function forceLogoutIfNotAdmin(event) {
+        function redirectIfNotAdmin(event) {
+
             if (angular.isDefined($rootScope.currentUser) && !$rootScope.currentUser.is_admin) {
                 event.preventDefault();
                 $rootScope.loginError = "You are not authorized to access admin pages.";
-                $state.go('logout');
+                AuthService.removeUserStorage();
+
+                $state.go('auth');
+                ngProgressLite.done();
+                return false;
             }
         }
 
