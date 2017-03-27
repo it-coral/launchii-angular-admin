@@ -56,10 +56,11 @@
                 $scope.$parent.vm.getBrands();
                 $state.go(vm.prevState);
 
-            }).catch(function(errors) {
+            }).catch(function(err) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add new Brand.";
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;

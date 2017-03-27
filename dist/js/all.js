@@ -2517,7 +2517,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.facebook = function(modelValue) {
-                    var i = modelValue.indexOf("https://facebook.com/");
+                    var i = modelValue.indexOf("://facebook.com/");
                     return i > -1;
                 };
 
@@ -2586,7 +2586,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.instagram = function(modelValue) {
-                    var i = modelValue.indexOf("https://instagram.com/");
+                    var i = modelValue.indexOf("://instagram.com/");
                     return i > -1;
                 };
 
@@ -2643,7 +2643,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.twitter = function(modelValue) {
-                    var i = modelValue.indexOf("https://twitter.com/");
+                    var i = modelValue.indexOf("://twitter.com/");
                     return i > -1;
                 };
 
@@ -3401,7 +3401,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 }).catch(function(error) {
                     $log.log(error);
                     service.errors = error;
-                    d.reject(error.data.errors);
+                    //d.reject(error.data.errors);
+                    d.reject(error);
                 });
 
             return d.promise;
@@ -3499,10 +3500,11 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 $scope.$parent.vm.getBrands();
                 $state.go(vm.prevState);
 
-            }).catch(function(errors) {
+            }).catch(function(err) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add new Brand.";
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -3709,6 +3711,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update Brand.";
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -4256,17 +4259,17 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     deal['time_ends'] = dateEnd.time;
 
                     if (deal.is_draft) {
-                      deal['status'] = 'draft';
+                        deal['status'] = 'draft';
                     } else if (deal.is_published) {
-                      deal['status'] = 'published';
+                        deal['status'] = 'published';
                     } else if (deal.is_hidden) {
-                      deal['status'] = 'hidden';
+                        deal['status'] = 'hidden';
                     } else if (deal.is_deleted) {
-                      deal['status'] = 'deleted';
+                        deal['status'] = 'deleted';
                     } else if (deal.is_pending) {
-                      deal['status'] = 'pending';
+                        deal['status'] = 'pending';
                     } else {
-                      deal['status'] = 'draft';
+                        deal['status'] = 'draft';
                     }
 
                     //DISABLED
@@ -4502,7 +4505,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 }).catch(function(error) {
                     $log.log(error);
                     service.errors = error;
-                    d.reject('deal');
+                    d.reject(error);
                 });
 
             return d.promise;
@@ -4911,7 +4914,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-
 (function() {
     'use strict';
 
@@ -5233,7 +5235,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add deal.";
-                vm.response['error_arr'] = err;
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -5262,7 +5264,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
-
 (function() {
     'use strict';
 
@@ -5790,7 +5791,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update deal.";
-                vm.response['error_arr'] = err;
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -5949,7 +5950,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
-
 (function() {
     'use strict';
 
@@ -6585,6 +6585,42 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+// (function() {
+//     'use strict';
+
+//     angular.module('app.deals')
+//         .controller('TemplateController', TemplateController);
+
+//     TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+//     /* @ngInject */
+//     function TemplateController($scope, $compile, $document) {
+//         var hl = this;
+
+//         hl.counter = 0;
+//         hl.increCounter = increCounter;
+//         hl.openModal = openModal;
+//         hl.currModel = {};
+//         //hl.addTemplate = addTemplate;
+//         //hl.modalContainer = $('#template-modal');
+
+//         //////////////
+
+//         function openModal() {
+//             $('#template-modal').modal('show');
+
+//             $("#template-modal").on("hidden.bs.modal", function() {
+//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+//             });
+//         }
+
+
+
+//         function increCounter() {
+//             hl.counter++;
+//         }
+//     }
+// })();
 (function() {
     'use strict';
 
@@ -6976,42 +7012,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-// (function() {
-//     'use strict';
-
-//     angular.module('app.deals')
-//         .controller('TemplateController', TemplateController);
-
-//     TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-//     /* @ngInject */
-//     function TemplateController($scope, $compile, $document) {
-//         var hl = this;
-
-//         hl.counter = 0;
-//         hl.increCounter = increCounter;
-//         hl.openModal = openModal;
-//         hl.currModel = {};
-//         //hl.addTemplate = addTemplate;
-//         //hl.modalContainer = $('#template-modal');
-
-//         //////////////
-
-//         function openModal() {
-//             $('#template-modal').modal('show');
-
-//             $("#template-modal").on("hidden.bs.modal", function() {
-//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-//             });
-//         }
-
-
-
-//         function increCounter() {
-//             hl.counter++;
-//         }
-//     }
-// })();
 (function() {
     'use strict';
 
@@ -7856,7 +7856,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 }).catch(function(error) {
                     $log.log(error);
                     service.errors = error;
-                    d.reject(error.data.errors);
+                    //d.reject(error.data.errors);
+                    d.reject(error);
                 });
 
             return d.promise;
@@ -7949,6 +7950,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add user.";
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -8130,6 +8132,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update User.";
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;

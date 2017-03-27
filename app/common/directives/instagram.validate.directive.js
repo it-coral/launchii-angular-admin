@@ -21,7 +21,7 @@
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.instagram = function(modelValue) {
-                    var i = modelValue.indexOf("https://instagram.com/");
+                    var i = modelValue.indexOf("://instagram.com/");
                     return i > -1;
                 };
 
