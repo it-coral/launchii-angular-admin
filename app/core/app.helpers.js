@@ -22,8 +22,7 @@
             combineDateTime: combineDateTime,
             convertToDateTime: convertToDateTime,
             setErrorStr: setErrorStr,
-            countModelLength: countModelLength,
-            capFirstLetter: capFirstLetter
+            countModelLength: countModelLength
         }
 
         return service;
@@ -207,10 +206,6 @@
             list.splice(0, list.length);
 
             return list;
-        }
-
-        function capFirstLetter(input) {
-            return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
         }
     }
 

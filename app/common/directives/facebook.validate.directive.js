@@ -21,6 +21,12 @@
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.facebook = function(modelValue) {
+                    if (typeof modelValue === 'undefined') {
+                      return false;
+                    }
+                    if (modelValue == null) {
+                      return false;
+                    }
                     var i = modelValue.indexOf("://facebook.com/");
                     return i > -1;
                 };
