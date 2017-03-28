@@ -12,7 +12,6 @@
 
         vm.mode = "Add";
         vm.form = {};
-        vm.form.status = 'draft';
         vm.form.highlights = [];
         vm.form.templates = [];
         vm.form.discounts = {};
@@ -66,9 +65,6 @@
         vm.submitAction = addDeal;
         vm.isDealEmpty = DealService.isEmpty;
         vm.isBrandEmpty = brandPrepService.total == 0;
-
-        vm.availableStats = ['draft', 'published', 'hidden', 'deleted', 'pending'];
-        vm.capFirstLetter = HelperService.capFirstLetter;
 
         activate();
 
