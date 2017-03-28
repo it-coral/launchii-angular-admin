@@ -21,8 +21,14 @@
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.instagram = function(modelValue) {
-                    var i = modelValue.indexOf("://instagram.com/");
-                    return i > -1;
+                  if (typeof modelValue === 'undefined') {
+                    return false;
+                  }
+                  if (modelValue == null) {
+                    return false;
+                  }
+                  var i = modelValue.indexOf("://instagram.com/");
+                  return i > -1;
                 };
 
                 scope.$watch('instagram', function() {

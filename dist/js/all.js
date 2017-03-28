@@ -2520,6 +2520,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.facebook = function(modelValue) {
+                    if (typeof modelValue === 'undefined') {
+                      return false;
+                    }
+                    if (modelValue == null) {
+                      return false;
+                    }
                     var i = modelValue.indexOf("://facebook.com/");
                     return i > -1;
                 };
@@ -2532,6 +2538,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+
 (function() {
     'use strict';
 
@@ -2589,8 +2596,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.instagram = function(modelValue) {
-                    var i = modelValue.indexOf("://instagram.com/");
-                    return i > -1;
+                  if (typeof modelValue === 'undefined') {
+                    return false;
+                  }
+                  if (modelValue == null) {
+                    return false;
+                  }
+                  var i = modelValue.indexOf("://instagram.com/");
+                  return i > -1;
                 };
 
                 scope.$watch('instagram', function() {
@@ -2601,6 +2614,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+
 (function() {
     'use strict';
 
@@ -2646,8 +2660,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.twitter = function(modelValue) {
-                    var i = modelValue.indexOf("://twitter.com/");
-                    return i > -1;
+                  if (typeof modelValue === 'undefined') {
+                    return false;
+                  }
+                  if (modelValue == null) {
+                    return false;
+                  }
+                  var i = modelValue.indexOf("://twitter.com/");
+                  return i > -1;
                 };
 
                 scope.$watch('twitter', function() {
@@ -2658,6 +2678,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+
 (function() {
     'use strict';
 
