@@ -20,10 +20,8 @@
             return 'https://api.launchii.com/v1';
         } else if (url.indexOf('launchii-admin-staging.herokuapp.com') > -1) {
             return 'https://stageapi.launchii.com/v1';
-        } else if (url.indexOf('launchii.dev')) { //Jellan's local
+        } else {  // local of Jellan and Barney
             return 'https://stageapi.launchii.com/v1';
-        } else {
-            return 'http://stageapi.launchii.dev/v1';
         }
 
     }

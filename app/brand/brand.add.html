@@ -70,7 +70,11 @@
                         <div class="form-group">
                             <div id="preview-logo" class="mb-5">
                                 <h4 ng-if="vm.mode == 'Add'" class="text-center no-image no-image-border">no image</h4>
-                                <img ng-src="{{vm.form.logo_image.standard_url}}" ng-if="vm.mode == 'Edit'" />
+                                <label ng-if="vm.mode == 'Edit'">Logo Preview:</label>
+                                <div ng-if="vm.mode == 'Edit'">
+                                  <img ng-src="{{vm.form.logo_image.standard_url}}" ng-if="vm.mode == 'Edit'" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" />
+                                </div>
+                                <hr ng-if="vm.mode == 'Edit'"/>
                             </div>
                             <div class="fileinput fileinput-new" data-provides="fileinput">
                                 <label for="">Logo</label>
@@ -80,19 +84,13 @@
                                         <span class="fileinput-filename"> </span>
                                     </div>
                                     <span class="input-group-addon btn default btn-file">
-                                                                    <span class="fileinput-new"> Select file </span>
-                                    <span class="fileinput-exists"> Change </span>
-                                    <input type="file" id="image-file-input" base-sixty-four-input ng-model="vm.form.logo" accept="image/*" maxsize="10000" ng-change="vm.previewImage(vm.form.logo,'#preview-logo','Logo')" required> </span>
-                                    <a href="javascript:;" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput" ng-click="vm.clearImage(vm.form.logo, '#preview-logo')"> Remove </a>
+                                      <span class="fileinput-new"> Select file </span>
+                                      <span class="fileinput-exists"> Change </span>
+                                      <input type="file" id="image-file-input" base-sixty-four-input ng-model="vm.form.logo" accept="image/*" maxsize="10000" ng-change="vm.previewImage(vm.form.logo,'#preview-logo','Logo')" required ng-if="vm.mode == 'Add'">
+                                      <input type="file" id="image-file-input" base-sixty-four-input ng-model="vm.form.logo" accept="image/*" maxsize="10000" ng-change="vm.previewImage(vm.form.logo,'#preview-logo','Logo')" ng-if="vm.mode == 'Edit'">
+                                    </span>
+                                    <a href="javascript:;" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput" ng-click="vm.clearLogoImage(vm.form.logo, '#preview-logo')"> Remove </a>
 
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Description</label>
-                                        <input type="text" class="form-control" ng-model="vm.form.logo.description" required />
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -101,8 +99,12 @@
                         <hr />
                         <div class="form-group">
                             <div id="preview-cover" class="mb-5">
-                                <h4 ng-if="vm.mode == 'Add'" class="text-center no-image no-image-border">no image</h4>
-                                <img ng-src="{{vm.form.cover_image.standard_url}}" ng-if="vm.mode == 'Edit'" />
+
+                                <label ng-if="vm.mode == 'Edit'">Cover Image Preview:</label>
+                                <div>
+                                  <img ng-src="{{vm.form.cover_image.standard_url}}" ng-if="vm.mode == 'Edit'" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" />
+                                </div>
+                                <hr ng-if="vm.mode == 'Edit'"/>
                             </div>
                             <div class="fileinput fileinput-new" data-provides="fileinput">
                                 <label for="">Cover Image</label>
@@ -112,19 +114,13 @@
                                         <span class="fileinput-filename"> </span>
                                     </div>
                                     <span class="input-group-addon btn default btn-file">
-                                                                    <span class="fileinput-new"> Select file </span>
-                                    <span class="fileinput-exists"> Change </span>
-                                    <input type="file" id="image-file-input" base-sixty-four-input ng-model="vm.form.cover" accept="image/*" maxsize="10000" ng-change="vm.previewImage(vm.form.cover, '#preview-cover','Cover Image')" required> </span>
-                                    <a href="javascript:;" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput" ng-click="vm.clearImage(vm.form.cover, '#preview-cover')"> Remove </a>
+                                      <span class="fileinput-new"> Select file </span>
+                                      <span class="fileinput-exists"> Change </span>
+                                      <input type="file" id="image-file-input" base-sixty-four-input ng-model="vm.form.cover" accept="image/*" maxsize="10000" ng-change="vm.previewImage(vm.form.cover, '#preview-cover','Cover Image')" required ng-if="vm.mode == 'Add'">
+                                      <input type="file" id="image-file-input" base-sixty-four-input ng-model="vm.form.cover" accept="image/*" maxsize="10000" ng-change="vm.previewImage(vm.form.cover, '#preview-cover','Cover Image')" ng-if="vm.mode == 'Edit'">
+                                    </span>
+                                    <a href="javascript:;" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput" ng-click="vm.clearCoverImage(vm.form.cover, '#preview-cover')"> Remove </a>
 
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Description</label>
-                                        <input type="text" class="form-control" ng-model="vm.form.cover.description" required />
-                                    </div>
                                 </div>
                             </div>
                         </div>
