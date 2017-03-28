@@ -28,7 +28,6 @@
         function login() {
             vm.loggingIn = true;
             AuthService.login(vm.form).then(function(response) {
-
                 vm.loggingIn = false;
                 if ($rootScope.authenticated) {
                     $state.go('dashboard');
@@ -40,7 +39,8 @@
                 if (angular.isDefined(error) && error.data != null) {
                     vm.loginErrorText = error.data.errors[0];
                 } else {
-                    vm.loginErrorText = "Login error";
+                    console.log(error);
+                    vm.loginErrorText = "Login error. Error Status: " + error.status;
                 }
 
             });

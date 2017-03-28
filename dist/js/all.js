@@ -1421,24 +1421,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window', '$templateCache'];
     /* @ngInject */
     function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window, $templateCache) {
-        //bootstrap3ElementModifier.enableValidationStateIcons(true);
 
-        //$templateCache.get('app/login/login.html');
-
-        //Force redirect to https protocol
-        var forceSSL = function(event) {
-            if ($location.protocol() !== 'https') {
-                event.preventDefault();
-                $window.location.href = $location.absUrl().replace('http', 'https');
-                return false;
-            }
-        };
-
-        //$log.log(!$rootScope.authenticated);
+        var forceSSL = forceSSL;
+        var forceLogoutIfNotAdmin = forceLogoutIfNotAdmin;
         var curr_state_name = $state.current.name;
 
         $rootScope.$on('unauthorized', function(event) {
-
             event.preventDefault();
             $rootScope.loginError = "Your session has expired. Please login again.";
             AuthService.removeUserStorage();
@@ -1451,19 +1439,29 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //});
         });
 
-        $rootScope.$on('$stateChangeStart', function(event, toState) {
-            // if (toState.name != 'auth') {
-            //     event.preventDefault();
-            // }
+        //Listens for unpermitted access to admin pages.
+        $rootScope.$on('nonadminaccess', function(event) {
+            event.preventDefault();
+            $rootScope.loginError = "You are not authorized to access admin pages.";
 
-            //$log.log(toState.name);
+            AuthService.destroyAuthUser();
+
+            $state.go('auth');
+            ngProgressLite.done();
+            return false;
+        });
+
+        $rootScope.$on('$stateChangeStart', function(event, toState) {
+
+            //Redirect user if not admin
+            redirectIfNotAdmin(event);
 
             // Do not run forceSSL() on local
             var __page_url = $location.absUrl();
             var __is_local = ((__page_url.indexOf('localhost') > -1) ||
-                                (__page_url.indexOf('127.0.0.1') > -1));
+                (__page_url.indexOf('127.0.0.1') > -1));
             if (!__is_local)
-              forceSSL(event);
+                forceSSL(event);
 
             BreadCrumbService.set(toState.name);
             $rootScope.crumbs = BreadCrumbService.getCrumbs();
@@ -1506,6 +1504,36 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         $rootScope.$on('$stateChangeError', function(event, toState) {
             ngProgressLite.done();
         });
+
+        /////////Methods Definitions///////////
+
+        //Force redirect to https protocol
+        function forceSSL(event) {
+            if ($location.protocol() !== 'https') {
+                event.preventDefault();
+                $window.location.href = $location.absUrl().replace('http', 'https');
+                return false;
+            }
+        };
+
+        //Forces user to logout if not admin
+        function redirectIfNotAdmin(event) {
+
+            if (angular.isDefined($rootScope.currentUser) && $rootScope.currentUser != null) {
+              if (!$rootScope.currentUser.is_admin) {
+                event.preventDefault();
+                ngProgressLite.done();
+                $rootScope.loginError = "You are not authorized to access admin pages.";
+                AuthService.destroyAuthUser();
+                AuthService.removeUserStorage();
+
+                //$state.go('auth');
+
+                return false;
+              }
+            }
+        }
+
     }
 })();
 
@@ -1930,11 +1958,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     angular.module('app')
         .factory('authInterceptor', authInterceptor);
 
-    authInterceptor.$inject = ['$q', '$rootScope', '$injector', 'CONST'];
+    authInterceptor.$inject = ['$q', '$rootScope', '$injector', 'CONST', '$timeout'];
 
     /* @ngInject */
-    function authInterceptor($q, $rootScope, $injector, CONST) {
+    function authInterceptor($q, $rootScope, $injector, CONST, $timeout) {
         var canceller = $q.defer();
+        var maxRetries = 10;
+        var resetTime = 0;
 
         var interceptor = {
             request: request,
@@ -1960,7 +1990,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //console.log(localStorage.getItem("content-type"));
             //console.log(config.headers["content-type"]);
             //config.headers = headers;
-            config.timeout = canceller.promise;
+
+            //config.timeout = canceller.promise;
 
             return config;
             /*
@@ -1985,15 +2016,50 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
 
         function responseError(rejection) {
+            if (rejection.status === -1) {
+                var config = rejection.config;
+                config.retryCount = config.retryCount || 0;
+                config.retryTime = (new Date()).getTime();
 
+                if (config.retryCount < maxRetries &&
+                    (!config.retryTime || config.retryTime > resetTime)) {
+                    config.retryCount++;
+                    config.retryTime = (new Date()).getTime();
+
+                    var $http = $injector.get('$http');
+                    var deferred = $q.defer();
+
+                    // do timeout to give some time in between retries
+                    $timeout(function() {
+                        $http(config)
+                            .then(function(respData) {
+                                deferred.resolve(respData);
+                            })
+                            .catch(function(respData) {
+                                deferred.reject(respData);
+                            });
+                    }, 200 * config.retryCount);
+
+                    return deferred.promise;
+                }
+
+                //give up
+                return $q.reject(rejection);
+            } else
             if (rejection.config.headers['access-token'] == 'undefined') {
                 //console.log('test');
                 return $q.reject(rejection);
             } else
             if (rejection.status === 401) {
                 $rootScope.$broadcast('unauthorized');
-
+                rejection.config.timeout = canceller.promise;
                 canceller.resolve('Unauthorized');
+                //return rejection;
+            } else
+            if (rejection.status === 422 && angular.isDefined($rootScope.currentUser) && !$rootScope.currentUser.is_admin) {
+                $rootScope.$broadcast('nonadminaccess');
+                rejection.config.timeout = canceller.promise;
+                canceller.resolve('No permission to access resource.');
                 //return rejection;
             }
 
@@ -2454,7 +2520,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.facebook = function(modelValue) {
-                    var i = modelValue.indexOf("https://facebook.com/");
+                    var i = modelValue.indexOf("://facebook.com/");
                     return i > -1;
                 };
 
@@ -2523,7 +2589,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.instagram = function(modelValue) {
-                    var i = modelValue.indexOf("https://instagram.com/");
+                    var i = modelValue.indexOf("://instagram.com/");
                     return i > -1;
                 };
 
@@ -2580,7 +2646,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.twitter = function(modelValue) {
-                    var i = modelValue.indexOf("https://twitter.com/");
+                    var i = modelValue.indexOf("://twitter.com/");
                     return i > -1;
                 };
 
@@ -2996,7 +3062,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         d.resolve(true);
 
                     }).catch(function(error) {
-                        $log.log(error);
+                        console.log('test');
+                        $log.log(error.data.errors);
                         d.reject(false);
                     });
             }
@@ -3046,25 +3113,25 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //var user = JSON.parse(localStorage.getItem('user'));
             if ($auth.isAuthenticated() && toState.name === "auth") {
                 event.preventDefault();
-                $log.log('11111111');
+                //$log.log('11111111');
                 $state.go('dashboard');
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name === "auth") {
                 ngProgressLite.done();
                 event.preventDefault();
-                $log.log('22222222');
+                //$log.log('22222222');
                 $state.go('auth');
                 return false;
             } else if (!$auth.isAuthenticated() && toState.name !== "auth") {
                 event.preventDefault();
-                $log.log(toState.name);
-                $log.log('00000000');
+                //$log.log(toState.name);
+                //$log.log('00000000');
                 $state.go('auth');
                 return false;
             }
             //}
             event.preventDefault();
-            $log.log('test');
+            //$log.log('test');
             $state.go(toState.name);
             return true;
         }
@@ -3101,7 +3168,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         function login() {
             vm.loggingIn = true;
             AuthService.login(vm.form).then(function(response) {
-
                 vm.loggingIn = false;
                 if ($rootScope.authenticated) {
                     $state.go('dashboard');
@@ -3113,14 +3179,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 if (angular.isDefined(error) && error.data != null) {
                     vm.loginErrorText = error.data.errors[0];
                 } else {
-                    vm.loginErrorText = "Login error";
+                    console.log(error);
+                    vm.loginErrorText = "Login error. Error Status: " + error.status;
                 }
 
             });
         }
     }
 })();
-
 (function() {
     'use strict';
 
@@ -3299,10 +3365,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
 
             var data = {
-                logo_image: {
-                    file: filebase64,
-                    description: img.description
-                }
+                file: filebase64
             };
 
             return data;
@@ -3312,10 +3375,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
 
             var data = {
-                cover_image: {
-                    file: filebase64,
-                    description: img.description
-                }
+                    file: filebase64
             };
 
             return data;
@@ -3325,20 +3385,22 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var url = api;
             var d = $q.defer();
 
-            data.logo_image = setLogoImage(data.logo);
-            data.cover_image = setCoverImage(data.cover);
+            data.logo_image_attributes = setLogoImage(data.logo);
+            data.cover_image_attributes = setCoverImage(data.cover);
 
-            $log.log(data);
-            // return false;
+            var brand = {
+              brand: data
+            };
 
-            $http.post(url, data)
+            $http.post(url, brand)
                 .then(function(resp) {
                     //$log.log(resp);
                     d.resolve(resp);
                 }).catch(function(error) {
                     $log.log(error);
                     service.errors = error;
-                    d.reject(error.data.errors);
+                    //d.reject(error.data.errors);
+                    d.reject(error);
                 });
 
             return d.promise;
@@ -3348,7 +3410,18 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var url = api + "/" + id;
             var d = $q.defer();
 
-            $http.patch(url, data)
+            if (data.logo)
+              data.logo_image_attributes = setLogoImage(data.logo);
+            if (data.cover)
+              data.cover_image_attributes = setCoverImage(data.cover);
+
+            console.log(data);
+
+            var brand = {
+              brand: data
+            };
+
+            $http.patch(url, brand)
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
@@ -3378,6 +3451,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+
 (function() {
     'use strict';
 
@@ -3399,7 +3473,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.isDone = true;
 
         //Logo
-        vm.clearImage = clearImage;
+        vm.clearLogoImage = clearImage;
+        vm.clearCoverImage = clearImage;
         vm.previewImage = previewImage;
 
         vm.prevState = HelperService.getPrevState();
@@ -3409,15 +3484,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         function previewImage(logo, elem, img) {
             var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;
-
             angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
         }
 
         function clearImage(imgModel, container) {
             imgModel.file = null;
             imgModel.file = "";
-            imgModel.description = "";
-            angular.element(container).html('');
+            angular.element(container).html('<h4 class="text-center no-image no-image-border">no image</h4>');
         }
 
         function addBrand() {
@@ -3436,10 +3509,11 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 $scope.$parent.vm.getBrands();
                 $state.go(vm.prevState);
 
-            }).catch(function(errors) {
+            }).catch(function(err) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add new Brand.";
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -3448,6 +3522,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+
 (function() {
     'use strict';
 
@@ -3588,8 +3663,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.isDone = true;
 
         //Logo
-        //vm.form.logo.description = vm.form.logo_image
-        vm.clearImage = clearImage;
+        vm.clearLogoImage = clearLogoImage;
+        vm.clearCoverImage = clearCoverImage;
         vm.previewImage = previewImage;
 
         vm.prevState = HelperService.getPrevState();
@@ -3614,15 +3689,19 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         function previewImage(logo, elem, img) {
             var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;
-
             angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
         }
 
-        function clearImage(imgModel, container) {
+        function clearLogoImage(imgModel, container) {
             imgModel.file = null;
             imgModel.file = "";
-            imgModel.description = "";
-            angular.element(container).html('');
+            angular.element(container).html('<label>Logo Preview:</label><div><img src="' + vm.form.logo_image.standard_url + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
+        }
+
+        function clearCoverImage(imgModel, container) {
+            imgModel.file = null;
+            imgModel.file = "";
+            angular.element(container).html('<label>Cover Image Preview:</label><div><img src="' + vm.form.cover_image.standard_url + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
         }
 
         function editPost() {
@@ -3646,6 +3725,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update Brand.";
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -3654,6 +3734,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+
 (function() {
     'use strict';
 
@@ -4193,17 +4274,17 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     deal['time_ends'] = dateEnd.time;
 
                     if (deal.is_draft) {
-                      deal['status'] = 'draft';
+                        deal['status'] = 'draft';
                     } else if (deal.is_published) {
-                      deal['status'] = 'published';
+                        deal['status'] = 'published';
                     } else if (deal.is_hidden) {
-                      deal['status'] = 'hidden';
+                        deal['status'] = 'hidden';
                     } else if (deal.is_deleted) {
-                      deal['status'] = 'deleted';
+                        deal['status'] = 'deleted';
                     } else if (deal.is_pending) {
-                      deal['status'] = 'pending';
+                        deal['status'] = 'pending';
                     } else {
-                      deal['status'] = 'draft';
+                        deal['status'] = 'draft';
                     }
 
                     //DISABLED
@@ -4439,7 +4520,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 }).catch(function(error) {
                     $log.log(error);
                     service.errors = error;
-                    d.reject('deal');
+                    d.reject(error);
                 });
 
             return d.promise;
@@ -4848,7 +4929,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-
 (function() {
     'use strict';
 
@@ -5170,7 +5250,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add deal.";
-                vm.response['error_arr'] = err;
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -5199,7 +5279,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
-
 (function() {
     'use strict';
 
@@ -5727,7 +5806,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update deal.";
-                vm.response['error_arr'] = err;
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -5886,7 +5965,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
-
 (function() {
     'use strict';
 
@@ -5919,6 +5997,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         prepEarlyBirdD,
         prepDealImages
     ) {
+
         var vm = this;
 
         vm.mode = "View";
@@ -5942,7 +6021,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         //Images
         vm.images = prepDealImages;
         vm.openEditImageModal = openEditImageModal;
-
+        console.log(vm.images);
         vm.prevState = HelperService.getPrevState();
 
         //activate();
@@ -6313,7 +6392,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                 function previewImage(imgModel) {
                     var filename64 = $filter('base64filename')(imgModel);
-                    var html = '<label>Preview:</label><div><img src="' + filename64 + '" style="border: 1px solid #f0f0f0;" /></div>';
+                    var html = '<label>Preview:</label><div class="preview-image" ><img src="' + filename64 + '" style="border: 1px solid #f0f0f0;" /></div>';
                     var input = angular.element(html);
                     var compile = $compile(input)(scope);
                     angular.element(element).find('.form-image-preview').html(compile);
@@ -7792,7 +7871,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 }).catch(function(error) {
                     $log.log(error);
                     service.errors = error;
-                    d.reject(error.data.errors);
+                    //d.reject(error.data.errors);
+                    d.reject(error);
                 });
 
             return d.promise;
@@ -7872,7 +7952,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             UserService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Updated user: " + vm.form.name;
+                vm.response['msg'] = "Added new user: " + vm.form.name;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -7884,7 +7964,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 $log.log(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to update User.";
+                vm.response['msg'] = "Failed to add user.";
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -8066,6 +8147,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update User.";
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;

@@ -38,7 +38,7 @@
             UserService.add(vm.form).then(function() {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
-                vm.response['msg'] = "Updated user: " + vm.form.name;
+                vm.response['msg'] = "Added new user: " + vm.form.name;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -50,7 +50,8 @@
                 $log.log(err);
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to update User.";
+                vm.response['msg'] = "Failed to add user.";
+                vm.response['error_arr'] = err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;

@@ -21,7 +21,7 @@
             link: function(scope, element, attributes, ngModel) {
 
                 ngModel.$validators.twitter = function(modelValue) {
-                    var i = modelValue.indexOf("https://twitter.com/");
+                    var i = modelValue.indexOf("://twitter.com/");
                     return i > -1;
                 };
 

@@ -499,17 +499,17 @@
                     deal['time_ends'] = dateEnd.time;
 
                     if (deal.is_draft) {
-                      deal['status'] = 'draft';
+                        deal['status'] = 'draft';
                     } else if (deal.is_published) {
-                      deal['status'] = 'published';
+                        deal['status'] = 'published';
                     } else if (deal.is_hidden) {
-                      deal['status'] = 'hidden';
+                        deal['status'] = 'hidden';
                     } else if (deal.is_deleted) {
-                      deal['status'] = 'deleted';
+                        deal['status'] = 'deleted';
                     } else if (deal.is_pending) {
-                      deal['status'] = 'pending';
+                        deal['status'] = 'pending';
                     } else {
-                      deal['status'] = 'draft';
+                        deal['status'] = 'draft';
                     }
 
                     //DISABLED
@@ -745,7 +745,7 @@
                 }).catch(function(error) {
                     $log.log(error);
                     service.errors = error;
-                    d.reject('deal');
+                    d.reject(error);
                 });
 
             return d.promise;
