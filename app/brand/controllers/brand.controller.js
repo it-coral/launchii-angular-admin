@@ -91,8 +91,11 @@
                 },
                 callback: function(result) {
                     if (result) {
-                        Ladda.create(element).start();
-                        doDelete(brand);
+                        var ladda = Ladda.create(element);
+                        ladda.start();
+                        if (!doDelete(brand)) {
+                          ladda.stop();
+                        }
                     }
                 }
             });
@@ -108,12 +111,14 @@
                 getBrands();
                 vm.hasAdded = true;
                 vm.isDone = true;
-            }).catch(function() {
+                return true;
+            }).catch(function(error) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to delete brand: " + brand.name;
+                vm.response['msg'] = error.data.errors;
                 vm.hasAdded = true;
                 vm.isDone = true;
+                return false;
             });
         }
     }
