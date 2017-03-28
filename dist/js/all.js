@@ -3362,10 +3362,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
 
             var data = {
-                logo_image: {
-                    file: filebase64,
-                    description: img.description
-                }
+                file: filebase64
             };
 
             return data;
@@ -3375,10 +3372,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
 
             var data = {
-                cover_image: {
-                    file: filebase64,
-                    description: img.description
-                }
+                    file: filebase64
             };
 
             return data;
@@ -3388,13 +3382,14 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var url = api;
             var d = $q.defer();
 
-            data.logo_image = setLogoImage(data.logo);
-            data.cover_image = setCoverImage(data.cover);
+            data.logo_image_attributes = setLogoImage(data.logo);
+            data.cover_image_attributes = setCoverImage(data.cover);
 
-            $log.log(data);
-            // return false;
+            var brand = {
+              brand: data
+            };
 
-            $http.post(url, data)
+            $http.post(url, brand)
                 .then(function(resp) {
                     //$log.log(resp);
                     d.resolve(resp);
@@ -3412,7 +3407,18 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             var url = api + "/" + id;
             var d = $q.defer();
 
-            $http.patch(url, data)
+            if (data.logo)
+              data.logo_image_attributes = setLogoImage(data.logo);
+            if (data.cover)
+              data.cover_image_attributes = setCoverImage(data.cover);
+
+            console.log(data);
+
+            var brand = {
+              brand: data
+            };
+
+            $http.patch(url, brand)
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
@@ -3442,6 +3448,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+
 (function() {
     'use strict';
 
@@ -3463,7 +3470,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.isDone = true;
 
         //Logo
-        vm.clearImage = clearImage;
+        vm.clearLogoImage = clearImage;
+        vm.clearCoverImage = clearImage;
         vm.previewImage = previewImage;
 
         vm.prevState = HelperService.getPrevState();
@@ -3473,15 +3481,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         function previewImage(logo, elem, img) {
             var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;
-
             angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
         }
 
         function clearImage(imgModel, container) {
             imgModel.file = null;
             imgModel.file = "";
-            imgModel.description = "";
-            angular.element(container).html('');
+            angular.element(container).html('<h4 class="text-center no-image no-image-border">no image</h4>');
         }
 
         function addBrand() {
@@ -3513,6 +3519,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+
 (function() {
     'use strict';
 
@@ -3653,8 +3660,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.isDone = true;
 
         //Logo
-        //vm.form.logo.description = vm.form.logo_image
-        vm.clearImage = clearImage;
+        vm.clearLogoImage = clearLogoImage;
+        vm.clearCoverImage = clearCoverImage;
         vm.previewImage = previewImage;
 
         vm.prevState = HelperService.getPrevState();
@@ -3679,15 +3686,19 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         function previewImage(logo, elem, img) {
             var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;
-
             angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
         }
 
-        function clearImage(imgModel, container) {
+        function clearLogoImage(imgModel, container) {
             imgModel.file = null;
             imgModel.file = "";
-            imgModel.description = "";
-            angular.element(container).html('');
+            angular.element(container).html('<label>Logo Preview:</label><div><img src="' + vm.form.logo_image.standard_url + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
+        }
+
+        function clearCoverImage(imgModel, container) {
+            imgModel.file = null;
+            imgModel.file = "";
+            angular.element(container).html('<label>Cover Image Preview:</label><div><img src="' + vm.form.cover_image.standard_url + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
         }
 
         function editPost() {
@@ -3720,6 +3731,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+
 (function() {
     'use strict';
 

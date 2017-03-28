@@ -44,19 +44,19 @@
 
         function previewImage(logo, elem, img) {
             var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;
-            angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div><hr/>');
+            angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
         }
 
         function clearLogoImage(imgModel, container) {
             imgModel.file = null;
             imgModel.file = "";
-            angular.element(container).html('<label>Logo Preview:</label><div><img src="' + vm.form.logo_image.standard_url + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div><hr/>');
+            angular.element(container).html('<label>Logo Preview:</label><div><img src="' + vm.form.logo_image.standard_url + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
         }
 
         function clearCoverImage(imgModel, container) {
             imgModel.file = null;
             imgModel.file = "";
-            angular.element(container).html('<label>Cover Image Preview:</label><div><img src="' + vm.form.cover_image.standard_url + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div><hr/>');
+            angular.element(container).html('<label>Cover Image Preview:</label><div><img src="' + vm.form.cover_image.standard_url + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
         }
 
         function editPost() {

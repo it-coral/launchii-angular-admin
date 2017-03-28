@@ -74,8 +74,8 @@
                                 <div ng-if="vm.mode == 'Edit'">
                                   <img ng-src="{{vm.form.logo_image.standard_url}}" ng-if="vm.mode == 'Edit'" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" />
                                 </div>
-                                <hr ng-if="vm.mode == 'Edit'"/>
                             </div>
+                            <hr />
                             <div class="fileinput fileinput-new" data-provides="fileinput">
                                 <label for="">Logo</label>
                                 <div class="input-group input-large">
@@ -99,13 +99,13 @@
                         <hr />
                         <div class="form-group">
                             <div id="preview-cover" class="mb-5">
-
+                                <h4 ng-if="vm.mode == 'Add'" class="text-center no-image no-image-border">no image</h4>
                                 <label ng-if="vm.mode == 'Edit'">Cover Image Preview:</label>
                                 <div>
                                   <img ng-src="{{vm.form.cover_image.standard_url}}" ng-if="vm.mode == 'Edit'" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" />
                                 </div>
-                                <hr ng-if="vm.mode == 'Edit'"/>
                             </div>
+                            <hr />
                             <div class="fileinput fileinput-new" data-provides="fileinput">
                                 <label for="">Cover Image</label>
                                 <div class="input-group input-large">

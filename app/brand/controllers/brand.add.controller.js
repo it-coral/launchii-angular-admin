@@ -30,13 +30,13 @@
 
         function previewImage(logo, elem, img) {
             var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;
-            angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div><hr/>');
+            angular.element(elem).html('<label>' + img + ' Preview:</label><div><img src="' + filebase64 + '" style="width: 250px; height: auto;border: 1px solid #f0f0f0;" /></div>');
         }
 
         function clearImage(imgModel, container) {
             imgModel.file = null;
             imgModel.file = "";
-            angular.element(container).html('');
+            angular.element(container).html('<h4 class="text-center no-image no-image-border">no image</h4>');
         }
 
         function addBrand() {
