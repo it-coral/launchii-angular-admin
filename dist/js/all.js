@@ -2092,8 +2092,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             combineDateTime: combineDateTime,
             convertToDateTime: convertToDateTime,
             setErrorStr: setErrorStr,
-            countModelLength: countModelLength,
-            capFirstLetter: capFirstLetter
+            countModelLength: countModelLength
         }
 
         return service;
@@ -2277,10 +2276,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             list.splice(0, list.length);
 
             return list;
-        }
-
-        function capFirstLetter(input) {
-            return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
         }
     }
 
@@ -3637,8 +3632,11 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 },
                 callback: function(result) {
                     if (result) {
-                        Ladda.create(element).start();
-                        doDelete(brand);
+                        var ladda = Ladda.create(element);
+                        ladda.start();
+                        if (!doDelete(brand)) {
+                          ladda.stop();
+                        }
                     }
                 }
             });
@@ -3654,16 +3652,19 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 getBrands();
                 vm.hasAdded = true;
                 vm.isDone = true;
-            }).catch(function() {
+                return true;
+            }).catch(function(error) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = "Failed to delete brand: " + brand.name;
+                vm.response['msg'] = error.data.errors;
                 vm.hasAdded = true;
                 vm.isDone = true;
+                return false;
             });
         }
     }
 })();
+
 (function() {
     'use strict';
 
@@ -4950,6 +4951,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+
 (function() {
     'use strict';
 
@@ -5300,6 +5302,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+
 (function() {
     'use strict';
 
@@ -5986,6 +5989,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+
 (function() {
     'use strict';
 
