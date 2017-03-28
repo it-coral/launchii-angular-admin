@@ -1519,7 +1519,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         //Forces user to logout if not admin
         function redirectIfNotAdmin(event) {
 
-            if (angular.isDefined($rootScope.currentUser) && !$rootScope.currentUser.is_admin) {
+            if (angular.isDefined($rootScope.currentUser) && $rootScope.currentUser != null) {
+              if (!$rootScope.currentUser.is_admin) {
                 event.preventDefault();
                 ngProgressLite.done();
                 $rootScope.loginError = "You are not authorized to access admin pages.";
@@ -1529,11 +1530,13 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 //$state.go('auth');
 
                 return false;
+              }
             }
         }
 
     }
 })();
+
 (function() {
     'use strict';
 

@@ -156,7 +156,8 @@
         //Forces user to logout if not admin
         function redirectIfNotAdmin(event) {
 
-            if (angular.isDefined($rootScope.currentUser) && !$rootScope.currentUser.is_admin) {
+            if (angular.isDefined($rootScope.currentUser) && $rootScope.currentUser != null) {
+              if (!$rootScope.currentUser.is_admin) {
                 event.preventDefault();
                 ngProgressLite.done();
                 $rootScope.loginError = "You are not authorized to access admin pages.";
@@ -166,6 +167,7 @@
                 //$state.go('auth');
 
                 return false;
+              }
             }
         }
 
