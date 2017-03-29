@@ -62,36 +62,36 @@
         }
 
         function responseError(rejection) {
-            if (rejection.status === -1) {
-                var config = rejection.config;
-                config.retryCount = config.retryCount || 0;
-                config.retryTime = (new Date()).getTime();
+            // if (rejection.status === -1) {
+            //     var config = rejection.config;
+            //     config.retryCount = config.retryCount || 0;
+            //     config.retryTime = (new Date()).getTime();
 
-                if (config.retryCount < maxRetries &&
-                    (!config.retryTime || config.retryTime > resetTime)) {
-                    config.retryCount++;
-                    config.retryTime = (new Date()).getTime();
+            //     if (config.retryCount < maxRetries &&
+            //         (!config.retryTime || config.retryTime > resetTime)) {
+            //         config.retryCount++;
+            //         config.retryTime = (new Date()).getTime();
 
-                    var $http = $injector.get('$http');
-                    var deferred = $q.defer();
+            //         var $http = $injector.get('$http');
+            //         var deferred = $q.defer();
 
-                    // do timeout to give some time in between retries
-                    $timeout(function() {
-                        $http(config)
-                            .then(function(respData) {
-                                deferred.resolve(respData);
-                            })
-                            .catch(function(respData) {
-                                deferred.reject(respData);
-                            });
-                    }, 200 * config.retryCount);
+            //         // do timeout to give some time in between retries
+            //         $timeout(function() {
+            //             $http(config)
+            //                 .then(function(respData) {
+            //                     deferred.resolve(respData);
+            //                 })
+            //                 .catch(function(respData) {
+            //                     deferred.reject(respData);
+            //                 });
+            //         }, 200 * config.retryCount);
 
-                    return deferred.promise;
-                }
+            //         return deferred.promise;
+            //     }
 
-                //give up
-                return $q.reject(rejection);
-            } else
+            //     //give up
+            //     return $q.reject(rejection);
+            // } else
             if (rejection.config.headers['access-token'] == 'undefined') {
                 //console.log('test');
                 return $q.reject(rejection);

@@ -56,7 +56,7 @@
         vm.highlights = prepSelHighlights;
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
-        vm.default = vm.brands[0];
+        vm.default = vm.selectedDeal.brand;
         vm.removeHighlight = removeHighlight;
         vm.removedHighlightObjs = [];
 
