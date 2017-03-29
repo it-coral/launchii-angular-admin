@@ -2377,143 +2377,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
     angular
         .module('app')
-        .filter('base64filename', base64filename);
-
-    function base64filename() {
-        return function(img) {
-            if (img) {
-                var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
-
-                return filebase64;
-            }
-
-            return img;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('isEmpty', isEmpty);
-
-    function isEmpty() {
-        return function(container) {
-
-            if (angular.isObject(container)) {
-
-                angular.forEach(container, function(item, index) {
-                    return false;
-                });
-
-            } else if (angular.isArray(container)) {
-                return container.length == 0;
-            }
-
-            return true;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('isLoading', isLoading);
-
-    function isLoading() {
-        return function(target) {
-            $log.log(target);
-            if (target) {
-                var scope = angular.element(target).scope();
-
-                if (angular.isDefined(scope.isLoading) && scope.isLoading) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('toDecimal', toDecimal);
-
-    function toDecimal() {
-        return function(num, dec) {
-            if (num) {
-                num = parseFloat(num);
-                num = num.toFixed(dec);
-
-                return '' + num;
-            }
-
-            return num;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('ucFirst', ucFirst);
-
-    function ucFirst() {
-        return function(string) {
-            if (string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
-            }
-
-            return string;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
-        .filter('whereAttr', whereAttr);
-
-    function whereAttr() {
-        return function(box, attr, value) {
-            var obj = [];
-            angular.forEach(box, function(item, index) {
-                if (angular.isDefined(item[attr]) && item[attr] == value) {
-                    obj.push(item);
-                }
-            });
-
-            return obj;
-
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app')
         .directive('breadCrumbs', breadCrumbs);
 
     breadCrumbs.$inject = ['$state', '$stateParams', 'BreadCrumbService'];
@@ -2817,6 +2680,143 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
 })();
 
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('base64filename', base64filename);
+
+    function base64filename() {
+        return function(img) {
+            if (img) {
+                var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
+
+                return filebase64;
+            }
+
+            return img;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isEmpty', isEmpty);
+
+    function isEmpty() {
+        return function(container) {
+
+            if (angular.isObject(container)) {
+
+                angular.forEach(container, function(item, index) {
+                    return false;
+                });
+
+            } else if (angular.isArray(container)) {
+                return container.length == 0;
+            }
+
+            return true;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('isLoading', isLoading);
+
+    function isLoading() {
+        return function(target) {
+            $log.log(target);
+            if (target) {
+                var scope = angular.element(target).scope();
+
+                if (angular.isDefined(scope.isLoading) && scope.isLoading) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('toDecimal', toDecimal);
+
+    function toDecimal() {
+        return function(num, dec) {
+            if (num) {
+                num = parseFloat(num);
+                num = num.toFixed(dec);
+
+                return '' + num;
+            }
+
+            return num;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('ucFirst', ucFirst);
+
+    function ucFirst() {
+        return function(string) {
+            if (string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            return string;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app')
+        .filter('whereAttr', whereAttr);
+
+    function whereAttr() {
+        return function(box, attr, value) {
+            var obj = [];
+            angular.forEach(box, function(item, index) {
+                if (angular.isDefined(item[attr]) && item[attr] == value) {
+                    obj.push(item);
+                }
+            });
+
+            return obj;
+
+        }
+
+    }
+
+})();
 (function() {
     'use strict';
 
@@ -3641,7 +3641,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         var ladda = Ladda.create(element);
                         ladda.start();
                         if (!doDelete(brand)) {
-                          ladda.stop();
+                            ladda.stop();
                         }
                     }
                 }
@@ -3659,10 +3659,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.hasAdded = true;
                 vm.isDone = true;
                 return true;
-            }).catch(function(error) {
+            }).catch(function(err) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = error.data.errors;
+                vm.response['msg'] = "Can not delete brand: " + brand.name;
+                vm.response['error_arr'] = [];
+                vm.response['error_arr'].push(err.data.errors);
                 vm.hasAdded = true;
                 vm.isDone = true;
                 return false;
@@ -3670,7 +3672,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
-
 (function() {
     'use strict';
 
@@ -6632,6 +6633,42 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+// (function() {
+//     'use strict';
+
+//     angular.module('app.deals')
+//         .controller('TemplateController', TemplateController);
+
+//     TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+//     /* @ngInject */
+//     function TemplateController($scope, $compile, $document) {
+//         var hl = this;
+
+//         hl.counter = 0;
+//         hl.increCounter = increCounter;
+//         hl.openModal = openModal;
+//         hl.currModel = {};
+//         //hl.addTemplate = addTemplate;
+//         //hl.modalContainer = $('#template-modal');
+
+//         //////////////
+
+//         function openModal() {
+//             $('#template-modal').modal('show');
+
+//             $("#template-modal").on("hidden.bs.modal", function() {
+//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+//             });
+//         }
+
+
+
+//         function increCounter() {
+//             hl.counter++;
+//         }
+//     }
+// })();
 (function() {
     'use strict';
 
@@ -7023,42 +7060,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-// (function() {
-//     'use strict';
-
-//     angular.module('app.deals')
-//         .controller('TemplateController', TemplateController);
-
-//     TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-//     /* @ngInject */
-//     function TemplateController($scope, $compile, $document) {
-//         var hl = this;
-
-//         hl.counter = 0;
-//         hl.increCounter = increCounter;
-//         hl.openModal = openModal;
-//         hl.currModel = {};
-//         //hl.addTemplate = addTemplate;
-//         //hl.modalContainer = $('#template-modal');
-
-//         //////////////
-
-//         function openModal() {
-//             $('#template-modal').modal('show');
-
-//             $("#template-modal").on("hidden.bs.modal", function() {
-//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-//             });
-//         }
-
-
-
-//         function increCounter() {
-//             hl.counter++;
-//         }
-//     }
-// })();
 (function() {
     'use strict';
 

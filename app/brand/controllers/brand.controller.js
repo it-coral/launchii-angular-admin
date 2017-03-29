@@ -94,7 +94,7 @@
                         var ladda = Ladda.create(element);
                         ladda.start();
                         if (!doDelete(brand)) {
-                          ladda.stop();
+                            ladda.stop();
                         }
                     }
                 }
@@ -112,10 +112,12 @@
                 vm.hasAdded = true;
                 vm.isDone = true;
                 return true;
-            }).catch(function(error) {
+            }).catch(function(err) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = error.data.errors;
+                vm.response['msg'] = "Can not delete brand: " + brand.name;
+                vm.response['error_arr'] = [];
+                vm.response['error_arr'].push(err.data.errors);
                 vm.hasAdded = true;
                 vm.isDone = true;
                 return false;
