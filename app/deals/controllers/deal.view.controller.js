@@ -54,7 +54,6 @@
         //Images
         vm.images = prepDealImages;
         vm.openEditImageModal = openEditImageModal;
-        console.log(vm.images);
         vm.prevState = HelperService.getPrevState();
 
         //activate();
