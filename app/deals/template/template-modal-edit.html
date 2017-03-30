@@ -7,30 +7,24 @@
             </div>
             <div class="modal-body">
                 <form role="form" novalidate>
-                    <div class="form-body">
-                        <div class="form-group">
+                    <div class="form-group">
 
-                            <label for="name">Name</label>
-                            <input type="text" id="name" class="form-control" ng-model="$parent.vm.selTemplateObj.name" />
+                        <label for="name">Name</label>
+                        <input type="text" id="name" class="form-control" ng-model="$parent.vm.selTemplateObj.name" />
 
-                        </div>
                     </div>
-                    <div class="form-body">
-                        <div class="form-group">
+                    <div class="form-group">
 
-                            <label for="name">Template Type</label>
-                            <!--<input type="text" id="name" class="form-control" ng-model="$parent.vm.selTemplateObj.template_type" />-->
-                            <select name="" id="" class="form-control" ng-model="$parent.vm.selTemplateObj.template_type" ng-options="template.value as template.key for template in templates"></select>
+                        <label for="name">Template type</label>
+                        <!--<input type="text" id="name" class="form-control" ng-model="$parent.vm.selTemplateObj.template_type" />-->
+                        <select name="" id="" class="form-control" ng-model="$parent.vm.selTemplateObj.template_type" ng-options="template.value as template.key for template in templates"></select>
 
-                        </div>
                     </div>
-                    <div class="form-body">
-                        <div class="form-group">
+                    <div class="form-group">
 
-                            <label for="name">Templatable Type</label>
-                            <!--<input type="text" id="name" class="form-control" ng-model="$parent.vm.selTemplateObj.templatable_id" />-->
-                            <select name="" id="" class="form-control" ng-model="$parent.vm.selTemplateObj.template_location" ng-options="template.value as template.key for template in types"></select>
-                        </div>
+                        <label for="name">Template location</label>
+                        <!--<input type="text" id="name" class="form-control" ng-model="$parent.vm.selTemplateObj.templatable_id" />-->
+                        <select name="" id="" class="form-control" ng-model="$parent.vm.selTemplateObj.template_location" ng-options="template.value as template.key for template in types"></select>
                     </div>
                     <div class="form-group">
 

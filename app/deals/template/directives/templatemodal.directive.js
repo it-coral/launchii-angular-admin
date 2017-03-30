@@ -82,8 +82,10 @@
                     var html = '<template-field template-counter="' + scope.$parent.vm.selTemplateIndex + '" field-model="scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex]" ></template-field>';
                     var input = angular.element(html);
                     var compile = $compile(input)(scope);
+                    //console.log(compile);
+                    //$document.find('#template-container').append(compile);
+                    $('#templates-body').append(compile);
 
-                    $document.find('#template-container').append(input);
                     $('#template-modal').modal('hide');
                     scope.$parent.vm.increTemplateCounter();
                     scope.$parent.vm.setSelTemplateIndex(scope.$parent.vm.templateCounter);

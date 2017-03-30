@@ -158,7 +158,65 @@
 
                         <!--Templates-->
                         <hr />
-                        <h4>Templates</h4>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="portlet box green">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="fa fa-ticket"></i>Templates
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body flip-scroll">
+                                        <table class="table table-bordered table-striped table-condensed flip-content">
+                                            <thead class="flip-content">
+                                                <tr>
+                                                    <th class="text-center" width="20%"> Name </th>
+                                                    <th class="text-center"> Template Type </th>
+                                                    <th class="text-center"> Template Location </th>
+                                                    <th class="text-center"> Status </th>
+                                                    <th> </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="templates-body" ng-show="vm.hasTemplates()">
+                                                <tr template-edit ng-if="vm.mode == 'Edit'" ng-repeat="template in vm.templates" field-model="template"></tr>
+                                                <!--<tr class="discount-row" ng-repeat="template in vm.templates" ng-if="vm.mode == 'Edit'">
+                                                    <td class="text-center align-middle" ng-bind="template.name"></td>
+                                                    <td class="text-center align-middle" ng-bind="template.template_type"></td>
+                                                    <td class="text-center align-middle" ng-bind="template.template_location"></td>
+                                                    <td class="text-center align-middle" ng-bind="template.status"></td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> Action
+                                                                        <i class="fa fa-angle-down"></i>
+                                                                    </button>
+                                                            <ul class="dropdown-menu" role="menu">
+                                                                <li>
+                                                                    <a href="javascript:;" ng-click="vm.openDiscountModal(discount)"> Edit </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:;" ng-click="vm.removeSelDiscount($event.currentTarget, discount)"> Remove </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>-->
+                                            </tbody>
+                                            <tbody ng-show="!vm.hasTemplates()">
+                                                <tr>
+                                                    <td colspan="6">
+                                                        <h5 class="text-center align-middle">No templates</h5>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /.panel-body -->
+                                </div>
+                                <!-- /.panel -->
+                            </div>
+                            <!-- /.col-lg-12 -->
+                        </div>
+                        <!-- /.row -->
                         <add-template field-model="vm.form.templates" form-mode="vm.mode" templates-data="vm.templates">
                         </add-template>
                         <template-modal field-model="vm.form.templates" form-mode="vm.mode"></template-modal>

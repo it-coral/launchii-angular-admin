@@ -4344,7 +4344,11 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     tasks.push(function(cb) {
                         template['templatable_id'] = deal_id;
 
-                        $http.post(url, template).then(function(resp) {
+                        var data = {
+                            template: template
+                        };
+
+                        $http.post(url, data).then(function(resp) {
                             //d.resolve(resp);
                             // cb(null, resp);
                             cb(null, '');
@@ -4650,7 +4654,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     if (angular.isDefined(template.name) && template.name.trim() != '') {
                         tasks.push(function(cb) {
                             template['templatable_id'] = id;
-                            $http.post(api + '/' + id + '/templates', template)
+
+                            var data = {
+                                template: template
+                            };
+
+                            $http.post(api + '/' + id + '/templates', data)
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
@@ -4705,7 +4714,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                     tasks.push(function(cb) {
                         template['templatable_id'] = id;
-                        $http.patch(url + '/templates/' + template.uid, template).then(function(resp) {
+
+                        var data = {
+                            template: template
+                        };
+
+                        $http.patch(url + '/templates/' + template.uid, data).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             $log.log(err);
@@ -4958,7 +4972,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-
 (function() {
     'use strict';
 
@@ -4994,6 +5007,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
         vm.priceFormat = priceFormat;
+        vm.hasTemplates = hasTemplates;
 
         //discount
         vm.discountCounter = 0;
@@ -5049,6 +5063,19 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //     $log.log(newVal);
             //     return newVal.toFixed(2);
             // });
+        }
+
+        function hasTemplates() {
+            var count = 0;
+
+            angular.forEach(vm.form.templates, function(template, index) {
+
+                if (angular.isDefined(template.name)) {
+                    count++;
+                }
+            });
+
+            return count > 0;
         }
 
         function blankFn() {
@@ -5309,7 +5336,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
-
 (function() {
     'use strict';
 
@@ -5501,6 +5527,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
         vm.priceFormat = priceFormat;
+        vm.hasTemplates = hasTemplates;
 
         //discount
         vm.discounts = prepStandardD.concat(prepEarlyBirdD);
@@ -5562,6 +5589,23 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 ComponentsDateTimePickers.init();
                 $('[data-toggle="tooltip"]').tooltip();
             });
+        }
+
+        function hasTemplates() {
+            var count = 0;
+
+            angular.forEach(vm.form.templates, function(template, index) {
+
+                if (angular.isDefined(template.name)) {
+                    count++;
+                }
+            });
+
+            angular.forEach(vm.templates, function(template, index) {
+                count++;
+            });
+
+            return count > 0;
         }
 
         function removeSelDiscount(target, discountModel) {
@@ -6721,7 +6765,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     function templateEdit($compile) {
 
         var directive = {
-            restrict: 'E',
+            restrict: 'EA',
             templateUrl: 'app/deals/template/template-edit-field.html',
             replace: true,
             scope: {
@@ -6903,8 +6947,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     var html = '<template-field template-counter="' + scope.$parent.vm.selTemplateIndex + '" field-model="scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex]" ></template-field>';
                     var input = angular.element(html);
                     var compile = $compile(input)(scope);
+                    //console.log(compile);
+                    //$document.find('#template-container').append(compile);
+                    $('#templates-body').append(compile);
 
-                    $document.find('#template-container').append(input);
                     $('#template-modal').modal('hide');
                     scope.$parent.vm.increTemplateCounter();
                     scope.$parent.vm.setSelTemplateIndex(scope.$parent.vm.templateCounter);
@@ -7947,6 +7993,74 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
+    angular
+        .module('app.users')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isSuperAdmin', isSuperAdmin);
+
+    function isSuperAdmin() {
+        return function(user) {
+            if (user) {
+                if (user.email == 'admin@example.com') {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isRole', isRole);
+
+    function isRole() {
+        return function(user) {
+            if (user) {
+                if (user.is_admin) {
+                    return 'Admin';
+                }
+                if (user.is_vendor) {
+                    return 'Vendor';
+                }
+                if (user.is_customer) {
+                    return 'Customer';
+                }
+            }
+
+            return 'No Role';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
     angular.module('app.users')
         .controller('UserAddController', UserAddController);
 
@@ -8217,72 +8331,4 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             });
         }
     }
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isYesNo', isYesNo);
-
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
-
-            return 'No';
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isSuperAdmin', isSuperAdmin);
-
-    function isSuperAdmin() {
-        return function(user) {
-            if (user) {
-                if (user.email == 'admin@example.com') {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isRole', isRole);
-
-    function isRole() {
-        return function(user) {
-            if (user) {
-                if (user.is_admin) {
-                    return 'Admin';
-                }
-                if (user.is_vendor) {
-                    return 'Vendor';
-                }
-                if (user.is_customer) {
-                    return 'Customer';
-                }
-            }
-
-            return 'No Role';
-        }
-
-    }
-
 })();
