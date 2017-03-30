@@ -78,7 +78,10 @@
 
 <hr>
 <h4>Logo</h4>
-<div class="mt-element-overlay mb-3" ng-if="vm.brand.logo_image">
+<div id="preview-logo" class="mb-3" ng-if="vm.brand.logo_image">
+    <img ng-src="{{vm.brand.logo_image.standard_url}}" alt="{{vm.brand.logo_image.description}}" style="width: 250px; height: auto;" />
+</div>
+<!--<div class="mt-element-overlay mb-3" ng-if="vm.brand.logo_image">
     <div class="row">
         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 image-view-container">
 
@@ -98,14 +101,17 @@
 
         </div>
     </div>
-</div>
+</div>-->
 <div ng-if="!vm.brand.logo_image">
     <h4>No Logo</h4>
 </div>
 
 <hr>
 <h4>Cover</h4>
-<div class="mt-element-overlay mb-3" ng-if="vm.brand.cover_image">
+<div id="preview-cover" class="mb-3" ng-if="vm.brand.cover_image">
+    <img ng-src="{{vm.brand.cover_image.standard_url}}" alt="{{vm.brand.cover_image.description}}" style="width: 250px; height: auto;" />
+</div>
+<!--<div class="mt-element-overlay mb-3" ng-if="vm.brand.cover_image">
     <div class="row">
         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 image-view-container">
 
@@ -125,7 +131,7 @@
 
         </div>
     </div>
-</div>
+</div>-->
 <div ng-if="!vm.brand.cover_image">
     <h4>No Cover</h4>
 </div>

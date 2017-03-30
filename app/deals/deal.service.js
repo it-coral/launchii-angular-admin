@@ -540,7 +540,11 @@
                     tasks.push(function(cb) {
                         template['templatable_id'] = deal_id;
 
-                        $http.post(url, template).then(function(resp) {
+                        var data = {
+                            template: template
+                        };
+
+                        $http.post(url, data).then(function(resp) {
                             //d.resolve(resp);
                             // cb(null, resp);
                             cb(null, '');
@@ -846,7 +850,12 @@
                     if (angular.isDefined(template.name) && template.name.trim() != '') {
                         tasks.push(function(cb) {
                             template['templatable_id'] = id;
-                            $http.post(api + '/' + id + '/templates', template)
+
+                            var data = {
+                                template: template
+                            };
+
+                            $http.post(api + '/' + id + '/templates', data)
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
@@ -901,7 +910,12 @@
 
                     tasks.push(function(cb) {
                         template['templatable_id'] = id;
-                        $http.patch(url + '/templates/' + template.uid, template).then(function(resp) {
+
+                        var data = {
+                            template: template
+                        };
+
+                        $http.patch(url + '/templates/' + template.uid, data).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             $log.log(err);

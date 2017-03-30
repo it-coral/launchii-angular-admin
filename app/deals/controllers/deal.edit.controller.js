@@ -56,7 +56,7 @@
         vm.highlights = prepSelHighlights;
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
-        vm.default = vm.brands[0];
+        vm.default = vm.selectedDeal.brand;
         vm.removeHighlight = removeHighlight;
         vm.removedHighlightObjs = [];
 
@@ -73,6 +73,7 @@
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
         vm.priceFormat = priceFormat;
+        vm.hasTemplates = hasTemplates;
 
         //discount
         vm.discounts = prepStandardD.concat(prepEarlyBirdD);
@@ -134,6 +135,23 @@
                 ComponentsDateTimePickers.init();
                 $('[data-toggle="tooltip"]').tooltip();
             });
+        }
+
+        function hasTemplates() {
+            var count = 0;
+
+            angular.forEach(vm.form.templates, function(template, index) {
+
+                if (angular.isDefined(template.name)) {
+                    count++;
+                }
+            });
+
+            angular.forEach(vm.templates, function(template, index) {
+                count++;
+            });
+
+            return count > 0;
         }
 
         function removeSelDiscount(target, discountModel) {

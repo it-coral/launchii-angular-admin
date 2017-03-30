@@ -2016,36 +2016,36 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
 
         function responseError(rejection) {
-            if (rejection.status === -1) {
-                var config = rejection.config;
-                config.retryCount = config.retryCount || 0;
-                config.retryTime = (new Date()).getTime();
+            // if (rejection.status === -1) {
+            //     var config = rejection.config;
+            //     config.retryCount = config.retryCount || 0;
+            //     config.retryTime = (new Date()).getTime();
 
-                if (config.retryCount < maxRetries &&
-                    (!config.retryTime || config.retryTime > resetTime)) {
-                    config.retryCount++;
-                    config.retryTime = (new Date()).getTime();
+            //     if (config.retryCount < maxRetries &&
+            //         (!config.retryTime || config.retryTime > resetTime)) {
+            //         config.retryCount++;
+            //         config.retryTime = (new Date()).getTime();
 
-                    var $http = $injector.get('$http');
-                    var deferred = $q.defer();
+            //         var $http = $injector.get('$http');
+            //         var deferred = $q.defer();
 
-                    // do timeout to give some time in between retries
-                    $timeout(function() {
-                        $http(config)
-                            .then(function(respData) {
-                                deferred.resolve(respData);
-                            })
-                            .catch(function(respData) {
-                                deferred.reject(respData);
-                            });
-                    }, 200 * config.retryCount);
+            //         // do timeout to give some time in between retries
+            //         $timeout(function() {
+            //             $http(config)
+            //                 .then(function(respData) {
+            //                     deferred.resolve(respData);
+            //                 })
+            //                 .catch(function(respData) {
+            //                     deferred.reject(respData);
+            //                 });
+            //         }, 200 * config.retryCount);
 
-                    return deferred.promise;
-                }
+            //         return deferred.promise;
+            //     }
 
-                //give up
-                return $q.reject(rejection);
-            } else
+            //     //give up
+            //     return $q.reject(rejection);
+            // } else
             if (rejection.config.headers['access-token'] == 'undefined') {
                 //console.log('test');
                 return $q.reject(rejection);
@@ -3641,7 +3641,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         var ladda = Ladda.create(element);
                         ladda.start();
                         if (!doDelete(brand)) {
-                          ladda.stop();
+                            ladda.stop();
                         }
                     }
                 }
@@ -3659,10 +3659,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 vm.hasAdded = true;
                 vm.isDone = true;
                 return true;
-            }).catch(function(error) {
+            }).catch(function(err) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
-                vm.response['msg'] = error.data.errors;
+                vm.response['msg'] = "Can not delete brand: " + brand.name;
+                vm.response['error_arr'] = [];
+                vm.response['error_arr'].push(err.data.errors);
                 vm.hasAdded = true;
                 vm.isDone = true;
                 return false;
@@ -3670,7 +3672,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
-
 (function() {
     'use strict';
 
@@ -4343,7 +4344,11 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     tasks.push(function(cb) {
                         template['templatable_id'] = deal_id;
 
-                        $http.post(url, template).then(function(resp) {
+                        var data = {
+                            template: template
+                        };
+
+                        $http.post(url, data).then(function(resp) {
                             //d.resolve(resp);
                             // cb(null, resp);
                             cb(null, '');
@@ -4649,7 +4654,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     if (angular.isDefined(template.name) && template.name.trim() != '') {
                         tasks.push(function(cb) {
                             template['templatable_id'] = id;
-                            $http.post(api + '/' + id + '/templates', template)
+
+                            var data = {
+                                template: template
+                            };
+
+                            $http.post(api + '/' + id + '/templates', data)
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
@@ -4704,7 +4714,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                     tasks.push(function(cb) {
                         template['templatable_id'] = id;
-                        $http.patch(url + '/templates/' + template.uid, template).then(function(resp) {
+
+                        var data = {
+                            template: template
+                        };
+
+                        $http.patch(url + '/templates/' + template.uid, data).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             $log.log(err);
@@ -4957,7 +4972,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-
 (function() {
     'use strict';
 
@@ -4993,6 +5007,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
         vm.priceFormat = priceFormat;
+        vm.hasTemplates = hasTemplates;
 
         //discount
         vm.discountCounter = 0;
@@ -5048,6 +5063,19 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             //     $log.log(newVal);
             //     return newVal.toFixed(2);
             // });
+        }
+
+        function hasTemplates() {
+            var count = 0;
+
+            angular.forEach(vm.form.templates, function(template, index) {
+
+                if (angular.isDefined(template.name)) {
+                    count++;
+                }
+            });
+
+            return count > 0;
         }
 
         function blankFn() {
@@ -5308,7 +5336,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
-
 (function() {
     'use strict';
 
@@ -5483,7 +5510,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.highlights = prepSelHighlights;
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
-        vm.default = vm.brands[0];
+        vm.default = vm.selectedDeal.brand;
         vm.removeHighlight = removeHighlight;
         vm.removedHighlightObjs = [];
 
@@ -5500,6 +5527,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
         vm.priceFormat = priceFormat;
+        vm.hasTemplates = hasTemplates;
 
         //discount
         vm.discounts = prepStandardD.concat(prepEarlyBirdD);
@@ -5561,6 +5589,23 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 ComponentsDateTimePickers.init();
                 $('[data-toggle="tooltip"]').tooltip();
             });
+        }
+
+        function hasTemplates() {
+            var count = 0;
+
+            angular.forEach(vm.form.templates, function(template, index) {
+
+                if (angular.isDefined(template.name)) {
+                    count++;
+                }
+            });
+
+            angular.forEach(vm.templates, function(template, index) {
+                count++;
+            });
+
+            return count > 0;
         }
 
         function removeSelDiscount(target, discountModel) {
@@ -5995,7 +6040,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
-
 (function() {
     'use strict';
 
@@ -6052,7 +6096,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         //Images
         vm.images = prepDealImages;
         vm.openEditImageModal = openEditImageModal;
-        console.log(vm.images);
         vm.prevState = HelperService.getPrevState();
 
         //activate();
@@ -6633,42 +6676,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
-// (function() {
-//     'use strict';
-
-//     angular.module('app.deals')
-//         .controller('TemplateController', TemplateController);
-
-//     TemplateController.$inject = ['$scope', '$compile', '$document'];
-
-//     /* @ngInject */
-//     function TemplateController($scope, $compile, $document) {
-//         var hl = this;
-
-//         hl.counter = 0;
-//         hl.increCounter = increCounter;
-//         hl.openModal = openModal;
-//         hl.currModel = {};
-//         //hl.addTemplate = addTemplate;
-//         //hl.modalContainer = $('#template-modal');
-
-//         //////////////
-
-//         function openModal() {
-//             $('#template-modal').modal('show');
-
-//             $("#template-modal").on("hidden.bs.modal", function() {
-//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
-//             });
-//         }
-
-
-
-//         function increCounter() {
-//             hl.counter++;
-//         }
-//     }
-// })();
 (function() {
     'use strict';
 
@@ -6758,7 +6765,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     function templateEdit($compile) {
 
         var directive = {
-            restrict: 'E',
+            restrict: 'EA',
             templateUrl: 'app/deals/template/template-edit-field.html',
             replace: true,
             scope: {
@@ -6940,8 +6947,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                     var html = '<template-field template-counter="' + scope.$parent.vm.selTemplateIndex + '" field-model="scope.$parent.vm.form.templates[scope.$parent.vm.selTemplateIndex]" ></template-field>';
                     var input = angular.element(html);
                     var compile = $compile(input)(scope);
+                    //console.log(compile);
+                    //$document.find('#template-container').append(compile);
+                    $('#templates-body').append(compile);
 
-                    $document.find('#template-container').append(input);
                     $('#template-modal').modal('hide');
                     scope.$parent.vm.increTemplateCounter();
                     scope.$parent.vm.setSelTemplateIndex(scope.$parent.vm.templateCounter);
@@ -7060,6 +7069,42 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+// (function() {
+//     'use strict';
+
+//     angular.module('app.deals')
+//         .controller('TemplateController', TemplateController);
+
+//     TemplateController.$inject = ['$scope', '$compile', '$document'];
+
+//     /* @ngInject */
+//     function TemplateController($scope, $compile, $document) {
+//         var hl = this;
+
+//         hl.counter = 0;
+//         hl.increCounter = increCounter;
+//         hl.openModal = openModal;
+//         hl.currModel = {};
+//         //hl.addTemplate = addTemplate;
+//         //hl.modalContainer = $('#template-modal');
+
+//         //////////////
+
+//         function openModal() {
+//             $('#template-modal').modal('show');
+
+//             $("#template-modal").on("hidden.bs.modal", function() {
+//                 $scope.$parent.vm.setSelTemplateIndex($scope.$parent.vm.templateCounter);
+//             });
+//         }
+
+
+
+//         function increCounter() {
+//             hl.counter++;
+//         }
+//     }
+// })();
 (function() {
     'use strict';
 
@@ -7948,6 +7993,74 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
+    angular
+        .module('app.users')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isSuperAdmin', isSuperAdmin);
+
+    function isSuperAdmin() {
+        return function(user) {
+            if (user) {
+                if (user.email == 'admin@example.com') {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isRole', isRole);
+
+    function isRole() {
+        return function(user) {
+            if (user) {
+                if (user.is_admin) {
+                    return 'Admin';
+                }
+                if (user.is_vendor) {
+                    return 'Vendor';
+                }
+                if (user.is_customer) {
+                    return 'Customer';
+                }
+            }
+
+            return 'No Role';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
     angular.module('app.users')
         .controller('UserAddController', UserAddController);
 
@@ -8218,72 +8331,4 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             });
         }
     }
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isYesNo', isYesNo);
-
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
-
-            return 'No';
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isSuperAdmin', isSuperAdmin);
-
-    function isSuperAdmin() {
-        return function(user) {
-            if (user) {
-                if (user.email == 'admin@example.com') {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isRole', isRole);
-
-    function isRole() {
-        return function(user) {
-            if (user) {
-                if (user.is_admin) {
-                    return 'Admin';
-                }
-                if (user.is_vendor) {
-                    return 'Vendor';
-                }
-                if (user.is_customer) {
-                    return 'Customer';
-                }
-            }
-
-            return 'No Role';
-        }
-
-    }
-
 })();
