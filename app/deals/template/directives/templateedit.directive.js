@@ -10,7 +10,7 @@
     function templateEdit($compile) {
 
         var directive = {
-            restrict: 'E',
+            restrict: 'EA',
             templateUrl: 'app/deals/template/template-edit-field.html',
             replace: true,
             scope: {

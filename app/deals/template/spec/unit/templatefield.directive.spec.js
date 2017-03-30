@@ -18,7 +18,7 @@
             // Compile a piece of HTML containing the directive
             var element = $compile('<template-field template-counter="0" field-model="" ></template-field>')($rootScope.$new());
             $rootScope.$digest();
-            expect(element.html()).toContain('ng-model="fieldModel.name"');
+            expect(element.html()).toContain('fieldModel');
         });
 
     });

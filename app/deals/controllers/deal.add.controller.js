@@ -33,6 +33,7 @@
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
         vm.priceFormat = priceFormat;
+        vm.hasTemplates = hasTemplates;
 
         //discount
         vm.discountCounter = 0;
@@ -88,6 +89,19 @@
             //     $log.log(newVal);
             //     return newVal.toFixed(2);
             // });
+        }
+
+        function hasTemplates() {
+            var count = 0;
+
+            angular.forEach(vm.form.templates, function(template, index) {
+
+                if (angular.isDefined(template.name)) {
+                    count++;
+                }
+            });
+
+            return count > 0;
         }
 
         function blankFn() {
