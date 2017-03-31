@@ -14,7 +14,8 @@
         'prepSelTemplates',
         'prepStandardD',
         'prepEarlyBirdD',
-        'prepDealImages'
+        'prepDealImages',
+        '$window'
     ];
 
     /* @ngInject */
@@ -28,7 +29,8 @@
         prepSelTemplates,
         prepStandardD,
         prepEarlyBirdD,
-        prepDealImages
+        prepDealImages,
+        $window
     ) {
 
         var vm = this;
@@ -55,6 +57,12 @@
         vm.images = prepDealImages;
         vm.openEditImageModal = openEditImageModal;
         vm.prevState = HelperService.getPrevState();
+
+        if ($window.__env.apiUrl.toLowerCase().indexOf('stageapi') > -1) {
+          vm.customerHost = 'http://staging.launchii.com';
+        } else {
+          vm.customerHost = 'http://www.launchii.com';
+        }
 
         //activate();
 
