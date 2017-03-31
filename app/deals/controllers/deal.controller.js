@@ -4,10 +4,10 @@
     angular.module('app.deals')
         .controller('DealController', DealController);
 
-    DealController.$inject = ['DealService', 'dealPrepService', '$timeout'];
+    DealController.$inject = ['DealService', 'dealPrepService', '$timeout', '$window'];
 
     /* @ngInject */
-    function DealController(DealService, dealPrepService, $timeout) {
+    function DealController(DealService, dealPrepService, $timeout, $window) {
         var vm = this;
 
         vm.prepDeals = dealPrepService;
@@ -24,6 +24,12 @@
         vm.isSearch = false;
         vm.clearSearch = clearSearch;
         vm.isDealEmpty = isDealEmpty;
+
+        if ($window.__env.apiUrl.toLowerCase().indexOf('stageapi') > -1) {
+          vm.customerHost = 'http://staging.launchii.com';
+        } else {
+          vm.customerHost = 'http://www.launchii.com';
+        }
 
         //activate();
 
