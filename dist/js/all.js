@@ -7552,6 +7552,11 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                 init();
 
+                element.on("hidden.bs.modal", function() {
+                  scope.discount_form.$setPristine();
+                  scope.$parent.vm.setSelDiscountIndex(scope.$parent.vm.discountCounter);
+                });
+
                 /////////////
 
                 function init() {
@@ -7762,6 +7767,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+
 (function() {
     'use strict';
 
@@ -7791,10 +7797,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
                 function openModal() {
                     $('#discount-modal').modal('show');
-
-                    $("#discount-modal").on("hidden.bs.modal", function() {
-                        scope.$parent.vm.setSelDiscountIndex(scope.$parent.vm.discountCounter);
-                    });
                 }
             }
         };
@@ -7803,6 +7805,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+
 (function() {
     'use strict';
 
