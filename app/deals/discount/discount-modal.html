@@ -11,12 +11,12 @@
                     <div class="form-body">
                         <div class="form-group">
                             <label for="name">Value</label>
-                            <input type="number" id="name" string-to-number class="form-control" ng-model="newDiscountObj.value" autocomplete="off" required />
+                            <input type="number" id="discount-value" string-to-number class="form-control" ng-model="newDiscountObj.value" autocomplete="off" required />
                         </div>
 
                         <div class="form-group">
                             <label for="name">Weighting</label>
-                            <input type="number" id="name" string-to-number class="form-control" ng-model="newDiscountObj.weighting" autocomplete="off" required />
+                            <input type="number" id="discount-weighting" string-to-number class="form-control" ng-model="newDiscountObj.weighting" autocomplete="off" required />
                         </div>
 
                         <!--<div class="form-group">
@@ -26,7 +26,7 @@
 
                         <div class="form-group">
                             <label for="name">Coupon limit</label>
-                            <input type="number" id="name" string-to-number class="form-control" ng-model="newDiscountObj.coupon_limit" autocomplete="off" required />
+                            <input type="number" id="discount-coupon-limit" string-to-number class="form-control" ng-model="newDiscountObj.coupon_limit" autocomplete="off" required />
                         </div>
 
                         <div class="form-group">
@@ -47,12 +47,12 @@
 
                         <div class="form-group">
                             <label for="name">Codes Text</label>
-                            <textarea name="" id="" cols="30" rows="3" class="form-control" ng-model="newDiscountObj.codes_txt" required></textarea>
+                            <textarea name="" id="discount-codes-text" cols="30" rows="3" class="form-control" ng-model="newDiscountObj.codes_txt" required></textarea>
                         </div>
 
                         <div class="form-group">
                             <label for="name">Codes Expire At</label>
-                            <input type="text" id="name" class="form-control date-picker" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" size="16" ng-model="newDiscountObj.codes_expire_at" required />
+                            <input type="text" id="discount-codes-expire-at" class="form-control date-picker" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" size="16" ng-model="newDiscountObj.codes_expire_at" required />
                         </div>
 
                         <div class="form-group">
