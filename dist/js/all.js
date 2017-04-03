@@ -5104,6 +5104,17 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             });
         }
 
+        function countValidImages() {
+          var count = 0;
+          angular.forEach(vm.form.file, function(img, index) {
+            if (img.file !== undefined && img.file != null &&
+                img.file !== "" && angular.isObject(img.file)) {
+              count ++;
+            }
+          });
+          return count;
+        }
+
         function getImageCounter() {
             return vm.imageCounter++;
         }
@@ -5275,10 +5286,18 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         function addDeal() {
             vm.isDone = false;
-            //temporary
-            //vm.form.brand_id = '3228eb88-6810-4b28-ae52-88a62e4655c3';
 
-            vm.isDone = false;
+            // image validation for published status
+            if (vm.form.status === 'published' &&
+                countValidImages() <= 0) {
+              bootbox.alert({
+                  title: "No uploaded images!",
+                  message: "Please upload images to publish the deal."
+              });
+              vm.isDone = true;
+              return false;
+            }
+
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
 
@@ -5338,6 +5357,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+
 (function() {
     'use strict';
 
@@ -5748,6 +5768,23 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             $(elem).parents('.image-view-container').remove();
         }
 
+        function countValidImages() {
+          var count = 0;
+          angular.forEach(vm.form.file, function(img, index) {
+            if (img.file !== undefined && img.file != null &&
+                img.file !== "" && angular.isObject(img.file)) {
+              count ++;
+            }
+          });
+          angular.forEach(vm.images, function(img, index) {
+            count ++;
+          });
+          angular.forEach(vm.removedImageObj, function(img, index) {
+            count --;
+          });
+          return count;
+        }
+
         function updateDateDiff() {
             vm.form.date_ends = '';
 
@@ -5847,8 +5884,17 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         function editDeal() {
             vm.isDone = false;
-            //temporary
-            //vm.form.brand_id = '3228eb88-6810-4b28-ae52-88a62e4655c3';
+
+            // image validation for published status
+            if (vm.form.status === 'published' &&
+                countValidImages() <= 0) {
+              bootbox.alert({
+                  title: "No uploaded images!",
+                  message: "Please upload images to publish the deal."
+              });
+              vm.isDone = true;
+              return false;
+            }
 
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
@@ -6049,6 +6095,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+
 (function() {
     'use strict';
 

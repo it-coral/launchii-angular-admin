@@ -128,6 +128,17 @@
             });
         }
 
+        function countValidImages() {
+          var count = 0;
+          angular.forEach(vm.form.file, function(img, index) {
+            if (img.file !== undefined && img.file != null &&
+                img.file !== "" && angular.isObject(img.file)) {
+              count ++;
+            }
+          });
+          return count;
+        }
+
         function getImageCounter() {
             return vm.imageCounter++;
         }
@@ -299,10 +310,18 @@
 
         function addDeal() {
             vm.isDone = false;
-            //temporary
-            //vm.form.brand_id = '3228eb88-6810-4b28-ae52-88a62e4655c3';
 
-            vm.isDone = false;
+            // image validation for published status
+            if (vm.form.status === 'published' &&
+                countValidImages() <= 0) {
+              bootbox.alert({
+                  title: "No uploaded images!",
+                  message: "Please upload images to publish the deal."
+              });
+              vm.isDone = true;
+              return false;
+            }
+
             vm.form.starts_at = HelperService.combineDateTime(vm.form.date_starts, vm.form.time_starts);
             vm.form.ends_at = HelperService.combineDateTime(vm.form.date_ends, vm.form.time_ends);
 
