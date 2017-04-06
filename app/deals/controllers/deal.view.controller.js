@@ -52,6 +52,7 @@
         vm.earlyBirdDiscounts = prepEarlyBirdD;
         vm.hasStandardDiscounts = hasStandardDiscounts;
         vm.hasEarlybirdDiscounts = hasEarlybirdDiscounts;
+        vm.hasImages = hasImages;
 
         //Images
         vm.images = prepDealImages;
@@ -84,6 +85,10 @@
 
         function hasEarlybirdDiscounts() {
             return angular.isDefined(vm.earlyBirdDiscounts) && vm.earlyBirdDiscounts.length > 0;
+        }
+
+        function hasImages() {
+          return angular.isDefined(vm.images) && vm.images.length > 0;
         }
     }
 })();
