@@ -64,7 +64,7 @@
 
         //template
         vm.templates = prepSelTemplates;
-        vm.finalTemplates = vm.templates.slice();
+        vm.finalTemplates = [];
         vm.removedTemplateObjs = [];
         vm.templateNames = prepTemplateNames;
         vm.templateTypes = prepTemplateTypes;
@@ -125,8 +125,9 @@
         function activate() {
 
             // mark already existing templates
-            angular.forEach(vm.finalTemplates, function(template, index) {
+            angular.forEach(vm.templates, function(template, index) {
               template['isOld'] = true;
+              vm.finalTemplates.push(template);
             });
 
             // for Add/Edit template button disabled status
