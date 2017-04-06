@@ -83,11 +83,6 @@ module.exports = function(config) {
             'app/deals/highlight/*/*.js',
             'app/deals/highlight/spec/unit/*.js',
 
-            //Template Module
-            'app/deals/template/*.html',
-            'app/deals/template/*/*.js',
-            'app/deals/template/spec/unit/*.js',
-
             //Image Module
             'app/deals/image/*.html',
             'app/deals/image/*/*.js',
@@ -112,7 +107,7 @@ module.exports = function(config) {
         ngHtml2JsPreprocessor: {
             // strip this from the file path
             //stripPrefix: 'app/',
-            //stripSuffix: '.js.html', // I had to make a strip on the templatesCached 
+            //stripSuffix: '.js.html', // I had to make a strip on the templatesCached
 
             //prependSuffix: '.html',
             //stripSuffix: '.ext',
