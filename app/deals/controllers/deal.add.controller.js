@@ -20,20 +20,26 @@
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
         vm.default = vm.brands[0];
+
         vm.removeHighlight = removeHighlight;
 
+        vm.priceFormat = priceFormat;
+
         //template
-        vm.templateCounter = 0;
-        vm.increTemplateCounter = increTemplateCounter;
-        vm.selTemplateIndex = 0;
-        vm.setSelTemplateIndex = setSelTemplateIndex;
-        vm.selTemplateObj = {};
-        vm.setSelTemplateObj = setSelTemplateObj;
+        vm.finalTemplates = vm.form.templates;
         vm.templateNames = prepTemplateNames;
         vm.templateTypes = prepTemplateTypes;
         vm.removeTemplate = removeTemplate;
-        vm.priceFormat = priceFormat;
         vm.hasTemplates = hasTemplates;
+        vm.getTemplateNameKey = getTemplateNameKey;
+        vm.getTemplateTypeKey = getTemplateTypeKey;
+
+        vm.workingTemplateIndex = -1;
+        vm.workingTemplate = {};
+        vm.onAddTemplate = onAddTemplate;
+        vm.onEditTemplate = onEditTemplate;
+        vm.onTemplateCommitted = onTemplateCommitted;
+        vm.commitTemplateDisabled = true;
 
         //discount
         vm.discountCounter = 0;
@@ -76,11 +82,20 @@
         ///////////////////
 
         function activate() {
-            // angular.element('.start-date').datepicker({
-            //     orientation: "left",
-            //     autoclose: true
-            // });
-            //ComponentsDateTimePickers.init();
+
+            // for Add/Edit template button disabled status
+            $scope.$watch('vm.workingTemplate.name', function(newValue, oldValue) {
+              if (angular.isDefined(newValue)) {
+                  if (newValue.trim() == '') {
+                      vm.commitTemplateDisabled = true;
+                  } else {
+                      vm.commitTemplateDisabled = false;
+                  }
+              } else {
+                  vm.commitTemplateDisabled = true;
+              }
+            });
+
             insertNewImageObj();
             $(document).ready(function() {
                 ComponentsDateTimePickers.init();
@@ -92,16 +107,7 @@
         }
 
         function hasTemplates() {
-            var count = 0;
-
-            angular.forEach(vm.form.templates, function(template, index) {
-
-                if (angular.isDefined(template.name)) {
-                    count++;
-                }
-            });
-
-            return count > 0;
+            return vm.finalTemplates.length > 0;
         }
 
         function blankFn() {
@@ -286,25 +292,77 @@
         }
 
         function removeTemplate(template_index) {
-            angular.forEach(vm.form.templates, function(val, index) {
-                if (index == template_index) {
-                    $log.log('test')
-                    vm.form.templates.splice(index, 1);
+          vm.finalTemplates.splice(template_index, 1);
+        }
+
+        function onAddTemplate() {
+          vm.workingTemplateIndex = -1;
+          delete vm.workingTemplate.name;
+          vm.workingTemplate.template_type = vm.templateNames[0].value;
+          vm.workingTemplate.template_location = vm.templateTypes[0].value;
+          vm.workingTemplate.status = 'draft';
+          $('#template-modal').modal('show');
+        }
+
+        function onEditTemplate(template_index) {
+          if (template_index < 0 || template_index >= vm.finalTemplates.length) {
+            return;
+          }
+          vm.workingTemplateIndex = template_index;
+          vm.workingTemplate.name = vm.finalTemplates[template_index].name;
+          vm.workingTemplate.template_type = vm.finalTemplates[template_index].template_type;
+          vm.workingTemplate.template_location = vm.finalTemplates[template_index].template_location;
+          vm.workingTemplate.status = vm.finalTemplates[template_index].status;
+          $('#template-modal').modal('show');
+        }
+
+        function onTemplateCommitted() {
+          if (!angular.isDefined(vm.workingTemplate.name) || vm.workingTemplate.name.trim() == '') {
+            return;
+          }
+          var templateInArray = null;
+          if (vm.workingTemplateIndex == -1) {
+            templateInArray = {};
+            vm.finalTemplates.push(templateInArray);
+          } else {
+            templateInArray = vm.finalTemplates[vm.workingTemplateIndex];
+          }
+
+          // confirm only one published status
+          if (vm.workingTemplate.status == 'published') {
+            angular.forEach(vm.finalTemplates, function(template, index) {
+                if (template.status == 'published' && template.template_location == vm.workingTemplate.template_location) {
+                    template.status = 'draft';
                 }
             });
+          }
+
+          templateInArray.name = vm.workingTemplate.name;
+          templateInArray.template_type = vm.workingTemplate.template_type;
+          templateInArray.template_location = vm.workingTemplate.template_location;
+          templateInArray.status = vm.workingTemplate.status;
         }
 
-        function setSelTemplateObj(tobj) {
-            vm.selTemplateObj = tobj;
+        function getTemplateNameKey(template_type) {
+          var key = '';
+          angular.forEach(vm.templateNames, function(name, index) {
+            if (name.value == template_type) {
+              key = name.key;
+            }
+          });
+          return key;
         }
 
-        function setSelTemplateIndex(index) {
-            vm.selTemplateIndex = index;
+        function getTemplateTypeKey(template_location) {
+          var key = '';
+          angular.forEach(vm.templateTypes, function(type, index) {
+            if (type.value == template_location) {
+              key = type.key;
+            }
+          });
+          return key;
         }
 
-        function increTemplateCounter() {
-            vm.templateCounter++;
-        }
         //END Template
 
 
@@ -352,7 +410,7 @@
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add deal.";
-                vm.response['error_arr'] = err.data.errors;
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
