@@ -5,11 +5,6 @@
             'app.deals.highlightadd',
             'app.deals.highlightedit',
             'app.deals.highlightfield',
-            'app.deals.templateadd',
-            'app.deals.templateedit',
-            'app.deals.templatefield',
-            'app.deals.templatemodal',
-            'app.deals.templatemodaledit',
             'app.deals.image'
         ])
         .factory('DealService', DealService);
@@ -586,13 +581,13 @@
                 if (angular.isDefined(discount.value) && discount.value.trim() != '') {
                     tasks.push(function(cb) {
                         $log.log(discount);
-                        $http.post(url, discount)
+                        $http.post(url, {discount:discount})
                             .then(function(resp) {
                                 cb(null, resp);
                             }).catch(function(err) {
                                 $log.log(err);
                                 var errors = HelperService.setErrorStr(err);
-                                cb(null, err.data.errors);
+                                cb(errors, null);
                             });
 
                     });
@@ -840,34 +835,6 @@
                 });
             }
 
-            //TEMPLATE ADD
-            if (angular.isDefined(data.form.templates) && data.form.templates.length > 0) {
-                //var url_ah = api + '/' + id + '/templates';
-
-                angular.forEach(data.form.templates, function(template, index) {
-                    //$log.log(angular.isDefined(template.name));
-                    //$log.log(template.name);
-                    if (angular.isDefined(template.name) && template.name.trim() != '') {
-                        tasks.push(function(cb) {
-                            template['templatable_id'] = id;
-
-                            var data = {
-                                template: template
-                            };
-
-                            $http.post(api + '/' + id + '/templates', data)
-                                .then(function(resp) {
-                                    cb(null, resp);
-                                }).catch(function(err) {
-                                    $log.log(err);
-                                    cb(err);
-                                });
-                        });
-                    }
-
-                });
-            }
-
             //HIGHLIGHT UPDATE
             if (angular.isDefined(data.highlights) && data.highlights.length > 0) {
                 angular.forEach(data.highlights, function(val, index) {
@@ -903,42 +870,7 @@
                     });
                 });
             }
-            //TEMPLATE UPDATE
-            if (angular.isDefined(data.templates) && data.templates.length > 0) {
-                angular.forEach(data.templates, function(template, index) {
-                    //var url_h = url + '/templates/' + template.uid;
 
-                    tasks.push(function(cb) {
-                        template['templatable_id'] = id;
-
-                        var data = {
-                            template: template
-                        };
-
-                        $http.patch(url + '/templates/' + template.uid, data).then(function(resp) {
-                            cb(null, resp);
-                        }).catch(function(err) {
-                            $log.log(err);
-                            cb(err);
-                        });
-                    });
-                });
-            }
-            //TEMPLATE DELETE
-            if (angular.isDefined(data.removedTemplates) && data.removedTemplates.length > 0) {
-                angular.forEach(data.removedTemplates, function(val, index) {
-                    //var url_h = url + '/templates/' + val.uid;
-
-                    tasks.push(function(cb) {
-                        $http.delete(url + '/templates/' + val.uid).then(function(resp) {
-                            cb(null, resp);
-                        }).catch(function(err) {
-                            $log.log(err);
-                            cb(err);
-                        });
-                    });
-                });
-            }
             //HIHGLIGHT
             if (angular.isDefined(data.form.highlights) && data.form.highlights.length > 0) {
                 var highlightsArr = [];
@@ -994,16 +926,6 @@
 
                 });
             });
-            // async.parallel(tasks, function(err, results) {
-            //     if (err) {
-            //         $log.log(err);
-            //         service.errors = err;
-            //         d.reject(err);
-            //     } else {
-            //         d.resolve(results);
-            //     }
-
-            // });
 
             //DISCOUNT DELETE
             if (angular.isDefined(data.removedDiscounts) && data.removedDiscounts.length > 0) {
@@ -1015,7 +937,8 @@
                             cb(null, resp);
                         }).catch(function(err) {
                             $log.log(err);
-                            cb(err.data.errors);
+                            var errors = HelperService.setErrorStr(err);
+                            cb(errors);
                         });
                     });
                 });
@@ -1028,11 +951,12 @@
 
                     tasksSeries.push(function(cb) {
                         $log.log(discount);
-                        $http.patch(url + '/discounts/' + discount.uid, discount).then(function(resp) {
+                        $http.patch(url + '/discounts/' + discount.uid, {discount:discount}).then(function(resp) {
                             cb(null, resp);
                         }).catch(function(err) {
                             $log.log(err);
-                            cb(err.data.errors);
+                            var errors = HelperService.setErrorStr(err);
+                            cb(errors);
                         });
                     });
                 });
@@ -1048,12 +972,104 @@
                         //$log.log(discount);
                         tasksSeries.push(function(cb) {
 
-                            $http.post(url + '/discounts', discount)
+                            $http.post(url + '/discounts', {discount:discount})
                                 .then(function(resp) {
                                     cb(null, resp);
                                 }).catch(function(err) {
                                     $log.log(err);
-                                    cb(err.data.errors);
+                                    var errors = HelperService.setErrorStr(err);
+                                    cb(errors);
+                                });
+                        });
+                    }
+
+                });
+            }
+
+            //TEMPLATE DELETE
+            if (angular.isDefined(data.removedTemplates) && data.removedTemplates.length > 0) {
+                angular.forEach(data.removedTemplates, function(val, index) {
+                    //var url_h = url + '/templates/' + val.uid;
+
+                    tasksSeries.push(function(cb) {
+                        $http.delete(url + '/templates/' + val.uid).then(function(resp) {
+                            cb(null, resp);
+                        }).catch(function(err) {
+                            $log.log(err);
+                            var errors = HelperService.setErrorStr(err);
+                            cb(errors);
+                        });
+                    });
+                });
+            }
+            //TEMPLATE UPDATE
+            // update the template with status 'published' at last
+            var publishedTemplate = null;
+            if (angular.isDefined(data.templates) && data.templates.length > 0) {
+                angular.forEach(data.templates, function(template, index) {
+                    //var url_h = url + '/templates/' + template.uid;
+
+                    if (template.status == 'published') {
+                      publishedTemplate = template;
+                    } else {
+                      tasksSeries.push(function(cb) {
+                          template['templatable_id'] = id;
+
+                          var data = {
+                              template: template
+                          };
+
+                          $http.patch(url + '/templates/' + template.uid, data).then(function(resp) {
+                              cb(null, resp);
+                          }).catch(function(err) {
+                              $log.log(err);
+                              var errors = HelperService.setErrorStr(err);
+                              cb(errors);
+                          });
+                      });
+                    }
+                });
+            }
+            // push published template at last
+            if (publishedTemplate != null) {
+              tasksSeries.push(function(cb) {
+                  publishedTemplate['templatable_id'] = id;
+
+                  var data = {
+                      template: publishedTemplate
+                  };
+
+                  $http.patch(url + '/templates/' + publishedTemplate.uid, data).then(function(resp) {
+                      cb(null, resp);
+                  }).catch(function(err) {
+                      $log.log(err);
+                      var errors = HelperService.setErrorStr(err);
+                      cb(errors);
+                  });
+              });
+            }
+            //TEMPLATE ADD
+            if (angular.isDefined(data.form.templates) && data.form.templates.length > 0) {
+                //var url_ah = api + '/' + id + '/templates';
+
+                angular.forEach(data.form.templates, function(template, index) {
+                    //$log.log(angular.isDefined(template.name));
+                    //$log.log(template.name);
+                    if (angular.isDefined(template.name) && template.name.trim() != '') {
+                        tasksSeries.push(function(cb) {
+                            template['templatable_id'] = id;
+
+                            var data = {
+                                template: template
+                            };
+
+                            $http.post(api + '/' + id + '/templates', data)
+                                .then(function(resp) {
+                                    cb(null, resp);
+                                }).catch(function(err) {
+                                    $log.log(err);
+                                    var errors = HelperService.setErrorStr(err);
+                                    cb(errors);
                                 });
                         });
                     }
