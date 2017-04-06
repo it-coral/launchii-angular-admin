@@ -43,13 +43,15 @@
 
         function setErrorStr(err) {
             var errorStr = '';
-            angular.forEach(err.data.errors, function(error, index, arr) {
-                if (index === arr.length - 1) { //last iteration
-                    errorStr += error;
-                } else {
-                    errorStr += error + ', ';
-                }
-            });
+            if (err.data != null) {
+              angular.forEach(err.data.errors, function(error, index, arr) {
+                  if (index === arr.length - 1) { //last iteration
+                      errorStr += error;
+                  } else {
+                      errorStr += error + ', ';
+                  }
+              });
+            }
 
             return errorStr;
         }
