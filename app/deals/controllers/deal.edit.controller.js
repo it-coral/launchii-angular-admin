@@ -115,7 +115,6 @@
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
 
-        vm.availableStats = ['draft', 'published', 'hidden', 'deleted', 'pending'];
         vm.capFirstLetter = HelperService.capFirstLetter;
 
         activate();

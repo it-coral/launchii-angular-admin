@@ -507,6 +507,12 @@
                         deal['status'] = 'draft';
                     }
 
+                    if (deal.is_upsell) {
+                        deal['deal_type'] = 'upsell';
+                    } else {
+                        deal['deal_type'] = 'standard';
+                    }
+
                     //DISABLED
                     BrandService.findInList(deal.brand_id).then(function(brand) {
                         deal['brand'] = brand;

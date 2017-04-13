@@ -4314,6 +4314,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         deal['status'] = 'draft';
                     }
 
+                    if (deal.is_upsell) {
+                        deal['deal_type'] = 'upsell';
+                    } else {
+                        deal['deal_type'] = 'standard';
+                    }
+
                     //DISABLED
                     BrandService.findInList(deal.brand_id).then(function(brand) {
                         deal['brand'] = brand;
@@ -5007,6 +5013,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.mode = "Add";
         vm.form = {};
         vm.form.status = 'draft';
+        vm.form.deal_type = 'standard';
         vm.form.highlights = [];
         vm.form.templates = [];
         vm.form.discounts = {};
@@ -5068,7 +5075,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.isDealEmpty = DealService.isEmpty;
         vm.isBrandEmpty = brandPrepService.total == 0;
 
-        vm.availableStats = ['draft', 'published', 'hidden', 'deleted', 'pending'];
         vm.capFirstLetter = HelperService.capFirstLetter;
 
         activate();
@@ -5674,7 +5680,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
 
-        vm.availableStats = ['draft', 'published', 'hidden', 'deleted', 'pending'];
         vm.capFirstLetter = HelperService.capFirstLetter;
 
         activate();
