@@ -158,7 +158,8 @@
                         styleSheets: dateTimeStyleSheets,
                         brandPrepService: brandPrepService,
                         prepTemplateNames: prepTemplateNames,
-                        prepTemplateTypes: prepTemplateTypes
+                        prepTemplateTypes: prepTemplateTypes,
+                        prepUpsellDeals: prepUpsellDeals
                     }
                 }
             }
@@ -181,6 +182,7 @@
                         prepSelTemplates: prepSelTemplates,
                         prepTemplateNames: prepTemplateNames,
                         prepTemplateTypes: prepTemplateTypes,
+                        prepUpsellDeals: prepUpsellDeals,
                         prepStandardD: prepStandardD,
                         prepEarlyBirdD: prepEarlyBirdD,
                         prepDealImages: prepDealImages
@@ -328,6 +330,12 @@
             return DealService.getTemplateTypes();
         }
 
+        prepUpsellDeals.$inject = ['DealService'];
+        /* @ngInject */
+        function prepUpsellDeals(DealService) {
+            return DealService.getUpsellDeals();
+        }
+
         prepTemplateNames.$inject = ['DealService'];
         /* @ngInject */
         function prepTemplateNames(DealService) {
@@ -359,7 +367,8 @@
                 '/templates/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
                 '/templates/assets/layouts/layout/css/layout.min.css',
                 '/templates/assets/layouts/layout/css/themes/darkblue.min.css',
-                '/templates/assets/layouts/layout/css/custom.min.css'
+                '/templates/assets/layouts/layout/css/custom.min.css',
+                '/templates/assets/layouts/layout/css/chosen-bootstrap.css'
             ];
             HelperService.setCss(css);
         }

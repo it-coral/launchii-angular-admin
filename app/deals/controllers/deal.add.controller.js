@@ -4,10 +4,10 @@
     angular.module('app.deals')
         .controller('DealAddController', DealAddController);
 
-    DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes'];
+    DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes', 'prepUpsellDeals'];
 
     /* @ngInject */
-    function DealAddController(DealService, $scope, HelperService, $state, brandPrepService, prepTemplateNames, prepTemplateTypes) {
+    function DealAddController(DealService, $scope, HelperService, $state, brandPrepService, prepTemplateNames, prepTemplateTypes, prepUpsellDeals) {
         var vm = this;
 
         vm.mode = "Add";
@@ -59,6 +59,9 @@
         vm.removedDiscountObjs = [];
         vm.setActive = setActive;
         vm.discounts = [];
+
+        vm.upsellDeals = prepUpsellDeals;
+        vm.form.upsell_associations = [];
 
         //image
         vm.form.file = [];

@@ -16,6 +16,7 @@
         'prepSelTemplates',
         'prepTemplateNames',
         'prepTemplateTypes',
+        'prepUpsellDeals',
         'prepStandardD',
         'prepEarlyBirdD',
         'prepDealImages',
@@ -35,6 +36,7 @@
         prepSelTemplates,
         prepTemplateNames,
         prepTemplateTypes,
+        prepUpsellDeals,
         prepStandardD,
         prepEarlyBirdD,
         prepDealImages,
@@ -97,6 +99,9 @@
         vm.openDiscountModal = openDiscountModal;
         vm.removeSelDiscount = removeSelDiscount;
         vm.setActive = setActive;
+
+        vm.upsellDeals = prepUpsellDeals;
+        vm.form.upsell_associations = [];
 
         //images
         vm.form.file = [];

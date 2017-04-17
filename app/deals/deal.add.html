@@ -124,6 +124,13 @@
                               <option value="upsell">Upsell</option>
                             </select>
                         </div>
+                        <div class="form-group" ng-if="vm.form.deal_type == 'standard'">
+                            <label>Upsell Associations</label>
+                            <br />
+                            <select chosen class="form-control input-large" data-placeholder="Upsell Associations..." multiple ng-model="vm.form.upsell_associations" ng-options="u.uid as u.name for u in vm.upsellDeals">
+                                <option value=""></option>
+                            </select>
+                        </div>
                         <!--Image-->
                         <div ng-if="vm.mode == 'Edit'">
                             <hr />

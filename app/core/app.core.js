@@ -24,7 +24,8 @@
         'ngFileUpload',
         'file-model',
         'naif.base64',
-        'ngAnimate'
+        'ngAnimate',
+        'localytics.directives'
     ]);
 
 })();

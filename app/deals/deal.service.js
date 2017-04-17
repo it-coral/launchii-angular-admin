@@ -59,6 +59,7 @@
             templateTypes: [],
             getTemplateNames: getTemplateNames,
             getTemplateTypes: getTemplateTypes,
+            getUpsellDeals: getUpsellDeals,
             getStandardDiscounts: getStandardDiscounts,
             getEarlyBirdDiscounts: getEarlyBirdDiscounts,
             dealImagesList: [],
@@ -576,6 +577,29 @@
             return d.promise;
         }
 
+        function getUpsellDeals() {
+            var d = $q.defer();
+
+            var url = api;
+            $http.get(url, {page: 1, limit: 500}).then(function(resp) {
+                var upsell_deals = [];
+                angular.forEach(resp.data.deals, function(deal, index) {
+                    if (deal.is_upsell === true) {
+                        var upsell_deal = {};
+                        upsell_deal['uid'] = deal.uid;
+                        upsell_deal['name'] = deal.name;
+                        upsell_deals.push(upsell_deal);
+                    }
+                });
+                d.resolve(upsell_deals);
+            }).catch(function(err) {
+                $log.log(err);
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
+
         function addDiscounts(deal_id, discounts) {
             var d = $q.defer();
 
@@ -642,6 +666,32 @@
             return d.promise;
         }
 
+        function updateUpsellAssociations(dealId, associations) {
+            var d = $q.defer();
+            var url = api + '/' + dealId + '/upsells';
+
+            var data = {
+                deal: {
+                    upsell_associations: []
+                }
+            };
+
+            angular.forEach(associations, function(uid, index) {
+                data.deal.upsell_associations.push({upsell_id: uid});
+            });
+
+            $http.patch(url, data).then(function(resp) {
+                $log.log('updateUpsellAssociations');
+                $log.log(resp);
+                d.resolve(resp);
+            }).catch(function(err) {
+                $log.log(err);
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
+
         function addFileImage(dealId, file) {
             var d = $q.defer();
             var url = api + '/' + dealId + '/images';
@@ -677,6 +727,18 @@
                     var dealId = resp.data.deal.uid;
 
                     var tasks = [];
+
+                    // upsell associations
+                    if (data.deal_type === 'standard') {
+                        tasks.push(function(cb) {
+                            updateUpsellAssociations(dealId, data.upsell_associations).then(function(resp) {
+                                cb(null, resp);
+                            }).catch(function(err) {
+                                $log.log(err);
+                                cb(err);
+                            });
+                        });
+                    }
 
                     if (data.file.length > 0) {
                         angular.forEach(data.file, function(img, index) {
