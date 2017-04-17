@@ -3216,38 +3216,103 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     'use strict';
 
     angular.module('app')
-        .controller('DashboardController', DashboardController);
+        .factory('DashboardService', DashboardService);
 
-    //DashboardController.$inject = ['HelperService'];
+    DashboardService.$inject = [
+        '$http',
+        'CONST',
+        '$q',
+        '$rootScope',
+        '$filter',
+        '$log'
+    ];
 
     /* @ngInject */
-    function DashboardController() {
+    function DashboardService(
+        $http,
+        CONST,
+        $q,
+        $rootScope,
+        $filter,
+        $log) {
+
+        var api = CONST.api_domain + '/admin/dashboard';
+
+        var service = {
+            fetchSummary: fetchSummary
+        }
+
+        return service;
+
+        function fetchSummary() {
+            var d = $q.defer();
+
+            $http.get(api).then(function(resp) {
+                d.resolve(resp.data);
+            }).catch(function(err) {
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
+
+    }
+
+})();
+
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .controller('DashboardController', DashboardController);
+
+    DashboardController.$inject = ['DashboardService', 'HelperService', '$window'];
+
+    /* @ngInject */
+    function DashboardController(DashboardService, HelperService, $window) {
         var vm = this;
 
-        //vm.users = usersPrepService;
+        vm.summaryLoaded = false;
+        vm.registeredUserCount = 0;
+        vm.claimedCouponCount = 0;
+        vm.couponClaimedValue = '';
+        vm.registeredVendorCount = 0;
+        vm.runningDealCount = 0;
 
-        vm.getUsers = getUsers;
+        vm.response = {};
 
         activate();
 
-        //////////////
-
         function activate() {
             vm.page_title = "Dashboard";
+
+            getSummary();
         }
 
-        function setPageTitle(title) {
-            HelperService.setPageTitle(title);
-        }
+        function getSummary() {
+            DashboardService.fetchSummary().then(function(resp) {
 
-        function getUsers() {
-            // return UserService.getUsers().then(function(data) {
-            //     vm.users = data;
-            //     return vm.users;
-            // });
+                vm.registeredUserCount = resp.registered_user_count;
+                vm.claimedCouponCount = resp.claimed_coupon_count;
+                vm.couponClaimedValue = resp.coupon_claimed_value;
+                vm.registeredVendorCount = resp.registered_vendor_count;
+                vm.runningDealCount = resp.running_deal_count;
+
+                vm.summaryLoaded = true;
+
+            }).catch(function(err) {
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to pull dashboard info.";
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
+
+                HelperService.goToAnchor('msg-info');
+            })
         }
+        
     }
 })();
+
 (function() {
     'use strict';
 
