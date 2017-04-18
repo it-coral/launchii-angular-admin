@@ -60,6 +60,7 @@
             getTemplateNames: getTemplateNames,
             getTemplateTypes: getTemplateTypes,
             getUpsellDeals: getUpsellDeals,
+            getUpsellAssociations: getUpsellAssociations,
             getStandardDiscounts: getStandardDiscounts,
             getEarlyBirdDiscounts: getEarlyBirdDiscounts,
             dealImagesList: [],
@@ -514,11 +515,7 @@
                         deal['deal_type'] = 'standard';
                     }
 
-                    if (deal.is_earlybird) {
-                        deal['discount_type'] = 'early_bird_discount';
-                    } else {
-                        deal['discount_type'] = 'standard_discount';
-                    }
+                    console.log(deal);
 
                     //DISABLED
                     BrandService.findInList(deal.brand_id).then(function(brand) {
@@ -586,18 +583,27 @@
         function getUpsellDeals() {
             var d = $q.defer();
 
-            var url = api;
-            $http.get(url, {page: 1, limit: 500}).then(function(resp) {
-                var upsell_deals = [];
-                angular.forEach(resp.data.deals, function(deal, index) {
-                    if (deal.is_upsell === true) {
-                        var upsell_deal = {};
-                        upsell_deal['uid'] = deal.uid;
-                        upsell_deal['name'] = deal.name;
-                        upsell_deals.push(upsell_deal);
-                    }
+            var url = api + '?page=1&limit=500&deal_type=upsell';
+            $http.get(url).then(function(resp) {
+                d.resolve(resp.data.deals);
+            }).catch(function(err) {
+                $log.log(err);
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
+
+        function getUpsellAssociations(dealId) {
+            var d = $q.defer();
+            var url = api + '/' + dealId + '/upsells';
+
+            $http.get(url).then(function(resp) {
+                var associations = [];
+                angular.forEach(resp.data.upsell_associations, function(assoc, index) {
+                    associations.push(assoc.upsell_id);
                 });
-                d.resolve(upsell_deals);
+                d.resolve(associations);
             }).catch(function(err) {
                 $log.log(err);
                 d.reject(err);
@@ -841,6 +847,18 @@
 
             var tasks = [];
             var tasksSeries = [];
+
+            // UPSELL ASSOCIATIONS
+            if (data.form.deal_type === 'standard') {
+                tasks.push(function(cb) {
+                    updateUpsellAssociations(id, data.form.upsell_associations).then(function(resp) {
+                        cb(null, resp);
+                    }).catch(function(err) {
+                        $log.log(err);
+                        cb(err);
+                    });
+                });
+            }
 
             //IMAGE ADD
             if (angular.isDefined(data.form.file)) {

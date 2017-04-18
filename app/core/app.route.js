@@ -183,6 +183,7 @@
                         prepTemplateNames: prepTemplateNames,
                         prepTemplateTypes: prepTemplateTypes,
                         prepUpsellDeals: prepUpsellDeals,
+                        prepUpsellAssocs: prepUpsellAssocs,
                         prepStandardD: prepStandardD,
                         prepEarlyBirdD: prepEarlyBirdD,
                         prepDealImages: prepDealImages
@@ -334,6 +335,12 @@
         /* @ngInject */
         function prepUpsellDeals(DealService) {
             return DealService.getUpsellDeals();
+        }
+
+        prepUpsellAssocs.$inject = ['DealService', '$stateParams'];
+        /* @ngInject */
+        function prepUpsellAssocs(DealService, $stateParams) {
+            return DealService.getUpsellAssociations($stateParams.id);
         }
 
         prepTemplateNames.$inject = ['DealService'];

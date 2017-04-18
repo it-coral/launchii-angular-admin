@@ -17,6 +17,7 @@
         'prepTemplateNames',
         'prepTemplateTypes',
         'prepUpsellDeals',
+        'prepUpsellAssocs',
         'prepStandardD',
         'prepEarlyBirdD',
         'prepDealImages',
@@ -37,6 +38,7 @@
         prepTemplateNames,
         prepTemplateTypes,
         prepUpsellDeals,
+        prepUpsellAssocs,
         prepStandardD,
         prepEarlyBirdD,
         prepDealImages,
@@ -54,7 +56,6 @@
         vm.form.highlights = [];
         vm.form.templates = [];
         vm.form.discounts = {};
-        //vm.form.highlights = vm.selectedDeal.highlights;
         vm.highlights = prepSelHighlights;
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
@@ -101,7 +102,7 @@
         vm.setActive = setActive;
 
         vm.upsellDeals = prepUpsellDeals;
-        vm.form.upsell_associations = [];
+        vm.form.upsell_associations = prepUpsellAssocs;
 
         //images
         vm.form.file = [];
