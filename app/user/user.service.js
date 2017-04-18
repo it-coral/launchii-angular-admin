@@ -21,7 +21,8 @@
             findInList: findInList,
             isEmpty: isEmpty,
             search: search,
-            searchedList: []
+            searchedList: [],
+            send_confirm: send_confirm
         }
 
         return service;
@@ -190,6 +191,22 @@
             var d = $q.defer();
 
             $http.delete(url, {})
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    $log.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function send_confirm(id) {
+            var url = api + "/" + id + "/send_confirm_email";
+            var d = $q.defer();
+
+            $http.post(url, {})
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {
