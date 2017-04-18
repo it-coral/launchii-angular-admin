@@ -9066,7 +9066,8 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             findInList: findInList,
             isEmpty: isEmpty,
             search: search,
-            searchedList: []
+            searchedList: [],
+            send_confirm: send_confirm
         }
 
         return service;
@@ -9245,9 +9246,26 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
             return d.promise;
         }
+
+        function send_confirm(id) {
+            var url = api + "/" + id + "/send_confirm_email";
+            var d = $q.defer();
+
+            $http.post(url, {})
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    $log.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
     }
 
 })();
+
 (function() {
     'use strict';
 
@@ -9498,30 +9516,54 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     angular.module('app.users')
         .controller('UserViewController', UserViewController);
 
-    UserViewController.$inject = ['UserService', '$stateParams', 'prepSelUser', 'HelperService'];
+    UserViewController.$inject = ['UserService', '$stateParams', 'prepSelUser', 'HelperService', '$log'];
 
     /* @ngInject */
-    function UserViewController(UserService, $stateParams, prepSelUser, HelperService) {
+    function UserViewController(UserService, $stateParams, prepSelUser, HelperService, $log) {
         var vm = this;
 
         vm.mode = "View";
         vm.response = {};
         vm.userId = $stateParams.id;
         vm.user = prepSelUser;
-        vm.isDone = false;
+        vm.isDone = true;
         vm.prevState = HelperService.getPrevState();
+
+        vm.sendConfirmationEmail = sendConfirmationEmail;
 
         //activate();
 
         ///////////////////
 
         function activate() {
-            DealService.find(vm.dealId).then(function(data) {
-                vm.deal = data;
+        }
+
+        function sendConfirmationEmail(elem) {
+            var ladda = Ladda.create(elem);
+            ladda.start();
+
+            UserService.send_confirm(vm.user.uid).then(function(resp) {
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Sent the confirmation email to " + vm.user.email;
+
+                vm.isDone = true;
+                ladda.stop();
+            }).catch(function(err) {
+                $log.log(err);
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to send confirmation email.";
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
+
+                vm.isDone = true;
+                HelperService.goToAnchor('msg-info');
+                ladda.stop();
             });
         }
     }
 })();
+
 (function() {
     'use strict';
 
