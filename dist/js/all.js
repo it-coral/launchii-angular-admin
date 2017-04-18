@@ -5649,6 +5649,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         deal['deal_type'] = 'standard';
                     }
 
+                    if (deal.is_earlybird) {
+                        deal['discount_type'] = 'early_bird_discount';
+                    } else {
+                        deal['discount_type'] = 'standard_discount';
+                    }
+
                     //DISABLED
                     BrandService.findInList(deal.brand_id).then(function(brand) {
                         deal['brand'] = brand;
@@ -6404,6 +6410,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         vm.form = {};
         vm.form.status = 'draft';
         vm.form.deal_type = 'standard';
+        vm.form.discount_type = 'standard_discount';
         vm.form.highlights = [];
         vm.form.templates = [];
         vm.form.discounts = {};

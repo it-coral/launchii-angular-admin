@@ -131,6 +131,13 @@
                                 <option value=""></option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label>Discount Type</label>
+                            <select class="form-control input-medium" ng-model="vm.form.discount_type" required>
+                              <option value="standard_discount">Standard Discount</option>
+                              <option value="early_bird_discount">Early Bird Discount</option>
+                            </select>
+                        </div>
                         <!--Image-->
                         <div ng-if="vm.mode == 'Edit'">
                             <hr />

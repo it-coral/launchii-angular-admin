@@ -514,6 +514,12 @@
                         deal['deal_type'] = 'standard';
                     }
 
+                    if (deal.is_earlybird) {
+                        deal['discount_type'] = 'early_bird_discount';
+                    } else {
+                        deal['discount_type'] = 'standard_discount';
+                    }
+
                     //DISABLED
                     BrandService.findInList(deal.brand_id).then(function(brand) {
                         deal['brand'] = brand;
@@ -681,8 +687,6 @@
             });
 
             $http.patch(url, data).then(function(resp) {
-                $log.log('updateUpsellAssociations');
-                $log.log(resp);
                 d.resolve(resp);
             }).catch(function(err) {
                 $log.log(err);
