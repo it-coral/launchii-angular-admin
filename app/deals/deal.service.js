@@ -515,8 +515,6 @@
                         deal['deal_type'] = 'standard';
                     }
 
-                    console.log(deal);
-
                     //DISABLED
                     BrandService.findInList(deal.brand_id).then(function(brand) {
                         deal['brand'] = brand;

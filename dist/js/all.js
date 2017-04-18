@@ -5657,8 +5657,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                         deal['deal_type'] = 'standard';
                     }
 
-                    console.log(deal);
-
                     //DISABLED
                     BrandService.findInList(deal.brand_id).then(function(brand) {
                         deal['brand'] = brand;
