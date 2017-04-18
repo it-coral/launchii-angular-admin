@@ -27,6 +27,8 @@
                 $provide.value('prepStandardD', { concat: Array.prototype.concat });
                 $provide.value('prepEarlyBirdD', jasmine.createSpy('prepEarlyBirdD'));
                 $provide.value('prepDealImages', jasmine.createSpy('prepDealImages'));
+                $provide.value('prepUpsellDeals', jasmine.createSpy('prepUpsellDeals'));
+                $provide.value('prepUpsellAssocs', jasmine.createSpy('prepUpsellAssocs'));
             });
 
         });
