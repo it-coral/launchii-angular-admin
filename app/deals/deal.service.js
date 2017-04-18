@@ -59,6 +59,8 @@
             templateTypes: [],
             getTemplateNames: getTemplateNames,
             getTemplateTypes: getTemplateTypes,
+            getUpsellDeals: getUpsellDeals,
+            getUpsellAssociations: getUpsellAssociations,
             getStandardDiscounts: getStandardDiscounts,
             getEarlyBirdDiscounts: getEarlyBirdDiscounts,
             dealImagesList: [],
@@ -507,6 +509,12 @@
                         deal['status'] = 'draft';
                     }
 
+                    if (deal.is_upsell) {
+                        deal['deal_type'] = 'upsell';
+                    } else {
+                        deal['deal_type'] = 'standard';
+                    }
+
                     //DISABLED
                     BrandService.findInList(deal.brand_id).then(function(brand) {
                         deal['brand'] = brand;
@@ -565,6 +573,38 @@
                     d.resolve(results);
                 }
 
+            });
+
+            return d.promise;
+        }
+
+        function getUpsellDeals() {
+            var d = $q.defer();
+
+            var url = api + '?page=1&limit=500&deal_type=upsell';
+            $http.get(url).then(function(resp) {
+                d.resolve(resp.data.deals);
+            }).catch(function(err) {
+                $log.log(err);
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
+
+        function getUpsellAssociations(dealId) {
+            var d = $q.defer();
+            var url = api + '/' + dealId + '/upsells';
+
+            $http.get(url).then(function(resp) {
+                var associations = [];
+                angular.forEach(resp.data.upsell_associations, function(assoc, index) {
+                    associations.push(assoc.upsell_id);
+                });
+                d.resolve(associations);
+            }).catch(function(err) {
+                $log.log(err);
+                d.reject(err);
             });
 
             return d.promise;
@@ -636,6 +676,30 @@
             return d.promise;
         }
 
+        function updateUpsellAssociations(dealId, associations) {
+            var d = $q.defer();
+            var url = api + '/' + dealId + '/upsells';
+
+            var data = {
+                deal: {
+                    upsell_associations: []
+                }
+            };
+
+            angular.forEach(associations, function(uid, index) {
+                data.deal.upsell_associations.push({upsell_id: uid});
+            });
+
+            $http.patch(url, data).then(function(resp) {
+                d.resolve(resp);
+            }).catch(function(err) {
+                $log.log(err);
+                d.reject(err);
+            });
+
+            return d.promise;
+        }
+
         function addFileImage(dealId, file) {
             var d = $q.defer();
             var url = api + '/' + dealId + '/images';
@@ -671,6 +735,18 @@
                     var dealId = resp.data.deal.uid;
 
                     var tasks = [];
+
+                    // upsell associations
+                    if (data.deal_type === 'standard') {
+                        tasks.push(function(cb) {
+                            updateUpsellAssociations(dealId, data.upsell_associations).then(function(resp) {
+                                cb(null, resp);
+                            }).catch(function(err) {
+                                $log.log(err);
+                                cb(err);
+                            });
+                        });
+                    }
 
                     if (data.file.length > 0) {
                         angular.forEach(data.file, function(img, index) {
@@ -769,6 +845,18 @@
 
             var tasks = [];
             var tasksSeries = [];
+
+            // UPSELL ASSOCIATIONS
+            if (data.form.deal_type === 'standard') {
+                tasks.push(function(cb) {
+                    updateUpsellAssociations(id, data.form.upsell_associations).then(function(resp) {
+                        cb(null, resp);
+                    }).catch(function(err) {
+                        $log.log(err);
+                        cb(err);
+                    });
+                });
+            }
 
             //IMAGE ADD
             if (angular.isDefined(data.form.file)) {

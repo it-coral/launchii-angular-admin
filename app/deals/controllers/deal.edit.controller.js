@@ -16,6 +16,8 @@
         'prepSelTemplates',
         'prepTemplateNames',
         'prepTemplateTypes',
+        'prepUpsellDeals',
+        'prepUpsellAssocs',
         'prepStandardD',
         'prepEarlyBirdD',
         'prepDealImages',
@@ -35,6 +37,8 @@
         prepSelTemplates,
         prepTemplateNames,
         prepTemplateTypes,
+        prepUpsellDeals,
+        prepUpsellAssocs,
         prepStandardD,
         prepEarlyBirdD,
         prepDealImages,
@@ -52,7 +56,6 @@
         vm.form.highlights = [];
         vm.form.templates = [];
         vm.form.discounts = {};
-        //vm.form.highlights = vm.selectedDeal.highlights;
         vm.highlights = prepSelHighlights;
         vm.isDone = true;
         vm.brands = brandPrepService.brands;
@@ -98,6 +101,9 @@
         vm.removeSelDiscount = removeSelDiscount;
         vm.setActive = setActive;
 
+        vm.upsellDeals = prepUpsellDeals;
+        vm.form.upsell_associations = prepUpsellAssocs;
+
         //images
         vm.form.file = [];
         vm.images = prepDealImages;
@@ -115,7 +121,6 @@
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
 
-        vm.availableStats = ['draft', 'published', 'hidden', 'deleted', 'pending'];
         vm.capFirstLetter = HelperService.capFirstLetter;
 
         activate();
