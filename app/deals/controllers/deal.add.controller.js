@@ -4,10 +4,10 @@
     angular.module('app.deals')
         .controller('DealAddController', DealAddController);
 
-    DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes', 'prepUpsellDeals'];
+    DealAddController.$inject = ['DealService', 'UserService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes', 'prepUpsellDeals'];
 
     /* @ngInject */
-    function DealAddController(DealService, $scope, HelperService, $state, brandPrepService, prepTemplateNames, prepTemplateTypes, prepUpsellDeals) {
+    function DealAddController(DealService, UserService, $scope, HelperService, $state, brandPrepService, prepTemplateNames, prepTemplateTypes, prepUpsellDeals) {
         var vm = this;
 
         vm.mode = "Add";
@@ -15,6 +15,7 @@
         vm.form.status = 'draft';
         vm.form.deal_type = 'standard';
         vm.form.discount_type = 'standard_discount';
+        vm.form.vendor_id = '';
         vm.form.highlights = [];
         vm.form.templates = [];
         vm.form.discounts = {};
@@ -79,6 +80,9 @@
         vm.isDealEmpty = DealService.isEmpty;
         vm.isBrandEmpty = brandPrepService.total == 0;
 
+        // vendors
+        vm.vendors = [];
+
         vm.capFirstLetter = HelperService.capFirstLetter;
 
         activate();
@@ -101,6 +105,7 @@
             });
 
             insertNewImageObj();
+            getVendors();
             $(document).ready(function() {
                 ComponentsDateTimePickers.init();
             });
@@ -108,6 +113,12 @@
             //     $log.log(newVal);
             //     return newVal.toFixed(2);
             // });
+        }
+
+        function getVendors(){
+            UserService.getAll({role: 'vendor'}).then(function(resp) {
+                vm.vendors = resp.users;
+            });
         }
 
         function hasTemplates() {
@@ -397,7 +408,7 @@
                 vm.isDone = true;
                 return false;
             }
-
+            
             DealService.add(vm.form).then(function(resp) {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
