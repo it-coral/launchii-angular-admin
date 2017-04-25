@@ -46,30 +46,37 @@
             if (!__is_local)
                 forceSSL(event);
 
-            BreadCrumbService.set(toState.name);
-            $rootScope.crumbs = BreadCrumbService.getCrumbs();
+            var stateName = toState.name;
 
             ngProgressLite.start();
 
-            if (toState.name !== 'logout') {
+            if (toState.name === 'logout') {
+                if (!$rootScope.currentUser) {
+                    event.preventDefault();
+                    $state.go('auth');
+                    stateName = 'auth';
+                    ngProgressLite.done();
+                }
+            } else {
                 if ($rootScope.currentUser) {
                     if (toState.name === 'auth') {
                         event.preventDefault();
                         $state.go('dashboard');
-                        BreadCrumbService.set('dashboard');
-                        $rootScope.crumbs = BreadCrumbService.getCrumbs();
+                        stateName = 'dashboard';
                         ngProgressLite.done();
                     }
                 } else {
                     if (toState.name !== 'auth') {
                         event.preventDefault();
                         $state.go('auth');
-                        BreadCrumbService.set('auth');
-                        $rootScope.crumbs = BreadCrumbService.getCrumbs();
+                        stateName = 'auth';
                         ngProgressLite.done();
                     }
                 }
             }
+
+            BreadCrumbService.set(stateName);
+            $rootScope.crumbs = BreadCrumbService.getCrumbs();
 
         });
 
