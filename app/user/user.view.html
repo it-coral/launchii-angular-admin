@@ -15,12 +15,23 @@
                     <span class="caption-subject bold uppercase"> {{ vm.user.name }} </span>
                 </div>
                 <div class="actions">
+                    <a href="javascript:;" ng-click="vm.sendConfirmationEmail($event.currentTarget)" data-spinner-color="#e7505a" ng-if="!(vm.user.is_confirmed)" class="btn btn-outline btn-circle btn-sm green">
+                        <i class="fa fa-envelope"></i> Send Confirmation Email
+                    </a>
                     <a ui-sref="dashboard.user.edit({id:vm.userId})" ng-if="!(vm.user | isSuperAdmin)" class="btn btn-outline btn-circle btn-sm purple">
                         <i class="fa fa-edit"></i> Edit
                     </a>
                 </div>
             </div>
             <div class="portlet-body form">
+                <div class="alert {{vm.response.success}}" id="msg-info" ng-show="vm.response.msg">
+                    <div><strong>{{vm.response.alert}}</strong> {{vm.response.msg}}</div>
+                    <div ng-if="vm.response['error_arr']">
+                        <ul class="pl-5 mt-1">
+                            <li ng-repeat="error in vm.response['error_arr']">{{ error }}</li>
+                        </ul>
+                    </div>
+                </div>
                 <form role="form" class="form-horizontal">
                     <div class="form-body">
                         <div class="form-group">

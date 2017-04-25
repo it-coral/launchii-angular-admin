@@ -4,15 +4,17 @@
     angular.module('app.deals')
         .controller('DealAddController', DealAddController);
 
-    DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes'];
+    DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes', 'prepUpsellDeals'];
 
     /* @ngInject */
-    function DealAddController(DealService, $scope, HelperService, $state, brandPrepService, prepTemplateNames, prepTemplateTypes) {
+    function DealAddController(DealService, $scope, HelperService, $state, brandPrepService, prepTemplateNames, prepTemplateTypes, prepUpsellDeals) {
         var vm = this;
 
         vm.mode = "Add";
         vm.form = {};
         vm.form.status = 'draft';
+        vm.form.deal_type = 'standard';
+        vm.form.discount_type = 'standard_discount';
         vm.form.highlights = [];
         vm.form.templates = [];
         vm.form.discounts = {};
@@ -59,6 +61,9 @@
         vm.setActive = setActive;
         vm.discounts = [];
 
+        vm.upsellDeals = prepUpsellDeals;
+        vm.form.upsell_associations = [];
+
         //image
         vm.form.file = [];
         vm.imageCounter = 0;
@@ -74,7 +79,6 @@
         vm.isDealEmpty = DealService.isEmpty;
         vm.isBrandEmpty = brandPrepService.total == 0;
 
-        vm.availableStats = ['draft', 'published', 'hidden', 'deleted', 'pending'];
         vm.capFirstLetter = HelperService.capFirstLetter;
 
         activate();

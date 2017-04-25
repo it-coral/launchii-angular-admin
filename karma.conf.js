@@ -66,6 +66,7 @@ module.exports = function(config) {
 
             //Dashboard Module
             'app/dashboard/*.js',
+            'app/dashboard/*/*.js',
 
             //Brand Module
             'app/brand/*.js',
