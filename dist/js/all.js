@@ -414,14 +414,9 @@ c=c.replace(q,function(a){p=a;return""});e=e||{};t(m.urlParams,function(a,b){h=e
  */
 "undefined"!=typeof module&&"undefined"!=typeof exports&&module.exports===exports&&(module.exports="ui.router"),function(a,b,c){"use strict";function d(a,b){return T(new(T(function(){},{prototype:a})),b)}function e(a){return S(arguments,function(b){b!==a&&S(b,function(b,c){a.hasOwnProperty(c)||(a[c]=b)})}),a}function f(a,b){var c=[];for(var d in a.path){if(a.path[d]!==b.path[d])break;c.push(a.path[d])}return c}function g(a){if(Object.keys)return Object.keys(a);var b=[];return S(a,function(a,c){b.push(c)}),b}function h(a,b){if(Array.prototype.indexOf)return a.indexOf(b,Number(arguments[2])||0);var c=a.length>>>0,d=Number(arguments[2])||0;for(d=d<0?Math.ceil(d):Math.floor(d),d<0&&(d+=c);d<c;d++)if(d in a&&a[d]===b)return d;return-1}function i(a,b,c,d){var e,i=f(c,d),j={},k=[];for(var l in i)if(i[l]&&i[l].params&&(e=g(i[l].params),e.length))for(var m in e)h(k,e[m])>=0||(k.push(e[m]),j[e[m]]=a[e[m]]);return T({},j,b)}function j(a,b,c){if(!c){c=[];for(var d in a)c.push(d)}for(var e=0;e<c.length;e++){var f=c[e];if(a[f]!=b[f])return!1}return!0}function k(a,b){var c={};return S(a,function(a){c[a]=b[a]}),c}function l(a){var b={},c=Array.prototype.concat.apply(Array.prototype,Array.prototype.slice.call(arguments,1));return S(c,function(c){c in a&&(b[c]=a[c])}),b}function m(a){var b={},c=Array.prototype.concat.apply(Array.prototype,Array.prototype.slice.call(arguments,1));for(var d in a)h(c,d)==-1&&(b[d]=a[d]);return b}function n(a,b){var c=R(a),d=c?[]:{};return S(a,function(a,e){b(a,e)&&(d[c?d.length:e]=a)}),d}function o(a,b){var c=R(a)?[]:{};return S(a,function(a,d){c[d]=b(a,d)}),c}function p(a){return a.then(c,function(){})&&a}function q(a,b){var d=1,f=2,i={},j=[],k=i,l=T(a.when(i),{$$promises:i,$$values:i});this.study=function(i){function n(a,c){if(t[c]!==f){if(s.push(c),t[c]===d)throw s.splice(0,h(s,c)),new Error("Cyclic dependency: "+s.join(" -> "));if(t[c]=d,P(a))r.push(c,[function(){return b.get(a)}],j);else{var e=b.annotate(a);S(e,function(a){a!==c&&i.hasOwnProperty(a)&&n(i[a],a)}),r.push(c,a,e)}s.pop(),t[c]=f}}function o(a){return Q(a)&&a.then&&a.$$promises}if(!Q(i))throw new Error("'invocables' must be an object");var q=g(i||{}),r=[],s=[],t={};return S(i,n),i=s=t=null,function(d,f,g){function h(){--v||(w||e(u,f.$$values),s.$$values=u,s.$$promises=s.$$promises||!0,delete s.$$inheritedValues,n.resolve(u))}function i(a){s.$$failure=a,n.reject(a)}function j(c,e,f){function j(a){l.reject(a),i(a)}function k(){if(!N(s.$$failure))try{l.resolve(b.invoke(e,g,u)),l.promise.then(function(a){u[c]=a,h()},j)}catch(a){j(a)}}var l=a.defer(),m=0;S(f,function(a){t.hasOwnProperty(a)&&!d.hasOwnProperty(a)&&(m++,t[a].then(function(b){u[a]=b,--m||k()},j))}),m||k(),t[c]=p(l.promise)}if(o(d)&&g===c&&(g=f,f=d,d=null),d){if(!Q(d))throw new Error("'locals' must be an object")}else d=k;if(f){if(!o(f))throw new Error("'parent' must be a promise returned by $resolve.resolve()")}else f=l;var n=a.defer(),s=p(n.promise),t=s.$$promises={},u=T({},d),v=1+r.length/3,w=!1;if(p(s),N(f.$$failure))return i(f.$$failure),s;f.$$inheritedValues&&e(u,m(f.$$inheritedValues,q)),T(t,f.$$promises),f.$$values?(w=e(u,m(f.$$values,q)),s.$$inheritedValues=m(f.$$values,q),h()):(f.$$inheritedValues&&(s.$$inheritedValues=m(f.$$inheritedValues,q)),f.then(h,i));for(var x=0,y=r.length;x<y;x+=3)d.hasOwnProperty(r[x])?h():j(r[x],r[x+1],r[x+2]);return s}},this.resolve=function(a,b,c,d){return this.study(a)(b,c,d)}}function r(){var a=b.version.minor<3;this.shouldUnsafelyUseHttp=function(b){a=!!b},this.$get=["$http","$templateCache","$injector",function(b,c,d){return new s(b,c,d,a)}]}function s(a,b,c,d){this.fromConfig=function(a,b,c){return N(a.template)?this.fromString(a.template,b):N(a.templateUrl)?this.fromUrl(a.templateUrl,b):N(a.templateProvider)?this.fromProvider(a.templateProvider,b,c):null},this.fromString=function(a,b){return O(a)?a(b):a},this.fromUrl=function(e,f){return O(e)&&(e=e(f)),null==e?null:d?a.get(e,{cache:b,headers:{Accept:"text/html"}}).then(function(a){return a.data}):c.get("$templateRequest")(e)},this.fromProvider=function(a,b,d){return c.invoke(a,null,d||{params:b})}}function t(a,b,e){function f(b,c,d,e){if(q.push(b),o[b])return o[b];if(!/^\w+([-.]+\w+)*(?:\[\])?$/.test(b))throw new Error("Invalid parameter name '"+b+"' in pattern '"+a+"'");if(p[b])throw new Error("Duplicate parameter name '"+b+"' in pattern '"+a+"'");return p[b]=new W.Param(b,c,d,e),p[b]}function g(a,b,c,d){var e=["",""],f=a.replace(/[\\\[\]\^$*+?.()|{}]/g,"\\$&");if(!b)return f;switch(c){case!1:e=["(",")"+(d?"?":"")];break;case!0:f=f.replace(/\/$/,""),e=["(?:/(",")|/)?"];break;default:e=["("+c+"|",")?"]}return f+e[0]+b+e[1]}function h(e,f){var g,h,i,j,k;return g=e[2]||e[3],k=b.params[g],i=a.substring(m,e.index),h=f?e[4]:e[4]||("*"==e[1]?".*":null),h&&(j=W.type(h)||d(W.type("string"),{pattern:new RegExp(h,b.caseInsensitive?"i":c)})),{id:g,regexp:h,segment:i,type:j,cfg:k}}b=T({params:{}},Q(b)?b:{});var i,j=/([:*])([\w\[\]]+)|\{([\w\[\]]+)(?:\:\s*((?:[^{}\\]+|\\.|\{(?:[^{}\\]+|\\.)*\})+))?\}/g,k=/([:]?)([\w\[\].-]+)|\{([\w\[\].-]+)(?:\:\s*((?:[^{}\\]+|\\.|\{(?:[^{}\\]+|\\.)*\})+))?\}/g,l="^",m=0,n=this.segments=[],o=e?e.params:{},p=this.params=e?e.params.$$new():new W.ParamSet,q=[];this.source=a;for(var r,s,t;(i=j.exec(a))&&(r=h(i,!1),!(r.segment.indexOf("?")>=0));)s=f(r.id,r.type,r.cfg,"path"),l+=g(r.segment,s.type.pattern.source,s.squash,s.isOptional),n.push(r.segment),m=j.lastIndex;t=a.substring(m);var u=t.indexOf("?");if(u>=0){var v=this.sourceSearch=t.substring(u);if(t=t.substring(0,u),this.sourcePath=a.substring(0,m+u),v.length>0)for(m=0;i=k.exec(v);)r=h(i,!0),s=f(r.id,r.type,r.cfg,"search"),m=j.lastIndex}else this.sourcePath=a,this.sourceSearch="";l+=g(t)+(b.strict===!1?"/?":"")+"$",n.push(t),this.regexp=new RegExp(l,b.caseInsensitive?"i":c),this.prefix=n[0],this.$$paramNames=q}function u(a){T(this,a)}function v(){function a(a){return null!=a?a.toString().replace(/(~|\/)/g,function(a){return{"~":"~~","/":"~2F"}[a]}):a}function e(a){return null!=a?a.toString().replace(/(~~|~2F)/g,function(a){return{"~~":"~","~2F":"/"}[a]}):a}function f(){return{strict:p,caseInsensitive:m}}function i(a){return O(a)||R(a)&&O(a[a.length-1])}function j(){for(;w.length;){var a=w.shift();if(a.pattern)throw new Error("You cannot override a type's .pattern at runtime.");b.extend(r[a.name],l.invoke(a.def))}}function k(a){T(this,a||{})}W=this;var l,m=!1,p=!0,q=!1,r={},s=!0,w=[],x={string:{encode:a,decode:e,is:function(a){return null==a||!N(a)||"string"==typeof a},pattern:/[^\/]*/},int:{encode:a,decode:function(a){return parseInt(a,10)},is:function(a){return a!==c&&null!==a&&this.decode(a.toString())===a},pattern:/\d+/},bool:{encode:function(a){return a?1:0},decode:function(a){return 0!==parseInt(a,10)},is:function(a){return a===!0||a===!1},pattern:/0|1/},date:{encode:function(a){return this.is(a)?[a.getFullYear(),("0"+(a.getMonth()+1)).slice(-2),("0"+a.getDate()).slice(-2)].join("-"):c},decode:function(a){if(this.is(a))return a;var b=this.capture.exec(a);return b?new Date(b[1],b[2]-1,b[3]):c},is:function(a){return a instanceof Date&&!isNaN(a.valueOf())},equals:function(a,b){return this.is(a)&&this.is(b)&&a.toISOString()===b.toISOString()},pattern:/[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2][0-9]|3[0-1])/,capture:/([0-9]{4})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/},json:{encode:b.toJson,decode:b.fromJson,is:b.isObject,equals:b.equals,pattern:/[^\/]*/},any:{encode:b.identity,decode:b.identity,equals:b.equals,pattern:/.*/}};v.$$getDefaultValue=function(a){if(!i(a.value))return a.value;if(!l)throw new Error("Injectable functions cannot be called at configuration time");return l.invoke(a.value)},this.caseInsensitive=function(a){return N(a)&&(m=a),m},this.strictMode=function(a){return N(a)&&(p=a),p},this.defaultSquashPolicy=function(a){if(!N(a))return q;if(a!==!0&&a!==!1&&!P(a))throw new Error("Invalid squash policy: "+a+". Valid policies: false, true, arbitrary-string");return q=a,a},this.compile=function(a,b){return new t(a,T(f(),b))},this.isMatcher=function(a){if(!Q(a))return!1;var b=!0;return S(t.prototype,function(c,d){O(c)&&(b=b&&N(a[d])&&O(a[d]))}),b},this.type=function(a,b,c){if(!N(b))return r[a];if(r.hasOwnProperty(a))throw new Error("A type named '"+a+"' has already been defined.");return r[a]=new u(T({name:a},b)),c&&(w.push({name:a,def:c}),s||j()),this},S(x,function(a,b){r[b]=new u(T({name:b},a))}),r=d(r,{}),this.$get=["$injector",function(a){return l=a,s=!1,j(),S(x,function(a,b){r[b]||(r[b]=new u(a))}),this}],this.Param=function(a,d,e,f){function j(a){var b=Q(a)?g(a):[],c=h(b,"value")===-1&&h(b,"type")===-1&&h(b,"squash")===-1&&h(b,"array")===-1;return c&&(a={value:a}),a.$$fn=i(a.value)?a.value:function(){return a.value},a}function k(c,d,e){if(c.type&&d)throw new Error("Param '"+a+"' has two type configurations.");return d?d:c.type?b.isString(c.type)?r[c.type]:c.type instanceof u?c.type:new u(c.type):"config"===e?r.any:r.string}function m(){var b={array:"search"===f&&"auto"},c=a.match(/\[\]$/)?{array:!0}:{};return T(b,c,e).array}function p(a,b){var c=a.squash;if(!b||c===!1)return!1;if(!N(c)||null==c)return q;if(c===!0||P(c))return c;throw new Error("Invalid squash policy: '"+c+"'. Valid policies: false, true, or arbitrary string")}function s(a,b,d,e){var f,g,i=[{from:"",to:d||b?c:""},{from:null,to:d||b?c:""}];return f=R(a.replace)?a.replace:[],P(e)&&f.push({from:e,to:c}),g=o(f,function(a){return a.from}),n(i,function(a){return h(g,a.from)===-1}).concat(f)}function t(){if(!l)throw new Error("Injectable functions cannot be called at configuration time");var a=l.invoke(e.$$fn);if(null!==a&&a!==c&&!x.type.is(a))throw new Error("Default value ("+a+") for parameter '"+x.id+"' is not an instance of Type ("+x.type.name+")");return a}function v(a){function b(a){return function(b){return b.from===a}}function c(a){var c=o(n(x.replace,b(a)),function(a){return a.to});return c.length?c[0]:a}return a=c(a),N(a)?x.type.$normalize(a):t()}function w(){return"{Param:"+a+" "+d+" squash: '"+A+"' optional: "+z+"}"}var x=this;e=j(e),d=k(e,d,f);var y=m();d=y?d.$asArray(y,"search"===f):d,"string"!==d.name||y||"path"!==f||e.value!==c||(e.value="");var z=e.value!==c,A=p(e,z),B=s(e,y,z,A);T(this,{id:a,type:d,location:f,array:y,squash:A,replace:B,isOptional:z,value:v,dynamic:c,config:e,toString:w})},k.prototype={$$new:function(){return d(this,T(new k,{$$parent:this}))},$$keys:function(){for(var a=[],b=[],c=this,d=g(k.prototype);c;)b.push(c),c=c.$$parent;return b.reverse(),S(b,function(b){S(g(b),function(b){h(a,b)===-1&&h(d,b)===-1&&a.push(b)})}),a},$$values:function(a){var b={},c=this;return S(c.$$keys(),function(d){b[d]=c[d].value(a&&a[d])}),b},$$equals:function(a,b){var c=!0,d=this;return S(d.$$keys(),function(e){var f=a&&a[e],g=b&&b[e];d[e].type.equals(f,g)||(c=!1)}),c},$$validates:function(a){var d,e,f,g,h,i=this.$$keys();for(d=0;d<i.length&&(e=this[i[d]],f=a[i[d]],f!==c&&null!==f||!e.isOptional);d++){if(g=e.type.$normalize(f),!e.type.is(g))return!1;if(h=e.type.encode(g),b.isString(h)&&!e.type.pattern.exec(h))return!1}return!0},$$parent:c},this.ParamSet=k}function w(a,d){function e(a){var b=/^\^((?:\\[^a-zA-Z0-9]|[^\\\[\]\^$*+?.()|{}]+)*)/.exec(a.source);return null!=b?b[1].replace(/\\(.)/g,"$1"):""}function f(a,b){return a.replace(/\$(\$|\d{1,2})/,function(a,c){return b["$"===c?0:Number(c)]})}function g(a,b,c){if(!c)return!1;var d=a.invoke(b,b,{$match:c});return!N(d)||d}function h(d,e,f,g,h){function m(a,b,c){return"/"===q?a:b?q.slice(0,-1)+a:c?q.slice(1)+a:a}function n(a){function b(a){var b=a(f,d);return!!b&&(P(b)&&d.replace().url(b),!0)}if(!a||!a.defaultPrevented){p&&d.url()===p;p=c;var e,g=j.length;for(e=0;e<g;e++)if(b(j[e]))return;k&&b(k)}}function o(){return i=i||e.$on("$locationChangeSuccess",n)}var p,q=g.baseHref(),r=d.url();return l||o(),{sync:function(){n()},listen:function(){return o()},update:function(a){return a?void(r=d.url()):void(d.url()!==r&&(d.url(r),d.replace()))},push:function(a,b,e){var f=a.format(b||{});null!==f&&b&&b["#"]&&(f+="#"+b["#"]),d.url(f),p=e&&e.$$avoidResync?d.url():c,e&&e.replace&&d.replace()},href:function(c,e,f){if(!c.validates(e))return null;var g=a.html5Mode();b.isObject(g)&&(g=g.enabled),g=g&&h.history;var i=c.format(e);if(f=f||{},g||null===i||(i="#"+a.hashPrefix()+i),null!==i&&e&&e["#"]&&(i+="#"+e["#"]),i=m(i,g,f.absolute),!f.absolute||!i)return i;var j=!g&&i?"/":"",k=d.port();return k=80===k||443===k?"":":"+k,[d.protocol(),"://",d.host(),k,j,i].join("")}}}var i,j=[],k=null,l=!1;this.rule=function(a){if(!O(a))throw new Error("'rule' must be a function");return j.push(a),this},this.otherwise=function(a){if(P(a)){var b=a;a=function(){return b}}else if(!O(a))throw new Error("'rule' must be a function");return k=a,this},this.when=function(a,b){var c,h=P(b);if(P(a)&&(a=d.compile(a)),!h&&!O(b)&&!R(b))throw new Error("invalid 'handler' in when()");var i={matcher:function(a,b){return h&&(c=d.compile(b),b=["$match",function(a){return c.format(a)}]),T(function(c,d){return g(c,b,a.exec(d.path(),d.search()))},{prefix:P(a.prefix)?a.prefix:""})},regex:function(a,b){if(a.global||a.sticky)throw new Error("when() RegExp must not be global or sticky");return h&&(c=b,b=["$match",function(a){return f(c,a)}]),T(function(c,d){return g(c,b,a.exec(d.path()))},{prefix:e(a)})}},j={matcher:d.isMatcher(a),regex:a instanceof RegExp};for(var k in j)if(j[k])return this.rule(i[k](a,b));throw new Error("invalid 'what' in when()")},this.deferIntercept=function(a){a===c&&(a=!0),l=a},this.$get=h,h.$inject=["$location","$rootScope","$injector","$browser","$sniffer"]}function x(a,e){function f(a){return 0===a.indexOf(".")||0===a.indexOf("^")}function m(a,b){if(!a)return c;var d=P(a),e=d?a:a.name,g=f(e);if(g){if(!b)throw new Error("No reference point given for path '"+e+"'");b=m(b);for(var h=e.split("."),i=0,j=h.length,k=b;i<j;i++)if(""!==h[i]||0!==i){if("^"!==h[i])break;if(!k.parent)throw new Error("Path '"+e+"' not valid for state '"+b.name+"'");k=k.parent}else k=b;h=h.slice(i).join("."),e=k.name+(k.name&&h?".":"")+h}var l=A[e];return!l||!d&&(d||l!==a&&l.self!==a)?c:l}function n(a,b){B[a]||(B[a]=[]),B[a].push(b)}function q(a){for(var b=B[a]||[];b.length;)r(b.shift())}function r(b){b=d(b,{self:b,resolve:b.resolve||{},toString:function(){return this.name}});var c=b.name;if(!P(c)||c.indexOf("@")>=0)throw new Error("State must have a valid name");if(A.hasOwnProperty(c))throw new Error("State '"+c+"' is already defined");var e=c.indexOf(".")!==-1?c.substring(0,c.lastIndexOf(".")):P(b.parent)?b.parent:Q(b.parent)&&P(b.parent.name)?b.parent.name:"";if(e&&!A[e])return n(e,b.self);for(var f in D)O(D[f])&&(b[f]=D[f](b,D.$delegates[f]));return A[c]=b,!b[C]&&b.url&&a.when(b.url,["$match","$stateParams",function(a,c){z.$current.navigable==b&&j(a,c)||z.transitionTo(b,a,{inherit:!0,location:!1})}]),q(c),b}function s(a){return a.indexOf("*")>-1}function t(a){for(var b=a.split("."),c=z.$current.name.split("."),d=0,e=b.length;d<e;d++)"*"===b[d]&&(c[d]="*");return"**"===b[0]&&(c=c.slice(h(c,b[1])),c.unshift("**")),"**"===b[b.length-1]&&(c.splice(h(c,b[b.length-2])+1,Number.MAX_VALUE),c.push("**")),b.length==c.length&&c.join("")===b.join("")}function u(a,b){return P(a)&&!N(b)?D[a]:O(b)&&P(a)?(D[a]&&!D.$delegates[a]&&(D.$delegates[a]=D[a]),D[a]=b,this):this}function v(a,b){return Q(a)?b=a:b.name=a,r(b),this}function w(a,e,f,h,j,l,n,q,r){function u(b,c,d,f){var g=a.$broadcast("$stateNotFound",b,c,d);if(g.defaultPrevented)return n.update(),E;if(!g.retry)return null;if(f.$retry)return n.update(),F;var h=z.transition=e.when(g.retry);return h.then(function(){return h!==z.transition?(a.$broadcast("$stateChangeCancel",b.to,b.toParams,c,d),B):(b.options.$retry=!0,z.transitionTo(b.to,b.toParams,b.options))},function(){return E}),n.update(),h}function v(a,c,d,g,i,l){function m(){var c=[];return S(a.views,function(d,e){var g=d.resolve&&d.resolve!==a.resolve?d.resolve:{};g.$template=[function(){return f.load(e,{view:d,locals:i.globals,params:n,notify:l.notify})||""}],c.push(j.resolve(g,i.globals,i.resolve,a).then(function(c){if(O(d.controllerProvider)||R(d.controllerProvider)){var f=b.extend({},g,i.globals);c.$$controller=h.invoke(d.controllerProvider,null,f)}else c.$$controller=d.controller;c.$$state=a,c.$$controllerAs=d.controllerAs,c.$$resolveAs=d.resolveAs,i[e]=c}))}),e.all(c).then(function(){return i.globals})}var n=d?c:k(a.params.$$keys(),c),o={$stateParams:n};i.resolve=j.resolve(a.resolve,o,i.resolve,a);var p=[i.resolve.then(function(a){i.globals=a})];return g&&p.push(g),e.all(p).then(m).then(function(a){return i})}var w=new Error("transition superseded"),B=p(e.reject(w)),D=p(e.reject(new Error("transition prevented"))),E=p(e.reject(new Error("transition aborted"))),F=p(e.reject(new Error("transition failed")));return y.locals={resolve:null,globals:{$stateParams:{}}},z={params:{},current:y.self,$current:y,transition:null},z.reload=function(a){return z.transitionTo(z.current,l,{reload:a||!0,inherit:!1,notify:!0})},z.go=function(a,b,c){return z.transitionTo(a,b,T({inherit:!0,relative:z.$current},c))},z.transitionTo=function(b,c,f){c=c||{},f=T({location:!0,inherit:!1,relative:null,notify:!0,reload:!1,$retry:!1},f||{});var g,j=z.$current,o=z.params,q=j.path,r=m(b,f.relative),s=c["#"];if(!N(r)){var t={to:b,toParams:c,options:f},A=u(t,j.self,o,f);if(A)return A;if(b=t.to,c=t.toParams,f=t.options,r=m(b,f.relative),!N(r)){if(!f.relative)throw new Error("No such state '"+b+"'");throw new Error("Could not resolve '"+b+"' from state '"+f.relative+"'")}}if(r[C])throw new Error("Cannot transition to abstract state '"+b+"'");if(f.inherit&&(c=i(l,c||{},z.$current,r)),!r.params.$$validates(c))return F;c=r.params.$$values(c),b=r;var E=b.path,G=0,H=E[G],I=y.locals,J=[];if(f.reload){if(P(f.reload)||Q(f.reload)){if(Q(f.reload)&&!f.reload.name)throw new Error("Invalid reload state object");var K=f.reload===!0?q[0]:m(f.reload);if(f.reload&&!K)throw new Error("No such reload state '"+(P(f.reload)?f.reload:f.reload.name)+"'");for(;H&&H===q[G]&&H!==K;)I=J[G]=H.locals,G++,H=E[G]}}else for(;H&&H===q[G]&&H.ownParams.$$equals(c,o);)I=J[G]=H.locals,G++,H=E[G];if(x(b,c,j,o,I,f))return s&&(c["#"]=s),z.params=c,U(z.params,l),U(k(b.params.$$keys(),l),b.locals.globals.$stateParams),f.location&&b.navigable&&b.navigable.url&&(n.push(b.navigable.url,c,{$$avoidResync:!0,replace:"replace"===f.location}),n.update(!0)),z.transition=null,e.when(z.current);if(c=k(b.params.$$keys(),c||{}),s&&(c["#"]=s),f.notify&&a.$broadcast("$stateChangeStart",b.self,c,j.self,o,f).defaultPrevented)return a.$broadcast("$stateChangeCancel",b.self,c,j.self,o),null==z.transition&&n.update(),D;for(var L=e.when(I),M=G;M<E.length;M++,H=E[M])I=J[M]=d(I),L=v(H,c,H===b,L,I,f);var O=z.transition=L.then(function(){var d,e,g;if(z.transition!==O)return a.$broadcast("$stateChangeCancel",b.self,c,j.self,o),B;for(d=q.length-1;d>=G;d--)g=q[d],g.self.onExit&&h.invoke(g.self.onExit,g.self,g.locals.globals),g.locals=null;for(d=G;d<E.length;d++)e=E[d],e.locals=J[d],e.self.onEnter&&h.invoke(e.self.onEnter,e.self,e.locals.globals);return z.transition!==O?(a.$broadcast("$stateChangeCancel",b.self,c,j.self,o),B):(z.$current=b,z.current=b.self,z.params=c,U(z.params,l),z.transition=null,f.location&&b.navigable&&n.push(b.navigable.url,b.navigable.locals.globals.$stateParams,{$$avoidResync:!0,replace:"replace"===f.location}),f.notify&&a.$broadcast("$stateChangeSuccess",b.self,c,j.self,o),n.update(!0),z.current)}).then(null,function(d){return d===w?B:z.transition!==O?(a.$broadcast("$stateChangeCancel",b.self,c,j.self,o),B):(z.transition=null,g=a.$broadcast("$stateChangeError",b.self,c,j.self,o,d),g.defaultPrevented||n.update(),e.reject(d))});return p(O),O},z.is=function(a,b,d){d=T({relative:z.$current},d||{});var e=m(a,d.relative);return N(e)?z.$current===e&&(!b||g(b).reduce(function(a,c){var d=e.params[c];return a&&!d||d.type.equals(l[c],b[c])},!0)):c},z.includes=function(a,b,d){if(d=T({relative:z.$current},d||{}),P(a)&&s(a)){if(!t(a))return!1;a=z.$current.name}var e=m(a,d.relative);if(!N(e))return c;if(!N(z.$current.includes[e.name]))return!1;if(!b)return!0;for(var f=g(b),h=0;h<f.length;h++){var i=f[h],j=e.params[i];if(j&&!j.type.equals(l[i],b[i]))return!1}return g(b).reduce(function(a,c){var d=e.params[c];return a&&!d||d.type.equals(l[c],b[c])},!0)},z.href=function(a,b,d){d=T({lossy:!0,inherit:!0,absolute:!1,relative:z.$current},d||{});var e=m(a,d.relative);if(!N(e))return null;d.inherit&&(b=i(l,b||{},z.$current,e));var f=e&&d.lossy?e.navigable:e;return f&&f.url!==c&&null!==f.url?n.href(f.url,k(e.params.$$keys().concat("#"),b||{}),{absolute:d.absolute}):null},z.get=function(a,b){if(0===arguments.length)return o(g(A),function(a){return A[a].self});var c=m(a,b||z.$current);return c&&c.self?c.self:null},z}function x(a,b,c,d,e,f){function g(a,b,c){function d(b){return"search"!=a.params[b].location}var e=a.params.$$keys().filter(d),f=l.apply({},[a.params].concat(e)),g=new W.ParamSet(f);return g.$$equals(b,c)}if(!f.reload&&a===c&&(e===c.locals||a.self.reloadOnSearch===!1&&g(c,d,b)))return!0}var y,z,A={},B={},C="abstract",D={parent:function(a){if(N(a.parent)&&a.parent)return m(a.parent);var b=/^(.+)\.[^.]+$/.exec(a.name);return b?m(b[1]):y},data:function(a){return a.parent&&a.parent.data&&(a.data=a.self.data=d(a.parent.data,a.data)),a.data},url:function(a){var b=a.url,c={params:a.params||{}};if(P(b))return"^"==b.charAt(0)?e.compile(b.substring(1),c):(a.parent.navigable||y).url.concat(b,c);if(!b||e.isMatcher(b))return b;throw new Error("Invalid url '"+b+"' in state '"+a+"'")},navigable:function(a){return a.url?a:a.parent?a.parent.navigable:null},ownParams:function(a){var b=a.url&&a.url.params||new W.ParamSet;return S(a.params||{},function(a,c){b[c]||(b[c]=new W.Param(c,null,a,"config"))}),b},params:function(a){var b=l(a.ownParams,a.ownParams.$$keys());return a.parent&&a.parent.params?T(a.parent.params.$$new(),b):new W.ParamSet},views:function(a){var b={};return S(N(a.views)?a.views:{"":a},function(c,d){d.indexOf("@")<0&&(d+="@"+a.parent.name),c.resolveAs=c.resolveAs||a.resolveAs||"$resolve",b[d]=c}),b},path:function(a){return a.parent?a.parent.path.concat(a):[]},includes:function(a){var b=a.parent?T({},a.parent.includes):{};return b[a.name]=!0,b},$delegates:{}};y=r({name:"",url:"^",views:null,abstract:!0}),y.navigable=null,this.decorator=u,this.state=v,this.$get=w,w.$inject=["$rootScope","$q","$view","$injector","$resolve","$stateParams","$urlRouter","$location","$urlMatcherFactory"]}function y(){function a(a,b){return{load:function(a,c){var d,e={template:null,controller:null,view:null,locals:null,notify:!0,async:!0,params:{}};return c=T(e,c),c.view&&(d=b.fromConfig(c.view,c.params,c.locals)),d}}}this.$get=a,a.$inject=["$rootScope","$templateFactory"]}function z(){var a=!1;this.useAnchorScroll=function(){a=!0},this.$get=["$anchorScroll","$timeout",function(b,c){return a?b:function(a){return c(function(){a[0].scrollIntoView()},0,!1)}}]}function A(a,c,d,e,f){function g(){return c.has?function(a){return c.has(a)?c.get(a):null}:function(a){try{return c.get(a)}catch(a){return null}}}function h(a,c){var d=function(){return{enter:function(a,b,c){b.after(a),c()},leave:function(a,b){a.remove(),b()}}};if(k)return{enter:function(a,c,d){b.version.minor>2?k.enter(a,null,c).then(d):k.enter(a,null,c,d)},leave:function(a,c){b.version.minor>2?k.leave(a).then(c):k.leave(a,c)}};if(j){var e=j&&j(c,a);return{enter:function(a,b,c){e.enter(a,null,b),c()},leave:function(a,b){e.leave(a),b()}}}return d()}var i=g(),j=i("$animator"),k=i("$animate"),l={restrict:"ECA",terminal:!0,priority:400,transclude:"element",compile:function(c,g,i){return function(c,g,j){function k(){if(m&&(m.remove(),m=null),o&&(o.$destroy(),o=null),n){var a=n.data("$uiViewAnim");s.leave(n,function(){a.$$animLeave.resolve(),m=null}),m=n,n=null}}function l(h){var l,m=C(c,j,g,e),t=m&&a.$current&&a.$current.locals[m];if(h||t!==p){l=c.$new(),p=a.$current.locals[m],l.$emit("$viewContentLoading",m);var u=i(l,function(a){var e=f.defer(),h=f.defer(),i={$animEnter:e.promise,$animLeave:h.promise,$$animLeave:h};a.data("$uiViewAnim",i),s.enter(a,g,function(){e.resolve(),o&&o.$emit("$viewContentAnimationEnded"),(b.isDefined(r)&&!r||c.$eval(r))&&d(a)}),k()});n=u,o=l,o.$emit("$viewContentLoaded",m),o.$eval(q)}}var m,n,o,p,q=j.onload||"",r=j.autoscroll,s=h(j,c);g.inheritedData("$uiView");c.$on("$stateChangeSuccess",function(){l(!1)}),l(!0)}}};return l}function B(a,c,d,e){return{restrict:"ECA",priority:-400,compile:function(f){var g=f.html();return f.empty?f.empty():f[0].innerHTML=null,function(f,h,i){var j=d.$current,k=C(f,i,h,e),l=j&&j.locals[k];if(!l)return h.html(g),void a(h.contents())(f);h.data("$uiView",{name:k,state:l.$$state}),h.html(l.$template?l.$template:g);var m=b.extend({},l);f[l.$$resolveAs]=m;var n=a(h.contents());if(l.$$controller){l.$scope=f,l.$element=h;var o=c(l.$$controller,l);l.$$controllerAs&&(f[l.$$controllerAs]=o,f[l.$$controllerAs][l.$$resolveAs]=m),O(o.$onInit)&&o.$onInit(),h.data("$ngControllerController",o),h.children().data("$ngControllerController",o)}n(f)}}}}function C(a,b,c,d){var e=d(b.uiView||b.name||"")(a),f=c.inheritedData("$uiView");return e.indexOf("@")>=0?e:e+"@"+(f?f.state.name:"")}function D(a,b){var c,d=a.match(/^\s*({[^}]*})\s*$/);if(d&&(a=b+"("+d[1]+")"),c=a.replace(/\n/g," ").match(/^([^(]+?)\s*(\((.*)\))?$/),!c||4!==c.length)throw new Error("Invalid state ref '"+a+"'");return{state:c[1],paramExpr:c[3]||null}}function E(a){var b=a.parent().inheritedData("$uiView");if(b&&b.state&&b.state.name)return b.state}function F(a){var b="[object SVGAnimatedString]"===Object.prototype.toString.call(a.prop("href")),c="FORM"===a[0].nodeName;return{attr:c?"action":b?"xlink:href":"href",isAnchor:"A"===a.prop("tagName").toUpperCase(),clickable:!c}}function G(a,b,c,d,e){return function(f){var g=f.which||f.button,h=e();if(!(g>1||f.ctrlKey||f.metaKey||f.shiftKey||a.attr("target"))){var i=c(function(){b.go(h.state,h.params,h.options)});f.preventDefault();var j=d.isAnchor&&!h.href?1:0;f.preventDefault=function(){j--<=0&&c.cancel(i)}}}}function H(a,b){return{relative:E(a)||b.$current,inherit:!0}}function I(a,c){return{restrict:"A",require:["?^uiSrefActive","?^uiSrefActiveEq"],link:function(d,e,f,g){var h,i=D(f.uiSref,a.current.name),j={state:i.state,href:null,params:null},k=F(e),l=g[1]||g[0],m=null;j.options=T(H(e,a),f.uiSrefOpts?d.$eval(f.uiSrefOpts):{});var n=function(c){c&&(j.params=b.copy(c)),j.href=a.href(i.state,j.params,j.options),m&&m(),l&&(m=l.$$addStateInfo(i.state,j.params)),null!==j.href&&f.$set(k.attr,j.href)};i.paramExpr&&(d.$watch(i.paramExpr,function(a){a!==j.params&&n(a)},!0),j.params=b.copy(d.$eval(i.paramExpr))),n(),k.clickable&&(h=G(e,a,c,k,function(){return j}),e[e.on?"on":"bind"]("click",h),d.$on("$destroy",function(){e[e.off?"off":"unbind"]("click",h)}))}}}function J(a,b){return{restrict:"A",require:["?^uiSrefActive","?^uiSrefActiveEq"],link:function(c,d,e,f){function g(b){m.state=b[0],m.params=b[1],m.options=b[2],m.href=a.href(m.state,m.params,m.options),n&&n(),j&&(n=j.$$addStateInfo(m.state,m.params)),m.href&&e.$set(i.attr,m.href)}var h,i=F(d),j=f[1]||f[0],k=[e.uiState,e.uiStateParams||null,e.uiStateOpts||null],l="["+k.map(function(a){return a||"null"}).join(", ")+"]",m={state:null,params:null,options:null,href:null},n=null;c.$watch(l,g,!0),g(c.$eval(l)),i.clickable&&(h=G(d,a,b,i,function(){return m}),d[d.on?"on":"bind"]("click",h),c.$on("$destroy",function(){d[d.off?"off":"unbind"]("click",h)}))}}}function K(a,b,c){return{restrict:"A",controller:["$scope","$element","$attrs","$timeout",function(b,d,e,f){function g(b,c,e){var f=a.get(b,E(d)),g=h(b,c),i={state:f||{name:b},params:c,hash:g};return p.push(i),q[g]=e,function(){var a=p.indexOf(i);a!==-1&&p.splice(a,1)}}function h(a,c){if(!P(a))throw new Error("state should be a string");return Q(c)?a+V(c):(c=b.$eval(c),Q(c)?a+V(c):a)}function i(){for(var a=0;a<p.length;a++)l(p[a].state,p[a].params)?j(d,q[p[a].hash]):k(d,q[p[a].hash]),m(p[a].state,p[a].params)?j(d,n):k(d,n)}function j(a,b){f(function(){a.addClass(b)})}function k(a,b){a.removeClass(b)}function l(b,c){return a.includes(b.name,c)}function m(b,c){return a.is(b.name,c)}var n,o,p=[],q={};n=c(e.uiSrefActiveEq||"",!1)(b);try{o=b.$eval(e.uiSrefActive)}catch(a){}o=o||c(e.uiSrefActive||"",!1)(b),Q(o)&&S(o,function(c,d){if(P(c)){var e=D(c,a.current.name);g(e.state,b.$eval(e.paramExpr),d)}}),this.$$addStateInfo=function(a,b){if(!(Q(o)&&p.length>0)){var c=g(a,b,o);return i(),c}},b.$on("$stateChangeSuccess",i),i()}]}}function L(a){var b=function(b,c){return a.is(b,c)};return b.$stateful=!0,b}function M(a){var b=function(b,c,d){return a.includes(b,c,d)};return b.$stateful=!0,b}var N=b.isDefined,O=b.isFunction,P=b.isString,Q=b.isObject,R=b.isArray,S=b.forEach,T=b.extend,U=b.copy,V=b.toJson;b.module("ui.router.util",["ng"]),b.module("ui.router.router",["ui.router.util"]),b.module("ui.router.state",["ui.router.router","ui.router.util"]),b.module("ui.router",["ui.router.state"]),b.module("ui.router.compat",["ui.router"]),q.$inject=["$q","$injector"],b.module("ui.router.util").service("$resolve",q),b.module("ui.router.util").provider("$templateFactory",r);var W;t.prototype.concat=function(a,b){var c={caseInsensitive:W.caseInsensitive(),strict:W.strictMode(),squash:W.defaultSquashPolicy()};return new t(this.sourcePath+a+this.sourceSearch,T(c,b),this)},t.prototype.toString=function(){return this.source},t.prototype.exec=function(a,b){function c(a){function b(a){return a.split("").reverse().join("")}function c(a){return a.replace(/\\-/g,"-")}var d=b(a).split(/-(?!\\)/),e=o(d,b);return o(e,c).reverse()}var d=this.regexp.exec(a);if(!d)return null;b=b||{};var e,f,g,h=this.parameters(),i=h.length,j=this.segments.length-1,k={};if(j!==d.length-1)throw new Error("Unbalanced capture group in route '"+this.source+"'");var l,m;for(e=0;e<j;e++){for(g=h[e],l=this.params[g],m=d[e+1],f=0;f<l.replace.length;f++)l.replace[f].from===m&&(m=l.replace[f].to);m&&l.array===!0&&(m=c(m)),N(m)&&(m=l.type.decode(m)),k[g]=l.value(m)}for(;e<i;e++){for(g=h[e],k[g]=this.params[g].value(b[g]),l=this.params[g],m=b[g],f=0;f<l.replace.length;f++)l.replace[f].from===m&&(m=l.replace[f].to);N(m)&&(m=l.type.decode(m)),k[g]=l.value(m)}return k},t.prototype.parameters=function(a){return N(a)?this.params[a]||null:this.$$paramNames},t.prototype.validates=function(a){return this.params.$$validates(a)},t.prototype.format=function(a){function b(a){return encodeURIComponent(a).replace(/-/g,function(a){return"%5C%"+a.charCodeAt(0).toString(16).toUpperCase()})}a=a||{};var c=this.segments,d=this.parameters(),e=this.params;if(!this.validates(a))return null;var f,g=!1,h=c.length-1,i=d.length,j=c[0];for(f=0;f<i;f++){var k=f<h,l=d[f],m=e[l],n=m.value(a[l]),p=m.isOptional&&m.type.equals(m.value(),n),q=!!p&&m.squash,r=m.type.encode(n);if(k){var s=c[f+1],t=f+1===h;if(q===!1)null!=r&&(j+=R(r)?o(r,b).join("-"):encodeURIComponent(r)),j+=s;else if(q===!0){var u=j.match(/\/$/)?/\/?(.*)/:/(.*)/;j+=s.match(u)[1]}else P(q)&&(j+=q+s);t&&m.squash===!0&&"/"===j.slice(-1)&&(j=j.slice(0,-1))}else{if(null==r||p&&q!==!1)continue;if(R(r)||(r=[r]),0===r.length)continue;r=o(r,encodeURIComponent).join("&"+l+"="),j+=(g?"&":"?")+(l+"="+r),g=!0}}return j},u.prototype.is=function(a,b){return!0},u.prototype.encode=function(a,b){return a},u.prototype.decode=function(a,b){return a},u.prototype.equals=function(a,b){return a==b},u.prototype.$subPattern=function(){var a=this.pattern.toString();return a.substr(1,a.length-2)},u.prototype.pattern=/.*/,u.prototype.toString=function(){return"{Type:"+this.name+"}"},u.prototype.$normalize=function(a){return this.is(a)?a:this.decode(a)},u.prototype.$asArray=function(a,b){function d(a,b){function d(a,b){return function(){return a[b].apply(a,arguments)}}function e(a){return R(a)?a:N(a)?[a]:[]}function f(a){switch(a.length){case 0:return c;case 1:return"auto"===b?a[0]:a;default:return a}}function g(a){return!a}function h(a,b){return function(c){if(R(c)&&0===c.length)return c;c=e(c);var d=o(c,a);return b===!0?0===n(d,g).length:f(d)}}function i(a){return function(b,c){var d=e(b),f=e(c);if(d.length!==f.length)return!1;
 for(var g=0;g<d.length;g++)if(!a(d[g],f[g]))return!1;return!0}}this.encode=h(d(a,"encode")),this.decode=h(d(a,"decode")),this.is=h(d(a,"is"),!0),this.equals=i(d(a,"equals")),this.pattern=a.pattern,this.$normalize=h(d(a,"$normalize")),this.name=a.name,this.$arrayMode=b}if(!a)return this;if("auto"===a&&!b)throw new Error("'auto' array mode is for query parameters only");return new d(this,a)},b.module("ui.router.util").provider("$urlMatcherFactory",v),b.module("ui.router.util").run(["$urlMatcherFactory",function(a){}]),w.$inject=["$locationProvider","$urlMatcherFactoryProvider"],b.module("ui.router.router").provider("$urlRouter",w),x.$inject=["$urlRouterProvider","$urlMatcherFactoryProvider"],b.module("ui.router.state").factory("$stateParams",function(){return{}}).constant("$state.runtime",{autoinject:!0}).provider("$state",x).run(["$injector",function(a){a.get("$state.runtime").autoinject&&a.get("$state")}]),y.$inject=[],b.module("ui.router.state").provider("$view",y),b.module("ui.router.state").provider("$uiViewScroll",z),A.$inject=["$state","$injector","$uiViewScroll","$interpolate","$q"],B.$inject=["$compile","$controller","$state","$interpolate"],b.module("ui.router.state").directive("uiView",A),b.module("ui.router.state").directive("uiView",B),I.$inject=["$state","$timeout"],J.$inject=["$state","$timeout"],K.$inject=["$state","$stateParams","$interpolate"],b.module("ui.router.state").directive("uiSref",I).directive("uiSrefActive",K).directive("uiSrefActiveEq",K).directive("uiState",J),L.$inject=["$state"],M.$inject=["$state"],b.module("ui.router.state").filter("isState",L).filter("includedByState",M)}(window,window.angular);
-/**
- * Satellizer 0.15.5
- * (c) 2016 Sahat Yalkabov
- * License: MIT
- */
-(function(global,factory){typeof exports==="object"&&typeof module!=="undefined"?module.exports=factory():typeof define==="function"&&define.amd?define(factory):global.satellizer=factory()})(this,function(){"use strict";var Config=function(){function Config(){this.baseUrl="/";this.loginUrl="/auth/login";this.signupUrl="/auth/signup";this.unlinkUrl="/auth/unlink/";this.tokenName="token";this.tokenPrefix="satellizer";this.tokenHeader="Authorization";this.tokenType="Bearer";this.storageType="localStorage";this.tokenRoot=null;this.withCredentials=false;this.providers={facebook:{name:"facebook",url:"/auth/facebook",authorizationEndpoint:"https://www.facebook.com/v2.5/dialog/oauth",redirectUri:window.location.origin+"/",requiredUrlParams:["display","scope"],scope:["email"],scopeDelimiter:",",display:"popup",oauthType:"2.0",popupOptions:{width:580,height:400}},google:{name:"google",url:"/auth/google",authorizationEndpoint:"https://accounts.google.com/o/oauth2/auth",redirectUri:window.location.origin,requiredUrlParams:["scope"],optionalUrlParams:["display","state"],scope:["profile","email"],scopePrefix:"openid",scopeDelimiter:" ",display:"popup",oauthType:"2.0",popupOptions:{width:452,height:633},state:function(){return encodeURIComponent(Math.random().toString(36).substr(2))}},github:{name:"github",url:"/auth/github",authorizationEndpoint:"https://github.com/login/oauth/authorize",redirectUri:window.location.origin,optionalUrlParams:["scope"],scope:["user:email"],scopeDelimiter:" ",oauthType:"2.0",popupOptions:{width:1020,height:618}},instagram:{name:"instagram",url:"/auth/instagram",authorizationEndpoint:"https://api.instagram.com/oauth/authorize",redirectUri:window.location.origin,requiredUrlParams:["scope"],scope:["basic"],scopeDelimiter:"+",oauthType:"2.0"},linkedin:{name:"linkedin",url:"/auth/linkedin",authorizationEndpoint:"https://www.linkedin.com/uas/oauth2/authorization",redirectUri:window.location.origin,requiredUrlParams:["state"],scope:["r_emailaddress"],scopeDelimiter:" ",state:"STATE",oauthType:"2.0",popupOptions:{width:527,height:582}},twitter:{name:"twitter",url:"/auth/twitter",authorizationEndpoint:"https://api.twitter.com/oauth/authenticate",redirectUri:window.location.origin,oauthType:"1.0",popupOptions:{width:495,height:645}},twitch:{name:"twitch",url:"/auth/twitch",authorizationEndpoint:"https://api.twitch.tv/kraken/oauth2/authorize",redirectUri:window.location.origin,requiredUrlParams:["scope"],scope:["user_read"],scopeDelimiter:" ",display:"popup",oauthType:"2.0",popupOptions:{width:500,height:560}},live:{name:"live",url:"/auth/live",authorizationEndpoint:"https://login.live.com/oauth20_authorize.srf",redirectUri:window.location.origin,requiredUrlParams:["display","scope"],scope:["wl.emails"],scopeDelimiter:" ",display:"popup",oauthType:"2.0",popupOptions:{width:500,height:560}},yahoo:{name:"yahoo",url:"/auth/yahoo",authorizationEndpoint:"https://api.login.yahoo.com/oauth2/request_auth",redirectUri:window.location.origin,scope:[],scopeDelimiter:",",oauthType:"2.0",popupOptions:{width:559,height:519}},bitbucket:{name:"bitbucket",url:"/auth/bitbucket",authorizationEndpoint:"https://bitbucket.org/site/oauth2/authorize",redirectUri:window.location.origin+"/",requiredUrlParams:["scope"],scope:["email"],scopeDelimiter:" ",oauthType:"2.0",popupOptions:{width:1028,height:529}},spotify:{name:"spotify",url:"/auth/spotify",authorizationEndpoint:"https://accounts.spotify.com/authorize",redirectUri:window.location.origin,optionalUrlParams:["state"],requiredUrlParams:["scope"],scope:["user-read-email"],scopePrefix:"",scopeDelimiter:",",oauthType:"2.0",popupOptions:{width:500,height:530},state:function(){return encodeURIComponent(Math.random().toString(36).substr(2))}}};this.httpInterceptor=function(){return true}}Object.defineProperty(Config,"getConstant",{get:function(){return new Config},enumerable:true,configurable:true});return Config}();var AuthProvider=function(){function AuthProvider(SatellizerConfig){this.SatellizerConfig=SatellizerConfig}Object.defineProperty(AuthProvider.prototype,"baseUrl",{get:function(){return this.SatellizerConfig.baseUrl},set:function(value){this.SatellizerConfig.baseUrl=value},enumerable:true,configurable:true});Object.defineProperty(AuthProvider.prototype,"loginUrl",{get:function(){return this.SatellizerConfig.loginUrl},set:function(value){this.SatellizerConfig.loginUrl=value},enumerable:true,configurable:true});Object.defineProperty(AuthProvider.prototype,"signupUrl",{get:function(){return this.SatellizerConfig.signupUrl},set:function(value){this.SatellizerConfig.signupUrl=value},enumerable:true,configurable:true});Object.defineProperty(AuthProvider.prototype,"unlinkUrl",{get:function(){return this.SatellizerConfig.unlinkUrl},set:function(value){this.SatellizerConfig.unlinkUrl=value},enumerable:true,configurable:true});Object.defineProperty(AuthProvider.prototype,"tokenRoot",{get:function(){return this.SatellizerConfig.tokenRoot},set:function(value){this.SatellizerConfig.tokenRoot=value},enumerable:true,configurable:true});Object.defineProperty(AuthProvider.prototype,"tokenName",{get:function(){return this.SatellizerConfig.tokenName},set:function(value){this.SatellizerConfig.tokenName=value},enumerable:true,configurable:true});Object.defineProperty(AuthProvider.prototype,"tokenPrefix",{get:function(){return this.SatellizerConfig.tokenPrefix},set:function(value){this.SatellizerConfig.tokenPrefix=value},enumerable:true,configurable:true});Object.defineProperty(AuthProvider.prototype,"tokenHeader",{get:function(){return this.SatellizerConfig.tokenHeader},set:function(value){this.SatellizerConfig.tokenHeader=value},enumerable:true,configurable:true});Object.defineProperty(AuthProvider.prototype,"tokenType",{get:function(){return this.SatellizerConfig.tokenType},set:function(value){this.SatellizerConfig.tokenType=value},enumerable:true,configurable:true});Object.defineProperty(AuthProvider.prototype,"withCredentials",{get:function(){return this.SatellizerConfig.withCredentials},set:function(value){this.SatellizerConfig.withCredentials=value},enumerable:true,configurable:true});Object.defineProperty(AuthProvider.prototype,"storageType",{get:function(){return this.SatellizerConfig.storageType},set:function(value){this.SatellizerConfig.storageType=value},enumerable:true,configurable:true});Object.defineProperty(AuthProvider.prototype,"httpInterceptor",{get:function(){return this.SatellizerConfig.httpInterceptor},set:function(value){if(typeof value==="function"){this.SatellizerConfig.httpInterceptor=value}else{this.SatellizerConfig.httpInterceptor=function(){return value}}},enumerable:true,configurable:true});AuthProvider.prototype.facebook=function(options){angular.extend(this.SatellizerConfig.providers.facebook,options)};AuthProvider.prototype.google=function(options){angular.extend(this.SatellizerConfig.providers.google,options)};AuthProvider.prototype.github=function(options){angular.extend(this.SatellizerConfig.providers.github,options)};AuthProvider.prototype.instagram=function(options){angular.extend(this.SatellizerConfig.providers.instagram,options)};AuthProvider.prototype.linkedin=function(options){angular.extend(this.SatellizerConfig.providers.linkedin,options)};AuthProvider.prototype.twitter=function(options){angular.extend(this.SatellizerConfig.providers.twitter,options)};AuthProvider.prototype.twitch=function(options){angular.extend(this.SatellizerConfig.providers.twitch,options)};AuthProvider.prototype.live=function(options){angular.extend(this.SatellizerConfig.providers.live,options)};AuthProvider.prototype.yahoo=function(options){angular.extend(this.SatellizerConfig.providers.yahoo,options)};AuthProvider.prototype.bitbucket=function(options){angular.extend(this.SatellizerConfig.providers.bitbucket,options)};AuthProvider.prototype.spotify=function(options){angular.extend(this.SatellizerConfig.providers.spotify,options)};AuthProvider.prototype.oauth1=function(options){this.SatellizerConfig.providers[options.name]=angular.extend(options,{oauthType:"1.0"})};AuthProvider.prototype.oauth2=function(options){this.SatellizerConfig.providers[options.name]=angular.extend(options,{oauthType:"2.0"})};AuthProvider.prototype.$get=function(SatellizerShared,SatellizerLocal,SatellizerOAuth){return{login:function(user,options){return SatellizerLocal.login(user,options)},signup:function(user,options){return SatellizerLocal.signup(user,options)},logout:function(){return SatellizerShared.logout()},authenticate:function(name,data){return SatellizerOAuth.authenticate(name,data)},link:function(name,data){return SatellizerOAuth.authenticate(name,data)},unlink:function(name,options){return SatellizerOAuth.unlink(name,options)},isAuthenticated:function(){return SatellizerShared.isAuthenticated()},getPayload:function(){return SatellizerShared.getPayload()},getToken:function(){return SatellizerShared.getToken()},setToken:function(token){return SatellizerShared.setToken({access_token:token})},removeToken:function(){return SatellizerShared.removeToken()},setStorageType:function(type){return SatellizerShared.setStorageType(type)}}};AuthProvider.$inject=["SatellizerConfig"];return AuthProvider}();AuthProvider.prototype.$get.$inject=["SatellizerShared","SatellizerLocal","SatellizerOAuth"];function joinUrl(baseUrl,url){if(/^(?:[a-z]+:)?\/\//i.test(url)){return url}var joined=[baseUrl,url].join("/");var normalize=function(str){return str.replace(/[\/]+/g,"/").replace(/\/\?/g,"?").replace(/\/\#/g,"#").replace(/\:\//g,"://")};return normalize(joined)}function getFullUrlPath(location){var isHttps=location.protocol==="https:";return location.protocol+"//"+location.hostname+":"+(location.port||(isHttps?"443":"80"))+(/^\//.test(location.pathname)?location.pathname:"/"+location.pathname)}function parseQueryString(str){var obj={};var key;var value;angular.forEach((str||"").split("&"),function(keyValue){if(keyValue){value=keyValue.split("=");key=decodeURIComponent(value[0]);obj[key]=angular.isDefined(value[1])?decodeURIComponent(value[1]):true}});return obj}function decodeBase64(str){var buffer;if(typeof module!=="undefined"&&module.exports){try{buffer=require("buffer").Buffer}catch(err){}}var fromCharCode=String.fromCharCode;var re_btou=new RegExp(["[À-ß][-¿]","[à-ï][-¿]{2}","[ð-÷][-¿]{3}"].join("|"),"g");var cb_btou=function(cccc){switch(cccc.length){case 4:var cp=(7&cccc.charCodeAt(0))<<18|(63&cccc.charCodeAt(1))<<12|(63&cccc.charCodeAt(2))<<6|63&cccc.charCodeAt(3);var offset=cp-65536;return fromCharCode((offset>>>10)+55296)+fromCharCode((offset&1023)+56320);case 3:return fromCharCode((15&cccc.charCodeAt(0))<<12|(63&cccc.charCodeAt(1))<<6|63&cccc.charCodeAt(2));default:return fromCharCode((31&cccc.charCodeAt(0))<<6|63&cccc.charCodeAt(1))}};var btou=function(b){return b.replace(re_btou,cb_btou)};var _decode=buffer?function(a){return(a.constructor===buffer.constructor?a:new buffer(a,"base64")).toString()}:function(a){return btou(atob(a))};return _decode(String(str).replace(/[-_]/g,function(m0){return m0==="-"?"+":"/"}).replace(/[^A-Za-z0-9\+\/]/g,""))}var Shared=function(){function Shared($q,$window,SatellizerConfig,SatellizerStorage){this.$q=$q;this.$window=$window;this.SatellizerConfig=SatellizerConfig;this.SatellizerStorage=SatellizerStorage;var _a=this.SatellizerConfig,tokenName=_a.tokenName,tokenPrefix=_a.tokenPrefix;this.prefixedTokenName=tokenPrefix?[tokenPrefix,tokenName].join("_"):tokenName}Shared.prototype.getToken=function(){return this.SatellizerStorage.get(this.prefixedTokenName)};Shared.prototype.getPayload=function(){var token=this.SatellizerStorage.get(this.prefixedTokenName);if(token&&token.split(".").length===3){try{var base64Url=token.split(".")[1];var base64=base64Url.replace("-","+").replace("_","/");return JSON.parse(decodeBase64(base64))}catch(e){}}};Shared.prototype.setToken=function(response){var tokenRoot=this.SatellizerConfig.tokenRoot;var tokenName=this.SatellizerConfig.tokenName;var accessToken=response&&response.access_token;var token;if(accessToken){if(angular.isObject(accessToken)&&angular.isObject(accessToken.data)){response=accessToken}else if(angular.isString(accessToken)){token=accessToken}}if(!token&&response){var tokenRootData=tokenRoot&&tokenRoot.split(".").reduce(function(o,x){return o[x]},response.data);token=tokenRootData?tokenRootData[tokenName]:response.data&&response.data[tokenName]}if(token){this.SatellizerStorage.set(this.prefixedTokenName,token)}};Shared.prototype.removeToken=function(){this.SatellizerStorage.remove(this.prefixedTokenName)};Shared.prototype.isAuthenticated=function(){var token=this.SatellizerStorage.get(this.prefixedTokenName);if(token){if(token.split(".").length===3){try{var base64Url=token.split(".")[1];var base64=base64Url.replace("-","+").replace("_","/");var exp=JSON.parse(this.$window.atob(base64)).exp;if(typeof exp==="number"){return Math.round((new Date).getTime()/1e3)<exp}}catch(e){return true}}return true}return false};Shared.prototype.logout=function(){this.SatellizerStorage.remove(this.prefixedTokenName);return this.$q.when()};Shared.prototype.setStorageType=function(type){this.SatellizerConfig.storageType=type};Shared.$inject=["$q","$window","SatellizerConfig","SatellizerStorage"];return Shared}();var Local=function(){function Local($http,SatellizerConfig,SatellizerShared){this.$http=$http;this.SatellizerConfig=SatellizerConfig;this.SatellizerShared=SatellizerShared}Local.prototype.login=function(user,options){var _this=this;if(options===void 0){options={}}options.url=options.url?options.url:joinUrl(this.SatellizerConfig.baseUrl,this.SatellizerConfig.loginUrl);options.data=user||options.data;options.method=options.method||"POST";options.withCredentials=options.withCredentials||this.SatellizerConfig.withCredentials;return this.$http(options).then(function(response){_this.SatellizerShared.setToken(response);return response})};Local.prototype.signup=function(user,options){if(options===void 0){options={}}options.url=options.url?options.url:joinUrl(this.SatellizerConfig.baseUrl,this.SatellizerConfig.signupUrl);options.data=user||options.data;options.method=options.method||"POST";options.withCredentials=options.withCredentials||this.SatellizerConfig.withCredentials;return this.$http(options)};Local.$inject=["$http","SatellizerConfig","SatellizerShared"];return Local}();var Popup=function(){function Popup($interval,$window,$q){this.$interval=$interval;this.$window=$window;this.$q=$q;this.popup=null;this.defaults={redirectUri:null}}Popup.prototype.stringifyOptions=function(options){var parts=[];angular.forEach(options,function(value,key){parts.push(key+"="+value)});return parts.join(",")};Popup.prototype.open=function(url,name,popupOptions,redirectUri,dontPoll){var width=popupOptions.width||500;var height=popupOptions.height||500;var options=this.stringifyOptions({width:width,height:height,top:this.$window.screenY+(this.$window.outerHeight-height)/2.5,left:this.$window.screenX+(this.$window.outerWidth-width)/2});var popupName=this.$window["cordova"]||this.$window.navigator.userAgent.indexOf("CriOS")>-1?"_blank":name;this.popup=this.$window.open(url,popupName,options);if(this.popup&&this.popup.focus){this.popup.focus()}if(dontPoll){return}if(this.$window["cordova"]){return this.eventListener(redirectUri)}else{if(url==="about:blank"){this.popup.location=url}return this.polling(redirectUri)}};Popup.prototype.polling=function(redirectUri){var _this=this;return this.$q(function(resolve,reject){var redirectUriParser=document.createElement("a");redirectUriParser.href=redirectUri;var redirectUriPath=getFullUrlPath(redirectUriParser);var polling=_this.$interval(function(){if(!_this.popup||_this.popup.closed||_this.popup.closed===undefined){_this.$interval.cancel(polling);reject(new Error("The popup window was closed"))}try{var popupWindowPath=getFullUrlPath(_this.popup.location);if(popupWindowPath===redirectUriPath){if(_this.popup.location.search||_this.popup.location.hash){var query=parseQueryString(_this.popup.location.search.substring(1).replace(/\/$/,""));var hash=parseQueryString(_this.popup.location.hash.substring(1).replace(/[\/$]/,""));var params=angular.extend({},query,hash);if(params.error){reject(new Error(params.error))}else{resolve(params)}}else{reject(new Error("OAuth redirect has occurred but no query or hash parameters were found. "+"They were either not set during the redirect, or were removed—typically by a "+"routing library—before Satellizer could read it."))}_this.$interval.cancel(polling);_this.popup.close()}}catch(error){}},500)})};Popup.prototype.eventListener=function(redirectUri){var _this=this;return this.$q(function(resolve,reject){_this.popup.addEventListener("loadstart",function(event){if(event.url.indexOf(redirectUri)!==0){return}var parser=document.createElement("a");parser.href=event.url;if(parser.search||parser.hash){var query=parseQueryString(parser.search.substring(1).replace(/\/$/,""));var hash=parseQueryString(parser.hash.substring(1).replace(/[\/$]/,""));var params=angular.extend({},query,hash);if(params.error){reject(new Error(params.error))}else{resolve(params)}_this.popup.close()}});_this.popup.addEventListener("loaderror",function(){reject(new Error("Authorization failed"))});_this.popup.addEventListener("exit",function(){reject(new Error("The popup window was closed"))})})};Popup.$inject=["$interval","$window","$q"];return Popup}();var OAuth1=function(){function OAuth1($http,$window,SatellizerConfig,SatellizerPopup){this.$http=$http;this.$window=$window;this.SatellizerConfig=SatellizerConfig;this.SatellizerPopup=SatellizerPopup;this.defaults={name:null,url:null,authorizationEndpoint:null,scope:null,scopePrefix:null,scopeDelimiter:null,redirectUri:null,requiredUrlParams:null,defaultUrlParams:null,oauthType:"1.0",popupOptions:{width:null,height:null}}}OAuth1.prototype.init=function(options,userData){var _this=this;angular.extend(this.defaults,options);var name=options.name,popupOptions=options.popupOptions;var redirectUri=this.defaults.redirectUri;if(!this.$window["cordova"]){this.SatellizerPopup.open("about:blank",name,popupOptions,redirectUri,true)}return this.getRequestToken().then(function(response){return _this.openPopup(options,response).then(function(popupResponse){return _this.exchangeForToken(popupResponse,userData)})})};OAuth1.prototype.openPopup=function(options,response){var url=[options.authorizationEndpoint,this.buildQueryString(response.data)].join("?");var redirectUri=this.defaults.redirectUri;if(this.$window["cordova"]){return this.SatellizerPopup.open(url,options.name,options.popupOptions,redirectUri)}else{this.SatellizerPopup.popup.location=url;return this.SatellizerPopup.polling(redirectUri)}};OAuth1.prototype.getRequestToken=function(){var url=this.SatellizerConfig.baseUrl?joinUrl(this.SatellizerConfig.baseUrl,this.defaults.url):this.defaults.url;return this.$http.post(url,this.defaults)};OAuth1.prototype.exchangeForToken=function(oauthData,userData){var payload=angular.extend({},userData,oauthData);var exchangeForTokenUrl=this.SatellizerConfig.baseUrl?joinUrl(this.SatellizerConfig.baseUrl,this.defaults.url):this.defaults.url;return this.$http.post(exchangeForTokenUrl,payload,{withCredentials:this.SatellizerConfig.withCredentials})};OAuth1.prototype.buildQueryString=function(obj){var str=[];angular.forEach(obj,function(value,key){str.push(encodeURIComponent(key)+"="+encodeURIComponent(value))});return str.join("&")};OAuth1.$inject=["$http","$window","SatellizerConfig","SatellizerPopup"];return OAuth1}();var OAuth2=function(){function OAuth2($http,$window,$timeout,$q,SatellizerConfig,SatellizerPopup,SatellizerStorage){this.$http=$http;this.$window=$window;this.$timeout=$timeout;this.$q=$q;this.SatellizerConfig=SatellizerConfig;this.SatellizerPopup=SatellizerPopup;this.SatellizerStorage=SatellizerStorage;this.defaults={name:null,url:null,clientId:null,authorizationEndpoint:null,redirectUri:null,scope:null,scopePrefix:null,scopeDelimiter:null,state:null,requiredUrlParams:null,defaultUrlParams:["response_type","client_id","redirect_uri"],responseType:"code",responseParams:{code:"code",clientId:"clientId",redirectUri:"redirectUri"},oauthType:"2.0",popupOptions:{width:null,height:null}}}OAuth2.camelCase=function(name){return name.replace(/([\:\-\_]+(.))/g,function(_,separator,letter,offset){return offset?letter.toUpperCase():letter})};OAuth2.prototype.init=function(options,userData){var _this=this;return this.$q(function(resolve,reject){angular.extend(_this.defaults,options);var stateName=_this.defaults.name+"_state";var _a=_this.defaults,name=_a.name,state=_a.state,popupOptions=_a.popupOptions,redirectUri=_a.redirectUri,responseType=_a.responseType;if(typeof state==="function"){_this.SatellizerStorage.set(stateName,state())}else if(typeof state==="string"){_this.SatellizerStorage.set(stateName,state)}var url=[_this.defaults.authorizationEndpoint,_this.buildQueryString()].join("?");_this.SatellizerPopup.open(url,name,popupOptions,redirectUri).then(function(oauth){if(responseType==="token"||!url){return resolve(oauth)}if(oauth.state&&oauth.state!==_this.SatellizerStorage.get(stateName)){return reject(new Error("The value returned in the state parameter does not match the state value from your original "+"authorization code request."))}resolve(_this.exchangeForToken(oauth,userData))}).catch(function(error){return reject(error)})})};OAuth2.prototype.exchangeForToken=function(oauthData,userData){var _this=this;var payload=angular.extend({},userData);angular.forEach(this.defaults.responseParams,function(value,key){switch(key){case"code":payload[value]=oauthData.code;break;case"clientId":payload[value]=_this.defaults.clientId;break;case"redirectUri":payload[value]=_this.defaults.redirectUri;break;default:payload[value]=oauthData[key]}});if(oauthData.state){payload.state=oauthData.state}var exchangeForTokenUrl=this.SatellizerConfig.baseUrl?joinUrl(this.SatellizerConfig.baseUrl,this.defaults.url):this.defaults.url;return this.$http.post(exchangeForTokenUrl,payload,{withCredentials:this.SatellizerConfig.withCredentials})};OAuth2.prototype.buildQueryString=function(){var _this=this;var keyValuePairs=[];var urlParamsCategories=["defaultUrlParams","requiredUrlParams","optionalUrlParams"];angular.forEach(urlParamsCategories,function(paramsCategory){angular.forEach(_this.defaults[paramsCategory],function(paramName){var camelizedName=OAuth2.camelCase(paramName);var paramValue=angular.isFunction(_this.defaults[paramName])?_this.defaults[paramName]():_this.defaults[camelizedName];if(paramName==="redirect_uri"&&!paramValue){return}if(paramName==="state"){var stateName=_this.defaults.name+"_state";paramValue=encodeURIComponent(_this.SatellizerStorage.get(stateName))}if(paramName==="scope"&&Array.isArray(paramValue)){paramValue=paramValue.join(_this.defaults.scopeDelimiter);if(_this.defaults.scopePrefix){paramValue=[_this.defaults.scopePrefix,paramValue].join(_this.defaults.scopeDelimiter)}}keyValuePairs.push([paramName,paramValue])})});return keyValuePairs.map(function(pair){return pair.join("=")}).join("&")};OAuth2.$inject=["$http","$window","$timeout","$q","SatellizerConfig","SatellizerPopup","SatellizerStorage"];return OAuth2}();var OAuth=function(){function OAuth($http,$window,$timeout,$q,SatellizerConfig,SatellizerPopup,SatellizerStorage,SatellizerShared,SatellizerOAuth1,SatellizerOAuth2){this.$http=$http;this.$window=$window;this.$timeout=$timeout;this.$q=$q;this.SatellizerConfig=SatellizerConfig;this.SatellizerPopup=SatellizerPopup;this.SatellizerStorage=SatellizerStorage;this.SatellizerShared=SatellizerShared;this.SatellizerOAuth1=SatellizerOAuth1;this.SatellizerOAuth2=SatellizerOAuth2}OAuth.prototype.authenticate=function(name,userData){var _this=this;return this.$q(function(resolve,reject){var provider=_this.SatellizerConfig.providers[name];var oauth=null;switch(provider.oauthType){case"1.0":oauth=new OAuth1(_this.$http,_this.$window,_this.SatellizerConfig,_this.SatellizerPopup);break;case"2.0":oauth=new OAuth2(_this.$http,_this.$window,_this.$timeout,_this.$q,_this.SatellizerConfig,_this.SatellizerPopup,_this.SatellizerStorage);break;default:return reject(new Error("Invalid OAuth Type"))}return oauth.init(provider,userData).then(function(response){if(provider.url){_this.SatellizerShared.setToken(response)}resolve(response)}).catch(function(error){reject(error)})})};OAuth.prototype.unlink=function(provider,httpOptions){if(httpOptions===void 0){httpOptions={}}httpOptions.url=httpOptions.url?httpOptions.url:joinUrl(this.SatellizerConfig.baseUrl,this.SatellizerConfig.unlinkUrl);httpOptions.data={provider:provider}||httpOptions.data;httpOptions.method=httpOptions.method||"POST";httpOptions.withCredentials=httpOptions.withCredentials||this.SatellizerConfig.withCredentials;return this.$http(httpOptions)};OAuth.$inject=["$http","$window","$timeout","$q","SatellizerConfig","SatellizerPopup","SatellizerStorage","SatellizerShared","SatellizerOAuth1","SatellizerOAuth2"];return OAuth}();var Storage=function(){function Storage($window,SatellizerConfig){this.$window=$window;this.SatellizerConfig=SatellizerConfig;this.memoryStore={}}Storage.prototype.get=function(key){try{return this.$window[this.SatellizerConfig.storageType].getItem(key)}catch(e){return this.memoryStore[key]}};Storage.prototype.set=function(key,value){try{this.$window[this.SatellizerConfig.storageType].setItem(key,value)}catch(e){this.memoryStore[key]=value}};Storage.prototype.remove=function(key){try{this.$window[this.SatellizerConfig.storageType].removeItem(key)}catch(e){delete this.memoryStore[key]}};Storage.$inject=["$window","SatellizerConfig"];return Storage}();var Interceptor=function(){function Interceptor(SatellizerConfig,SatellizerShared,SatellizerStorage){var _this=this;this.SatellizerConfig=SatellizerConfig;this.SatellizerShared=SatellizerShared;this.SatellizerStorage=SatellizerStorage;this.request=function(config){if(config["skipAuthorization"]){return config}if(_this.SatellizerShared.isAuthenticated()&&_this.SatellizerConfig.httpInterceptor()){var tokenName=_this.SatellizerConfig.tokenPrefix?[_this.SatellizerConfig.tokenPrefix,_this.SatellizerConfig.tokenName].join("_"):_this.SatellizerConfig.tokenName;var token=_this.SatellizerStorage.get(tokenName);if(_this.SatellizerConfig.tokenHeader&&_this.SatellizerConfig.tokenType){token=_this.SatellizerConfig.tokenType+" "+token}config.headers[_this.SatellizerConfig.tokenHeader]=token}return config}}Interceptor.Factory=function(SatellizerConfig,SatellizerShared,SatellizerStorage){return new Interceptor(SatellizerConfig,SatellizerShared,SatellizerStorage)};Interceptor.$inject=["SatellizerConfig","SatellizerShared","SatellizerStorage"];return Interceptor}();Interceptor.Factory.$inject=["SatellizerConfig","SatellizerShared","SatellizerStorage"];var HttpProviderConfig=function(){function HttpProviderConfig($httpProvider){this.$httpProvider=$httpProvider;$httpProvider.interceptors.push(Interceptor.Factory)}HttpProviderConfig.$inject=["$httpProvider"];return HttpProviderConfig}();angular.module("satellizer",[]).provider("$auth",["SatellizerConfig",function(SatellizerConfig){return new AuthProvider(SatellizerConfig)}]).constant("SatellizerConfig",Config.getConstant).service("SatellizerShared",Shared).service("SatellizerLocal",Local).service("SatellizerPopup",Popup).service("SatellizerOAuth",OAuth).service("SatellizerOAuth2",OAuth2).service("SatellizerOAuth1",OAuth1).service("SatellizerStorage",Storage).service("SatellizerInterceptor",Interceptor).config(["$httpProvider",function($httpProvider){return new HttpProviderConfig($httpProvider)}]);var ng1="satellizer";return ng1});
 !function(n,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t(n.async=n.async||{})}(this,function(n){"use strict";function t(n,t,e){switch(e.length){case 0:return n.call(t);case 1:return n.call(t,e[0]);case 2:return n.call(t,e[0],e[1]);case 3:return n.call(t,e[0],e[1],e[2])}return n.apply(t,e)}function e(n,e,r){return e=rt(void 0===e?n.length-1:e,0),function(){for(var u=arguments,o=-1,i=rt(u.length-e,0),c=Array(i);++o<i;)c[o]=u[e+o];o=-1;for(var f=Array(e+1);++o<e;)f[o]=u[o];return f[e]=r(c),t(n,this,f)}}function r(n){return n}function u(n,t){return e(n,t,r)}function o(n){return u(function(t,e){var r=ut(function(e,r){var u=this;return n(t,function(n,t){n.apply(u,e.concat(t))},r)});return e.length?r.apply(this,e):r})}function i(n){var t=lt.call(n,pt),e=n[pt];try{n[pt]=void 0;var r=!0}catch(n){}var u=st.call(n);return r&&(t?n[pt]=e:delete n[pt]),u}function c(n){return yt.call(n)}function f(n){return null==n?void 0===n?dt:vt:mt&&mt in Object(n)?i(n):c(n)}function a(n){var t=typeof n;return null!=n&&("object"==t||"function"==t)}function l(n){if(!a(n))return!1;var t=f(n);return t==bt||t==jt||t==gt||t==St}function s(n){return"number"==typeof n&&n>-1&&n%1==0&&n<=kt}function p(n){return null!=n&&s(n.length)&&!l(n)}function h(){}function y(n){return function(){if(null!==n){var t=n;n=null,t.apply(this,arguments)}}}function v(n,t){for(var e=-1,r=Array(n);++e<n;)r[e]=t(e);return r}function d(n){return null!=n&&"object"==typeof n}function m(n){return d(n)&&f(n)==Et}function g(){return!1}function b(n,t){return t=null==t?Pt:t,!!t&&("number"==typeof n||qt.test(n))&&n>-1&&n%1==0&&n<t}function j(n){return d(n)&&s(n.length)&&!!le[f(n)]}function S(n){return function(t){return n(t)}}function k(n,t){var e=It(n),r=!e&&Ft(n),u=!e&&!r&&Vt(n),o=!e&&!r&&!u&&ge(n),i=e||r||u||o,c=i?v(n.length,String):[],f=c.length;for(var a in n)!t&&!je.call(n,a)||i&&("length"==a||u&&("offset"==a||"parent"==a)||o&&("buffer"==a||"byteLength"==a||"byteOffset"==a)||b(a,f))||c.push(a);return c}function w(n){var t=n&&n.constructor,e="function"==typeof t&&t.prototype||Se;return n===e}function O(n,t){return function(e){return n(t(e))}}function x(n){if(!w(n))return ke(n);var t=[];for(var e in Object(n))Oe.call(n,e)&&"constructor"!=e&&t.push(e);return t}function E(n){return p(n)?k(n):x(n)}function L(n){var t=-1,e=n.length;return function(){return++t<e?{value:n[t],key:t}:null}}function A(n){var t=-1;return function(){var e=n.next();return e.done?null:(t++,{value:e.value,key:t})}}function T(n){var t=E(n),e=-1,r=t.length;return function(){var u=t[++e];return e<r?{value:n[u],key:u}:null}}function F(n){if(p(n))return L(n);var t=xt(n);return t?A(t):T(n)}function I(n){return function(){if(null===n)throw new Error("Callback was already called.");var t=n;n=null,t.apply(this,arguments)}}function _(n){return function(t,e,r){function u(n,t){if(f-=1,n)c=!0,r(n);else{if(t===wt||c&&f<=0)return c=!0,r(null);o()}}function o(){for(;f<n&&!c;){var t=i();if(null===t)return c=!0,void(f<=0&&r(null));f+=1,e(t.value,t.key,I(u))}}if(r=y(r||h),n<=0||!t)return r(null);var i=F(t),c=!1,f=0;o()}}function B(n,t,e,r){_(t)(n,e,r)}function M(n,t){return function(e,r,u){return n(e,t,r,u)}}function U(n,t,e){function r(n,t){n?e(n):++o!==i&&t!==wt||e(null)}e=y(e||h);var u=0,o=0,i=n.length;for(0===i&&e(null);u<i;u++)t(n[u],u,I(r))}function z(n){return function(t,e,r){return n(Ee,t,e,r)}}function V(n,t,e,r){r=r||h,t=t||[];var u=[],o=0;n(t,function(n,t,r){var i=o++;e(n,function(n,t){u[i]=t,r(n)})},function(n){r(n,u)})}function P(n){return function(t,e,r,u){return n(_(e),t,r,u)}}function q(n){return ut(function(t,e){var r;try{r=n.apply(this,t)}catch(n){return e(n)}a(r)&&"function"==typeof r.then?r.then(function(n){e(null,n)},function(n){e(n.message?n:new Error(n))}):e(null,r)})}function D(n,t){for(var e=-1,r=null==n?0:n.length;++e<r&&t(n[e],e,n)!==!1;);return n}function R(n){return function(t,e,r){for(var u=-1,o=Object(t),i=r(t),c=i.length;c--;){var f=i[n?c:++u];if(e(o[f],f,o)===!1)break}return t}}function C(n,t){return n&&Be(n,t,E)}function $(n,t,e,r){for(var u=n.length,o=e+(r?1:-1);r?o--:++o<u;)if(t(n[o],o,n))return o;return-1}function W(n){return n!==n}function N(n,t,e){for(var r=e-1,u=n.length;++r<u;)if(n[r]===t)return r;return-1}function Q(n,t,e){return t===t?N(n,t,e):$(n,W,e)}function G(n,t){for(var e=-1,r=null==n?0:n.length,u=Array(r);++e<r;)u[e]=t(n[e],e,n);return u}function H(n){return"symbol"==typeof n||d(n)&&f(n)==Ue}function J(n){if("string"==typeof n)return n;if(It(n))return G(n,J)+"";if(H(n))return Pe?Pe.call(n):"";var t=n+"";return"0"==t&&1/n==-ze?"-0":t}function K(n,t,e){var r=-1,u=n.length;t<0&&(t=-t>u?0:u+t),e=e>u?u:e,e<0&&(e+=u),u=t>e?0:e-t>>>0,t>>>=0;for(var o=Array(u);++r<u;)o[r]=n[r+t];return o}function X(n,t,e){var r=n.length;return e=void 0===e?r:e,!t&&e>=r?n:K(n,t,e)}function Y(n,t){for(var e=n.length;e--&&Q(t,n[e],0)>-1;);return e}function Z(n,t){for(var e=-1,r=n.length;++e<r&&Q(t,n[e],0)>-1;);return e}function nn(n){return n.split("")}function tn(n){return Qe.test(n)}function en(n){return n.match(pr)||[]}function rn(n){return tn(n)?en(n):nn(n)}function un(n){return null==n?"":J(n)}function on(n,t,e){if(n=un(n),n&&(e||void 0===t))return n.replace(hr,"");if(!n||!(t=J(t)))return n;var r=rn(n),u=rn(t),o=Z(r,u),i=Y(r,u)+1;return X(r,o,i).join("")}function cn(n){return n=n.toString().replace(mr,""),n=n.match(yr)[2].replace(" ",""),n=n?n.split(vr):[],n=n.map(function(n){return on(n.replace(dr,""))})}function fn(n,t){var e={};C(n,function(n,t){function r(t,e){var r=G(u,function(n){return t[n]});r.push(e),n.apply(null,r)}var u;if(It(n))u=n.slice(0,-1),n=n[n.length-1],e[t]=u.concat(u.length>0?r:n);else if(1===n.length)e[t]=n;else{if(u=cn(n),0===n.length&&0===u.length)throw new Error("autoInject task functions require explicit parameters.");u.pop(),e[t]=u.concat(r)}}),Me(e,t)}function an(n){setTimeout(n,0)}function ln(n){return u(function(t,e){n(function(){t.apply(null,e)})})}function sn(){this.head=this.tail=null,this.length=0}function pn(n,t){n.length=1,n.head=n.tail=t}function hn(n,t,e){function r(n,t,e){if(null!=e&&"function"!=typeof e)throw new Error("task callback must be a function");if(a.started=!0,It(n)||(n=[n]),0===n.length&&a.idle())return jr(function(){a.drain()});for(var r=0,u=n.length;r<u;r++){var o={data:n[r],callback:e||h};t?a._tasks.unshift(o):a._tasks.push(o)}jr(a.process)}function o(n){return u(function(t){i-=1;for(var e=0,r=n.length;e<r;e++){var u=n[e],o=Q(c,u,0);o>=0&&c.splice(o),u.callback.apply(u,t),null!=t[0]&&a.error(t[0],u.data)}i<=a.concurrency-a.buffer&&a.unsaturated(),a.idle()&&a.drain(),a.process()})}if(null==t)t=1;else if(0===t)throw new Error("Concurrency must not be zero");var i=0,c=[],f=!1,a={_tasks:new sn,concurrency:t,payload:e,saturated:h,unsaturated:h,buffer:t/4,empty:h,drain:h,error:h,started:!1,paused:!1,push:function(n,t){r(n,!1,t)},kill:function(){a.drain=h,a._tasks.empty()},unshift:function(n,t){r(n,!0,t)},process:function(){if(!f){for(f=!0;!a.paused&&i<a.concurrency&&a._tasks.length;){var t=[],e=[],r=a._tasks.length;a.payload&&(r=Math.min(r,a.payload));for(var u=0;u<r;u++){var l=a._tasks.shift();t.push(l),e.push(l.data)}0===a._tasks.length&&a.empty(),i+=1,c.push(t[0]),i===a.concurrency&&a.saturated();var s=I(o(t));n(e,s)}f=!1}},length:function(){return a._tasks.length},running:function(){return i},workersList:function(){return c},idle:function(){return a._tasks.length+i===0},pause:function(){a.paused=!0},resume:function(){a.paused!==!1&&(a.paused=!1,jr(a.process))}};return a}function yn(n,t){return hn(n,1,t)}function vn(n,t,e,r){r=y(r||h),kr(n,function(n,r,u){e(t,n,function(n,e){t=e,u(n)})},function(n){r(n,t)})}function dn(n,t,e,r){var u=[];n(t,function(n,t,r){e(n,function(n,t){u=u.concat(t||[]),r(n)})},function(n){r(n,u)})}function mn(n){return function(t,e,r){return n(kr,t,e,r)}}function gn(n,t){return function(e,r,u,o){o=o||h;var i,c=!1;e(r,function(e,r,o){u(e,function(r,u){r?o(r):n(u)&&!i?(c=!0,i=t(!0,e),o(null,wt)):o()})},function(n){n?o(n):o(null,c?i:t(!1))})}}function bn(n,t){return t}function jn(n){return u(function(t,e){t.apply(null,e.concat(u(function(t,e){"object"==typeof console&&(t?console.error&&console.error(t):console[n]&&D(e,function(t){console[n](t)}))})))})}function Sn(n,t,e){function r(t,r){return t?e(t):r?void n(o):e(null)}e=I(e||h);var o=u(function(n,u){return n?e(n):(u.push(r),void t.apply(this,u))});r(null,!0)}function kn(n,t,e){e=I(e||h);var r=u(function(u,o){return u?e(u):t.apply(this,o)?n(r):void e.apply(null,[null].concat(o))});n(r)}function wn(n,t,e){kn(n,function(){return!t.apply(this,arguments)},e)}function On(n,t,e){function r(t){return t?e(t):void n(u)}function u(n,u){return n?e(n):u?void t(r):e(null)}e=I(e||h),n(u)}function xn(n){return function(t,e,r){return n(t,r)}}function En(n,t,e){Ee(n,xn(t),e)}function Ln(n,t,e,r){_(t)(n,xn(e),r)}function An(n){return ut(function(t,e){var r=!0;t.push(function(){var n=arguments;r?jr(function(){e.apply(null,n)}):e.apply(null,n)}),n.apply(this,t),r=!1})}function Tn(n){return!n}function Fn(n){return function(t){return null==t?void 0:t[n]}}function In(n,t,e,r){var u=new Array(t.length);n(t,function(n,t,r){e(n,function(n,e){u[t]=!!e,r(n)})},function(n){if(n)return r(n);for(var e=[],o=0;o<t.length;o++)u[o]&&e.push(t[o]);r(null,e)})}function _n(n,t,e,r){var u=[];n(t,function(n,t,r){e(n,function(e,o){e?r(e):(o&&u.push({index:t,value:n}),r())})},function(n){n?r(n):r(null,G(u.sort(function(n,t){return n.index-t.index}),Fn("value")))})}function Bn(n,t,e,r){var u=p(t)?In:_n;u(n,t,e,r||h)}function Mn(n,t){function e(n){return n?r(n):void u(e)}var r=I(t||h),u=An(n);e()}function Un(n,t,e,r){r=y(r||h);var u={};B(n,t,function(n,t,r){e(n,t,function(n,e){return n?r(n):(u[t]=e,void r())})},function(n){r(n,u)})}function zn(n,t){return t in n}function Vn(n,t){var e=Object.create(null),o=Object.create(null);t=t||r;var i=ut(function(r,i){var c=t.apply(null,r);zn(e,c)?jr(function(){i.apply(null,e[c])}):zn(o,c)?o[c].push(i):(o[c]=[i],n.apply(null,r.concat(u(function(n){e[c]=n;var t=o[c];delete o[c];for(var r=0,u=t.length;r<u;r++)t[r].apply(null,n)}))))});return i.memo=e,i.unmemoized=n,i}function Pn(n,t,e){e=e||h;var r=p(t)?[]:{};n(t,function(n,t,e){n(u(function(n,u){u.length<=1&&(u=u[0]),r[t]=u,e(n)}))},function(n){e(n,r)})}function qn(n,t){Pn(Ee,n,t)}function Dn(n,t,e){Pn(_(t),n,e)}function Rn(n,t){if(t=y(t||h),!It(n))return t(new TypeError("First argument to race must be an array of functions"));if(!n.length)return t();for(var e=0,r=n.length;e<r;e++)n[e](t)}function Cn(n,t,e,r){var u=Nr.call(n).reverse();vn(u,t,e,r)}function $n(n){return ut(function(t,e){return t.push(u(function(n,t){if(n)e(null,{error:n});else{var r=null;1===t.length?r=t[0]:t.length>1&&(r=t),e(null,{value:r})}})),n.apply(this,t)})}function Wn(n,t,e,r){Bn(n,t,function(n,t){e(n,function(n,e){t(n,!e)})},r)}function Nn(n){var t;return It(n)?t=G(n,$n):(t={},C(n,function(n,e){t[e]=$n.call(this,n)})),t}function Qn(n){return function(){return n}}function Gn(n,t,e){function r(n,t){if("object"==typeof t)n.times=+t.times||o,n.intervalFunc="function"==typeof t.interval?t.interval:Qn(+t.interval||i),n.errorFilter=t.errorFilter;else{if("number"!=typeof t&&"string"!=typeof t)throw new Error("Invalid arguments for async.retry");n.times=+t||o}}function u(){t(function(n){n&&f++<c.times&&("function"!=typeof c.errorFilter||c.errorFilter(n))?setTimeout(u,c.intervalFunc(f)):e.apply(null,arguments)})}var o=5,i=0,c={times:o,intervalFunc:Qn(i)};if(arguments.length<3&&"function"==typeof n?(e=t||h,t=n):(r(c,n),e=e||h),"function"!=typeof t)throw new Error("Invalid arguments for async.retry");var f=1;u()}function Hn(n,t){Pn(kr,n,t)}function Jn(n,t,e){function r(n,t){var e=n.criteria,r=t.criteria;return e<r?-1:e>r?1:0}Le(n,function(n,e){t(n,function(t,r){return t?e(t):void e(null,{value:n,criteria:r})})},function(n,t){return n?e(n):void e(null,G(t.sort(r),Fn("value")))})}function Kn(n,t,e){function r(){c||(o.apply(null,arguments),clearTimeout(i))}function u(){var t=n.name||"anonymous",r=new Error('Callback function "'+t+'" timed out.');r.code="ETIMEDOUT",e&&(r.info=e),c=!0,o(r)}var o,i,c=!1;return ut(function(e,c){o=c,i=setTimeout(u,t),n.apply(null,e.concat(r))})}function Xn(n,t,e,r){for(var u=-1,o=nu(Zr((t-n)/(e||1)),0),i=Array(o);o--;)i[r?o:++u]=n,n+=e;return i}function Yn(n,t,e,r){Te(Xn(0,n,1),t,e,r)}function Zn(n,t,e,r){3===arguments.length&&(r=e,e=t,t=It(n)?[]:{}),r=y(r||h),Ee(n,function(n,r,u){e(t,n,r,u)},function(n){r(n,t)})}function nt(n){return function(){return(n.unmemoized||n).apply(null,arguments)}}function tt(n,t,e){if(e=I(e||h),!n())return e(null);var r=u(function(u,o){return u?e(u):n()?t(r):void e.apply(null,[null].concat(o))});t(r)}function et(n,t,e){tt(function(){return!n.apply(this,arguments)},t,e)}var rt=Math.max,ut=function(n){return u(function(t){var e=t.pop();n.call(this,t,e)})},ot="object"==typeof global&&global&&global.Object===Object&&global,it="object"==typeof self&&self&&self.Object===Object&&self,ct=ot||it||Function("return this")(),ft=ct.Symbol,at=Object.prototype,lt=at.hasOwnProperty,st=at.toString,pt=ft?ft.toStringTag:void 0,ht=Object.prototype,yt=ht.toString,vt="[object Null]",dt="[object Undefined]",mt=ft?ft.toStringTag:void 0,gt="[object AsyncFunction]",bt="[object Function]",jt="[object GeneratorFunction]",St="[object Proxy]",kt=9007199254740991,wt={},Ot="function"==typeof Symbol&&Symbol.iterator,xt=function(n){return Ot&&n[Ot]&&n[Ot]()},Et="[object Arguments]",Lt=Object.prototype,At=Lt.hasOwnProperty,Tt=Lt.propertyIsEnumerable,Ft=m(function(){return arguments}())?m:function(n){return d(n)&&At.call(n,"callee")&&!Tt.call(n,"callee")},It=Array.isArray,_t="object"==typeof n&&n&&!n.nodeType&&n,Bt=_t&&"object"==typeof module&&module&&!module.nodeType&&module,Mt=Bt&&Bt.exports===_t,Ut=Mt?ct.Buffer:void 0,zt=Ut?Ut.isBuffer:void 0,Vt=zt||g,Pt=9007199254740991,qt=/^(?:0|[1-9]\d*)$/,Dt="[object Arguments]",Rt="[object Array]",Ct="[object Boolean]",$t="[object Date]",Wt="[object Error]",Nt="[object Function]",Qt="[object Map]",Gt="[object Number]",Ht="[object Object]",Jt="[object RegExp]",Kt="[object Set]",Xt="[object String]",Yt="[object WeakMap]",Zt="[object ArrayBuffer]",ne="[object DataView]",te="[object Float32Array]",ee="[object Float64Array]",re="[object Int8Array]",ue="[object Int16Array]",oe="[object Int32Array]",ie="[object Uint8Array]",ce="[object Uint8ClampedArray]",fe="[object Uint16Array]",ae="[object Uint32Array]",le={};le[te]=le[ee]=le[re]=le[ue]=le[oe]=le[ie]=le[ce]=le[fe]=le[ae]=!0,le[Dt]=le[Rt]=le[Zt]=le[Ct]=le[ne]=le[$t]=le[Wt]=le[Nt]=le[Qt]=le[Gt]=le[Ht]=le[Jt]=le[Kt]=le[Xt]=le[Yt]=!1;var se,pe="object"==typeof n&&n&&!n.nodeType&&n,he=pe&&"object"==typeof module&&module&&!module.nodeType&&module,ye=he&&he.exports===pe,ve=ye&&ot.process,de=function(){try{return ve&&ve.binding&&ve.binding("util")}catch(n){}}(),me=de&&de.isTypedArray,ge=me?S(me):j,be=Object.prototype,je=be.hasOwnProperty,Se=Object.prototype,ke=O(Object.keys,Object),we=Object.prototype,Oe=we.hasOwnProperty,xe=M(B,1/0),Ee=function(n,t,e){var r=p(n)?U:xe;r(n,t,e)},Le=z(V),Ae=o(Le),Te=P(V),Fe=M(Te,1),Ie=o(Fe),_e=u(function(n,t){return u(function(e){return n.apply(null,t.concat(e))})}),Be=R(),Me=function(n,t,e){function r(n,t){b.push(function(){f(n,t)})}function o(){if(0===b.length&&0===d)return e(null,v);for(;b.length&&d<t;){var n=b.shift();n()}}function i(n,t){var e=g[n];e||(e=g[n]=[]),e.push(t)}function c(n){var t=g[n]||[];D(t,function(n){n()}),o()}function f(n,t){if(!m){var r=I(u(function(t,r){if(d--,r.length<=1&&(r=r[0]),t){var u={};C(v,function(n,t){u[t]=n}),u[n]=r,m=!0,g=Object.create(null),e(t,u)}else v[n]=r,c(n)}));d++;var o=t[t.length-1];t.length>1?o(v,r):o(r)}}function a(){for(var n,t=0;j.length;)n=j.pop(),t++,D(l(n),function(n){0===--S[n]&&j.push(n)});if(t!==p)throw new Error("async.auto cannot execute tasks due to a recursive dependency")}function l(t){var e=[];return C(n,function(n,r){It(n)&&Q(n,t,0)>=0&&e.push(r)}),e}"function"==typeof t&&(e=t,t=null),e=y(e||h);var s=E(n),p=s.length;if(!p)return e(null);t||(t=p);var v={},d=0,m=!1,g=Object.create(null),b=[],j=[],S={};C(n,function(t,e){if(!It(t))return r(e,[t]),void j.push(e);var u=t.slice(0,t.length-1),o=u.length;return 0===o?(r(e,t),void j.push(e)):(S[e]=o,void D(u,function(c){if(!n[c])throw new Error("async.auto task `"+e+"` has a non-existent dependency `"+c+"` in "+u.join(", "));i(c,function(){o--,0===o&&r(e,t)})}))}),a(),o()},Ue="[object Symbol]",ze=1/0,Ve=ft?ft.prototype:void 0,Pe=Ve?Ve.toString:void 0,qe="\\ud800-\\udfff",De="\\u0300-\\u036f",Re="\\ufe20-\\ufe2f",Ce="\\u20d0-\\u20ff",$e=De+Re+Ce,We="\\ufe0e\\ufe0f",Ne="\\u200d",Qe=RegExp("["+Ne+qe+$e+We+"]"),Ge="\\ud800-\\udfff",He="\\u0300-\\u036f",Je="\\ufe20-\\ufe2f",Ke="\\u20d0-\\u20ff",Xe=He+Je+Ke,Ye="\\ufe0e\\ufe0f",Ze="["+Ge+"]",nr="["+Xe+"]",tr="\\ud83c[\\udffb-\\udfff]",er="(?:"+nr+"|"+tr+")",rr="[^"+Ge+"]",ur="(?:\\ud83c[\\udde6-\\uddff]){2}",or="[\\ud800-\\udbff][\\udc00-\\udfff]",ir="\\u200d",cr=er+"?",fr="["+Ye+"]?",ar="(?:"+ir+"(?:"+[rr,ur,or].join("|")+")"+fr+cr+")*",lr=fr+cr+ar,sr="(?:"+[rr+nr+"?",nr,ur,or,Ze].join("|")+")",pr=RegExp(tr+"(?="+tr+")|"+sr+lr,"g"),hr=/^\s+|\s+$/g,yr=/^(function)?\s*[^\(]*\(\s*([^\)]*)\)/m,vr=/,/,dr=/(=.+)?(\s*)$/,mr=/((\/\/.*$)|(\/\*[\s\S]*?\*\/))/gm,gr="function"==typeof setImmediate&&setImmediate,br="object"==typeof process&&"function"==typeof process.nextTick;se=gr?setImmediate:br?process.nextTick:an;var jr=ln(se);sn.prototype.removeLink=function(n){return n.prev?n.prev.next=n.next:this.head=n.next,n.next?n.next.prev=n.prev:this.tail=n.prev,n.prev=n.next=null,this.length-=1,n},sn.prototype.empty=sn,sn.prototype.insertAfter=function(n,t){t.prev=n,t.next=n.next,n.next?n.next.prev=t:this.tail=t,n.next=t,this.length+=1},sn.prototype.insertBefore=function(n,t){t.prev=n.prev,t.next=n,n.prev?n.prev.next=t:this.head=t,n.prev=t,this.length+=1},sn.prototype.unshift=function(n){this.head?this.insertBefore(this.head,n):pn(this,n)},sn.prototype.push=function(n){this.tail?this.insertAfter(this.tail,n):pn(this,n)},sn.prototype.shift=function(){return this.head&&this.removeLink(this.head)},sn.prototype.pop=function(){return this.tail&&this.removeLink(this.tail)};var Sr,kr=M(B,1),wr=u(function(n){return u(function(t){var e=this,r=t[t.length-1];"function"==typeof r?t.pop():r=h,vn(n,t,function(n,t,r){t.apply(e,n.concat(u(function(n,t){r(n,t)})))},function(n,t){r.apply(e,[n].concat(t))})})}),Or=u(function(n){return wr.apply(null,n.reverse())}),xr=z(dn),Er=mn(dn),Lr=u(function(n){var t=[null].concat(n);return ut(function(n,e){return e.apply(this,t)})}),Ar=z(gn(r,bn)),Tr=P(gn(r,bn)),Fr=M(Tr,1),Ir=jn("dir"),_r=M(Ln,1),Br=z(gn(Tn,Tn)),Mr=P(gn(Tn,Tn)),Ur=M(Mr,1),zr=z(Bn),Vr=P(Bn),Pr=M(Vr,1),qr=jn("log"),Dr=M(Un,1/0),Rr=M(Un,1);Sr=br?process.nextTick:gr?setImmediate:an;var Cr=ln(Sr),$r=function(n,t){return hn(function(t,e){n(t[0],e)},t,1)},Wr=function(n,t){var e=$r(n,t);return e.push=function(n,t,r){if(null==r&&(r=h),"function"!=typeof r)throw new Error("task callback must be a function");if(e.started=!0,It(n)||(n=[n]),0===n.length)return jr(function(){e.drain()});t=t||0;for(var u=e._tasks.head;u&&t>=u.priority;)u=u.next;for(var o=0,i=n.length;o<i;o++){var c={data:n[o],priority:t,callback:r};u?e._tasks.insertBefore(u,c):e._tasks.push(c)}jr(e.process)},delete e.unshift,e},Nr=Array.prototype.slice,Qr=z(Wn),Gr=P(Wn),Hr=M(Gr,1),Jr=function(n,t){return t||(t=n,n=null),ut(function(e,r){function u(n){t.apply(null,e.concat(n))}n?Gn(n,u,r):Gn(u,r)})},Kr=z(gn(Boolean,r)),Xr=P(gn(Boolean,r)),Yr=M(Xr,1),Zr=Math.ceil,nu=Math.max,tu=M(Yn,1/0),eu=M(Yn,1),ru=function(n,t){function e(o){if(r===n.length)return t.apply(null,[null].concat(o));var i=I(u(function(n,r){return n?t.apply(null,[n].concat(r)):void e(r)}));o.push(i);var c=n[r++];c.apply(null,o)}if(t=y(t||h),!It(n))return t(new Error("First argument to waterfall must be an array of functions"));if(!n.length)return t();var r=0;e([])},uu={applyEach:Ae,applyEachSeries:Ie,apply:_e,asyncify:q,auto:Me,autoInject:fn,cargo:yn,compose:Or,concat:xr,concatSeries:Er,constant:Lr,detect:Ar,detectLimit:Tr,detectSeries:Fr,dir:Ir,doDuring:Sn,doUntil:wn,doWhilst:kn,during:On,each:En,eachLimit:Ln,eachOf:Ee,eachOfLimit:B,eachOfSeries:kr,eachSeries:_r,ensureAsync:An,every:Br,everyLimit:Mr,everySeries:Ur,filter:zr,filterLimit:Vr,filterSeries:Pr,forever:Mn,log:qr,map:Le,mapLimit:Te,mapSeries:Fe,mapValues:Dr,mapValuesLimit:Un,mapValuesSeries:Rr,memoize:Vn,nextTick:Cr,parallel:qn,parallelLimit:Dn,priorityQueue:Wr,queue:$r,race:Rn,reduce:vn,reduceRight:Cn,reflect:$n,reflectAll:Nn,reject:Qr,rejectLimit:Gr,rejectSeries:Hr,retry:Gn,retryable:Jr,seq:wr,series:Hn,setImmediate:jr,some:Kr,someLimit:Xr,someSeries:Yr,sortBy:Jn,timeout:Kn,times:tu,timesLimit:Yn,timesSeries:eu,transform:Zn,unmemoize:nt,until:et,waterfall:ru,whilst:tt,all:Br,any:Kr,forEach:En,forEachSeries:_r,forEachLimit:Ln,forEachOf:Ee,forEachOfSeries:kr,forEachOfLimit:B,inject:vn,foldl:vn,foldr:Cn,select:zr,selectLimit:Vr,selectSeries:Pr,wrapSync:q};n.default=uu,n.applyEach=Ae,n.applyEachSeries=Ie,n.apply=_e,n.asyncify=q,n.auto=Me,n.autoInject=fn,n.cargo=yn,n.compose=Or,n.concat=xr,n.concatSeries=Er,n.constant=Lr,n.detect=Ar,n.detectLimit=Tr,n.detectSeries=Fr,n.dir=Ir,n.doDuring=Sn,n.doUntil=wn,n.doWhilst=kn,n.during=On,n.each=En,n.eachLimit=Ln,n.eachOf=Ee,n.eachOfLimit=B,n.eachOfSeries=kr,n.eachSeries=_r,n.ensureAsync=An,n.every=Br,n.everyLimit=Mr,n.everySeries=Ur,n.filter=zr,n.filterLimit=Vr,n.filterSeries=Pr,n.forever=Mn,n.log=qr,n.map=Le,n.mapLimit=Te,n.mapSeries=Fe,n.mapValues=Dr,n.mapValuesLimit=Un,n.mapValuesSeries=Rr,n.memoize=Vn,n.nextTick=Cr,n.parallel=qn,n.parallelLimit=Dn,n.priorityQueue=Wr,n.queue=$r,n.race=Rn,n.reduce=vn,n.reduceRight=Cn,n.reflect=$n,n.reflectAll=Nn,n.reject=Qr,n.rejectLimit=Gr,n.rejectSeries=Hr,n.retry=Gn,n.retryable=Jr,n.seq=wr,n.series=Hn,n.setImmediate=jr,n.some=Kr,n.someLimit=Xr,n.someSeries=Yr,n.sortBy=Jn,n.timeout=Kn,n.times=tu,n.timesLimit=Yn,n.timesSeries=eu,n.transform=Zn,n.unmemoize=nt,n.until=et,n.waterfall=ru,n.whilst=tt,n.all=Br,n.allLimit=Mr,n.allSeries=Ur,n.any=Kr,n.anyLimit=Xr,n.anySeries=Yr,n.find=Ar,n.findLimit=Tr,n.findSeries=Fr,n.forEach=En,n.forEachSeries=_r,n.forEachLimit=Ln,n.forEachOf=Ee,n.forEachOfSeries=kr,n.forEachOfLimit=B,n.inject=vn,n.foldl=vn,n.foldr=Cn,n.select=zr,n.selectLimit=Vr,n.selectSeries=Pr,n.wrapSync=q,Object.defineProperty(n,"__esModule",{value:!0})});
 //# sourceMappingURL=async.min.map
+angular.module("ivpusic.cookie",["ipCookie"]),angular.module("ipCookie",["ng"]).factory("ipCookie",["$document",function(e){"use strict";function i(e){try{return decodeURIComponent(e)}catch(i){}}return function(){function t(t,n,r){var o,s,p,u,a,c,d,x,f;r=r||{};var g=r.decode||i,l=r.encode||encodeURIComponent;if(void 0!==n)return n="object"==typeof n?JSON.stringify(n):n+"","number"==typeof r.expires&&(f=r.expires,r.expires=new Date,-1===f?r.expires=new Date("Thu, 01 Jan 1970 00:00:00 GMT"):void 0!==r.expirationUnit?"hours"===r.expirationUnit?r.expires.setHours(r.expires.getHours()+f):"minutes"===r.expirationUnit?r.expires.setMinutes(r.expires.getMinutes()+f):"seconds"===r.expirationUnit?r.expires.setSeconds(r.expires.getSeconds()+f):"milliseconds"===r.expirationUnit?r.expires.setMilliseconds(r.expires.getMilliseconds()+f):r.expires.setDate(r.expires.getDate()+f):r.expires.setDate(r.expires.getDate()+f)),e[0].cookie=[l(t),"=",l(n),r.expires?"; expires="+r.expires.toUTCString():"",r.path?"; path="+r.path:"",r.domain?"; domain="+r.domain:"",r.secure?"; secure":""].join("");for(s=[],x=e[0].cookie,x&&(s=x.split("; ")),o={},d=!1,p=0;s.length>p;++p)if(s[p]){if(u=s[p],a=u.indexOf("="),c=u.substring(0,a),n=g(u.substring(a+1)),angular.isUndefined(n))continue;if(void 0===t||t===c){try{o[c]=JSON.parse(n)}catch(m){o[c]=n}if(t===c)return o[c];d=!0}}return d&&void 0===t?o:void 0}return t.remove=function(e,i){var n=void 0!==t(e);return n&&(i||(i={}),i.expires=-1,t(e,"",i)),n},t}()}]);
 /**
  * bootbox.js v4.4.0
  *
@@ -2664,12 +2659,9 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     angular.module('app.core', [
         'ngResource',
         'ui.router',
-        //'ngCookies',
-        'satellizer',
-        //'ng-token-auth',
+        'ng-token-auth',
         'jcs-autoValidate',
         'ngProgressLite',
-        // 'ui.bootstrap',
         'angular-ladda',
         'ngFileUpload',
         'file-model',
@@ -2685,8 +2677,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
     angular.module('app')
         .config(config)
-        .run(run)
-        .run(customHeaders);
+        .run(run);
 
     config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider', '$logProvider'];
 
@@ -2694,86 +2685,33 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider, $logProvider) {
         //Layout.init();
         $logProvider.debugEnabled(CONST.env.enableDebug);
-        $authProvider.loginUrl = CONST.api_domain + '/auth/sign_in';
-        $authProvider.tokenHeader = 'access-token';
-        $authProvider.tokenType = '';
-        //$authProvider.tokenHeader = 'Access-Token';
-        //$authProvider.withCredentials = true;
-        // $authProvider.configure({
-        //     apiUrl: CONST.api_domain
-        //         //validateOnPageLoad: false
-        // });
 
-        //$httpProvider.defaults.withCredentials = true;
+        $authProvider.configure({
+            apiUrl:                  CONST.api_domain,
+            handleLoginResponse: function(response) {
+                return response.user;
+            },
+            handleTokenValidationResponse: function(response) {
+                return response.user;
+            }
+        });
+
         $resourceProvider.defaults.stripTrailingSlashes = false;
-        $httpProvider.interceptors.push('authInterceptor');
         laddaProvider.setOption({
             style: 'expand-right'
         });
 
     }
 
-    // csrf.$inject = ['$http', '$cookies'];
-    // /* @ngInject */
-    // function csrf($http, $cookies) {
-    //     $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
-    // }
-
-    customHeaders.$inject = ["$http"];
+    run.$inject = ['$rootScope', '$state', 'AuthService', 'ngProgressLite', 'BreadCrumbService', '$location', '$window'];
     /* @ngInject */
-    function customHeaders($http) {
-        var headers = {};
+    function run($rootScope, $state, AuthService, ngProgressLite, BreadCrumbService, $location, $window) {
 
-        if (localStorage.getItem("access-token") !== null) {
-            headers["access-token"] = localStorage.getItem("access-token");
-            headers["client"] = localStorage.getItem("client");
-            headers["cache-control"] = localStorage.getItem("cache-control");
-            headers["content-type"] = localStorage.getItem("content-type");
-            headers["expiry"] = localStorage.getItem("expiry");
-            headers["token-type"] = localStorage.getItem("token-type");
-            headers["uid"] = localStorage.getItem("uid");
-        }
-
-        $http.defaults.headers.common = headers;
-    }
-
-    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window', '$templateCache'];
-    /* @ngInject */
-    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window, $templateCache) {
+        $rootScope.notLoggedInOnStart = !AuthService.tokenExists();
 
         var forceSSL = forceSSL;
-        var forceLogoutIfNotAdmin = forceLogoutIfNotAdmin;
-        var curr_state_name = $state.current.name;
-
-        $rootScope.$on('unauthorized', function(event) {
-            event.preventDefault();
-            $rootScope.loginError = "Your session has expired. Please login again.";
-            AuthService.removeUserStorage();
-            //AuthService.destroyAuthUser().then(function() {
-            //if (toState.name !== "auth") {
-            $state.go('auth');
-            ngProgressLite.done();
-            return false;
-            //}
-            //});
-        });
-
-        //Listens for unpermitted access to admin pages.
-        $rootScope.$on('nonadminaccess', function(event) {
-            event.preventDefault();
-            $rootScope.loginError = "You are not authorized to access admin pages.";
-
-            AuthService.destroyAuthUser();
-
-            $state.go('auth');
-            ngProgressLite.done();
-            return false;
-        });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
-
-            //Redirect user if not admin
-            redirectIfNotAdmin(event);
 
             // Do not run forceSSL() on local
             var __page_url = $location.absUrl();
@@ -2787,32 +2725,25 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
             ngProgressLite.start();
 
-            if (localStorage.getItem('user') != 'undefined') {
-                var user = JSON.parse(localStorage.getItem('user'));
-                if (user && $auth.isAuthenticated()) {
-                    $rootScope.authenticated = true;
-                    $rootScope.currentUser = user;
-                    $('.auth-dash').attr('style', 'display: block !important');
-                    if (toState.name === "auth") {
+            if (toState.name !== 'logout') {
+                if ($rootScope.currentUser) {
+                    if (toState.name === 'auth') {
                         event.preventDefault();
                         $state.go('dashboard');
+                        BreadCrumbService.set('dashboard');
+                        $rootScope.crumbs = BreadCrumbService.getCrumbs();
                         ngProgressLite.done();
                     }
                 } else {
-                    localStorage.removeItem('user');
-                    $rootScope.authenticated = false;
-                    $rootScope.currentUser = null;
-
-                    if (toState.name !== "auth") {
+                    if (toState.name !== 'auth') {
                         event.preventDefault();
                         $state.go('auth');
+                        BreadCrumbService.set('auth');
+                        $rootScope.crumbs = BreadCrumbService.getCrumbs();
                         ngProgressLite.done();
                     }
                 }
-            } else {
-                $state.go(toState.name);
             }
-            //AuthService.redirectIfUnauthorized(event, toState, ngProgressLite);
 
         });
 
@@ -2822,6 +2753,61 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
         $rootScope.$on('$stateChangeError', function(event, toState) {
             ngProgressLite.done();
+        });
+
+        $rootScope.$on('auth:login-success', function(event, user) {
+            // if not admin, logout
+            if (!user.is_admin) {
+                AuthService.logout().then(function(resp) {
+                }).catch(function(error) {
+                });
+                $rootScope.currentUser = null;
+                $rootScope.loginError = 'You are not authorized to access admin pages.';
+                return;
+            }
+
+            $rootScope.currentUser = user;
+            $rootScope.notLoggedInOnStart = true;
+            $state.go('dashboard');
+        });
+
+        $rootScope.$on('auth:login-error', function(event, error) {
+            $rootScope.loginError = error.errors[0];
+            $rootScope.currentUser = null;
+        });
+
+        $rootScope.$on('auth:validation-success', function(event, user) {
+            $rootScope.currentUser = user;
+            $rootScope.notLoggedInOnStart = true;
+            $state.go('dashboard');
+        });
+
+        $rootScope.$on('auth:validation-error', function(event, error) {
+            $rootScope.currentUser = null;
+            // validation error, go to login page
+            $rootScope.notLoggedInOnStart = true;
+            $state.go('auth');
+        });
+
+        $rootScope.$on('auth:logout-success', function(event) {
+            $rootScope.currentUser = null;
+            $state.go('auth');
+        });
+
+        $rootScope.$on('auth:logout-error', function(event, error) {
+            // force logout anyways
+            $rootScope.currentUser = null;
+            AuthService.invalidateTokens();
+            $state.go('auth');
+        });
+
+        $rootScope.$on('auth:session-expired', function(event) {
+            $rootScope.currentUser = null;
+            // invalidate token
+            AuthService.invalidateTokens();
+            $rootScope.loginError = 'Session expired!';
+            $rootScope.notLoggedInOnStart = true;
+            $state.go('auth');
         });
 
         /////////Methods Definitions///////////
@@ -2834,24 +2820,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 return false;
             }
         };
-
-        //Forces user to logout if not admin
-        function redirectIfNotAdmin(event) {
-
-            if (angular.isDefined($rootScope.currentUser) && $rootScope.currentUser != null) {
-              if (!$rootScope.currentUser.is_admin) {
-                event.preventDefault();
-                ngProgressLite.done();
-                $rootScope.loginError = "You are not authorized to access admin pages.";
-                AuthService.destroyAuthUser();
-                AuthService.removeUserStorage();
-
-                //$state.go('auth');
-
-                return false;
-              }
-            }
-        }
 
     }
 })();
@@ -3291,122 +3259,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 (function() {
     'use strict';
 
-    angular.module('app')
-        .factory('authInterceptor', authInterceptor);
-
-    authInterceptor.$inject = ['$q', '$rootScope', '$injector', 'CONST', '$timeout'];
-
-    /* @ngInject */
-    function authInterceptor($q, $rootScope, $injector, CONST, $timeout) {
-        var canceller = $q.defer();
-        var maxRetries = 10;
-        var resetTime = 0;
-
-        var interceptor = {
-            request: request,
-            responseError: responseError
-        }
-
-        return interceptor;
-
-        ////////////////
-
-        function request(config) {
-            var headers = {};
-
-            if (localStorage.getItem("access-token") !== null) {
-                config.headers["access-token"] = localStorage.getItem("access-token");
-                config.headers["client"] = localStorage.getItem("client");
-                config.headers["cache-control"] = localStorage.getItem("cache-control");
-                config.headers["content-type"] = localStorage.getItem("content-type");
-                config.headers["expiry"] = localStorage.getItem("expiry");
-                config.headers["token-type"] = localStorage.getItem("token-type");
-                config.headers["uid"] = localStorage.getItem("uid");
-            }
-            //console.log(localStorage.getItem("content-type"));
-            //console.log(config.headers["content-type"]);
-            //config.headers = headers;
-
-            //config.timeout = canceller.promise;
-
-            return config;
-            /*
-            var d = $q.defer();
-            var $state = $injector.get('$state');
-
-            if (config.method != "GET") {
-                if ($rootScope.authenticated) {
-                    d.resolve(config);
-                } else if (config.url == CONST.api_domain + '/auth/sign_in') {
-                    d.resolve(config);
-                } else {
-                    d.reject(config);
-                    $state.go('auth');
-                }
-            } else {
-                d.resolve(config);
-            }
-
-            return d.promise;
-            */
-        }
-
-        function responseError(rejection) {
-            // if (rejection.status === -1) {
-            //     var config = rejection.config;
-            //     config.retryCount = config.retryCount || 0;
-            //     config.retryTime = (new Date()).getTime();
-
-            //     if (config.retryCount < maxRetries &&
-            //         (!config.retryTime || config.retryTime > resetTime)) {
-            //         config.retryCount++;
-            //         config.retryTime = (new Date()).getTime();
-
-            //         var $http = $injector.get('$http');
-            //         var deferred = $q.defer();
-
-            //         // do timeout to give some time in between retries
-            //         $timeout(function() {
-            //             $http(config)
-            //                 .then(function(respData) {
-            //                     deferred.resolve(respData);
-            //                 })
-            //                 .catch(function(respData) {
-            //                     deferred.reject(respData);
-            //                 });
-            //         }, 200 * config.retryCount);
-
-            //         return deferred.promise;
-            //     }
-
-            //     //give up
-            //     return $q.reject(rejection);
-            // } else
-            if (rejection.config.headers['access-token'] == 'undefined') {
-                //console.log('test');
-                return $q.reject(rejection);
-            } else
-            if (rejection.status === 401) {
-                $rootScope.$broadcast('unauthorized');
-                rejection.config.timeout = canceller.promise;
-                canceller.resolve('Unauthorized');
-                //return rejection;
-            } else
-            if (rejection.status === 422 && angular.isDefined($rootScope.currentUser) && !$rootScope.currentUser.is_admin) {
-                $rootScope.$broadcast('nonadminaccess');
-                rejection.config.timeout = canceller.promise;
-                canceller.resolve('No permission to access resource.');
-                //return rejection;
-            }
-
-            return $q.reject(rejection);
-        }
-    }
-
-})();
-(function() {
-    'use strict';
-
     angular.module('app.helpers', [])
         .factory('HelperService', HelperService);
 
@@ -3710,6 +3562,913 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     }
 
 })();
+if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports) {
+  module.exports = 'ng-token-auth';
+}
+
+angular.module('ng-token-auth', ['ipCookie']).provider('$auth', function() {
+  var configs, defaultConfigName;
+  configs = {
+    "default": {
+      apiUrl: '/api',
+      signOutUrl: '/auth/sign_out',
+      emailSignInPath: '/auth/sign_in',
+      emailRegistrationPath: '/auth',
+      accountUpdatePath: '/auth',
+      accountDeletePath: '/auth',
+      confirmationSuccessUrl: function() {
+        return window.location.href;
+      },
+      passwordResetPath: '/auth/password',
+      passwordUpdatePath: '/auth/password',
+      passwordResetSuccessUrl: function() {
+        return window.location.href;
+      },
+      tokenValidationPath: '/auth/validate_token',
+      proxyIf: function() {
+        return false;
+      },
+      proxyUrl: '/proxy',
+      validateOnPageLoad: true,
+      omniauthWindowType: 'sameWindow',
+      storage: 'cookies',
+      forceValidateToken: false,
+      tokenFormat: {
+        "access-token": "{{ token }}",
+        "token-type": "Bearer",
+        client: "{{ clientId }}",
+        expiry: "{{ expiry }}",
+        uid: "{{ uid }}"
+      },
+      cookieOps: {
+        path: "/",
+        expires: 9999,
+        expirationUnit: 'days',
+        secure: false
+      },
+      createPopup: function(url) {
+        return window.open(url, '_blank', 'closebuttoncaption=Cancel');
+      },
+      parseExpiry: function(headers) {
+        return (parseInt(headers['expiry'], 10) * 1000) || null;
+      },
+      handleLoginResponse: function(resp) {
+        return resp.data;
+      },
+      handleAccountUpdateResponse: function(resp) {
+        return resp.data;
+      },
+      handleTokenValidationResponse: function(resp) {
+        return resp.data;
+      },
+      authProviderPaths: {
+        github: '/auth/github',
+        facebook: '/auth/facebook',
+        google: '/auth/google_oauth2'
+      }
+    }
+  };
+  defaultConfigName = "default";
+  return {
+    configure: function(params) {
+      var conf, defaults, fullConfig, i, k, label, v, _i, _len;
+      if (params instanceof Array && params.length) {
+        for (i = _i = 0, _len = params.length; _i < _len; i = ++_i) {
+          conf = params[i];
+          label = null;
+          for (k in conf) {
+            v = conf[k];
+            label = k;
+            if (i === 0) {
+              defaultConfigName = label;
+            }
+          }
+          defaults = angular.copy(configs["default"]);
+          fullConfig = {};
+          fullConfig[label] = angular.extend(defaults, conf[label]);
+          angular.extend(configs, fullConfig);
+        }
+        if (defaultConfigName !== "default") {
+          delete configs["default"];
+        }
+      } else if (params instanceof Object) {
+        angular.extend(configs["default"], params);
+      } else {
+        throw "Invalid argument: ng-token-auth config should be an Array or Object.";
+      }
+      return configs;
+    },
+    $get: [
+      '$http', '$q', '$location', 'ipCookie', '$window', '$timeout', '$rootScope', '$interpolate', '$interval', (function(_this) {
+        return function($http, $q, $location, ipCookie, $window, $timeout, $rootScope, $interpolate, $interval) {
+          return {
+            header: null,
+            dfd: null,
+            user: {},
+            mustResetPassword: false,
+            listener: null,
+            initialize: function() {
+              this.initializeListeners();
+              this.cancelOmniauthInAppBrowserListeners = (function() {});
+              return this.addScopeMethods();
+            },
+            initializeListeners: function() {
+              this.listener = angular.bind(this, this.handlePostMessage);
+              if ($window.addEventListener) {
+                return $window.addEventListener("message", this.listener, false);
+              }
+            },
+            cancel: function(reason) {
+              if (this.requestCredentialsPollingTimer != null) {
+                $timeout.cancel(this.requestCredentialsPollingTimer);
+              }
+              this.cancelOmniauthInAppBrowserListeners();
+              if (this.dfd != null) {
+                this.rejectDfd(reason);
+              }
+              return $timeout(((function(_this) {
+                return function() {
+                  return _this.requestCredentialsPollingTimer = null;
+                };
+              })(this)), 0);
+            },
+            destroy: function() {
+              this.cancel();
+              if ($window.removeEventListener) {
+                return $window.removeEventListener("message", this.listener, false);
+              }
+            },
+            handlePostMessage: function(ev) {
+              var error, oauthRegistration;
+              if (ev.data.message === 'deliverCredentials') {
+                delete ev.data.message;
+                oauthRegistration = ev.data.oauth_registration;
+                delete ev.data.oauth_registration;
+                this.handleValidAuth(ev.data, true);
+                $rootScope.$broadcast('auth:login-success', ev.data);
+                if (oauthRegistration) {
+                  $rootScope.$broadcast('auth:oauth-registration', ev.data);
+                }
+              }
+              if (ev.data.message === 'authFailure') {
+                error = {
+                  reason: 'unauthorized',
+                  errors: [ev.data.error]
+                };
+                this.cancel(error);
+                return $rootScope.$broadcast('auth:login-error', error);
+              }
+            },
+            addScopeMethods: function() {
+              $rootScope.user = this.user;
+              $rootScope.authenticate = angular.bind(this, this.authenticate);
+              $rootScope.signOut = angular.bind(this, this.signOut);
+              $rootScope.destroyAccount = angular.bind(this, this.destroyAccount);
+              $rootScope.submitRegistration = angular.bind(this, this.submitRegistration);
+              $rootScope.submitLogin = angular.bind(this, this.submitLogin);
+              $rootScope.requestPasswordReset = angular.bind(this, this.requestPasswordReset);
+              $rootScope.updatePassword = angular.bind(this, this.updatePassword);
+              $rootScope.updateAccount = angular.bind(this, this.updateAccount);
+              if (this.getConfig().validateOnPageLoad) {
+                return this.validateUser({
+                  config: this.getSavedConfig()
+                });
+              }
+            },
+            submitRegistration: function(params, opts) {
+              var successUrl;
+              if (opts == null) {
+                opts = {};
+              }
+              successUrl = this.getResultOrValue(this.getConfig(opts.config).confirmationSuccessUrl);
+              angular.extend(params, {
+                confirm_success_url: successUrl,
+                config_name: this.getCurrentConfigName(opts.config)
+              });
+              return $http.post(this.apiUrl(opts.config) + this.getConfig(opts.config).emailRegistrationPath, params).then(function(resp) {
+                $rootScope.$broadcast('auth:registration-email-success', params);
+                return resp;
+              }, function(resp) {
+                $rootScope.$broadcast('auth:registration-email-error', resp.data);
+                return $q.reject(resp);
+              });
+            },
+            submitLogin: function(params, opts, httpopts) {
+              if (opts == null) {
+                opts = {};
+              }
+              if (httpopts == null) {
+                httpopts = {};
+              }
+              this.initDfd();
+              $http.post(this.apiUrl(opts.config) + this.getConfig(opts.config).emailSignInPath, params, httpopts).then((function(_this) {
+                return function(resp) {
+                  var authData;
+                  _this.setConfigName(opts.config);
+                  authData = _this.getConfig(opts.config).handleLoginResponse(resp.data, _this);
+                  _this.handleValidAuth(authData);
+                  $rootScope.$broadcast('auth:login-success', _this.user);
+                  return resp;
+                };
+              })(this), (function(_this) {
+                return function(resp) {
+                  _this.rejectDfd({
+                    reason: 'unauthorized',
+                    errors: ['Invalid credentials']
+                  });
+                  $rootScope.$broadcast('auth:login-error', resp.data);
+                  return $q.reject(resp);
+                };
+              })(this));
+              return this.dfd.promise;
+            },
+            userIsAuthenticated: function() {
+              return this.retrieveData('auth_headers') && this.user.signedIn && !this.tokenHasExpired();
+            },
+            requestPasswordReset: function(params, opts) {
+              var successUrl;
+              if (opts == null) {
+                opts = {};
+              }
+              successUrl = this.getResultOrValue(this.getConfig(opts.config).passwordResetSuccessUrl);
+              params.redirect_url = successUrl;
+              if (opts.config != null) {
+                params.config_name = opts.config;
+              }
+              return $http.post(this.apiUrl(opts.config) + this.getConfig(opts.config).passwordResetPath, params).then(function(resp) {
+                $rootScope.$broadcast('auth:password-reset-request-success', params);
+                return resp;
+              }, function(resp) {
+                $rootScope.$broadcast('auth:password-reset-request-error', resp.data);
+                return $q.reject(resp);
+              });
+            },
+            updatePassword: function(params) {
+              return $http.put(this.apiUrl() + this.getConfig().passwordUpdatePath, params).then((function(_this) {
+                return function(resp) {
+                  $rootScope.$broadcast('auth:password-change-success', resp.data);
+                  _this.mustResetPassword = false;
+                  return resp;
+                };
+              })(this), function(resp) {
+                $rootScope.$broadcast('auth:password-change-error', resp.data);
+                return $q.reject(resp);
+              });
+            },
+            updateAccount: function(params) {
+              return $http.put(this.apiUrl() + this.getConfig().accountUpdatePath, params).then((function(_this) {
+                return function(resp) {
+                  var curHeaders, key, newHeaders, updateResponse, val, _ref;
+                  updateResponse = _this.getConfig().handleAccountUpdateResponse(resp.data);
+                  curHeaders = _this.retrieveData('auth_headers');
+                  angular.extend(_this.user, updateResponse);
+                  if (curHeaders) {
+                    newHeaders = {};
+                    _ref = _this.getConfig().tokenFormat;
+                    for (key in _ref) {
+                      val = _ref[key];
+                      if (curHeaders[key] && updateResponse[key]) {
+                        newHeaders[key] = updateResponse[key];
+                      }
+                    }
+                    _this.setAuthHeaders(newHeaders);
+                  }
+                  $rootScope.$broadcast('auth:account-update-success', resp.data);
+                  return resp;
+                };
+              })(this), function(resp) {
+                $rootScope.$broadcast('auth:account-update-error', resp.data);
+                return $q.reject(resp);
+              });
+            },
+            destroyAccount: function(params) {
+              return $http["delete"](this.apiUrl() + this.getConfig().accountUpdatePath, params).then((function(_this) {
+                return function(resp) {
+                  _this.invalidateTokens();
+                  $rootScope.$broadcast('auth:account-destroy-success', resp.data);
+                  return resp;
+                };
+              })(this), function(resp) {
+                $rootScope.$broadcast('auth:account-destroy-error', resp.data);
+                return $q.reject(resp);
+              });
+            },
+            authenticate: function(provider, opts) {
+              if (opts == null) {
+                opts = {};
+              }
+              if (this.dfd == null) {
+                this.setConfigName(opts.config);
+                this.initDfd();
+                this.openAuthWindow(provider, opts);
+              }
+              return this.dfd.promise;
+            },
+            setConfigName: function(configName) {
+              if (configName == null) {
+                configName = defaultConfigName;
+              }
+              return this.persistData('currentConfigName', configName, configName);
+            },
+            openAuthWindow: function(provider, opts) {
+              var authUrl, omniauthWindowType;
+              omniauthWindowType = this.getConfig(opts.config).omniauthWindowType;
+              authUrl = this.buildAuthUrl(omniauthWindowType, provider, opts);
+              if (omniauthWindowType === 'newWindow') {
+                return this.requestCredentialsViaPostMessage(this.getConfig().createPopup(authUrl));
+              } else if (omniauthWindowType === 'inAppBrowser') {
+                return this.requestCredentialsViaExecuteScript(this.getConfig().createPopup(authUrl));
+              } else if (omniauthWindowType === 'sameWindow') {
+                return this.visitUrl(authUrl);
+              } else {
+                throw 'Unsupported omniauthWindowType "#{omniauthWindowType}"';
+              }
+            },
+            visitUrl: function(url) {
+              return $window.location.replace(url);
+            },
+            buildAuthUrl: function(omniauthWindowType, provider, opts) {
+              var authUrl, key, params, val;
+              if (opts == null) {
+                opts = {};
+              }
+              authUrl = this.getConfig(opts.config).apiUrl;
+              authUrl += this.getConfig(opts.config).authProviderPaths[provider];
+              authUrl += '?auth_origin_url=' + encodeURIComponent($window.location.href);
+              params = angular.extend({}, opts.params || {}, {
+                omniauth_window_type: omniauthWindowType
+              });
+              for (key in params) {
+                val = params[key];
+                authUrl += '&';
+                authUrl += encodeURIComponent(key);
+                authUrl += '=';
+                authUrl += encodeURIComponent(val);
+              }
+              return authUrl;
+            },
+            requestCredentialsViaPostMessage: function(authWindow) {
+              if (authWindow.closed) {
+                return this.handleAuthWindowClose(authWindow);
+              } else {
+                authWindow.postMessage("requestCredentials", "*");
+                return this.requestCredentialsPollingTimer = $timeout(((function(_this) {
+                  return function() {
+                    return _this.requestCredentialsViaPostMessage(authWindow);
+                  };
+                })(this)), 500);
+              }
+            },
+            requestCredentialsViaExecuteScript: function(authWindow) {
+              var handleAuthWindowClose, handleLoadStop;
+              this.cancelOmniauthInAppBrowserListeners();
+              handleAuthWindowClose = this.handleAuthWindowClose.bind(this, authWindow);
+              handleLoadStop = this.handleLoadStop.bind(this, authWindow);
+              authWindow.addEventListener('loadstop', handleLoadStop);
+              authWindow.addEventListener('exit', handleAuthWindowClose);
+              return this.cancelOmniauthInAppBrowserListeners = function() {
+                authWindow.removeEventListener('loadstop', handleLoadStop);
+                return authWindow.removeEventListener('exit', handleAuthWindowClose);
+              };
+            },
+            handleLoadStop: function(authWindow) {
+              _this = this;
+              return authWindow.executeScript({
+                code: 'requestCredentials()'
+              }, function(response) {
+                var data, ev;
+                data = response[0];
+                if (data) {
+                  ev = new Event('message');
+                  ev.data = data;
+                  _this.cancelOmniauthInAppBrowserListeners();
+                  $window.dispatchEvent(ev);
+                  _this.initDfd();
+                  return authWindow.close();
+                }
+              });
+            },
+            handleAuthWindowClose: function(authWindow) {
+              this.cancel({
+                reason: 'unauthorized',
+                errors: ['User canceled login']
+              });
+              this.cancelOmniauthInAppBrowserListeners;
+              return $rootScope.$broadcast('auth:window-closed');
+            },
+            resolveDfd: function() {
+              if (!this.dfd) {
+                return;
+              }
+              this.dfd.resolve(this.user);
+              return $timeout(((function(_this) {
+                return function() {
+                  _this.dfd = null;
+                  if (!$rootScope.$$phase) {
+                    return $rootScope.$digest();
+                  }
+                };
+              })(this)), 0);
+            },
+            buildQueryString: function(param, prefix) {
+              var encoded, k, str, v;
+              str = [];
+              for (k in param) {
+                v = param[k];
+                k = prefix ? prefix + "[" + k + "]" : k;
+                encoded = angular.isObject(v) ? this.buildQueryString(v, k) : k + "=" + encodeURIComponent(v);
+                str.push(encoded);
+              }
+              return str.join("&");
+            },
+            parseLocation: function(location) {
+              var i, locationSubstring, obj, pair, pairs;
+              locationSubstring = location.substring(1);
+              obj = {};
+              if (locationSubstring) {
+                pairs = locationSubstring.split('&');
+                pair = void 0;
+                i = void 0;
+                for (i in pairs) {
+                  i = i;
+                  if ((pairs[i] === '') || (typeof pairs[i] === 'function')) {
+                    continue;
+                  }
+                  pair = pairs[i].split('=');
+                  obj[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+                }
+              }
+              return obj;
+            },
+            validateUser: function(opts) {
+              var clientId, configName, expiry, location_parse, params, search, token, uid, url;
+              if (opts == null) {
+                opts = {};
+              }
+              configName = opts.config;
+              if (this.dfd == null) {
+                this.initDfd();
+                if (this.userIsAuthenticated()) {
+                  this.resolveDfd();
+                } else {
+                  search = $location.search();
+                  location_parse = this.parseLocation(window.location.search);
+                  params = Object.keys(search).length === 0 ? location_parse : search;
+                  token = params.auth_token || params.token;
+                  if (token !== void 0) {
+                    clientId = params.client_id;
+                    uid = params.uid;
+                    expiry = params.expiry;
+                    configName = params.config;
+                    this.setConfigName(configName);
+                    this.mustResetPassword = params.reset_password;
+                    this.firstTimeLogin = params.account_confirmation_success;
+                    this.oauthRegistration = params.oauth_registration;
+                    this.setAuthHeaders(this.buildAuthHeaders({
+                      token: token,
+                      clientId: clientId,
+                      uid: uid,
+                      expiry: expiry
+                    }));
+                    url = $location.path() || '/';
+                    ['auth_token', 'token', 'client_id', 'uid', 'expiry', 'config', 'reset_password', 'account_confirmation_success', 'oauth_registration'].forEach(function(prop) {
+                      return delete params[prop];
+                    });
+                    if (Object.keys(params).length > 0) {
+                      url += '?' + this.buildQueryString(params);
+                    }
+                    $location.url(url);
+                  } else if (this.retrieveData('currentConfigName')) {
+                    configName = this.retrieveData('currentConfigName');
+                  }
+                  if (this.getConfig().forceValidateToken) {
+                    this.validateToken({
+                      config: configName
+                    });
+                  } else if (!isEmpty(this.retrieveData('auth_headers'))) {
+                    if (this.tokenHasExpired()) {
+                      $rootScope.$broadcast('auth:session-expired');
+                      this.rejectDfd({
+                        reason: 'unauthorized',
+                        errors: ['Session expired.']
+                      });
+                    } else {
+                      this.validateToken({
+                        config: configName
+                      });
+                    }
+                  } else {
+                    this.rejectDfd({
+                      reason: 'unauthorized',
+                      errors: ['No credentials']
+                    });
+                    $rootScope.$broadcast('auth:invalid');
+                  }
+                }
+              }
+              return this.dfd.promise;
+            },
+            validateToken: function(opts) {
+              if (opts == null) {
+                opts = {};
+              }
+              if (!this.tokenHasExpired()) {
+                return $http.get(this.apiUrl(opts.config) + this.getConfig(opts.config).tokenValidationPath).then((function(_this) {
+                  return function(resp) {
+                    var authData;
+                    authData = _this.getConfig(opts.config).handleTokenValidationResponse(resp.data);
+                    _this.handleValidAuth(authData);
+                    if (_this.firstTimeLogin) {
+                      $rootScope.$broadcast('auth:email-confirmation-success', _this.user);
+                    }
+                    if (_this.oauthRegistration) {
+                      $rootScope.$broadcast('auth:oauth-registration', _this.user);
+                    }
+                    if (_this.mustResetPassword) {
+                      $rootScope.$broadcast('auth:password-reset-confirm-success', _this.user);
+                    }
+                    $rootScope.$broadcast('auth:validation-success', _this.user);
+                    return _this.user;
+                  };
+                })(this), (function(_this) {
+                  return function(resp) {
+                    if (_this.firstTimeLogin) {
+                      $rootScope.$broadcast('auth:email-confirmation-error', resp.data);
+                    }
+                    if (_this.mustResetPassword) {
+                      $rootScope.$broadcast('auth:password-reset-confirm-error', resp.data);
+                    }
+                    $rootScope.$broadcast('auth:validation-error', resp.data);
+                    _this.rejectDfd({
+                      reason: 'unauthorized',
+                      errors: resp.data != null ? resp.data.errors : ['Unspecified error']
+                    }, resp.status > 0);
+                    return $q.reject(resp);
+                  };
+                })(this));
+              } else {
+                return this.rejectDfd({
+                  reason: 'unauthorized',
+                  errors: ['Expired credentials']
+                });
+              }
+            },
+            tokenHasExpired: function() {
+              var expiry, now;
+              expiry = this.getExpiry();
+              now = new Date().getTime();
+              return expiry && expiry < now;
+            },
+            getExpiry: function() {
+              return this.getConfig().parseExpiry(this.retrieveData('auth_headers') || {});
+            },
+            invalidateTokens: function() {
+              var key, val, _ref;
+              _ref = this.user;
+              for (key in _ref) {
+                val = _ref[key];
+                delete this.user[key];
+              }
+              this.deleteData('currentConfigName');
+              if (this.timer != null) {
+                $interval.cancel(this.timer);
+              }
+              return this.deleteData('auth_headers');
+            },
+            signOut: function() {
+              return $http["delete"](this.apiUrl() + this.getConfig().signOutUrl).then((function(_this) {
+                return function(resp) {
+                  _this.invalidateTokens();
+                  $rootScope.$broadcast('auth:logout-success');
+                  return resp;
+                };
+              })(this), (function(_this) {
+                return function(resp) {
+                  _this.invalidateTokens();
+                  $rootScope.$broadcast('auth:logout-error', resp.data);
+                  return $q.reject(resp);
+                };
+              })(this));
+            },
+            handleValidAuth: function(user, setHeader) {
+              if (setHeader == null) {
+                setHeader = false;
+              }
+              if (this.requestCredentialsPollingTimer != null) {
+                $timeout.cancel(this.requestCredentialsPollingTimer);
+              }
+              this.cancelOmniauthInAppBrowserListeners();
+              angular.extend(this.user, user);
+              this.user.signedIn = true;
+              this.user.configName = this.getCurrentConfigName();
+              if (setHeader) {
+                this.setAuthHeaders(this.buildAuthHeaders({
+                  token: this.user.auth_token,
+                  clientId: this.user.client_id,
+                  uid: this.user.uid,
+                  expiry: this.user.expiry
+                }));
+              }
+              return this.resolveDfd();
+            },
+            buildAuthHeaders: function(ctx) {
+              var headers, key, val, _ref;
+              headers = {};
+              _ref = this.getConfig().tokenFormat;
+              for (key in _ref) {
+                val = _ref[key];
+                headers[key] = $interpolate(val)(ctx);
+              }
+              return headers;
+            },
+            persistData: function(key, val, configName) {
+              if (this.getConfig(configName).storage instanceof Object) {
+                return this.getConfig(configName).storage.persistData(key, val, this.getConfig(configName));
+              } else {
+                switch (this.getConfig(configName).storage) {
+                  case 'localStorage':
+                    return $window.localStorage.setItem(key, JSON.stringify(val));
+                  case 'sessionStorage':
+                    return $window.sessionStorage.setItem(key, JSON.stringify(val));
+                  default:
+                    return ipCookie(key, val, this.getConfig().cookieOps);
+                }
+              }
+            },
+            retrieveData: function(key) {
+              var e;
+              try {
+                if (this.getConfig().storage instanceof Object) {
+                  return this.getConfig().storage.retrieveData(key);
+                } else {
+                  switch (this.getConfig().storage) {
+                    case 'localStorage':
+                      return JSON.parse($window.localStorage.getItem(key));
+                    case 'sessionStorage':
+                      return JSON.parse($window.sessionStorage.getItem(key));
+                    default:
+                      return ipCookie(key);
+                  }
+                }
+              } catch (_error) {
+                e = _error;
+                if (e instanceof SyntaxError) {
+                  return void 0;
+                } else {
+                  throw e;
+                }
+              }
+            },
+            deleteData: function(key) {
+              var cookieOps;
+              if (this.getConfig().storage instanceof Object) {
+                this.getConfig().storage.deleteData(key);
+              }
+              switch (this.getConfig().storage) {
+                case 'localStorage':
+                  return $window.localStorage.removeItem(key);
+                case 'sessionStorage':
+                  return $window.sessionStorage.removeItem(key);
+                default:
+                  cookieOps = {
+                    path: this.getConfig().cookieOps.path
+                  };
+                  if (this.getConfig().cookieOps.domain !== void 0) {
+                    cookieOps.domain = this.getConfig().cookieOps.domain;
+                  }
+                  return ipCookie.remove(key, cookieOps);
+              }
+            },
+            setAuthHeaders: function(h) {
+              var expiry, newHeaders, now, result;
+              newHeaders = angular.extend(this.retrieveData('auth_headers') || {}, h);
+              result = this.persistData('auth_headers', newHeaders);
+              expiry = this.getExpiry();
+              now = new Date().getTime();
+              if (expiry > now) {
+                if (this.timer != null) {
+                  $interval.cancel(this.timer);
+                }
+                this.timer = $interval(((function(_this) {
+                  return function() {
+                    return _this.validateUser({
+                      config: _this.getSavedConfig()
+                    });
+                  };
+                })(this)), parseInt(expiry - now), 1);
+              }
+              return result;
+            },
+            initDfd: function() {
+              return this.dfd = $q.defer();
+            },
+            rejectDfd: function(reason, invalidateTokens) {
+              if (invalidateTokens == null) {
+                invalidateTokens = true;
+              }
+              if (invalidateTokens === true) {
+                this.invalidateTokens();
+              }
+              if (this.dfd != null) {
+                this.dfd.reject(reason);
+                return $timeout(((function(_this) {
+                  return function() {
+                    return _this.dfd = null;
+                  };
+                })(this)), 0);
+              }
+            },
+            apiUrl: function(configName) {
+              if (this.getConfig(configName).proxyIf()) {
+                return this.getConfig(configName).proxyUrl;
+              } else {
+                return this.getConfig(configName).apiUrl;
+              }
+            },
+            getConfig: function(name) {
+              return configs[this.getCurrentConfigName(name)];
+            },
+            getResultOrValue: function(arg) {
+              if (typeof arg === 'function') {
+                return arg();
+              } else {
+                return arg;
+              }
+            },
+            getCurrentConfigName: function(name) {
+              return name || this.getSavedConfig();
+            },
+            getSavedConfig: function() {
+              var c, key;
+              c = void 0;
+              key = 'currentConfigName';
+              if (this.hasLocalStorage()) {
+                if (c == null) {
+                  c = JSON.parse($window.localStorage.getItem(key));
+                }
+              } else if (this.hasSessionStorage()) {
+                if (c == null) {
+                  c = JSON.parse($window.sessionStorage.getItem(key));
+                }
+              }
+              if (c == null) {
+                c = ipCookie(key);
+              }
+              return c || defaultConfigName;
+            },
+            hasSessionStorage: function() {
+              var error;
+              if (this._hasSessionStorage == null) {
+                this._hasSessionStorage = false;
+                try {
+                  $window.sessionStorage.setItem('ng-token-auth-test', 'ng-token-auth-test');
+                  $window.sessionStorage.removeItem('ng-token-auth-test');
+                  this._hasSessionStorage = true;
+                } catch (_error) {
+                  error = _error;
+                }
+              }
+              return this._hasSessionStorage;
+            },
+            hasLocalStorage: function() {
+              var error;
+              if (this._hasLocalStorage == null) {
+                this._hasLocalStorage = false;
+                try {
+                  $window.localStorage.setItem('ng-token-auth-test', 'ng-token-auth-test');
+                  $window.localStorage.removeItem('ng-token-auth-test');
+                  this._hasLocalStorage = true;
+                } catch (_error) {
+                  error = _error;
+                }
+              }
+              return this._hasLocalStorage;
+            }
+          };
+        };
+      })(this)
+    ]
+  };
+}).config([
+  '$httpProvider', function($httpProvider) {
+    var httpMethods, tokenIsCurrent, updateHeadersFromResponse;
+    tokenIsCurrent = function($auth, headers) {
+      var newTokenExpiry, oldTokenExpiry;
+      oldTokenExpiry = Number($auth.getExpiry());
+      newTokenExpiry = Number($auth.getConfig().parseExpiry(headers || {}));
+      return newTokenExpiry >= oldTokenExpiry;
+    };
+    updateHeadersFromResponse = function($auth, resp) {
+      var key, newHeaders, val, _ref;
+      newHeaders = {};
+      _ref = $auth.getConfig().tokenFormat;
+      for (key in _ref) {
+        val = _ref[key];
+        if (resp.headers(key)) {
+          newHeaders[key] = resp.headers(key);
+        }
+      }
+      if (tokenIsCurrent($auth, newHeaders)) {
+        return $auth.setAuthHeaders(newHeaders);
+      }
+    };
+    $httpProvider.interceptors.push([
+      '$injector', function($injector) {
+        return {
+          request: function(req) {
+            $injector.invoke([
+              '$http', '$auth', function($http, $auth) {
+                var key, val, _ref, _results;
+                if (req.url.match($auth.apiUrl())) {
+                  _ref = $auth.retrieveData('auth_headers');
+                  _results = [];
+                  for (key in _ref) {
+                    val = _ref[key];
+                    _results.push(req.headers[key] = val);
+                  }
+                  return _results;
+                }
+              }
+            ]);
+            return req;
+          },
+          response: function(resp) {
+            $injector.invoke([
+              '$http', '$auth', function($http, $auth) {
+                if (resp.config.url.match($auth.apiUrl())) {
+                  return updateHeadersFromResponse($auth, resp);
+                }
+              }
+            ]);
+            return resp;
+          },
+          responseError: function(resp) {
+            $injector.invoke([
+              '$http', '$auth', function($http, $auth) {
+                if (resp.config.url.match($auth.apiUrl())) {
+                  return updateHeadersFromResponse($auth, resp);
+                }
+              }
+            ]);
+            return $injector.get('$q').reject(resp);
+          }
+        };
+      }
+    ]);
+    httpMethods = ['get', 'post', 'put', 'patch', 'delete'];
+    return angular.forEach(httpMethods, function(method) {
+      var _base;
+      if ((_base = $httpProvider.defaults.headers)[method] == null) {
+        _base[method] = {};
+      }
+      return $httpProvider.defaults.headers[method]['If-Modified-Since'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
+    });
+  }
+]).run([
+  '$auth', '$window', '$rootScope', function($auth, $window, $rootScope) {
+    return $auth.initialize();
+  }
+]);
+
+window.isOldIE = function() {
+  var nav, out, version;
+  out = false;
+  nav = navigator.userAgent.toLowerCase();
+  if (nav && nav.indexOf('msie') !== -1) {
+    version = parseInt(nav.split('msie')[1]);
+    if (version < 10) {
+      out = true;
+    }
+  }
+  return out;
+};
+
+window.isIE = function() {
+  var nav;
+  nav = navigator.userAgent.toLowerCase();
+  return (nav && nav.indexOf('msie') !== -1) || !!navigator.userAgent.match(/Trident.*rv\:11\./);
+};
+
+window.isEmpty = function(obj) {
+  var key, val;
+  if (!obj) {
+    return true;
+  }
+  if (obj.length > 0) {
+    return false;
+  }
+  if (obj.length === 0) {
+    return true;
+  }
+  for (key in obj) {
+    val = obj[key];
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      return false;
+    }
+  }
+  return true;
+};
+
 (function() {
     'use strict';
 
@@ -4275,229 +5034,71 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     angular.module('app.auth', [])
         .factory('AuthService', AuthService);
 
-    AuthService.$inject = ['$auth', '$rootScope', '$http', '$q', '$injector', '$state', 'CONST'];
+    AuthService.$inject = ['$auth', '$rootScope', '$q', '$state', 'CONST', '$log'];
 
     /* @ngInject */
-    function AuthService($auth, $rootScope, $http, $q, $injector, $state, CONST) {
+    function AuthService($auth, $rootScope, $q, $state, CONST, $log) {
         var api = CONST.api_domain;
 
         var service = {
             login: login,
-            errors: [],
-            isAuthenticated: isAuthenticated,
-            createAuthUser: createAuthUser,
-            destroyAuthUser: destroyAuthUser,
-            getAuthUser: getAuthUser,
             logout: logout,
-            setHeaders: setHeaders,
-            removeUserStorage: removeUserStorage,
-            redirectIfUnauthorized: redirectIfUnauthorized
+            userIsAuthenticated: userIsAuthenticated,
+            currentUser: currentUser,
+            tokenExists: tokenExists,
+            invalidateTokens: invalidateTokens
         }
 
         return service;
 
         ////////////////
 
-        function logout() {
-            $auth.logout().then(function() {
-                destroyAuthUser().then(function() {
-                    $state.go('auth');
-                }).catch(function() {
-                    console.error("Can't logout user. Something went wrong.");
-                });
-            });
+        function userIsAuthenticated() {
+            return $auth.userIsAuthenticated();
+        }
+
+        function currentUser() {
+            return $auth.user;
+        }
+
+        function tokenExists() {
+            return (!$auth.retrieveData('auth_headers') ? false : true);
+        }
+
+        function invalidateTokens() {
+            $auth.invalidateTokens();
         }
 
         function login(credentials) {
-            $rootScope.loginError = null;
             var d = $q.defer();
 
-            // var credentials = {
-            //     email: email,
-            //     password: password
-            // }
-
-            // $auth.submitLogin(credentials).then(function(response) {
-            //     $log.log(response);
-            //     if (typeof response === 'undefined' || response === false) {
-            //         d.reject();
-            //     } else {
-            //         var user = JSON.stringify(response.data.user);
-
-            //         localStorage.setItem('user', user);
-            //         $rootScope.authenticated = true;
-            //         $rootScope.currentUser = response.data.user;
-
-            //         d.resolve(response);
-            //     }
-            // }).catch(function(err) {
-            //     $log.log(err);
-            //     service.errors = err.errors;
-            //     d.reject(service.errors);
-            //     //throw (service.errors);
-            //     d.reject();
-            // });
-
-
-            $auth.login(credentials).then(function(data) {
-                if (angular.isDefined(data)) {
-                    var headers = data.headers();
-
-                    $auth.setToken(headers["access-token"]);
-                    localStorage.setItem("client", headers["client"]);
-                    localStorage.setItem("access-token", headers["access-token"]);
-                    localStorage.setItem("cache-control", headers["cache-control"]);
-                    localStorage.setItem("content-type", headers["content-type"]);
-                    localStorage.setItem("expiry", headers["expiry"]);
-                    localStorage.setItem("token-type", headers["token-type"]);
-                    localStorage.setItem("uid", headers["uid"]);
-
-                    $rootScope.$broadcast('authorized');
-
-                    var user = JSON.stringify(data.data.user);
-
-                    localStorage.setItem('user', user);
-                    $rootScope.authenticated = true;
-                    $rootScope.currentUser = data.data.user;
-
-                    d.resolve(data);
-                } else {
-                    d.reject(data);
-                }
+            $auth.submitLogin(credentials).then(function(resp) {
+                d.resolve(resp);
             }).catch(function(err) {
+                $log.log(err);
                 d.reject(err);
             });
 
-            // $auth.login(credentials).then(function(r) {
-            //     $log.log(r);
-            // }).catch(function(e) {
-            //     $log.log(e)
-            // });
-
             return d.promise;
         }
 
-        function isAuthenticated() {
-            // var d = $q.defer();
-            // //var $state = $injector.get('$state');
-            // if ($auth.isAuthenticated()) {
-            //     //if ($auth.validateUser()) {
-            //     d.resolve();
-            // } else {
-            //     d.reject();
-            //     //$state.go('auth');
-            // }
-
-            // return d.promise;
-            return $auth.isAuthenticated();
-        }
-
-        function createAuthUser() {
-            var user = JSON.parse(localStorage.getItem('user'));
-            if (user && $auth.isAuthenticated()) {
-                $rootScope.authenticated = true;
-                $rootScope.currentUser = user;
-            }
-        }
-
-        function destroyAuthUser() {
+        function logout() {
             var d = $q.defer();
 
-            if (typeof $rootScope.currentUser != 'undefined' && $rootScope.currentUser != null) {
-                var url = api + '/auth/sign_out';
-                var client = localStorage.getItem('client');
-                var uid = $rootScope.currentUser.email;
-                var token = localStorage.getItem('access-token');
-
-                var params = {};
-                params['uid'] = uid;
-                params['access-token'] = token;
-                params['client'] = client;
-
-                var data = { params };
-
-                $http.delete(url, data)
-                    .then(function(resp) {
-                        removeUserStorage();
-                        d.resolve(true);
-
-                    }).catch(function(error) {
-                        console.log('test');
-                        $log.log(error.data.errors);
-                        d.reject(false);
-                    });
-            }
-
-            d.resolve(true);
+            $auth.signOut().then(function(resp) {
+                d.resolve(resp);
+            }).catch(function(err) {
+                $log.log(err);
+                d.reject(err);
+            });
 
             return d.promise;
         }
 
-        function removeUserStorage() {
-            $auth.logout();
-            localStorage.clear();
-            // localStorage.removeItem('user');
-            // localStorage.removeItem('client');
-            // localStorage.removeItem('access-token');
-            $rootScope.authenticated = false;
-            $rootScope.currentUser = null;
-        }
-
-        function getAuthUser() {
-            if (service.isAuthenticated) {
-                return JSON.parse(localStorage.getItem('user'));
-            }
-
-            return null;
-        }
-
-        function setHeaders() {
-            var headers = {};
-
-            if (localStorage.getItem("access-token") !== null) {
-                headers["access-token"] = localStorage.getItem("access-token");
-                headers["client"] = localStorage.getItem("client");
-                headers["cache-control"] = localStorage.getItem("cache-control");
-                headers["content-type"] = localStorage.getItem("content-type");
-                headers["expiry"] = localStorage.getItem("expiry");
-                headers["token-type"] = localStorage.getItem("token-type");
-                headers["uid"] = localStorage.getItem("uid");
-            }
-
-            $http.defaults.headers.common = headers;
-        }
-
-        function redirectIfUnauthorized(event, toState, ngProgressLite) {
-
-            //if (localStorage.getItem('user') != 'undefined') {
-            //var user = JSON.parse(localStorage.getItem('user'));
-            if ($auth.isAuthenticated() && toState.name === "auth") {
-                event.preventDefault();
-                //$log.log('11111111');
-                $state.go('dashboard');
-                return false;
-            } else if (!$auth.isAuthenticated() && toState.name === "auth") {
-                ngProgressLite.done();
-                event.preventDefault();
-                //$log.log('22222222');
-                $state.go('auth');
-                return false;
-            } else if (!$auth.isAuthenticated() && toState.name !== "auth") {
-                event.preventDefault();
-                //$log.log(toState.name);
-                //$log.log('00000000');
-                $state.go('auth');
-                return false;
-            }
-            //}
-            event.preventDefault();
-            //$log.log('test');
-            $state.go(toState.name);
-            return true;
-        }
     }
 
 })();
+
 (function() {
     'use strict';
 
@@ -4510,8 +5111,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
     function LoginController(AuthService, $state, $rootScope) {
         var vm = this;
 
-        //vm.email = "";
-        //vm.password = "";
         vm.form;
         vm.login = login;
         vm.loggingIn = false;
@@ -4521,32 +5120,26 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         ///////////
 
         function activate() {
-            $rootScope.authenticated = AuthService.isAuthenticated();
             $rootScope.hasLoginView = true;
         }
 
         function login() {
+            if (vm.loggingIn) {
+                return;
+            }
+
             vm.loggingIn = true;
-            AuthService.login(vm.form).then(function(response) {
-                vm.loggingIn = false;
-                if ($rootScope.authenticated) {
-                    $state.go('dashboard');
-                }
+            $rootScope.loginError = null;
 
-            }).catch(function(error) {
+            AuthService.login(vm.form).then(function(resp) {
                 vm.loggingIn = false;
-                vm.loginError = true;
-                if (angular.isDefined(error) && error.data != null) {
-                    vm.loginErrorText = error.data.errors[0];
-                } else {
-                    console.log(error);
-                    vm.loginErrorText = "Login error. Error Status: " + error.status;
-                }
-
+            }).catch(function(err) {
+                vm.loggingIn = false;
             });
         }
     }
 })();
+
 (function() {
     'use strict';
 

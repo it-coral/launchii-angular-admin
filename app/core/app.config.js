@@ -3,8 +3,7 @@
 
     angular.module('app')
         .config(config)
-        .run(run)
-        .run(customHeaders);
+        .run(run);
 
     config.$inject = ['$authProvider', '$resourceProvider', '$httpProvider', 'CONST', 'laddaProvider', '$logProvider'];
 
@@ -12,86 +11,33 @@
     function config($authProvider, $resourceProvider, $httpProvider, CONST, laddaProvider, $logProvider) {
         //Layout.init();
         $logProvider.debugEnabled(CONST.env.enableDebug);
-        $authProvider.loginUrl = CONST.api_domain + '/auth/sign_in';
-        $authProvider.tokenHeader = 'access-token';
-        $authProvider.tokenType = '';
-        //$authProvider.tokenHeader = 'Access-Token';
-        //$authProvider.withCredentials = true;
-        // $authProvider.configure({
-        //     apiUrl: CONST.api_domain
-        //         //validateOnPageLoad: false
-        // });
 
-        //$httpProvider.defaults.withCredentials = true;
+        $authProvider.configure({
+            apiUrl:                  CONST.api_domain,
+            handleLoginResponse: function(response) {
+                return response.user;
+            },
+            handleTokenValidationResponse: function(response) {
+                return response.user;
+            }
+        });
+
         $resourceProvider.defaults.stripTrailingSlashes = false;
-        $httpProvider.interceptors.push('authInterceptor');
         laddaProvider.setOption({
             style: 'expand-right'
         });
 
     }
 
-    // csrf.$inject = ['$http', '$cookies'];
-    // /* @ngInject */
-    // function csrf($http, $cookies) {
-    //     $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
-    // }
-
-    customHeaders.$inject = ["$http"];
+    run.$inject = ['$rootScope', '$state', 'AuthService', 'ngProgressLite', 'BreadCrumbService', '$location', '$window'];
     /* @ngInject */
-    function customHeaders($http) {
-        var headers = {};
+    function run($rootScope, $state, AuthService, ngProgressLite, BreadCrumbService, $location, $window) {
 
-        if (localStorage.getItem("access-token") !== null) {
-            headers["access-token"] = localStorage.getItem("access-token");
-            headers["client"] = localStorage.getItem("client");
-            headers["cache-control"] = localStorage.getItem("cache-control");
-            headers["content-type"] = localStorage.getItem("content-type");
-            headers["expiry"] = localStorage.getItem("expiry");
-            headers["token-type"] = localStorage.getItem("token-type");
-            headers["uid"] = localStorage.getItem("uid");
-        }
-
-        $http.defaults.headers.common = headers;
-    }
-
-    run.$inject = ['$rootScope', '$state', '$auth', 'bootstrap3ElementModifier', 'ngProgressLite', 'AuthService', 'BreadCrumbService', '$location', '$window', '$templateCache'];
-    /* @ngInject */
-    function run($rootScope, $state, $auth, bootstrap3ElementModifier, ngProgressLite, AuthService, BreadCrumbService, $location, $window, $templateCache) {
+        $rootScope.notLoggedInOnStart = !AuthService.tokenExists();
 
         var forceSSL = forceSSL;
-        var forceLogoutIfNotAdmin = forceLogoutIfNotAdmin;
-        var curr_state_name = $state.current.name;
-
-        $rootScope.$on('unauthorized', function(event) {
-            event.preventDefault();
-            $rootScope.loginError = "Your session has expired. Please login again.";
-            AuthService.removeUserStorage();
-            //AuthService.destroyAuthUser().then(function() {
-            //if (toState.name !== "auth") {
-            $state.go('auth');
-            ngProgressLite.done();
-            return false;
-            //}
-            //});
-        });
-
-        //Listens for unpermitted access to admin pages.
-        $rootScope.$on('nonadminaccess', function(event) {
-            event.preventDefault();
-            $rootScope.loginError = "You are not authorized to access admin pages.";
-
-            AuthService.destroyAuthUser();
-
-            $state.go('auth');
-            ngProgressLite.done();
-            return false;
-        });
 
         $rootScope.$on('$stateChangeStart', function(event, toState) {
-
-            //Redirect user if not admin
-            redirectIfNotAdmin(event);
 
             // Do not run forceSSL() on local
             var __page_url = $location.absUrl();
@@ -105,32 +51,25 @@
 
             ngProgressLite.start();
 
-            if (localStorage.getItem('user') != 'undefined') {
-                var user = JSON.parse(localStorage.getItem('user'));
-                if (user && $auth.isAuthenticated()) {
-                    $rootScope.authenticated = true;
-                    $rootScope.currentUser = user;
-                    $('.auth-dash').attr('style', 'display: block !important');
-                    if (toState.name === "auth") {
+            if (toState.name !== 'logout') {
+                if ($rootScope.currentUser) {
+                    if (toState.name === 'auth') {
                         event.preventDefault();
                         $state.go('dashboard');
+                        BreadCrumbService.set('dashboard');
+                        $rootScope.crumbs = BreadCrumbService.getCrumbs();
                         ngProgressLite.done();
                     }
                 } else {
-                    localStorage.removeItem('user');
-                    $rootScope.authenticated = false;
-                    $rootScope.currentUser = null;
-
-                    if (toState.name !== "auth") {
+                    if (toState.name !== 'auth') {
                         event.preventDefault();
                         $state.go('auth');
+                        BreadCrumbService.set('auth');
+                        $rootScope.crumbs = BreadCrumbService.getCrumbs();
                         ngProgressLite.done();
                     }
                 }
-            } else {
-                $state.go(toState.name);
             }
-            //AuthService.redirectIfUnauthorized(event, toState, ngProgressLite);
 
         });
 
@@ -140,6 +79,61 @@
 
         $rootScope.$on('$stateChangeError', function(event, toState) {
             ngProgressLite.done();
+        });
+
+        $rootScope.$on('auth:login-success', function(event, user) {
+            // if not admin, logout
+            if (!user.is_admin) {
+                AuthService.logout().then(function(resp) {
+                }).catch(function(error) {
+                });
+                $rootScope.currentUser = null;
+                $rootScope.loginError = 'You are not authorized to access admin pages.';
+                return;
+            }
+
+            $rootScope.currentUser = user;
+            $rootScope.notLoggedInOnStart = true;
+            $state.go('dashboard');
+        });
+
+        $rootScope.$on('auth:login-error', function(event, error) {
+            $rootScope.loginError = error.errors[0];
+            $rootScope.currentUser = null;
+        });
+
+        $rootScope.$on('auth:validation-success', function(event, user) {
+            $rootScope.currentUser = user;
+            $rootScope.notLoggedInOnStart = true;
+            $state.go('dashboard');
+        });
+
+        $rootScope.$on('auth:validation-error', function(event, error) {
+            $rootScope.currentUser = null;
+            // validation error, go to login page
+            $rootScope.notLoggedInOnStart = true;
+            $state.go('auth');
+        });
+
+        $rootScope.$on('auth:logout-success', function(event) {
+            $rootScope.currentUser = null;
+            $state.go('auth');
+        });
+
+        $rootScope.$on('auth:logout-error', function(event, error) {
+            // force logout anyways
+            $rootScope.currentUser = null;
+            AuthService.invalidateTokens();
+            $state.go('auth');
+        });
+
+        $rootScope.$on('auth:session-expired', function(event) {
+            $rootScope.currentUser = null;
+            // invalidate token
+            AuthService.invalidateTokens();
+            $rootScope.loginError = 'Session expired!';
+            $rootScope.notLoggedInOnStart = true;
+            $state.go('auth');
         });
 
         /////////Methods Definitions///////////
@@ -152,24 +146,6 @@
                 return false;
             }
         };
-
-        //Forces user to logout if not admin
-        function redirectIfNotAdmin(event) {
-
-            if (angular.isDefined($rootScope.currentUser) && $rootScope.currentUser != null) {
-              if (!$rootScope.currentUser.is_admin) {
-                event.preventDefault();
-                ngProgressLite.done();
-                $rootScope.loginError = "You are not authorized to access admin pages.";
-                AuthService.destroyAuthUser();
-                AuthService.removeUserStorage();
-
-                //$state.go('auth');
-
-                return false;
-              }
-            }
-        }
 
     }
 })();
