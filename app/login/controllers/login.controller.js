@@ -10,8 +10,6 @@
     function LoginController(AuthService, $state, $rootScope) {
         var vm = this;
 
-        //vm.email = "";
-        //vm.password = "";
         vm.form;
         vm.login = login;
         vm.loggingIn = false;
@@ -21,28 +19,21 @@
         ///////////
 
         function activate() {
-            $rootScope.authenticated = AuthService.isAuthenticated();
             $rootScope.hasLoginView = true;
         }
 
         function login() {
+            if (vm.loggingIn) {
+                return;
+            }
+
             vm.loggingIn = true;
-            AuthService.login(vm.form).then(function(response) {
-                vm.loggingIn = false;
-                if ($rootScope.authenticated) {
-                    $state.go('dashboard');
-                }
+            $rootScope.loginError = null;
 
-            }).catch(function(error) {
+            AuthService.login(vm.form).then(function(resp) {
                 vm.loggingIn = false;
-                vm.loginError = true;
-                if (angular.isDefined(error) && error.data != null) {
-                    vm.loginErrorText = error.data.errors[0];
-                } else {
-                    console.log(error);
-                    vm.loginErrorText = "Login error. Error Status: " + error.status;
-                }
-
+            }).catch(function(err) {
+                vm.loggingIn = false;
             });
         }
     }

@@ -120,8 +120,7 @@
     "morgan": "^1.8.1",
     "ng-file-upload": "^12.2.13",
     "ngprogress-lite": "^1.0.8",
-    "path": "^0.12.7",
-    "satellizer": "^0.15.5"
+    "path": "^0.12.7"
   },
   "config": {
     "commitizen": {
