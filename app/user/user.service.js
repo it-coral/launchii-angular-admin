@@ -106,12 +106,17 @@
             return d.promise;
         }
 
-        function getAll() {
+        function getAll(param={}) {
             var d = $q.defer();
+            var params = Object.keys(param).map(function(key){ 
+                            return encodeURIComponent(key) + '=' + encodeURIComponent(param[key]); 
+                        }).join('&');
+
+            var url = (params == '') ? api : api + '?' + params;
 
             var req = {
                 method: 'GET',
-                url: api
+                url: url
             };
 
             $http(req)

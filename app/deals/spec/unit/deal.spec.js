@@ -2,13 +2,14 @@
     'use strict';
 
     describe('Deals service', function() {
-        var $controller, DealService;
+        var $controller, DealService, UserService;
 
         beforeEach(angular.mock.module('ui.router'));
         // beforeEach(angular.mock.module('app.deals.highlightadd'));
         // beforeEach(angular.mock.module('app.deals.highlightedit'));
         // beforeEach(angular.mock.module('app.deals.highlightfield'));
         beforeEach(angular.mock.module('app.deals'));
+        beforeEach(angular.mock.module('app.users'));
 
         beforeEach(function() {
 
@@ -35,6 +36,10 @@
 
         beforeEach(inject(function(_DealService_) {
             DealService = _DealService_;
+        }));
+
+        beforeEach(inject(function(_UserService_) {
+            UserService = _UserService_;
         }));
 
         it('should exist', function() {

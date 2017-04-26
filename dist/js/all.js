@@ -7086,10 +7086,10 @@ window.isEmpty = function(obj) {
     angular.module('app.deals')
         .controller('DealAddController', DealAddController);
 
-    DealAddController.$inject = ['DealService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes', 'prepUpsellDeals'];
+    DealAddController.$inject = ['DealService', 'UserService', '$scope', 'HelperService', '$state', 'brandPrepService', 'prepTemplateNames', 'prepTemplateTypes', 'prepUpsellDeals'];
 
     /* @ngInject */
-    function DealAddController(DealService, $scope, HelperService, $state, brandPrepService, prepTemplateNames, prepTemplateTypes, prepUpsellDeals) {
+    function DealAddController(DealService, UserService, $scope, HelperService, $state, brandPrepService, prepTemplateNames, prepTemplateTypes, prepUpsellDeals) {
         var vm = this;
 
         vm.mode = "Add";
@@ -7097,6 +7097,7 @@ window.isEmpty = function(obj) {
         vm.form.status = 'draft';
         vm.form.deal_type = 'standard';
         vm.form.discount_type = 'standard_discount';
+        vm.form.vendor_id = '';
         vm.form.highlights = [];
         vm.form.templates = [];
         vm.form.discounts = {};
@@ -7161,6 +7162,9 @@ window.isEmpty = function(obj) {
         vm.isDealEmpty = DealService.isEmpty;
         vm.isBrandEmpty = brandPrepService.total == 0;
 
+        // vendors
+        vm.vendors = [];
+
         vm.capFirstLetter = HelperService.capFirstLetter;
 
         activate();
@@ -7183,6 +7187,7 @@ window.isEmpty = function(obj) {
             });
 
             insertNewImageObj();
+            getVendors();
             $(document).ready(function() {
                 ComponentsDateTimePickers.init();
             });
@@ -7190,6 +7195,12 @@ window.isEmpty = function(obj) {
             //     $log.log(newVal);
             //     return newVal.toFixed(2);
             // });
+        }
+
+        function getVendors(){
+            UserService.getAll({role: 'vendor'}).then(function(resp) {
+                vm.vendors = resp.users;
+            });
         }
 
         function hasTemplates() {
@@ -7479,7 +7490,7 @@ window.isEmpty = function(obj) {
                 vm.isDone = true;
                 return false;
             }
-
+            
             DealService.add(vm.form).then(function(resp) {
                 vm.response['success'] = "alert-success";
                 vm.response['alert'] = "Success!";
@@ -9751,12 +9762,17 @@ window.isEmpty = function(obj) {
             return d.promise;
         }
 
-        function getAll() {
+        function getAll(param={}) {
             var d = $q.defer();
+            var params = Object.keys(param).map(function(key){ 
+                            return encodeURIComponent(key) + '=' + encodeURIComponent(param[key]); 
+                        }).join('&');
+
+            var url = (params == '') ? api : api + '?' + params;
 
             var req = {
                 method: 'GET',
-                url: api
+                url: url
             };
 
             $http(req)
