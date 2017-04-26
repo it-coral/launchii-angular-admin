@@ -34,12 +34,26 @@
 
         });
 
-        beforeEach(inject(function(_DealService_) {
-            DealService = _DealService_;
-        }));
-
         beforeEach(inject(function(_UserService_) {
             UserService = _UserService_;
+        }));
+
+        it('should exist', function() {
+            expect(UserService).toBeDefined();
+        });
+
+        it('should have the required attributes', function() {
+            expect(UserService.getAll).toBeDefined();
+        });
+
+        it('should get all vendors', function() {
+            UserService.getAll({role: 'vendor'}).then(function(result) {
+                expect(result).toBeDefined();
+            });
+        });
+
+        beforeEach(inject(function(_DealService_) {
+            DealService = _DealService_;
         }));
 
         it('should exist', function() {
