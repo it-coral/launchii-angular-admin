@@ -3235,9 +3235,12 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             AuthService.logout();
         }
 
-        dealPrepService.$inject = ['DealService'];
+        dealPrepService.$inject = ['DealService', 'BrandService'];
         /* @ngInject */
-        function dealPrepService(DealService) {
+        function dealPrepService(DealService, BrandService) {
+            if(BrandService.isEmpty()){
+                BrandService.getAll();
+            }            
             return DealService.getAll();
         }
 
@@ -5309,16 +5312,15 @@ window.isEmpty = function(obj) {
         }
 
         function isEmpty() {
-            // if (!angular.isDefined(service.lists.brands)) {
-            //     return true;
-            // }
+            if (!angular.isDefined(service.lists.brands)) {
+                return true;
+            }
 
             return service.lists.total == 0;
         }
 
         function findInList(id) {
             var d = $q.defer();
-
             if (angular.isDefined(id)) {
                 if (!isEmpty()) {
                     angular.forEach(service.lists.brands, function(value, key) {
@@ -7551,6 +7553,7 @@ window.isEmpty = function(obj) {
         vm.prepDeals = dealPrepService;
         vm.deals = vm.prepDeals.deals;
         vm.getDeals = getDeals;
+        vm.getBrands = getBrands;
         vm.hasDeleted = false;
         vm.response = {};
         vm.deleteDeal = deleteDeal;
@@ -7569,16 +7572,25 @@ window.isEmpty = function(obj) {
           vm.customerHost = 'http://www.launchii.com';
         }
 
-        //activate();
+        activate();
 
         ////////////////
-
+        
         function activate() {
-            return getDeals();
+            getBrands();
+            // return getDeals();
         }
 
         function isDealEmpty() {
             return vm.prepDeals.total == 0;
+        }
+
+        function getBrands(){
+            angular.forEach(vm.deals, function(deal, index) {
+                DealService.findInList(deal.uid).then(function(data) {
+                    deal = data;
+                });
+            });
         }
 
         function clearSearch() {
