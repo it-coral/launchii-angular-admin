@@ -60,16 +60,15 @@
         }
 
         function isEmpty() {
-            // if (!angular.isDefined(service.lists.brands)) {
-            //     return true;
-            // }
+            if (!angular.isDefined(service.lists.brands)) {
+                return true;
+            }
 
             return service.lists.total == 0;
         }
 
         function findInList(id) {
             var d = $q.defer();
-
             if (angular.isDefined(id)) {
                 if (!isEmpty()) {
                     angular.forEach(service.lists.brands, function(value, key) {

@@ -403,9 +403,12 @@
             AuthService.logout();
         }
 
-        dealPrepService.$inject = ['DealService'];
+        dealPrepService.$inject = ['DealService', 'BrandService'];
         /* @ngInject */
-        function dealPrepService(DealService) {
+        function dealPrepService(DealService, BrandService) {
+            if(BrandService.isEmpty()){
+                BrandService.getAll();
+            }            
             return DealService.getAll();
         }
 

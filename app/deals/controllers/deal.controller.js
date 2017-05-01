@@ -13,6 +13,7 @@
         vm.prepDeals = dealPrepService;
         vm.deals = vm.prepDeals.deals;
         vm.getDeals = getDeals;
+        vm.getBrands = getBrands;
         vm.hasDeleted = false;
         vm.response = {};
         vm.deleteDeal = deleteDeal;
@@ -31,16 +32,25 @@
           vm.customerHost = 'http://www.launchii.com';
         }
 
-        //activate();
+        activate();
 
         ////////////////
-
+        
         function activate() {
-            return getDeals();
+            getBrands();
+            // return getDeals();
         }
 
         function isDealEmpty() {
             return vm.prepDeals.total == 0;
+        }
+
+        function getBrands(){
+            angular.forEach(vm.deals, function(deal, index) {
+                DealService.findInList(deal.uid).then(function(data) {
+                    deal = data;
+                });
+            });
         }
 
         function clearSearch() {
