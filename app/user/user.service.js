@@ -15,6 +15,7 @@
             errors: [],
             add: add,
             edit: edit,
+            editMe: editMe,
             delete: _delete,
             getAll: getAll,
             find: find,
@@ -222,6 +223,23 @@
 
             return d.promise;
         }
+
+ 
+        function editMe(id, data){ 
+            var url = CONST.api_domain + '/users/me'; 
+            var d = $q.defer(); 
+ 
+            $http.patch(url, data) 
+                .then(function(resp) { 
+                    d.resolve(resp); 
+                }).catch(function(error) { 
+                    $log.log(error); 
+                    service.errors = error; 
+                    d.reject(error); 
+                }); 
+ 
+            return d.promise; 
+        }         
     }
 
 })();
