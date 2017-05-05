@@ -3317,7 +3317,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         function dealPrepService(DealService, BrandService) {
             if(BrandService.isEmpty()){
                 BrandService.getAll();
-            }            
+            }
             return DealService.getAll();
         }
 
@@ -6964,21 +6964,28 @@ window.isEmpty = function(obj) {
         }
 
         function getUpsellAssociations(dealId) {
-            var d = $q.defer();
-            var url = api + '/' + dealId + '/upsells';
+            var dealInfo = {};
+            angular.forEach(service.lists.deals, function(value, key) {
+                if (dealId == service.lists.deals[key].uid) {
+                    dealInfo = service.lists.deals[key];
+                }
+            });            
 
-            $http.get(url).then(function(resp) {
-                var associations = [];
-                angular.forEach(resp.data.upsell_associations, function(assoc, index) {
-                    associations.push(assoc.upsell_id);
-                });
-                d.resolve(associations);
-            }).catch(function(err) {
-                $log.log(err);
-                d.reject(err);
-            });
-
-            return d.promise;
+            if(!dealInfo.is_upsell){
+                var d = $q.defer();
+                var url = api + '/' + dealId + '/upsells';
+                $http.get(url).then(function(resp) {
+                    var associations = [];
+                    angular.forEach(resp.data.upsell_associations, function(assoc, index) {
+                        associations.push(assoc.upsell_id);
+                    });
+                    d.resolve(associations);
+                }).catch(function(err) {
+                    $log.log(err);
+                    d.reject(err);
+                });                
+                return d.promise;                
+            }
         }
 
         function addDiscounts(deal_id, discounts) {
@@ -10489,6 +10496,74 @@ window.isEmpty = function(obj) {
 (function() {
     'use strict';
 
+    angular
+        .module('app.users')
+        .filter('isYesNo', isYesNo);
+
+    function isYesNo() {
+        return function(input) {
+            if (input) {
+                return 'Yes';
+            }
+
+            return 'No';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isSuperAdmin', isSuperAdmin);
+
+    function isSuperAdmin() {
+        return function(user) {
+            if (user) {
+                if (user.email == 'admin@example.com') {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
+    angular
+        .module('app.users')
+        .filter('isRole', isRole);
+
+    function isRole() {
+        return function(user) {
+            if (user) {
+                if (user.is_admin) {
+                    return 'Admin';
+                }
+                if (user.is_vendor) {
+                    return 'Vendor';
+                }
+                if (user.is_customer) {
+                    return 'Customer';
+                }
+            }
+
+            return 'No Role';
+        }
+
+    }
+
+})();
+(function() {
+    'use strict';
+
     angular.module('app.users')
         .controller('UserAddController', UserAddController);
 
@@ -10854,73 +10929,4 @@ window.isEmpty = function(obj) {
             });
         }
     }
-})();
-
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isYesNo', isYesNo);
-
-    function isYesNo() {
-        return function(input) {
-            if (input) {
-                return 'Yes';
-            }
-
-            return 'No';
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isSuperAdmin', isSuperAdmin);
-
-    function isSuperAdmin() {
-        return function(user) {
-            if (user) {
-                if (user.email == 'admin@example.com') {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
-
-    }
-
-})();
-(function() {
-    'use strict';
-
-    angular
-        .module('app.users')
-        .filter('isRole', isRole);
-
-    function isRole() {
-        return function(user) {
-            if (user) {
-                if (user.is_admin) {
-                    return 'Admin';
-                }
-                if (user.is_vendor) {
-                    return 'Vendor';
-                }
-                if (user.is_customer) {
-                    return 'Customer';
-                }
-            }
-
-            return 'No Role';
-        }
-
-    }
-
 })();

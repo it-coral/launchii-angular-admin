@@ -484,7 +484,7 @@
         function dealPrepService(DealService, BrandService) {
             if(BrandService.isEmpty()){
                 BrandService.getAll();
-            }            
+            }
             return DealService.getAll();
         }
 
