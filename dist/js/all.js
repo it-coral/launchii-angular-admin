@@ -2628,6 +2628,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         'app.auth',
         'app.helpers',
         'app.brands',
+        'app.categories',
         'app.deals',
         'app.users'
     ]);
@@ -2959,6 +2960,55 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         };
         //END Brand routes
 
+        //Category routes
+        var category = {
+            name: "dashboard.category",
+            url: "/category",
+            parent: dashboard,
+            views: {
+                "main_body": {
+                    templateUrl: "app/category/category.html",
+                    controller: "CategoryController",
+                    controllerAs: "vm",
+                    resolve: {
+                        categoryPrepService: categoryPrepService
+                    }
+                },
+                //"nav": nav
+            }
+        };
+
+        var categoryAdd = {
+            name: "dashboard.category.add",
+            url: "/add",
+            parent: category,
+            views: {
+                "page_body": {
+                    templateUrl: "app/category/category.add.html",
+                    controller: "CategoryAddController",
+                    controllerAs: "vm"
+                }
+            }
+        };
+
+        var categoryEdit = {
+            name: "dashboard.category.edit",
+            url: "/edit/:id",
+            parent: category,
+            views: {
+                "page_body": {
+                    templateUrl: "app/category/category.add.html",
+                    controller: "CategoryEditController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelCategory: prepSelCategory
+                    }
+                }
+            }
+        };
+
+        //END Category routes
+
         //Deal routes
         var deal = {
             name: "dashboard.deal",
@@ -3147,7 +3197,10 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
             .state(userAdd)
             .state(userEdit)
             .state(userView)
-            .state(userInfo);
+            .state(userInfo)
+            .state(category)
+            .state(categoryAdd)
+            .state(categoryEdit);
 
         ////////////
 
@@ -3285,6 +3338,19 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         function prepSelDeal($stateParams, DealService) {
             return DealService.find($stateParams.id);
         }
+
+        categoryPrepService.$inject = ['CategoryService'];
+        /* @ngInject */
+        function categoryPrepService(CategoryService) {
+            return CategoryService.getAll();
+        }
+
+        prepSelCategory.$inject = ['$stateParams', 'CategoryService'];
+        /* @ngInject */
+        function prepSelCategory($stateParams, CategoryService) {
+            return CategoryService.find($stateParams.id);
+        }
+
     }
 
 })();
@@ -5870,6 +5936,439 @@ window.isEmpty = function(obj) {
         }
     }
 })();
+(function() {
+    'use strict';
+
+    angular.module('app.categories', [])
+        .factory('CategoryService', CategoryService);
+
+    CategoryService.$inject = ['$http', 'CONST', '$q', '$rootScope', '$log'];
+
+    /* @ngInject */
+    function CategoryService($http, CONST, $q, $rootScope, $log) {
+        var api = CONST.api_domain + '/admin/categories';
+
+        var service = {
+            lists: [],
+            errors: [],
+            add: add,
+            edit: edit,
+            delete: _delete,
+            getAll: getAll,
+            find: find,
+            findInList: findInList,
+            isEmpty: isEmpty,
+            search: search,
+            searchedList: []
+        }
+
+        return service;
+
+        //////// SERIVCE METHODS ////////
+
+        function search(str) {
+            var url = api + '/search';
+            var d = $q.defer();
+            var q = str.toLowerCase();
+            var results = [];
+
+            if (str.trim() == '') {
+                d.resolve(service.lists.categories);
+            } else {
+                angular.forEach(service.lists.categories, function(category, index) {
+                    if (category.name.toLowerCase().indexOf(q) > -1) {
+                        results.push(category);
+                    }
+                });
+
+                if (results.length > 0) {
+                    d.resolve(results);
+                } else {
+                    $http.get(url, { query: str }).then(function(resp) {
+                        service.searchedList = resp.data;
+                        d.resolve(resp.data.categories);
+                    }).catch(function(err) {
+                        $log.log(err);
+                        d.reject(err);
+                    });
+                }
+            }
+
+            return d.promise;
+        }
+
+        function isEmpty() {
+            if (!angular.isDefined(service.lists.categories)) {
+                return true;
+            }
+
+            return service.lists.total == 0;
+        }
+
+        function findInList(id) {
+            var d = $q.defer();
+            if (angular.isDefined(id)) {
+                if (!isEmpty()) {
+                    angular.forEach(service.lists.categories, function(value, key) {
+                        if (id == service.lists.categories[key].uid) {
+                            d.resolve(service.lists.categories[key]);
+                        }
+                    });
+                } else {
+                    find(id).then(function(category) {
+                        d.resolve(category);
+                    }).catch(function(err) {
+                        d.reject(err);
+                    });
+                }
+            } else {
+                d.resolve('Category does not exist.');
+            }
+
+            return d.promise;
+        }
+
+        function getAll() {
+            var d = $q.defer();
+
+            var req = {
+                method: 'GET',
+                url: api
+            };
+
+            $http(req)
+                .then(function(data) {
+                    service.lists = data.data;
+                    d.resolve(data.data);
+                })
+                .catch(function(error) {
+                    $log.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function find(id) {
+            var d = $q.defer();
+            var url = api + '/' + id;
+            $http({
+                    method: 'GET',
+                    url: url,
+                    //params: {id: id}
+                })
+                .then(function(data) {
+                    var category = data.data;
+                    d.resolve(category);
+                })
+                .catch(function(error) {
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function add(data) {
+            var url = api;
+            var d = $q.defer();
+
+            var category = {
+              category: data
+            };
+
+            $http.post(url, category)
+                .then(function(resp) {
+                    //$log.log(resp);
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    $log.log(error);
+                    service.errors = error;
+                    //d.reject(error.data.errors);
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function edit(id, data) {
+            var url = api + "/" + id;
+            var d = $q.defer();
+
+            console.log(data);
+
+            var category = {
+              category: data
+            };
+
+            $http.patch(url, category)
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    $log.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+
+        function _delete(id) {
+            var url = api + "/" + id;
+            var d = $q.defer();
+
+            $http.delete(url, {})
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    $log.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
+    }
+
+})();
+
+(function() {
+    'use strict';
+
+    angular.module('app.categories')
+        .controller('CategoryAddController', CategoryAddController);
+
+    CategoryAddController.$inject = ['CategoryService', '$scope', 'HelperService', '$state', '$log'];
+
+    /* @ngInject */
+    function CategoryAddController(CategoryService, $scope, HelperService, $state, $log) {
+        var vm = this;
+
+        vm.mode = "Add";
+        vm.form = {};
+        vm.response = {};
+        vm.isDone = true;
+
+        vm.prevState = HelperService.getPrevState();
+        vm.submitAction = addCategory;
+
+        ///////////////////
+
+        function addCategory() {
+            vm.isDone = false;
+
+            CategoryService.add(vm.form).then(function() {
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Added category: " + vm.form.name;
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
+                $scope.$parent.vm.getCategories();
+                $state.go(vm.prevState);
+
+            }).catch(function(err) {
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to add new Category.";
+                vm.response['error_arr'] = err.data.errors;
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                HelperService.goToAnchor('msg-info');
+            });
+        }
+    }
+})();
+
+(function() {
+    'use strict';
+
+    angular.module('app.categories')
+        .controller('CategoryController', CategoryController);
+
+    CategoryController.$inject = ['CategoryService', 'categoryPrepService', '$log', '$timeout'];
+
+    /* @ngInject */
+    function CategoryController(CategoryService, categoryPrepService, $log, $timeout) {
+        var vm = this;
+
+        vm.prepCategories = categoryPrepService;
+        vm.categories = vm.prepCategories.categories;
+        vm.getCategories = getCategories;
+        vm.hasDeleted = false;
+        vm.response = {};
+        vm.deleteCategory = deleteCategory;
+        vm.response = {};
+        vm.isDone = false;
+        vm.search = search;
+        vm.searchItem = '';
+        vm.isLoading = false;
+        vm.isRetrieving = false;
+        vm.isSearch = false;
+        vm.clearSearch = clearSearch;
+        vm.isCategoryEmpty = isCategoryEmpty;
+
+        //activate();
+
+        ////////////////
+
+        function activate() {
+            return getCategories();
+        }
+
+        function isCategoryEmpty() {
+            return vm.prepCategories.total == 0;
+        }
+
+        function clearSearch() {
+            vm.searchItem = '';
+            search();
+        }
+
+        function search() {
+            vm.isLoading = true;
+
+            if (vm.searchItem.trim().length > 0) {
+                vm.isSearch = true;
+            } else {
+                vm.isSearch = false;
+            }
+
+            CategoryService.search(vm.searchItem).then(function(resp) {
+                vm.categories = resp;
+                vm.isLoading = false;
+            }).catch(function(err) {
+                $log.log(err);
+            });
+        }
+
+        function getCategories() {
+            vm.isRetrieving = true;
+            return CategoryService.getAll().then(function(data) {
+                vm.prepCategories = data;
+                console.log(vm.prepCategories);
+                console.log(vm.prepCategories.total == 0);
+                vm.categories = vm.prepCategories.categories;
+                vm.isRetrieving = false;
+                $timeout(function() {
+                    vm.response.msg = false;
+                }, 3000);
+                return vm.categories;
+            });
+        }
+
+        function deleteCategory(element, category) {
+            bootbox.confirm({
+                title: "Confirm Delete",
+                message: "Are you sure you want to delete category: <b>" + category.name + "</b>?",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function(result) {
+                    if (result) {
+                        var ladda = Ladda.create(element);
+                        ladda.start();
+                        if (!doDelete(category)) {
+                            ladda.stop();
+                        }
+                    }
+                }
+            });
+
+        }
+
+        function doDelete(category) {
+            CategoryService.delete(category.uid).then(function(resp) {
+                vm.hasDeleted = true;
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Deleted category: " + category.name;
+                getCategories();
+                vm.hasAdded = true;
+                vm.isDone = true;
+                return true;
+            }).catch(function(err) {
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Can not delete category: " + category.name;
+                vm.response['error_arr'] = [];
+                vm.response['error_arr'].push(err.data.errors);
+                vm.hasAdded = true;
+                vm.isDone = true;
+                return false;
+            });
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('app.categories')
+        .controller('CategoryEditController', CategoryEditController);
+
+    CategoryEditController.$inject = ['CategoryService', '$stateParams', '$scope', 'prepSelCategory', 'HelperService', '$state', '$log'];
+
+    /* @ngInject */
+    function CategoryEditController(CategoryService, $stateParams, $scope, prepSelCategory, HelperService, $state, $log) {
+        var vm = this;
+
+        vm.mode = "Edit";
+        vm.response = {};
+        vm.categoryId = $stateParams.id;
+        vm.selectedCategory = prepSelCategory;
+        vm.form = vm.selectedCategory;
+        vm.isDone = true;
+
+
+        vm.prevState = HelperService.getPrevState();
+        vm.submitAction = editPost;
+
+        activate();
+
+        ///////////////////
+
+        function activate() {
+        }
+
+        function editPost() {
+            vm.isDone = false;
+
+            CategoryService.edit(vm.categoryId, vm.form).then(function() {
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Updated category: " + vm.form.name;
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
+                $scope.$parent.vm.getCategories();
+                $state.go(vm.prevState);
+
+            }).catch(function(err) {
+                $log.log(err);
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to update Category.";
+                vm.response['error_arr'] = err.data.errors;
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                HelperService.goToAnchor('msg-info');
+            });
+        }
+    }
+})();
+
 (function() {
     'use strict';
 
@@ -10259,7 +10758,6 @@ window.isEmpty = function(obj) {
         /////////////////// 
  
         function activate() { 
-            $scope.$parent.vm.page_title = 'Vendor Information'; 
             vm.form.password = ''; 
             vm.form.confirm_password = ''; 
         } 

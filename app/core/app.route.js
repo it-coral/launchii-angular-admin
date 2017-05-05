@@ -127,6 +127,55 @@
         };
         //END Brand routes
 
+        //Category routes
+        var category = {
+            name: "dashboard.category",
+            url: "/category",
+            parent: dashboard,
+            views: {
+                "main_body": {
+                    templateUrl: "app/category/category.html",
+                    controller: "CategoryController",
+                    controllerAs: "vm",
+                    resolve: {
+                        categoryPrepService: categoryPrepService
+                    }
+                },
+                //"nav": nav
+            }
+        };
+
+        var categoryAdd = {
+            name: "dashboard.category.add",
+            url: "/add",
+            parent: category,
+            views: {
+                "page_body": {
+                    templateUrl: "app/category/category.add.html",
+                    controller: "CategoryAddController",
+                    controllerAs: "vm"
+                }
+            }
+        };
+
+        var categoryEdit = {
+            name: "dashboard.category.edit",
+            url: "/edit/:id",
+            parent: category,
+            views: {
+                "page_body": {
+                    templateUrl: "app/category/category.add.html",
+                    controller: "CategoryEditController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelCategory: prepSelCategory
+                    }
+                }
+            }
+        };
+
+        //END Category routes
+
         //Deal routes
         var deal = {
             name: "dashboard.deal",
@@ -315,7 +364,10 @@
             .state(userAdd)
             .state(userEdit)
             .state(userView)
-            .state(userInfo);
+            .state(userInfo)
+            .state(category)
+            .state(categoryAdd)
+            .state(categoryEdit);
 
         ////////////
 
@@ -453,6 +505,19 @@
         function prepSelDeal($stateParams, DealService) {
             return DealService.find($stateParams.id);
         }
+
+        categoryPrepService.$inject = ['CategoryService'];
+        /* @ngInject */
+        function categoryPrepService(CategoryService) {
+            return CategoryService.getAll();
+        }
+
+        prepSelCategory.$inject = ['$stateParams', 'CategoryService'];
+        /* @ngInject */
+        function prepSelCategory($stateParams, CategoryService) {
+            return CategoryService.find($stateParams.id);
+        }
+
     }
 
 })();

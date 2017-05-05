@@ -70,6 +70,11 @@ module.exports = function(config) {
             'app/brand/*/*.js',
             'app/brand/spec/unit/*.js',
 
+            //Category Module
+            'app/category/*.js',
+            'app/category/*/*.js',
+            'app/category/spec/unit/*.js',
+
             //Deal Module
             'app/deals/*.js',
             'app/deals/*/*.js',
