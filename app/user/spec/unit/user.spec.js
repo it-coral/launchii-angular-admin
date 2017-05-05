@@ -29,8 +29,87 @@
 
         it('should have the required attributes', function() { 
             expect(UserService.editMe).toBeDefined(); 
+            expect(UserService.getAll).toBeDefined();
+            expect(UserService.search).toBeDefined();
+            expect(UserService.add).toBeDefined();
+            expect(UserService.edit).toBeDefined();
+            expect(UserService.delete).toBeDefined();
+            expect(UserService.find).toBeDefined();
+            expect(UserService.findInList).toBeDefined();
         }); 
+
+        it('should get all user', function() {
+            UserService.getAll().then(function(result) {
+                expect(result).toBeDefined();
+            });
+        });
+
+        it('should find a user by id', function() {
+            var id = "1234567890";
+            UserService.find(id).then(function(result) {
+                expect(result).toBeDefined();
+            });
+        });
+
+        it('should find a user by id from list', function() {
+            var id = "1234567890";
+            UserService.findInList(id).then(function(result) {
+                expect(result).toBeDefined();
+            });
+        });
+
+        it('should search for a user', function() {
+            var searchStr = "Mock User";
+            UserService.search(searchStr).then(function(result) {
+                expect(result).toBeDefined();
+            });
+        });
  
+        it('should add a user', function() {
+            var data = 
+                {
+                    email: "string",
+                    name: "string",
+                    role: "string",
+                    is_confirmed: true,
+                    is_admin: true,
+                    is_vendor: false,
+                    is_customer: false,
+                    is_active: true,
+                    provider: "string",
+                    last_sign_in_at: "2017-05-05T16:22:47.513Z",
+                    created_at: "2017-05-05T16:22:47.513Z",
+                    updated_at: "2017-05-05T16:22:47.513Z"
+                };
+
+            UserService.add(data).then(function(result) {
+                expect(result).toBeDefined();
+            });
+        });
+
+        it('should edit a user', function() {
+            var id = "1234567890";
+            var data = 
+                {
+                    email: "string",
+                    name: "string",
+                    role: "string",
+                    is_confirmed: true,
+                    is_admin: true,
+                    is_vendor: false,
+                    is_customer: false,
+                    is_active: true,
+                    provider: "string",
+                    last_sign_in_at: "2017-05-05T16:22:47.513Z",
+                    created_at: "2017-05-05T16:22:47.513Z",
+                    updated_at: "2017-05-05T16:22:47.513Z"
+                };
+
+            UserService.edit(id, data).then(function(result) {
+                expect(result).toBeDefined();
+            });
+        });
+
         it('should get vendor information', function() { 
             var id='123456789'; 
             var req = { 
@@ -42,7 +121,7 @@
                 expect(result).toBeDefined(); 
             }); 
         }); 
- 
+
         describe('Account edit controller', function() { 
  
             var scope, controller, httpBackend; 
@@ -63,6 +142,7 @@
             }); 
  
         }); 
+
 
         describe('User dashboard controller', function() {
 
