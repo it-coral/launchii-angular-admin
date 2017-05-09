@@ -2,13 +2,14 @@
     'use strict';
 
     describe('Deals service', function() {
-        var $controller, DealService;
+        var $controller, DealService, UserService;
 
         beforeEach(angular.mock.module('ui.router'));
         // beforeEach(angular.mock.module('app.deals.highlightadd'));
         // beforeEach(angular.mock.module('app.deals.highlightedit'));
         // beforeEach(angular.mock.module('app.deals.highlightfield'));
         beforeEach(angular.mock.module('app.deals'));
+        beforeEach(angular.mock.module('app.users'));
 
         beforeEach(function() {
 
@@ -31,6 +32,24 @@
                 $provide.value('prepUpsellAssocs', jasmine.createSpy('prepUpsellAssocs'));
             });
 
+        });
+
+        beforeEach(inject(function(_UserService_) {
+            UserService = _UserService_;
+        }));
+
+        it('should exist', function() {
+            expect(UserService).toBeDefined();
+        });
+
+        it('should have the required attributes', function() {
+            expect(UserService.getAll).toBeDefined();
+        });
+
+        it('should get all vendors', function() {
+            UserService.getAll({role: 'vendor'}).then(function(result) {
+                expect(result).toBeDefined();
+            });
         });
 
         beforeEach(inject(function(_DealService_) {

@@ -138,6 +138,12 @@
                               <option value="early_bird_discount">Early Bird Discount</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label>Vendor</label>
+                            <select class="form-control input-medium" ng-model="vm.form.vendor_id" required>
+                              <option value="{{elem.uid}}" ng-repeat="elem in vm.vendors">{{elem.name}}</option>
+                            </select>
+                        </div>
                         <!--Image-->
                         <div ng-if="vm.mode == 'Edit'">
                             <hr />

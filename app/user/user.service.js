@@ -15,6 +15,7 @@
             errors: [],
             add: add,
             edit: edit,
+            editMe: editMe,
             delete: _delete,
             getAll: getAll,
             find: find,
@@ -106,12 +107,17 @@
             return d.promise;
         }
 
-        function getAll() {
+        function getAll(param={}) {
             var d = $q.defer();
+            var params = Object.keys(param).map(function(key){ 
+                            return encodeURIComponent(key) + '=' + encodeURIComponent(param[key]); 
+                        }).join('&');
+
+            var url = (params == '') ? api : api + '?' + params;
 
             var req = {
                 method: 'GET',
-                url: api
+                url: url
             };
 
             $http(req)
@@ -217,6 +223,23 @@
 
             return d.promise;
         }
+
+ 
+        function editMe(id, data){ 
+            var url = CONST.api_domain + '/users/me'; 
+            var d = $q.defer(); 
+ 
+            $http.patch(url, data) 
+                .then(function(resp) { 
+                    d.resolve(resp); 
+                }).catch(function(error) { 
+                    $log.log(error); 
+                    service.errors = error; 
+                    d.reject(error); 
+                }); 
+ 
+            return d.promise; 
+        }         
     }
 
 })();

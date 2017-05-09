@@ -1,14 +1,14 @@
 (function() {
     'use strict';
 
-    angular.module('app.brands', [])
-        .factory('BrandService', BrandService);
+    angular.module('app.categories', [])
+        .factory('CategoryService', CategoryService);
 
-    BrandService.$inject = ['$http', 'CONST', '$q', '$rootScope', '$log'];
+    CategoryService.$inject = ['$http', 'CONST', '$q', '$rootScope', '$log'];
 
     /* @ngInject */
-    function BrandService($http, CONST, $q, $rootScope, $log) {
-        var api = CONST.api_domain + '/admin/brands';
+    function CategoryService($http, CONST, $q, $rootScope, $log) {
+        var api = CONST.api_domain + '/admin/categories';
 
         var service = {
             lists: [],
@@ -35,11 +35,11 @@
             var results = [];
 
             if (str.trim() == '') {
-                d.resolve(service.lists.brands);
+                d.resolve(service.lists.categories);
             } else {
-                angular.forEach(service.lists.brands, function(brand, index) {
-                    if (brand.name.toLowerCase().indexOf(q) > -1) {
-                        results.push(brand);
+                angular.forEach(service.lists.categories, function(category, index) {
+                    if (category.name.toLowerCase().indexOf(q) > -1) {
+                        results.push(category);
                     }
                 });
 
@@ -48,7 +48,7 @@
                 } else {
                     $http.get(url, { query: str }).then(function(resp) {
                         service.searchedList = resp.data;
-                        d.resolve(resp.data.brands);
+                        d.resolve(resp.data.categories);
                     }).catch(function(err) {
                         $log.log(err);
                         d.reject(err);
@@ -60,7 +60,7 @@
         }
 
         function isEmpty() {
-            if (!angular.isDefined(service.lists.brands)) {
+            if (!angular.isDefined(service.lists.categories)) {
                 return true;
             }
 
@@ -71,20 +71,20 @@
             var d = $q.defer();
             if (angular.isDefined(id)) {
                 if (!isEmpty()) {
-                    angular.forEach(service.lists.brands, function(value, key) {
-                        if (id == service.lists.brands[key].uid) {
-                            d.resolve(service.lists.brands[key]);
+                    angular.forEach(service.lists.categories, function(value, key) {
+                        if (id == service.lists.categories[key].uid) {
+                            d.resolve(service.lists.categories[key]);
                         }
                     });
                 } else {
-                    find(id).then(function(brand) {
-                        d.resolve(brand);
+                    find(id).then(function(category) {
+                        d.resolve(category);
                     }).catch(function(err) {
                         d.reject(err);
                     });
                 }
             } else {
-                d.resolve('Brand does not exist.');
+                d.resolve('Category does not exist.');
             }
 
             return d.promise;
@@ -121,11 +121,8 @@
                     //params: {id: id}
                 })
                 .then(function(data) {
-                    var brand = data.data;
-                    brand["facebook"] = brand.facebook_url;
-                    brand["twitter"] = brand.twitter_url;
-                    brand["instagram"] = brand.instagram_url;
-                    d.resolve(brand);
+                    var category = data.data;
+                    d.resolve(category);
                 })
                 .catch(function(error) {
                     service.errors = error;
@@ -135,38 +132,15 @@
             return d.promise;
         }
 
-        function setLogoImage(img) {
-            var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
-
-            var data = {
-                file: filebase64
-            };
-
-            return data;
-        }
-
-        function setCoverImage(img) {
-            var filebase64 = 'data:' + img.filetype + ';base64,' + img.base64;
-
-            var data = {
-                    file: filebase64
-            };
-
-            return data;
-        }
-
         function add(data) {
             var url = api;
             var d = $q.defer();
 
-            data.logo_image_attributes = setLogoImage(data.logo);
-            data.cover_image_attributes = setCoverImage(data.cover);
-
-            var brand = {
-              brand: data
+            var category = {
+              category: data
             };
 
-            $http.post(url, brand)
+            $http.post(url, category)
                 .then(function(resp) {
                     //$log.log(resp);
                     d.resolve(resp);
@@ -184,18 +158,13 @@
             var url = api + "/" + id;
             var d = $q.defer();
 
-            if (data.logo)
-              data.logo_image_attributes = setLogoImage(data.logo);
-            if (data.cover)
-              data.cover_image_attributes = setCoverImage(data.cover);
-
             console.log(data);
 
-            var brand = {
-              brand: data
+            var category = {
+              category: data
             };
 
-            $http.patch(url, brand)
+            $http.patch(url, category)
                 .then(function(resp) {
                     d.resolve(resp);
                 }).catch(function(error) {

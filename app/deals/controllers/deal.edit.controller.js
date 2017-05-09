@@ -6,6 +6,7 @@
 
     DealEditController.$inject = [
         'DealService',
+        'UserService',
         '$stateParams',
         '$scope',
         'prepSelDeal',
@@ -27,6 +28,7 @@
 
     /* @ngInject */
     function DealEditController(DealService,
+        UserService,
         $stateParams,
         $scope,
         prepSelDeal,
@@ -121,6 +123,9 @@
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editDeal;
 
+        // vendors
+        vm.vendors = [];
+
         vm.capFirstLetter = HelperService.capFirstLetter;
 
         activate();
@@ -149,6 +154,7 @@
             });
 
             insertNewImageObj();
+            getVendors();
 
             priceFormat();
 
@@ -156,6 +162,12 @@
             $(document).ready(function() {
                 ComponentsDateTimePickers.init();
                 $('[data-toggle="tooltip"]').tooltip();
+            });
+        }
+
+        function getVendors(){
+            UserService.getAll({role: 'vendor'}).then(function(resp) {
+                vm.vendors = resp.users;
             });
         }
 

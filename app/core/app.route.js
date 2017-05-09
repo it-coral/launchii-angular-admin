@@ -127,6 +127,55 @@
         };
         //END Brand routes
 
+        //Category routes
+        var category = {
+            name: "dashboard.category",
+            url: "/category",
+            parent: dashboard,
+            views: {
+                "main_body": {
+                    templateUrl: "app/category/category.html",
+                    controller: "CategoryController",
+                    controllerAs: "vm",
+                    resolve: {
+                        categoryPrepService: categoryPrepService
+                    }
+                },
+                //"nav": nav
+            }
+        };
+
+        var categoryAdd = {
+            name: "dashboard.category.add",
+            url: "/add",
+            parent: category,
+            views: {
+                "page_body": {
+                    templateUrl: "app/category/category.add.html",
+                    controller: "CategoryAddController",
+                    controllerAs: "vm"
+                }
+            }
+        };
+
+        var categoryEdit = {
+            name: "dashboard.category.edit",
+            url: "/edit/:id",
+            parent: category,
+            views: {
+                "page_body": {
+                    templateUrl: "app/category/category.add.html",
+                    controller: "CategoryEditController",
+                    controllerAs: "vm",
+                    resolve: {
+                        prepSelCategory: prepSelCategory
+                    }
+                }
+            }
+        };
+
+        //END Category routes
+
         //Deal routes
         var deal = {
             name: "dashboard.deal",
@@ -280,6 +329,23 @@
             }
         };
 
+        var userInfo = { 
+            name: "dashboard.account", 
+            url: "/account", 
+            parent: dashboard, 
+            views: { 
+                "main_body": { 
+                    templateUrl: "app/user/user.info.html", 
+                    controller: "UserInfoController", 
+                    controllerAs: "vm", 
+                    resolve: { 
+                        prepCurUser: prepCurUser 
+                    } 
+                }, 
+                //"nav": nav 
+            } 
+        }; 
+
         ////////////
 
         $stateProvider
@@ -297,7 +363,11 @@
             .state(user)
             .state(userAdd)
             .state(userEdit)
-            .state(userView);
+            .state(userView)
+            .state(userInfo)
+            .state(category)
+            .state(categoryAdd)
+            .state(categoryEdit);
 
         ////////////
 
@@ -367,6 +437,12 @@
             return UserService.getAll();
         }
 
+        prepCurUser.$inject = ['AuthService']; 
+        /* @ngInject */ 
+        function prepCurUser(AuthService) { 
+            return AuthService.currentUser(); 
+        } 
+        
         dateTimeStyleSheets.$inject = ['HelperService'];
         /* @ngInject */
         function dateTimeStyleSheets(HelperService) {
@@ -403,9 +479,12 @@
             AuthService.logout();
         }
 
-        dealPrepService.$inject = ['DealService'];
+        dealPrepService.$inject = ['DealService', 'BrandService'];
         /* @ngInject */
-        function dealPrepService(DealService) {
+        function dealPrepService(DealService, BrandService) {
+            if(BrandService.isEmpty()){
+                BrandService.getAll();
+            }
             return DealService.getAll();
         }
 
@@ -426,6 +505,19 @@
         function prepSelDeal($stateParams, DealService) {
             return DealService.find($stateParams.id);
         }
+
+        categoryPrepService.$inject = ['CategoryService'];
+        /* @ngInject */
+        function categoryPrepService(CategoryService) {
+            return CategoryService.getAll();
+        }
+
+        prepSelCategory.$inject = ['$stateParams', 'CategoryService'];
+        /* @ngInject */
+        function prepSelCategory($stateParams, CategoryService) {
+            return CategoryService.find($stateParams.id);
+        }
+
     }
 
 })();

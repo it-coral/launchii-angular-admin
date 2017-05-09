@@ -593,21 +593,28 @@
         }
 
         function getUpsellAssociations(dealId) {
-            var d = $q.defer();
-            var url = api + '/' + dealId + '/upsells';
+            var dealInfo = {};
+            angular.forEach(service.lists.deals, function(value, key) {
+                if (dealId == service.lists.deals[key].uid) {
+                    dealInfo = service.lists.deals[key];
+                }
+            });            
 
-            $http.get(url).then(function(resp) {
-                var associations = [];
-                angular.forEach(resp.data.upsell_associations, function(assoc, index) {
-                    associations.push(assoc.upsell_id);
-                });
-                d.resolve(associations);
-            }).catch(function(err) {
-                $log.log(err);
-                d.reject(err);
-            });
-
-            return d.promise;
+            if(!dealInfo.is_upsell){
+                var d = $q.defer();
+                var url = api + '/' + dealId + '/upsells';
+                $http.get(url).then(function(resp) {
+                    var associations = [];
+                    angular.forEach(resp.data.upsell_associations, function(assoc, index) {
+                        associations.push(assoc.upsell_id);
+                    });
+                    d.resolve(associations);
+                }).catch(function(err) {
+                    $log.log(err);
+                    d.reject(err);
+                });                
+                return d.promise;                
+            }
         }
 
         function addDiscounts(deal_id, discounts) {

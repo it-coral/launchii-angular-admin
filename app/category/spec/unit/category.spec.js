@@ -1,48 +1,48 @@
 (function() {
     'use strict';
 
-    describe('Brands service', function() {
-        var $controller, BrandService;
+    describe('Categories service', function() {
+        var $controller, CategoryService;
 
         beforeEach(angular.mock.module('ui.router'));
-        beforeEach(angular.mock.module('app.brands'));
+        beforeEach(angular.mock.module('app.categories'));
 
         beforeEach(function() {
 
             module(function($provide) {
                 $provide.value('CONST', jasmine.createSpy('CONST'));
-                $provide.value('brandPrepService', { brands: [] });
+                $provide.value('categoryPrepService', { categories: [] });
                 $provide.value('HelperService', { getPrevState: jasmine.createSpy('getPrevState') });
-                $provide.value('prepSelBrand', jasmine.createSpy('prepSelBrand'));
+                $provide.value('prepSelCategory', jasmine.createSpy('prepSelCategory'));
             });
 
         });
 
-        beforeEach(inject(function(_BrandService_) {
-            BrandService = _BrandService_;
+        beforeEach(inject(function(_CategoryService_) {
+            CategoryService = _CategoryService_;
         }));
 
         it('should exist', function() {
-            expect(BrandService).toBeDefined();
+            expect(CategoryService).toBeDefined();
         });
 
         it('should have the required attributes', function() {
-            expect(BrandService.getAll).toBeDefined();
-            expect(BrandService.search).toBeDefined();
-            expect(BrandService.lists).toBeDefined();
-            expect(BrandService.add).toBeDefined();
-            expect(BrandService.edit).toBeDefined();
-            expect(BrandService.delete).toBeDefined();
-            expect(BrandService.find).toBeDefined();
+            expect(CategoryService.getAll).toBeDefined();
+            expect(CategoryService.search).toBeDefined();
+            expect(CategoryService.lists).toBeDefined();
+            expect(CategoryService.add).toBeDefined();
+            expect(CategoryService.edit).toBeDefined();
+            expect(CategoryService.delete).toBeDefined();
+            expect(CategoryService.find).toBeDefined();
         });
 
-        it('should get all brands', function() {
-            BrandService.getAll().then(function(result) {
+        it('should get all categories', function() {
+            CategoryService.getAll().then(function(result) {
                 expect(result).toBeDefined();
             });
         });
 
-        it('should add a brand', function() {
+        it('should add a category', function() {
             var data = 
                 {
                     slug: "string",
@@ -72,12 +72,12 @@
                     updated_at: "2017-05-03T12:53:25.117Z"
                 }            
 
-            BrandService.add(data).then(function(result) {
+            CategoryService.add(data).then(function(result) {
                 expect(result).toBeDefined();
             });
         });
 
-        it('should edit a brand', function() {
+        it('should edit a category', function() {
             var id = "1234567890";
             var data = 
                 {
@@ -107,12 +107,12 @@
                     created_at: "2017-05-03T12:53:25.117Z",
                     updated_at: "2017-05-03T12:53:25.117Z"
                 };
-            BrandService.edit(id, data).then(function(result) {
+            CategoryService.edit(id, data).then(function(result) {
                 expect(result).toBeDefined();
             });
         });
 
-        describe('Brand dashboard controller', function() {
+        describe('Category dashboard controller', function() {
 
             var scope, controller, httpBackend;
 
@@ -121,7 +121,7 @@
                 scope = $rootScope.$new();
                 httpBackend = $httpBackend;
 
-                controller = $controller('BrandController', {
+                controller = $controller('CategoryController', {
                     $scope: scope,
                     $http: $httpBackend
                 });
@@ -133,7 +133,7 @@
 
         });
 
-        describe('Brand add controller', function() {
+        describe('Category add controller', function() {
 
             var scope, controller, httpBackend;
 
@@ -142,7 +142,7 @@
                 scope = $rootScope.$new();
                 httpBackend = $httpBackend;
 
-                controller = $controller('BrandAddController', {
+                controller = $controller('CategoryAddController', {
                     $scope: scope,
                     $http: $httpBackend
                 });
@@ -154,7 +154,7 @@
 
         });
 
-        describe('Brand edit controller', function() {
+        describe('Category edit controller', function() {
 
             var scope, controller, httpBackend;
 
@@ -163,28 +163,7 @@
                 scope = $rootScope.$new();
                 httpBackend = $httpBackend;
 
-                controller = $controller('BrandEditController', {
-                    $scope: scope,
-                    $http: $httpBackend
-                });
-            }));
-
-            it('should exist', function() {
-                expect(controller).toBeDefined();
-            });
-
-        });
-
-        describe('Brand view controller', function() {
-
-            var scope, controller, httpBackend;
-
-            beforeEach(inject(function($controller, $rootScope, $httpBackend) {
-
-                scope = $rootScope.$new();
-                httpBackend = $httpBackend;
-
-                controller = $controller('BrandViewController', {
+                controller = $controller('CategoryEditController', {
                     $scope: scope,
                     $http: $httpBackend
                 });
