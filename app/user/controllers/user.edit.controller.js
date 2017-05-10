@@ -14,7 +14,9 @@
         vm.response = {};
         vm.userId = $stateParams.id;
         vm.selectedUser = prepSelUser;
-        vm.form = vm.selectedUser;
+        console.log(vm.selectedUser);
+        vm.form = {name: vm.selectedUser.name, email: vm.selectedUser.email, role: vm.selectedUser.role, status: vm.selectedUser.status};
+        console.log(vm.form);
         vm.defaultRole = vm.selectedUser.role;
         vm.defaultStatus = vm.selectedUser.is_active ? 'active' : 'inactive';
         vm.isDone = true;
