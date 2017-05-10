@@ -5676,7 +5676,6 @@ window.isEmpty = function(obj) {
                 }).catch(function(error) {
                     $log.log(error);
                     service.errors = error;
-                    //d.reject(error.data.errors);
                     d.reject(error);
                 });
 
@@ -5735,10 +5734,10 @@ window.isEmpty = function(obj) {
     angular.module('app.brands')
         .controller('BrandAddController', BrandAddController);
 
-    BrandAddController.$inject = ['BrandService', '$scope', 'HelperService', '$state', '$log'];
+    BrandAddController.$inject = ['BrandService', 'UserService', '$scope', 'HelperService', '$state', '$log'];
 
     /* @ngInject */
-    function BrandAddController(BrandService, $scope, HelperService, $state, $log) {
+    function BrandAddController(BrandService, UserService, $scope, HelperService, $state, $log) {
         var vm = this;
 
         vm.mode = "Add";
@@ -5754,10 +5753,25 @@ window.isEmpty = function(obj) {
         vm.clearCoverImage = clearImage;
         vm.previewImage = previewImage;
 
+        // Vendors
+        vm.vendors = [];
+
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addBrand;
 
         ///////////////////
+
+        activate();
+
+        function activate() {
+            getVendors();
+        }
+
+        function getVendors(){
+            UserService.getAll({role: 'vendor'}).then(function(resp) {
+                vm.vendors = resp.users;
+            });
+        }
 
         function previewImage(logo, elem, img) {
             var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;
@@ -5790,7 +5804,7 @@ window.isEmpty = function(obj) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add new Brand.";
-                vm.response['error_arr'] = err.data.errors;
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -5919,7 +5933,7 @@ window.isEmpty = function(obj) {
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Can not delete brand: " + brand.name;
                 vm.response['error_arr'] = [];
-                vm.response['error_arr'].push(err.data.errors);
+                vm.response['error_arr'].push(err.data == null ? '' : err.data.errors);
                 vm.hasAdded = true;
                 vm.isDone = true;
                 return false;
@@ -5927,16 +5941,17 @@ window.isEmpty = function(obj) {
         }
     }
 })();
+
 (function() {
     'use strict';
 
     angular.module('app.brands')
         .controller('BrandEditController', BrandEditController);
 
-    BrandEditController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService', '$state', '$log'];
+    BrandEditController.$inject = ['BrandService', 'UserService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService', '$state', '$log'];
 
     /* @ngInject */
-    function BrandEditController(BrandService, $stateParams, $scope, prepSelBrand, HelperService, $state, $log) {
+    function BrandEditController(BrandService, UserService, $stateParams, $scope, prepSelBrand, HelperService, $state, $log) {
         var vm = this;
 
         vm.mode = "Edit";
@@ -5951,6 +5966,9 @@ window.isEmpty = function(obj) {
         vm.clearCoverImage = clearCoverImage;
         vm.previewImage = previewImage;
 
+        // Vendors
+        vm.vendors = [];
+
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editPost;
 
@@ -5960,6 +5978,7 @@ window.isEmpty = function(obj) {
 
         function activate() {
             $log.log(vm.form);
+            getVendors();
             //console.log('hey');
             // BrandService.find(vm.brandId).then(function(data) {
             //     vm.selectedBrand = data;
@@ -5969,6 +5988,12 @@ window.isEmpty = function(obj) {
             // vm.$watch('form.logo', function() {
             //     $log.log(vm.form.logo);
             // });
+        }
+
+        function getVendors(){
+            UserService.getAll({role: 'vendor'}).then(function(resp) {
+                vm.vendors = resp.users;
+            });
         }
 
         function previewImage(logo, elem, img) {
@@ -6009,7 +6034,7 @@ window.isEmpty = function(obj) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update Brand.";
-                vm.response['error_arr'] = err.data.errors;
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -6206,7 +6231,6 @@ window.isEmpty = function(obj) {
                 }).catch(function(error) {
                     $log.log(error);
                     service.errors = error;
-                    //d.reject(error.data.errors);
                     d.reject(error);
                 });
 
@@ -6294,7 +6318,7 @@ window.isEmpty = function(obj) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add new Category.";
-                vm.response['error_arr'] = err.data.errors;
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -6423,7 +6447,7 @@ window.isEmpty = function(obj) {
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Can not delete category: " + category.name;
                 vm.response['error_arr'] = [];
-                vm.response['error_arr'].push(err.data.errors);
+                vm.response['error_arr'].push(err.data == null ? '' : err.data.errors);
                 vm.hasAdded = true;
                 vm.isDone = true;
                 return false;
@@ -6431,6 +6455,7 @@ window.isEmpty = function(obj) {
         }
     }
 })();
+
 (function() {
     'use strict';
 
@@ -6480,7 +6505,7 @@ window.isEmpty = function(obj) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update Category.";
-                vm.response['error_arr'] = err.data.errors;
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -10479,8 +10504,8 @@ window.isEmpty = function(obj) {
 
         function getAll(param={}) {
             var d = $q.defer();
-            var params = Object.keys(param).map(function(key){ 
-                            return encodeURIComponent(key) + '=' + encodeURIComponent(param[key]); 
+            var params = Object.keys(param).map(function(key){
+                            return encodeURIComponent(key) + '=' + encodeURIComponent(param[key]);
                         }).join('&');
 
             var url = (params == '') ? api : api + '?' + params;
@@ -10539,7 +10564,6 @@ window.isEmpty = function(obj) {
                 }).catch(function(error) {
                     $log.log(error);
                     service.errors = error;
-                    //d.reject(error.data.errors);
                     d.reject(error);
                 });
 
@@ -10594,22 +10618,22 @@ window.isEmpty = function(obj) {
             return d.promise;
         }
 
- 
-        function editMe(id, data){ 
-            var url = CONST.api_domain + '/users/me'; 
-            var d = $q.defer(); 
- 
-            $http.patch(url, data) 
-                .then(function(resp) { 
-                    d.resolve(resp); 
-                }).catch(function(error) { 
-                    $log.log(error); 
-                    service.errors = error; 
-                    d.reject(error); 
-                }); 
- 
-            return d.promise; 
-        }         
+
+        function editMe(id, data){
+            var url = CONST.api_domain + '/users/me';
+            var d = $q.defer();
+
+            $http.patch(url, data)
+                .then(function(resp) {
+                    d.resolve(resp);
+                }).catch(function(error) {
+                    $log.log(error);
+                    service.errors = error;
+                    d.reject(error);
+                });
+
+            return d.promise;
+        }
     }
 
 })();
@@ -10620,10 +10644,10 @@ window.isEmpty = function(obj) {
     angular.module('app.users')
         .controller('UserAddController', UserAddController);
 
-    UserAddController.$inject = ['UserService', '$scope', 'HelperService', '$state'];
+    UserAddController.$inject = ['UserService', '$scope', 'HelperService', '$state', '$log'];
 
     /* @ngInject */
-    function UserAddController(UserService, $scope, HelperService, $state) {
+    function UserAddController(UserService, $scope, HelperService, $state, $log) {
         var vm = this;
 
         vm.mode = "Add";
@@ -10667,7 +10691,7 @@ window.isEmpty = function(obj) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add user.";
-                vm.response['error_arr'] = err.data.errors;
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -10676,6 +10700,7 @@ window.isEmpty = function(obj) {
         }
     }
 })();
+
 (function() {
     'use strict';
 
@@ -10800,17 +10825,19 @@ window.isEmpty = function(obj) {
     angular.module('app.users')
         .controller('UserEditController', UserEditController);
 
-    UserEditController.$inject = ['UserService', '$stateParams', '$scope', 'prepSelUser', 'HelperService', '$state'];
+    UserEditController.$inject = ['UserService', '$stateParams', '$scope', 'prepSelUser', 'HelperService', '$state', '$log'];
 
     /* @ngInject */
-    function UserEditController(UserService, $stateParams, $scope, prepSelUser, HelperService, $state) {
+    function UserEditController(UserService, $stateParams, $scope, prepSelUser, HelperService, $state, $log) {
         var vm = this;
 
         vm.mode = "Edit";
         vm.response = {};
         vm.userId = $stateParams.id;
         vm.selectedUser = prepSelUser;
-        vm.form = vm.selectedUser;
+        console.log(vm.selectedUser);
+        vm.form = {name: vm.selectedUser.name, email: vm.selectedUser.email, role: vm.selectedUser.role, status: vm.selectedUser.status};
+        console.log(vm.form);
         vm.defaultRole = vm.selectedUser.role;
         vm.defaultStatus = vm.selectedUser.is_active ? 'active' : 'inactive';
         vm.isDone = true;
@@ -10823,10 +10850,6 @@ window.isEmpty = function(obj) {
         ///////////////////
 
         function activate() {
-            UserService.find(vm.userId).then(function(data) {
-                vm.selectedUser = data;
-                vm.form = vm.selectedUser;
-            });
         }
 
         function editPost() {
@@ -10849,7 +10872,7 @@ window.isEmpty = function(obj) {
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update User.";
-                vm.response['error_arr'] = err.data.errors;
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
@@ -10858,78 +10881,80 @@ window.isEmpty = function(obj) {
         }
     }
 })();
-(function() { 
-    'use strict'; 
- 
-    angular.module('app.users') 
-        .controller('UserInfoController', UserInfoController); 
- 
-    UserInfoController.$inject = ['UserService', '$scope', 'prepCurUser', 'HelperService', '$state']; 
- 
-    /* @ngInject */ 
-    function UserInfoController(UserService, $scope, prepCurUser, HelperService, $state) { 
-        var vm = this; 
- 
-        vm.mode = "Edit"; 
-        vm.response = {}; 
-        vm.selectedUser = prepCurUser; 
-        vm.form = vm.selectedUser; 
-        vm.defaultRole = vm.selectedUser.role; 
-        vm.defaultStatus = vm.selectedUser.is_active ? 'active' : 'inactive'; 
-        vm.isDone = true; 
- 
-        vm.prevState = HelperService.getPrevState(); 
-        vm.submitAction = editPost; 
- 
-        activate(); 
- 
-        /////////////////// 
- 
-        function activate() { 
-            vm.form.password = ''; 
-            vm.form.confirm_password = ''; 
-        } 
- 
-        function editPost() { 
-            vm.isDone = false; 
-            var editReq = {}; 
-            if(vm.form.password.length){ 
-                editReq = { 
-                    name: vm.form.name, 
-                    email: vm.form.email, 
-                    password: vm.form.password, 
-                    password_confirmation: vm.form.confirm_password 
-                } 
-            } else { 
-                editReq = { 
-                    name: vm.form.name, 
-                    email: vm.form.email 
-                } 
-            } 
-            UserService.editMe(vm.selectedUser.uid, editReq).then(function() { 
-                vm.response['success'] = "alert-success"; 
-                vm.response['alert'] = "Success!"; 
-                vm.response['msg'] = "Updated user: " + vm.form.name; 
-                vm.isDone = true; 
- 
-                $scope.$parent.vm.isDone = true; 
-                $scope.$parent.vm.response = vm.response; 
-                $scope.$parent.vm.getUsers(); 
-                $state.go(vm.prevState); 
- 
-            }).catch(function(err) { 
-                $log.log(err); 
-                vm.response['success'] = "alert-danger"; 
-                vm.response['alert'] = "Error!"; 
-                vm.response['msg'] = "Failed to update User."; 
-                vm.isDone = true; 
- 
-                $scope.$parent.vm.isDone = true; 
-                HelperService.goToAnchor('msg-info'); 
-            }); 
-        } 
-    } 
+
+(function() {
+    'use strict';
+
+    angular.module('app.users')
+        .controller('UserInfoController', UserInfoController);
+
+    UserInfoController.$inject = ['UserService', '$scope', 'prepCurUser', 'HelperService', '$state', '$log'];
+
+    /* @ngInject */
+    function UserInfoController(UserService, $scope, prepCurUser, HelperService, $state, $log) { 
+        var vm = this;
+
+        vm.mode = "Edit";
+        vm.response = {};
+        vm.selectedUser = prepCurUser;
+        vm.form = vm.selectedUser;
+        vm.defaultRole = vm.selectedUser.role;
+        vm.defaultStatus = vm.selectedUser.is_active ? 'active' : 'inactive';
+        vm.isDone = true;
+
+        vm.prevState = HelperService.getPrevState();
+        vm.submitAction = editPost;
+
+        activate();
+
+        ///////////////////
+
+        function activate() {
+            vm.form.password = '';
+            vm.form.confirm_password = '';
+        }
+
+        function editPost() {
+            vm.isDone = false;
+            var editReq = {};
+            if(vm.form.password.length){
+                editReq = {
+                    name: vm.form.name,
+                    email: vm.form.email,
+                    password: vm.form.password,
+                    password_confirmation: vm.form.confirm_password
+                }
+            } else {
+                editReq = {
+                    name: vm.form.name,
+                    email: vm.form.email
+                }
+            }
+            UserService.editMe(vm.selectedUser.uid, editReq).then(function() {
+                vm.response['success'] = "alert-success";
+                vm.response['alert'] = "Success!";
+                vm.response['msg'] = "Updated user: " + vm.form.name;
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                $scope.$parent.vm.response = vm.response;
+                $scope.$parent.vm.getUsers();
+                $state.go(vm.prevState);
+
+            }).catch(function(err) {
+                $log.log(err);
+                vm.response['success'] = "alert-danger";
+                vm.response['alert'] = "Error!";
+                vm.response['msg'] = "Failed to update User.";
+                vm.isDone = true;
+
+                $scope.$parent.vm.isDone = true;
+                HelperService.goToAnchor('msg-info');
+            });
+        }
+    }
 })();
+
 (function() {
     'use strict';
 
