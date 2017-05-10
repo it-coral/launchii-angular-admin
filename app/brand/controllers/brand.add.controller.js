@@ -4,10 +4,10 @@
     angular.module('app.brands')
         .controller('BrandAddController', BrandAddController);
 
-    BrandAddController.$inject = ['BrandService', '$scope', 'HelperService', '$state', '$log'];
+    BrandAddController.$inject = ['BrandService', 'UserService', '$scope', 'HelperService', '$state', '$log'];
 
     /* @ngInject */
-    function BrandAddController(BrandService, $scope, HelperService, $state, $log) {
+    function BrandAddController(BrandService, UserService, $scope, HelperService, $state, $log) {
         var vm = this;
 
         vm.mode = "Add";
@@ -23,10 +23,25 @@
         vm.clearCoverImage = clearImage;
         vm.previewImage = previewImage;
 
+        // Vendors
+        vm.vendors = [];
+
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = addBrand;
 
         ///////////////////
+
+        activate();
+
+        function activate() {
+            getVendors();
+        }
+
+        function getVendors(){
+            UserService.getAll({role: 'vendor'}).then(function(resp) {
+                vm.vendors = resp.users;
+            });
+        }
 
         function previewImage(logo, elem, img) {
             var filebase64 = 'data:' + logo.filetype + ';base64,' + logo.base64;

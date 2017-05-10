@@ -4,10 +4,10 @@
     angular.module('app.brands')
         .controller('BrandEditController', BrandEditController);
 
-    BrandEditController.$inject = ['BrandService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService', '$state', '$log'];
+    BrandEditController.$inject = ['BrandService', 'UserService', '$stateParams', '$scope', 'prepSelBrand', 'HelperService', '$state', '$log'];
 
     /* @ngInject */
-    function BrandEditController(BrandService, $stateParams, $scope, prepSelBrand, HelperService, $state, $log) {
+    function BrandEditController(BrandService, UserService, $stateParams, $scope, prepSelBrand, HelperService, $state, $log) {
         var vm = this;
 
         vm.mode = "Edit";
@@ -22,6 +22,9 @@
         vm.clearCoverImage = clearCoverImage;
         vm.previewImage = previewImage;
 
+        // Vendors
+        vm.vendors = [];
+
         vm.prevState = HelperService.getPrevState();
         vm.submitAction = editPost;
 
@@ -31,6 +34,7 @@
 
         function activate() {
             $log.log(vm.form);
+            getVendors();
             //console.log('hey');
             // BrandService.find(vm.brandId).then(function(data) {
             //     vm.selectedBrand = data;
@@ -40,6 +44,12 @@
             // vm.$watch('form.logo', function() {
             //     $log.log(vm.form.logo);
             // });
+        }
+
+        function getVendors(){
+            UserService.getAll({role: 'vendor'}).then(function(resp) {
+                vm.vendors = resp.users;
+            });
         }
 
         function previewImage(logo, elem, img) {
