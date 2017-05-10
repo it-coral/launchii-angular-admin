@@ -117,7 +117,7 @@
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Can not delete brand: " + brand.name;
                 vm.response['error_arr'] = [];
-                vm.response['error_arr'].push(err.data.errors);
+                vm.response['error_arr'].push(err.data == null ? '' : err.data.errors);
                 vm.hasAdded = true;
                 vm.isDone = true;
                 return false;

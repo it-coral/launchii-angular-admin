@@ -4,10 +4,10 @@
     angular.module('app.users')
         .controller('UserAddController', UserAddController);
 
-    UserAddController.$inject = ['UserService', '$scope', 'HelperService', '$state'];
+    UserAddController.$inject = ['UserService', '$scope', 'HelperService', '$state', '$log'];
 
     /* @ngInject */
-    function UserAddController(UserService, $scope, HelperService, $state) {
+    function UserAddController(UserService, $scope, HelperService, $state, $log) {
         var vm = this;
 
         vm.mode = "Add";
@@ -51,7 +51,7 @@
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to add user.";
-                vm.response['error_arr'] = err.data.errors;
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;

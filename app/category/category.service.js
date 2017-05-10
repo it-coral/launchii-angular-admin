@@ -147,7 +147,6 @@
                 }).catch(function(error) {
                     $log.log(error);
                     service.errors = error;
-                    //d.reject(error.data.errors);
                     d.reject(error);
                 });
 

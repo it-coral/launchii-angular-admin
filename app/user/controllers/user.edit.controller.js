@@ -4,10 +4,10 @@
     angular.module('app.users')
         .controller('UserEditController', UserEditController);
 
-    UserEditController.$inject = ['UserService', '$stateParams', '$scope', 'prepSelUser', 'HelperService', '$state'];
+    UserEditController.$inject = ['UserService', '$stateParams', '$scope', 'prepSelUser', 'HelperService', '$state', '$log'];
 
     /* @ngInject */
-    function UserEditController(UserService, $stateParams, $scope, prepSelUser, HelperService, $state) {
+    function UserEditController(UserService, $stateParams, $scope, prepSelUser, HelperService, $state, $log) {
         var vm = this;
 
         vm.mode = "Edit";
@@ -27,10 +27,6 @@
         ///////////////////
 
         function activate() {
-            UserService.find(vm.userId).then(function(data) {
-                vm.selectedUser = data;
-                vm.form = vm.selectedUser;
-            });
         }
 
         function editPost() {
@@ -53,7 +49,7 @@
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update User.";
-                vm.response['error_arr'] = err.data.errors;
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
