@@ -57,6 +57,13 @@
                     stateName = 'auth';
                     ngProgressLite.done();
                 }
+            } else if (toState.name === 'account-confirmation') {
+                if ($rootScope.currentUser) {
+                    event.preventDefault();
+                    $state.go('dashboard');
+                    stateName = 'dashboard';
+                    ngProgressLite.done();   
+                }
             } else {
                 if ($rootScope.currentUser) {
                     if (toState.name === 'auth') {
