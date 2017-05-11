@@ -5,77 +5,185 @@
             <div class="col-lg-12">
                 <!-- /.main_body -->
                 <div ui-view="main_body" class="fade">
-                    <!-- /.row -->
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="portlet light">
-                                <div class="portlet-body form">
-                                    <div class="alert {{vm.response.success}}" id="msg-info" ng-show="vm.response.msg">
-                                        <div><strong>{{vm.response.alert}}</strong> {{vm.response.msg}}</div>
-                                        <div ng-if="vm.response['error_arr']">
-                                            <ul class="pl-5 mt-1">
-                                                <li ng-repeat="error in vm.response['error_arr']">{{ error }}</li>
-                                            </ul>
-                                        </div>
+                    <!-- BEGIN SUMMARY ERROR MESSAGE -->
+                    <div class="alert alert-danger" ng-if="vm.summaryError">
+                        <strong>There was an error: </strong> {{vm.summaryError}}
+                    </div>
+                    <!-- END SUMMARY ERROR MESSAGE -->
+                    <!-- BEGIN DASHBOARD SUMMARY -->
+                    <div class="row" ng-if="vm.summaryLoaded">
+                        <div class="col-lg-2 dashboard-col">
+                            <div class="dashboard-stat dashboard-stat-v2 blue">
+                                <div class="visual">
+                                    <i class="fa fa-users"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span> {{vm.registeredUserCount}} </span>
                                     </div>
-                                    <div class="row dashboard-items" ng-if="vm.summaryLoaded == true">
-                                        <div class="col-xs-1 hidden-md hidden-sm hidden-xs">
-                                        </div>
-                                        <div class="container col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                                            <div class="content reg-user-count">
-                                                <img src='data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#FFFFFF" fill-opacity="0.15" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>' class='img-icon' />
-                                                <div class="label-container">
-                                                    <div class="label-number"> {{vm.registeredUserCount}} </div>
-                                                    <div class="label-desc"> Registered Users </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="container col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                                            <div class="content reg-vend-count">
-                                                <img src='data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#FFFFFF" fill-opacity="0.15" d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>' class='img-icon' />
-                                                <div class="label-container">
-                                                    <div class="label-number"> {{vm.registeredVendorCount}} </div>
-                                                    <div class="label-desc"> Registered Vendors </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="container col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                                            <div class="content clm-coup-count">
-                                                <img src='data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#FFFFFF" fill-opacity="0.15" d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg>' class='img-icon' />
-                                                <div class="label-container">
-                                                    <div class="label-number"> {{vm.claimedCouponCount}} </div>
-                                                    <div class="label-desc"> Claimed Coupons </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="container col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                                            <div class="content clm-coup-value">
-                                                <img src='data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#FFFFFF" fill-opacity="0.15" d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>' class='img-icon' />
-                                                <div class="label-container">
-                                                    <div class="label-number"> ${{vm.couponClaimedValue}} </div>
-                                                    <div class="label-desc"> Claimed Coupon Value </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="container col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                                            <div class="content run-deal-count">
-                                                <img src='data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#FFFFFF" fill-opacity="0.15" d="M16.53 11.06L15.47 10l-4.88 4.88-2.12-2.12-1.06 1.06L10.59 17l5.94-5.94zM19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>' class='img-icon' />
-                                                <div class="label-container">
-                                                    <div class="label-number"> {{vm.runningDealCount}} </div>
-                                                    <div class="label-desc"> Running Deals </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-1 hidden-md hidden-sm hidden-xs">
+                                    <div class="desc"> Registered Customers </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 dashboard-col">
+                            <div class="dashboard-stat dashboard-stat-v2 red">
+                                <div class="visual">
+                                    <i class="fa fa-building"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span> {{vm.registeredVendorCount}} </div>
+                                    <div class="desc"> Registered Vendors </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 dashboard-col">
+                            <div class="dashboard-stat dashboard-stat-v2 green">
+                                <div class="visual">
+                                    <i class="fa fa-credit-card"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span> {{vm.claimedCouponCount}} </span>
+                                    </div>
+                                    <div class="desc"> Claimed Coupons </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 dashboard-col">
+                            <div class="dashboard-stat dashboard-stat-v2 purple">
+                                <div class="visual">
+                                    <i class="fa fa-money"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span> ${{vm.couponClaimedValue}} </span>
+                                    </div>
+                                    <div class="desc"> Claimed Coupon Value </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 dashboard-col">
+                            <div class="dashboard-stat dashboard-stat-v2 red-haze">
+                                <div class="visual">
+                                    <i class="fa fa-calendar-check-o"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span> {{vm.runningDealCount}} </span>
+                                    </div>
+                                    <div class="desc"> Running Deals </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END DASHBOARD SUMMARY -->
+                    <!-- BEGIN GA DASHBOARD ERROR -->
+                    <div class="alert alert-danger" ng-if="vm.analyticsError">
+                        <strong>Google Analytics error: </strong> {{vm.analyticsError}}
+                    </div>
+                    <div class="alert alert-success" ng-if="!vm.analyticsError && vm.firstLoadingFinished && !vm.basicReport && !vm.trafficReport">
+                        No GA data available.
+                    </div>
+                    <!-- END GA DASHBOARD ERROR -->
+                    <!-- BEGIN BASIC REPORT METRIC BOXES -->
+                    <div class="row widget-row" ng-if="!vm.analyticsError && vm.basicReport">
+                        <div class="col-lg-2">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 bordered">
+                                <h4 class="widget-thumb-heading">Users</h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-green icon-users"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat widget-thumb-body-stat-no-unit">{{vm.basicReport.data.totals[0].values[0]}}</span>
                                     </div>
                                 </div>
-                                <!-- /.panel-body -->
                             </div>
-                            <!-- /.panel -->
                         </div>
-                        <!-- /.col-lg-12 -->
+                        <div class="col-lg-2">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 bordered">
+                                <h4 class="widget-thumb-heading">Sessions</h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-red icon-loop"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat widget-thumb-body-stat-no-unit">{{vm.basicReport.data.totals[0].values[1]}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 bordered">
+                                <h4 class="widget-thumb-heading">AVG Time on Site</h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-purple icon-speedometer"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat widget-thumb-body-stat-no-unit widget-thumb-body-stat-time-unit">{{vm.basicReport.data.totals[0].values[2] | secondsTohhmmss}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 bordered">
+                                <h4 class="widget-thumb-heading">Deal Views</h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-purple icon-eye"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat widget-thumb-body-stat-no-unit">{{vm.basicReport.data.totals[0].values[3]}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 bordered">
+                                <h4 class="widget-thumb-heading">Coupons Selected</h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-blue icon-magic-wand"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat widget-thumb-body-stat-no-unit">{{vm.basicReport.data.totals[0].values[4]}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 bordered">
+                                <h4 class="widget-thumb-heading">Shop Now - Clicks</h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-red-pink icon-graduation"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat widget-thumb-body-stat-no-unit">{{vm.basicReport.data.totals[0].values[5]}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <!-- /.row -->
+                    <!-- END BASIC REPORT METRIC BOXES -->
+                    <!-- BEGIN BASIC REPORT CHARTS -->
+                    <div class="row widget-row" ng-show="!vm.analyticsError && (vm.basicReport || vm.trafficReport)">
+                        <div class="col-xs-12 col-lg-6" ng-show="!vm.errorMessage && vm.basicReport">
+                            <div class="portlet light bordered">
+                                <div class="portlet-title">
+                                    <div class="caption ">
+                                        <span class="caption-subject font-dark bold uppercase">Sessions vs Shop - Now Clicks</span>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div id="basic-report-chart" class="CSSAnimationChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-lg-6" ng-show="!vm.errorMessage && vm.trafficReport">
+                            <div class="portlet light bordered">
+                                <div class="portlet-title">
+                                    <div class="caption ">
+                                        <span class="caption-subject font-dark bold uppercase">Page view traffic for all Deals</span>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div id="traffic-report-chart" class="CSSAnimationChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END BASIC REPORT CHARTS -->
                 </div>
                 <!-- /.main_body -->
             </div>

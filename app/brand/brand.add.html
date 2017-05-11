@@ -63,8 +63,13 @@
                                 <i class="fa fa-instagram"></i>
                                 <input type="url" class="form-control" placeholder="Enter Instagram url" ng-model="vm.form.instagram" validate-instagram-url="vm.form.instagram" required />
                             </div>
-
                         </div>
+                        <div class="form-group">
+                            <label>Vendor</label>
+                            <select class="form-control input-medium" ng-model="vm.form.vendor_id" required>
+                              <option value="{{elem.uid}}" ng-repeat="elem in vm.vendors">{{elem.name}}</option>
+                            </select>
+                        </div>                        
                         <!--Brand Logo-->
                         <hr />
                         <div class="form-group">

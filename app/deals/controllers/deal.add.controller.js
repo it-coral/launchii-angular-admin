@@ -442,7 +442,7 @@
                 }
             }
 
-            return hasActive;
+            return hasActive || (vm.form.status != 'published');
         }
 
         function setActive(selFieldModel, newDiscounts, discountsData, type, mode) {

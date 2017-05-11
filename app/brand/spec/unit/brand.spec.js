@@ -2,10 +2,11 @@
     'use strict';
 
     describe('Brands service', function() {
-        var $controller, BrandService;
+        var $controller, BrandService, UserService;
 
         beforeEach(angular.mock.module('ui.router'));
         beforeEach(angular.mock.module('app.brands'));
+        beforeEach(angular.mock.module('app.users'));
 
         beforeEach(function() {
 
@@ -16,6 +17,24 @@
                 $provide.value('prepSelBrand', jasmine.createSpy('prepSelBrand'));
             });
 
+        });
+
+        beforeEach(inject(function(_UserService_) {
+            UserService = _UserService_;
+        }));
+
+        it('should exist', function() {
+            expect(UserService).toBeDefined();
+        });
+
+        it('should have the required attributes', function() {
+            expect(UserService.getAll).toBeDefined();
+        });
+
+        it('should get all vendors', function() {
+            UserService.getAll({role: 'vendor'}).then(function(result) {
+                expect(result).toBeDefined();
+            });
         });
 
         beforeEach(inject(function(_BrandService_) {

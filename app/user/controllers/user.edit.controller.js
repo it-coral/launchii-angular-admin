@@ -4,17 +4,19 @@
     angular.module('app.users')
         .controller('UserEditController', UserEditController);
 
-    UserEditController.$inject = ['UserService', '$stateParams', '$scope', 'prepSelUser', 'HelperService', '$state'];
+    UserEditController.$inject = ['UserService', '$stateParams', '$scope', 'prepSelUser', 'HelperService', '$state', '$log'];
 
     /* @ngInject */
-    function UserEditController(UserService, $stateParams, $scope, prepSelUser, HelperService, $state) {
+    function UserEditController(UserService, $stateParams, $scope, prepSelUser, HelperService, $state, $log) {
         var vm = this;
 
         vm.mode = "Edit";
         vm.response = {};
         vm.userId = $stateParams.id;
         vm.selectedUser = prepSelUser;
-        vm.form = vm.selectedUser;
+        console.log(vm.selectedUser);
+        vm.form = {name: vm.selectedUser.name, email: vm.selectedUser.email, role: vm.selectedUser.role, status: vm.selectedUser.status};
+        console.log(vm.form);
         vm.defaultRole = vm.selectedUser.role;
         vm.defaultStatus = vm.selectedUser.is_active ? 'active' : 'inactive';
         vm.isDone = true;
@@ -27,10 +29,6 @@
         ///////////////////
 
         function activate() {
-            UserService.find(vm.userId).then(function(data) {
-                vm.selectedUser = data;
-                vm.form = vm.selectedUser;
-            });
         }
 
         function editPost() {
@@ -53,7 +51,7 @@
                 vm.response['success'] = "alert-danger";
                 vm.response['alert'] = "Error!";
                 vm.response['msg'] = "Failed to update User.";
-                vm.response['error_arr'] = err.data.errors;
+                vm.response['error_arr'] = err.data == null ? '' : err.data.errors;
                 vm.isDone = true;
 
                 $scope.$parent.vm.isDone = true;
