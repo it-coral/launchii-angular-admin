@@ -31,7 +31,7 @@ app.get('/ga-reporting-data', function(req, res) {
 
         var req = null;
 
-        if (reportType === 'basic') {
+        if (reportType === 'traffic') {
 
             req = {
                 reportRequests: [
@@ -44,15 +44,10 @@ app.get('/ga-reporting-data', function(req, res) {
                             }
                         ],
                         metrics: [
-                            { expression: 'ga:users' },
-                            { expression: 'ga:sessions' },
-                            { expression: 'ga:avgSessionDuration' },
-                            { expression: 'ga:metric1' },
-                            { expression: 'ga:goal1Completions' },
-                            { expression: 'ga:goal2Completions' }
+                            { expression: 'ga:sessions' }
                         ],
                         dimensions: [
-                            { name: 'ga:date' }
+                            { name: 'ga:channelGrouping' }
                         ],
                         samplingLevel: 'LARGE'
                     }
