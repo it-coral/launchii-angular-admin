@@ -19,6 +19,10 @@
     }
 }
 
+.portlet.box>.portlet-title>.tools>a.reload-list{
+    background-image: url(../../../global/img/portlet-reload-icon-white.png);
+    width: 13px;
+}
 /*
 table, th, td {
     border: 1px solid;
