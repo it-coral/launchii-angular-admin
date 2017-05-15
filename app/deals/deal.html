@@ -13,6 +13,10 @@
                     <div class="caption">
                         <i class="fa fa-comments"></i>List
                     </div>
+                    <div class="tools pull-right">
+                        <a href="javascript:;" class="reload-list" ng-click="vm.getDeals()"> </a>
+                        <a href="javascript:;" class="remove"> </a>
+                    </div>
                     <div class="col-sm-3 mt-1 pull-right">
                         <form ng-submit="vm.search()" novalidate="novalidate">
                             <div class="form-group mb-0">
@@ -38,7 +42,7 @@
                             <thead>
                                 <tr>
                                     <th> Name </th>
-                                    <th> Slug </th>
+                                    <th> Status </th>
                                     <th> Brand </th>
                                     <th> Link </th>
                                     <th> Price </th>
@@ -48,7 +52,7 @@
                             <tbody>
                                 <tr ng-repeat="deal in vm.deals" ng-if="vm.isLoading == false">
                                     <td ng-bind="deal.name"></td>
-                                    <td ng-bind="deal.slug"></td>
+                                    <td ng-bind="deal.status" style="text-transform: capitalize;"></td>
                                     <td ng-bind="deal.brand.name"></td>
                                     <td>
                                         <a href="{{deal.link}}" ng-bind="deal.link" target="_blank"></a>

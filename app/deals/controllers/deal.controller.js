@@ -80,6 +80,7 @@
             return DealService.getAll().then(function(data) {
                 vm.prepDeals = data;
                 vm.deals = vm.prepDeals.deals;
+                getBrands();
                 vm.isRetrieving = false;
                 $timeout(function() {
                     vm.response.msg = false;
